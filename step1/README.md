@@ -1,6 +1,6 @@
 # Stap 1
 
-Installeer [NodeJS](https://nodejs.org/en/download) (neem de LTS versie) en na het clonen van deze Master branch, leren we hoe node te starten met een basic script.
+We leren hoe node te starten met een basic script.
 
 Het basic script zet een webserver op, die luistert naar poort 80 en antwoord met `Hello World!`
 
