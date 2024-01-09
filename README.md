@@ -1,4 +1,4 @@
-# ogc-api-kennissessie
+# OGC API kennissessie
 Repository ten behoeve van kennissessie voor het bouwen van een OGC API Features node app
 
 ## Stap a
