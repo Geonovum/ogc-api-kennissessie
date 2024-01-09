@@ -31,6 +31,6 @@ http://localhost
 Het browser window toont nu: 
 > `Hello World!`
 
-Feest! 🎉
+Feestje! 🎉🧆
 ## Klaar voor de volgende stap
 https://github.com/geonovum/ogc-api-kennissessie/blob/master/step2/README.md
