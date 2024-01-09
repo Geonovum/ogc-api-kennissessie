@@ -1,4 +1,4 @@
-# OGC API kennissessie
+# We maken ons klaar voor de kennissessie
 Repository ten behoeve van kennissessie voor het bouwen van een OGC API Features node app
 
 ## Stap a
