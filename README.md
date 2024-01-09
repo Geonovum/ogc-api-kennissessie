@@ -8,4 +8,4 @@ Repository ten behoeve van kennissessie voor het bouwen van een OGC API Features
 Installeer [Microsoft Visual Studio Code](https://code.visualstudio.com/download) en [NodeJS](https://nodejs.org/en/download) 
 
 ## Stap c
-Klaarzetten voor de kennissessie [Stap1](https://github.com/Geonovum/ogc-api-kennissessie/tree/main/step0)!
+Klaarzetten voor de kennissessie [Stap0](https://github.com/Geonovum/ogc-api-kennissessie/tree/main/step0)!
