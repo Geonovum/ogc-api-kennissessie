@@ -1,0 +1,28 @@
+extends layout.pug
+
+block append scripts
+  link(rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css')
+  script(src='https://unpkg.com/leaflet@1.6.0/dist/leaflet.js')
+
+block content
+
+  .content
+    h1 Data from collection 
+    h2 Links
+    each link in json.links
+      p #{link.rel} = 
+        a(href= link.href)  #{link.title} 
+        | (#{link.type})
+    h2 Features
+    #map(style='width: 600px; height: 400px; position: relative;')
+    script.
+      var map = L.map("map").setView([51.1352386, 4.4450065], 13);
+      L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+      var features = !{JSON.stringify(json.features)}
+      L.geoJSON(features).addTo(map);
+    h2 JSON Output
+    p Get raw 
+      a(href= json.links[1].href) JSON
+    .jsonContainer
+      .renderjson
+        pre !{JSON.stringify(json, null, 1)}

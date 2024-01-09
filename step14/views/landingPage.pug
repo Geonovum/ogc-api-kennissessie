@@ -1,0 +1,18 @@
+extends layout.pug
+
+block content
+
+  h1 NodeJS ExpressJS OGC API Features - Part 1: Core
+  h2 Links
+
+  each link in json.links
+    p #{link.rel} = 
+      a(href= link.href)  #{link.title} 
+      | (#{link.type})
+  h2 JSON output
+  p Get raw 
+    - var href = json.links.filter(l => l.rel === 'self')[0].href
+    a(href= href) JSON
+  .jsonContainer
+    .renderjson
+      pre !{JSON.stringify(json, null, 1)}
