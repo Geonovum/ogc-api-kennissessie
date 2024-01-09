@@ -6,7 +6,7 @@ Op de website van [Express](https://expressjs.com) vind je alle information over
 > Express is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.
 
 
-## Installer ExpressJS
+## Installer Express (via npm)
 
 Ga naar de directory van step2, en met een command prompt, typ:
 
