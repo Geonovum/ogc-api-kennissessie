@@ -29,7 +29,9 @@ And we are 🏃! (Zie kleine toolbar bovenaan)
 http://localhost
 
 Het browser window toont nu: 
-> `Hello World!`
+
+<img width="732" alt="Screenshot 2024-01-09 at 16 31 45" src="https://github.com/Geonovum/ogc-api-kennissessie/assets/4082369/23f787c5-cfe6-4c4a-ae21-ee309cd7da49">
+
 
 Feestje! 🎉🧆
 ## Klaar voor de volgende stap
