@@ -1,4 +1,4 @@
-# Stap 1
+# Stap 1, een kind kan de was doen
 
 We leren hoe node te starten met een basic javascript script.
 
