@@ -1,2 +1,7 @@
 
 .DS_Store
+.bin/
+node_modules/
+package.json
+package-lock.json
+Presentatie/~$OGC_API_opleiding_8_jan_2024_deel_2.pptx
