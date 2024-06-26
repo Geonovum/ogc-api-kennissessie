@@ -57,9 +57,9 @@ Op het scherm komt:
 
 ## 3: Routes testen (Andere HTTP commando's)
 
-Een GET command is makkelijk te versturen via de browser, maar de andere niet - daarom gebruiken we een tool om http commandos te sturen naar onze server.
+Een GET command is makkelijk te versturen via de browser, maar de andere commandos niet (POST, PATCH,...) - daarom gebruiken we een tool om http commandos te sturen naar onze server.
 
-Installeer [Insomnia](https://insomnia.rest/download) (download, installeer, maak geen account aan) (vele andere gelijkaardige tools zijn even goed, zoals Postman etc)
+Installeer [Insomnia](https://insomnia.rest/download) (download, installeer, maak geen account aan) (vele andere gelijkaardige tools zijn even goed, zoals [Postman](https://www.postman.com) etc)
 
 In Insomnia: Maak een nieuw Request en kies dan het POST commando, in het url vakje: `http://localhost/`
 
