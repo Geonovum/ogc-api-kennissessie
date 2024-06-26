@@ -6,5 +6,4 @@ var birds = require('./birds')
 
 app.use('/birds', birds)
 
-
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
