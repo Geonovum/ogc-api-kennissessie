@@ -55,7 +55,7 @@ router.get('/conformance', function (req, res) {
 // type SHALL return a document consistent with the requested media type.
 //
 router.get('/api', function (req, res) {
-  res.json('{api def here in json}')
+  res.sendFile(path.join(__dirname, 'public', '/ogcapi-features.yaml'))
 })
 
 // 
