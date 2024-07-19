@@ -1,8 +1,13 @@
 const express = require('express')
-const app = express()
+const route = require('./route')
 const port = 80
 
-var route = require('./route')
+const app = express()
+
+app.engine('swig',swig.renderFile);
+
+app.set('views', __dirname + '/views');
+app.set('view engine', 'html');
 
 app.use('/kontich', route)
 
