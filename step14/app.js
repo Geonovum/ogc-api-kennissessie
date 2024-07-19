@@ -1,9 +1,9 @@
 process.browser = true
 global.window = { process: { type: 'renderer' } }
 
-const debug = require('debug')('http')
+const debug = require('debug')('http') // see launch.json in .vscode
 const app = require('./index')
-const config = require('./config/server')
+const config = require('./config/server') // see server.js file in /config
 
 debug('booting..');
 

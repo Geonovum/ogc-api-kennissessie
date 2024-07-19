@@ -3,7 +3,7 @@ const debug = require('debug')('controller')
 const accepts = require('accepts')
 var landingPage = require('../models/landingPage.js');
 var utils = require('../utils/utils')
-  
+
 function get(req, res) {
 
     debug(`landingPage ${req.url}`)
@@ -19,9 +19,13 @@ function get(req, res) {
 
         switch (accept.type(['json', 'html'])) {
             case `json`:
+                // Recommendations 1, A 200-response SHOULD include the following links in the links property of the response:
+                res.set('link', utils.makeHeaderLinks(content.links))
                 res.status(200).json(content)
                 break
             case `html`:
+                // Recommendations 1, A 200-response SHOULD include the following links in the links property of the response:
+                res.set('link', utils.makeHeaderLinks(content.links))
                 res.status(200).render(`landingPage`, { content: content })
                 break
             default:

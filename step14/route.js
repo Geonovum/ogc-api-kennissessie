@@ -47,7 +47,10 @@ router.get('/collections/:collectionId/items.:ext?', items.get)
 // the server SHALL support the HTTP GET operation at the path /collections/{collectionId}/items/{featureId}.
 router.get('/collections/:collectionId/items/:featureId', item.get)
 
-//
+// Every OGC Web API is expected to provide a definition that describes the capabilities of the 
+// server and which can be used by developers to understand the API, by software clients to connect 
+// to the server, or by development tools to support the implementation of servers and clients.
+// Requirement 3 and Permission 1
 router.get('/api.:ext?', api.get)
 
 module.exports = router

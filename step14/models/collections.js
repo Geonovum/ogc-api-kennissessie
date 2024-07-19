@@ -13,6 +13,7 @@ function get(serviceUrl, callback) {
   var projection = { name: 1, crs: 1, _id: 1 }
 
   var content = {};
+  // An optional title and description for the collection;
   content.title = 'Geonovum'
   content.description = 'This is a test dataset used in the Geonovum API summerschool'
   content.links = []

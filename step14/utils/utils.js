@@ -2,7 +2,7 @@ var path = require('path')
 
 function getServiceUrl(req) {
   // remove the optional extension from the baseUrl
-  var root = req.baseUrl.replace(/\.[^.]*$/,'')
+  var root = req.baseUrl.replace(/\.[^.]*$/, '')
 
   const proxyHost = req.headers["x-forwarded-host"]
   var host = proxyHost || req.headers.host
@@ -16,12 +16,12 @@ function ISODateString(d) {
   function pad(n) {
     return n < 10 ? '0' + n : n;
   }
-  return d.getUTCFullYear() + '-' 
-       + pad(d.getUTCMonth() + 1) + '-' 
-       + pad(d.getUTCDate()) + 'T'
-       + pad(d.getUTCHours()) + ':'
-       + pad(d.getUTCMinutes()) + ':'
-       + pad(d.getUTCSeconds()) + 'Z';
+  return d.getUTCFullYear() + '-'
+    + pad(d.getUTCMonth() + 1) + '-'
+    + pad(d.getUTCDate()) + 'T'
+    + pad(d.getUTCHours()) + ':'
+    + pad(d.getUTCMinutes()) + ':'
+    + pad(d.getUTCSeconds()) + 'Z';
 }
 
 function header(collection) {
@@ -42,9 +42,22 @@ function link(href, rel, type, title) {
   return item;
 }
 
+function makeHeaderLinks(hls) {
+  var link = ""
+  hls.forEach(hl => {
+    link += `<${hl.href}>; rel="${hl.rel}"; title="${hl.title}"; type="${hl.type}",`
+  });
+
+  // remove last ,
+  link = link.slice(0, -1); 
+
+  return link;
+}
+
 module.exports = {
-  getServiceUrl, 
+  getServiceUrl,
   ISODateString,
   link,
-  header
+  header,
+  makeHeaderLinks
 }
