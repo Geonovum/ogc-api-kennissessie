@@ -27,12 +27,13 @@ function get(req, res) {
     debug(`items content %j`, content)
 
     var accept = accepts(req)
-
+    
     switch (accept.type(['json', 'html'])) {
       case `json`:
         res.status(200).json(content)
         break
       case `html`:
+        content.geojson = JSON.stringify(content.features); // hack
         res.status(200).render(`items`, { content: content })
         break
       default:
