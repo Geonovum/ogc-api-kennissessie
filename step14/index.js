@@ -1,5 +1,5 @@
 const encodings = require('./middlewares/encodings')
-const route = require('./route')
+const route = require('./routes/ogcapiFeaturesPart1')
 const swig = require('swig');
 const express = require('express')
 const port = 80
