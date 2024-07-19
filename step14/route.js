@@ -19,9 +19,9 @@ router.use(function timeLog (req, res, next) {
 // 7.5 The server SHOULD support the HTTP 1.1 method HEAD for all 
 // resources that support the method GET.
 
-// The app.get() function is automatically called for the HTTP HEAD method 
-// in addition to the GET method if app.head() was not called for the path 
-// before app.get().
+//    The app.get() function is automatically called for the HTTP HEAD method 
+//    in addition to the GET method if app.head() was not called for the path 
+//    before app.get().
 
 // Requirement 7 A, Express.js conforms to HTTP 1.1 (no HTTPS for the moment)
 // Recommendation 2 A, The server SHOULD support the HTTP 1.1 method HEAD for all resources that support the method GET.
