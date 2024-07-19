@@ -8,6 +8,14 @@ function get(req, res) {
 
     debug(`landingPage ${req.url}`)
 
+    // check to see if this is a WFS request, if so, return 400 indicating we do not support WFS
+    if (req.query.SERVICE) {
+        if (req.query.SERVICE == 'WFS') {
+            res.status(400).json(`{'code': 'InvalidParameterValue', 'description': 'This is not a WFS'}`)
+            return
+        }
+    }
+
     var serviceUrl = utils.getServiceUrl(req)
 
     debug(`landingPage serviceUrl ${serviceUrl}`)

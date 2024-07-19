@@ -1,18 +1,19 @@
 const debug = require('debug')('models')
 const database = require('../database')
 
-function getMetaData(serviceUrl, document) {
+function getMetaData(serviceUrl, name, document) {
 
   var content = {}
   // A local identifier for the collection that is unique for the dataset;
-  content.id = document.name // required
+  content.id = name // required
   // An optional title and description for the collection;
-  content.title = document.name
-  content.description = 'dbEntry.description'
+  content.title = name
+  content.description = name
   content.links = []
   // Requirement 15 A and B
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `items`, type: `application/geo+json`, title: `This document` })
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=html`, rel: `items`, type: `text/html`, title: `This document in HTML` })
+  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `items`, type: `application/geo+json`, title: `Access the features in the collection as GeoJSON` })
+  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=html`, rel: `items`, type: `text/html`, title: `Access the features in the collection as HTML` })
+  content.links.push({ href: `${serviceUrl}/collections/${content.title}`, rel: `self`, title: `The '${content.title}' feature collection` })
   // An optional extent that can be used to provide an indication of the spatial and temporal 
   // extent of the collection - typically derived from the data;
   content.extent = {}
@@ -29,23 +30,10 @@ function getMetaData(serviceUrl, document) {
   // An optional list of coordinate reference systems (CRS) in which geometries may be returned by the server. 
   // The default value is a list with the default CRS (WGS 84 with axis order longitude/latitude);
   content.crs = []
-  content.crs.push(document.crs.properties.name)
+  if (document.crs.properties.name)
+    content.crs.push(document.crs.properties.name)
 
   return content
-}
-
-function getContent(name, collection)
-{
-  var item = {}
-  item.id = name
-  item.title = name
-  item.description = "Description of " + name
-  item.links = []
-  item.crs = []
-  var crsName = collection.crs.properties.name.split(':').pop();
-  item.crs.push('http://www.opengis.net/def/crs/EPSG/0/' + crsName)
-
-  return item
 }
 
 function get(serviceUrl, collectionId, callback) {
@@ -58,13 +46,12 @@ function get(serviceUrl, collectionId, callback) {
   var projection = { name: 1, crs: 1, _id: 1 }
 
   var collections = database.getCollection()
-  var collection = collections[collectionId]
 
-  var content = getContent(collectionId, collection)
+  var content = getMetaData(serviceUrl, collectionId, collections[collectionId])
 
   return callback(undefined, content);
 }
 
 module.exports = {
-  get, getContent
+  get, getMetaData
 }

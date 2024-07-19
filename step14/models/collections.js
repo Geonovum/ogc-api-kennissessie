@@ -25,7 +25,7 @@ function get(serviceUrl, callback) {
   var collections = database.getCollection()
 
   for (var name in collections) {
-    var item = collection.getContent(name, collections[name])
+    var item = collection.getMetaData(serviceUrl, name, collections[name])
   
     content.collections.push(item);
   };

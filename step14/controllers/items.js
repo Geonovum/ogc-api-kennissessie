@@ -14,7 +14,7 @@ function get(req, res) {
 
   var options = {}
   options.skip = req.query.startIndex || 0
-  options.limit = req.query.limit || 10
+  options.limit = req.query.limit || 1000
 
   // remve not to be confused with other query parameters
   delete req.query.startIndex;

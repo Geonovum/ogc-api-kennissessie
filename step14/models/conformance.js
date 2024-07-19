@@ -14,8 +14,8 @@ function get(serviceUrl, callback) {
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html");
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson");
   content.links = []
-  content.links.push({ href: `${serviceUrl}/?f=html`, rel: `alternate`, type: `text/html`, title: `this document` })
-  content.links.push({ href: `${serviceUrl}/?f=json`, rel: `self`, type: `application/json`, title: `this document in json` })
+  content.links.push({ href: `${serviceUrl}/conformance?f=html`, rel: `alternate`, type: `text/html`, title: `this document` })
+  content.links.push({ href: `${serviceUrl}/conformance?f=json`, rel: `self`, type: `application/json`, title: `this document in json` })
 
   return callback(undefined, content);
 }
