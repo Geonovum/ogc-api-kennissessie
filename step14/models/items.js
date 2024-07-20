@@ -20,6 +20,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
   var content = getContent(serviceUrl, collectionId, collection)
 
+  // make local copy to do subtraction (limit, offset, bbox,...) on
   var features = content.features
 
   if (options)
@@ -33,6 +34,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
     }
   }
 
+  // bring back subtracted list as 'main'
   content.features = features
   var featureCount = content.features.length
 
