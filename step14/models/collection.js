@@ -36,7 +36,6 @@ function getMetaData(serviceUrl, name, document) {
   content.crs = []
   if (document.crs.properties.name)
     content.crs.push(document.crs.properties.name)
-  content.storageCrs= 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'
 
   return content
 }
