@@ -20,9 +20,20 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
   var content = getContent(serviceUrl, collectionId, collection)
 
-  if (options)
-    content.features = content.features.slice(options.offset, options.offset + options.limit)
+  var features = content.features
 
+  if (options)
+    features = content.features.slice(options.offset, options.offset + options.limit)
+
+  if (query) {
+    if (query.bbox) {
+      features.forEach(feature => {
+        // check within bbox
+      });
+    }
+  }
+
+  content.features = features
   var featureCount = content.features.length
 
   content.numberReturned = featureCount
