@@ -8,13 +8,16 @@ function get(req, res) {
 
   var accept = accepts(req)
 
-      // Recommendations 1
-    // A 200-response SHOULD include the following links in the links property of the response:
+  // Recommendations 1
+  // A 200-response SHOULD include the following links in the links property of the response:
 
   switch (accept.type(['json', 'yaml', 'html'])) {
     case 'json':
-    case 'yaml':
       res.set('Content-Type', 'application/vnd.oai.openapi+json;version=3.0')
+      res.sendFile(path.join(__dirname, '..', 'api', 'openapi.json'))
+      break
+    case 'yaml':
+      res.set('Content-Type', 'application/vnd.oai.openapi;version=3.0')
       res.sendFile(path.join(__dirname, '..', 'api', 'openapi.yaml'))
       break
     case 'html':

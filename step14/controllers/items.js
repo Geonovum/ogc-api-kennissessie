@@ -20,7 +20,7 @@ function get(req, res) {
   delete req.query.startIndex;
   delete req.query.limit;
 
-  var query = {} // TODO, take from req.query
+  var query = req.query
 
   items.get(serviceUrl, collectionId, query, options, function (err, content) {
 

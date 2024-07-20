@@ -11,9 +11,10 @@ function getMetaData(serviceUrl, name, document) {
   content.description = name
   content.links = []
   // Requirement 15 A and B
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `items`, type: `application/geo+json`, title: `Access the features in the collection as GeoJSON` })
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=html`, rel: `items`, type: `text/html`, title: `Access the features in the collection as HTML` })
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}`, rel: `self`, title: `The '${content.title}' feature collection` })
+  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `items`,     type: `application/geo+json`, title: `Access the features in the collection as GeoJSON` })
+  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=html`, rel: `items`,     type: `text/html`,            title: `Access the features in the collection as HTML` })
+  content.links.push({ href: `${serviceUrl}/collections/${content.title}`,              rel: `alternate`, type: `text/html`,            title: `The '${content.title}' feature collection in HTML` })
+  content.links.push({ href: `${serviceUrl}/collections/${content.title}`,              rel: `self`,                                    title: `The '${content.title}' feature collection` })
   // An optional extent that can be used to provide an indication of the spatial and temporal 
   // extent of the collection - typically derived from the data;
   content.extent = {}
@@ -21,9 +22,12 @@ function getMetaData(serviceUrl, name, document) {
   // Requirement 16 A and B
   content.extent.spatial.bbox = []
   content.extent.spatial.bbox.push([-180, -90, 180, 90])
+  content.extent.spatial.crs = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'
   content.extent.temporal = {}
   content.extent.temporal.interval = []
-  content.extent.temporal.interval.push(['2010-02-15T12:34:56Z', null])
+  content.extent.temporal.interval.push(['2010-02-15T12:34:56Z', '2030-02-15T12:34:56Z'])
+  content.extent.temporal.trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
+
   // An optional indicator about the type of the items in the collection 
   // (the default value, if the indicator is not provided, is 'feature').
   content.itemType = 'feature'
@@ -32,6 +36,7 @@ function getMetaData(serviceUrl, name, document) {
   content.crs = []
   if (document.crs.properties.name)
     content.crs.push(document.crs.properties.name)
+  content.storageCrs= 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'
 
   return content
 }
