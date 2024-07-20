@@ -16,6 +16,7 @@ function get(req, res) {
 
     var accept = accepts(req)
 
+    // (OAPIC P2) Requirement 3A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 200.
     switch (accept.type(['json', 'html'])) {
       case `json`:
         // Recommendations 10, Links included in payload of responses SHOULD also be 

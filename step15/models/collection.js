@@ -9,6 +9,7 @@ function getMetaData(serviceUrl, name, document) {
   // An optional title and description for the collection;
   content.title = name
   content.description = name
+  content.attribution = 'this dataset is attributed to the municipality of Kontich'
   content.links = []
   // Requirement 15 A and B
   content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `items`,     type: `application/geo+json`, title: `Access the features in the collection as GeoJSON` })
@@ -21,7 +22,7 @@ function getMetaData(serviceUrl, name, document) {
   content.extent.spatial = {}
   // Requirement 16 A and B
   content.extent.spatial.bbox = []
-  content.extent.spatial.bbox.push([-180, -90, 180, 90])
+  content.extent.spatial.bbox.push(document.bbox)
   content.extent.spatial.crs = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'
   content.extent.temporal = {}
   content.extent.temporal.interval = []
@@ -36,7 +37,8 @@ function getMetaData(serviceUrl, name, document) {
   content.crs = []
   if (document.crs.properties.name)
     content.crs.push(document.crs.properties.name)
-  content.storageCrs= 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'
+
+  content.storageCrs = document.crs.properties.name
 
   return content
 }

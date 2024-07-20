@@ -24,10 +24,15 @@ function get(req, res) {
 
   items.get(serviceUrl, collectionId, query, options, function (err, content) {
 
+    // Content-Crs
+    if (content.headerContentCrs)
+      res.set('Content-Crs', content.headerContentCrs)
+    delete content.headerContentCrs
+
     debug(`items content %j`, content)
 
     var accept = accepts(req)
-    
+
     switch (accept.type(['json', 'html'])) {
       case `json`:
         res.status(200).json(content)

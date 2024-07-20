@@ -25,15 +25,14 @@ router.use(function timeLog (req, res, next) {
 // Requirement 7 A, Express.js conforms to HTTP 1.1 (no HTTPS for the moment)
 // Recommendation 2 A, The server SHOULD support the HTTP 1.1 method HEAD for all resources that support the method GET.
 
-// Requirement 1 A: The server SHALL support the HTTP GET operation at the path /
-// (ext in index.js)
+// (OAPIF P1) Requirement 1 A: The server SHALL support the HTTP GET operation at the path /
 
 // OGC API Features Part 1 - Core
 
 // OGC API Common Part 1 - Core
 router.get('/.:ext?', landingPage.get)
 
-// Requirement 5 A: The server SHALL support the HTTP GET operation at the path /conformance
+// (OAPIF P1) Requirement 5 A: The server SHALL support the HTTP GET operation at the path /conformance
 router.get('/conformance.:ext?', conformance.get)
 
 // Every OGC Web API is expected to provide a definition that describes the capabilities of the 
@@ -44,7 +43,12 @@ router.get('/api.:ext?', api.get)
 
 // OGC API Common Part 2 - Collections
 
-// Requirement 11 A: The server SHALL support the HTTP GET operation at the path /collections.
+// (OAPIF P1) Requirement 11 A: The server SHALL support the HTTP GET operation at the path /collections.
+// (OAPIC P2) Recommendation 1: An implementation of the /Collections Requirements Class SHOULD also
+//            implement the Core Conformance Class defined in OGC API - Common Part 1.
+// (OAPIC P2) Recommendation 2: An implementation of the /Collections Requirements Class SHOULD also 
+//            implement the Landing Page Conformance Class defined in OGC API - Common Part 1.
+// (OAPIC P2) Requirement 2A. The API SHALL support the HTTP GET operation at the path /collections
 router.get('/collections.:ext?', collections.get)
 
 // The server SHALL support the HTTP GET operation at the path /collections/{collectionId}.

@@ -1,12 +1,17 @@
 const debug = require('debug')('models')
 const database = require('../database')
+const utils = require('../utils/utils')
+const projgeojson = require('../utils/proj4')
 
-function getContent(serviceUrl, name, collection) {
+function getContent(serviceUrl, name, document) {
   var item = {}
-  item.type = collection.type
-  item.features = collection.features
+  item.type = document.type
+  item.features = document.features
   item.timestamp = new Date().toISOString()
   item.links = []
+
+  if (document.crs.properties.name)
+    item.headerContentCrs = document.crs.properties.name
 
   return item
 }
@@ -32,6 +37,14 @@ function get(serviceUrl, collectionId, query, options, callback) {
         // check within bbox
       });
     }
+
+    if (query.crs) {
+      console.log('do crs conversion using proj4')
+      var toEpsg = utils.UriToEPSG(query.crs)
+      features = projgeojson(features, 'EPSG:4326', toEpsg);
+
+      content.headerContentCrs = query.crs
+    }
   }
 
   // bring back subtracted list as 'main'
@@ -45,8 +58,6 @@ function get(serviceUrl, collectionId, query, options, callback) {
   content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
   if (content.numberReturned != content.numberMatched)
     content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `next`, type: `application/geo+json`, title: `Next page` })
-
-
 
   return callback(undefined, content);
 }

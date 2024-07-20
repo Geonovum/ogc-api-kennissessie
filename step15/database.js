@@ -1,5 +1,6 @@
-var path = require('path');
-var fs = require('fs');
+const path = require('path');
+const fs = require('fs');
+const turf = require('@turf/turf');
 
 var fileNames = fs.readdirSync(path.join(__dirname, "data")).filter(fn => fn.endsWith('.geojson'));
 
@@ -12,12 +13,14 @@ fileNames.forEach(fileName => {
     if (geojson.crs.properties.name.startsWith('EPSG'))
       geojson.crs.properties.name = 'http://www.opengis.net/def/crs/EPSG/0/' + geojson.crs.properties.name
   }
-  else
-  {
+  else {
     geojson.crs = {}
     geojson.crs.properties = {}
-    geojson.crs.properties.name = 'urn:ogc:def:crs:OGC:1.3:CRS84'
+    geojson.crs.properties.name = 'urn:ogc:def:crs:OGC:1.3:CRS84' // default
   }
+
+  // calculate the bbox from geometry
+  geojson.bbox = turf.bbox(turf.featureCollection(geojson.features));
 
   var id = fileName.replace(/\.[^/.]+$/, "")
 
