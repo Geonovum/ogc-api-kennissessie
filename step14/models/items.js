@@ -20,7 +20,10 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
   var content = getContent(serviceUrl, collectionId, collection)
 
-  var featureCount = collection.features.length
+  if (options)
+    content.features = content.features.slice(options.offset, options.offset + options.limit)
+
+  var featureCount = content.features.length
 
   content.numberReturned = featureCount
   content.numberMatched = featureCount

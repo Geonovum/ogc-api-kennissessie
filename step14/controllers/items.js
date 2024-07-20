@@ -13,11 +13,11 @@ function get(req, res) {
   debug(`items serviceUrl ${serviceUrl} collectionId ${collectionId}`)
 
   var options = {}
-  options.skip = req.query.startIndex || 0
-  options.limit = req.query.limit || 1000
+  options.offset = Number(req.query.offset) || 0
+  options.limit = Number(req.query.limit) || 1000
 
   // remve not to be confused with other query parameters
-  delete req.query.startIndex;
+  delete req.query.offset;
   delete req.query.limit;
 
   var query = req.query
