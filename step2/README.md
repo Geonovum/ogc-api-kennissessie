@@ -47,6 +47,8 @@ Op je scherm:
 Example app listening at http://localhost:80
 ```
 
+Voor de geeks: [hoe werken callbacks](https://www.freecodecamp.org/news/nodejs-callbacks/)
+
 ## Testen in een browser:
 http://localhost
 
