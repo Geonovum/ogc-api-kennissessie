@@ -29,6 +29,7 @@ function get (req, res) {
         featureCollection.push(content)
         content.geojson = JSON.stringify(featureCollection); // hack (see also in items)
         res.status(200).render(`item`, { content: content })
+        delete content.geojson
         break
       default:
         res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)

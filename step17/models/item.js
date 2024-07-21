@@ -132,7 +132,7 @@ function update(serviceUrl, collectionId, itemId, body, callback) {
     if (body.geometry.type != feature.geometry.type)
       return callback({ 'httpCode': 400, 'code': `Geometry type mismatch`, 'description': 'Item update must have the same geometry type' }, undefined);
 
-    // TODO replace geometry
+    feature.geometry = body.geometry
   }
 
   if (body.properties) {
