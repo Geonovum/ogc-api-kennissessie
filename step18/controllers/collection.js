@@ -1,6 +1,7 @@
 const debug = require('debug')('controller')
 const accepts = require('accepts')
 const collection = require('../models/collection.js')
+const item = require('../models/item.js')
 const utils = require('../utils/utils')
 
 function get (req, res) {
