@@ -5,6 +5,8 @@ function get(serviceUrl, collectionId, itemId, callback) {
 
   debug(`get model item`)
 
+  var headers = []
+
   var collections = database.getCollection()
   var collection = collections[collectionId]
 
@@ -19,7 +21,12 @@ function get(serviceUrl, collectionId, itemId, callback) {
 
   var content = collection.features[index]
 
-  return callback(undefined, content);
+  // (OAPIF-P4) Requirement 20 The response to a HTTP GET operation used to retrieve a representation of a resource SHALL 
+  //     include a Last-Modified header representing the date and time the representation was last modified as determined
+  //     at the conclusion of handling the request.
+  headers.push({ 'name': 'Last-Modified', 'value': new Date().toISOString() })
+
+  return callback(undefined, content, headers);
 }
 
 function create(serviceUrl, collectionId, itemId, body, callback) {
@@ -55,6 +62,8 @@ function replacee(serviceUrl, collectionId, itemId, body, callback) {
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });
 
+  var headers = []
+
   var collections = database.getCollection()
   var collection = collections[collectionId]
 
@@ -85,9 +94,14 @@ function replacee(serviceUrl, collectionId, itemId, body, callback) {
   // create new resource
   collection.features.push(body)
 
-  collection.lastModified = Date.now()
+  collection.lastModified = new Date()
 
-  return callback(undefined, body, newId);
+  // (OAPIF-P4) Requirement 21 A resource successfully replaced by a HTTP PUT operation SHALL include 
+  //    a Last-Modified header whose value is a date and time representing when the representation was last 
+  //    modified as determined at the conclusion of handing the request.
+  headers.push({ 'name': 'Last-Modified', 'value': collection.lastModified.toISOString() })
+
+  return callback(undefined, body, newId, headers);
 }
 
 function deletee(serviceUrl, collectionId, itemId, callback) {
@@ -109,11 +123,12 @@ function deletee(serviceUrl, collectionId, itemId, callback) {
   return callback(undefined, {});
 }
 
-// TODO
 function update(serviceUrl, collectionId, itemId, body, callback) {
 
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' }, undefined);
+
+  var headers = []
 
   var collections = database.getCollection()
   var collection = collections[collectionId]
@@ -141,9 +156,14 @@ function update(serviceUrl, collectionId, itemId, body, callback) {
     // TODO replace properties
   }
 
-  collection.lastModified = Date.now()
+  collection.lastModified = new Date()
 
-  return callback(undefined, feature);
+  // (OAPIF-P4) Requirement 22 A resource successfully updated by a HTTP PATCH operation SHALL include 
+  //     a Last-Modified header whose value is a date and time representing when the representation was 
+  //     last modified as determined at the conclusion of handing the request.
+  headers.push({ 'name': 'Last-Modified', 'value': collection.lastModified.toISOString() })
+
+  return callback(undefined, feature, headers);
 }
 
 module.exports = {
