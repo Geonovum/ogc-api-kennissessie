@@ -26,11 +26,10 @@ found 0 vulnerabilities
 
 ## Start NodeJS (met ExpressJS)
 
-ExpressJS wordt gekort tot Express, net als NodeJS verkort wordt tot Node
+ExpressJS wordt verkort tot Express, net als NodeJS verkort wordt tot Node
 
-```
-node index.js
-```
+Starten doe je op dezelfde maniet als in `step 1` , Driehoek met bug, dan groene driehoek met Launch Program
+
 Op je scherm:
 ```
 Example app listening at http://localhost:80
