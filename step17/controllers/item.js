@@ -20,6 +20,33 @@ function get (req, res) {
 */      res.json(400, "{'code': 'InvalidParameterValue', 'description': 'Invalid format'}")
 }
 
+function replacee (req, res) {
+  
+  var body = req.body
+
+  res.status(204).end()
+}
+
+function deletee (req, res) {
+  
+  var body = req.body
+
+  res.status(204).end()
+}
+
+function update (req, res) {
+  
+  var body = req.body
+
+  res.status(204).end()
+}
+
+function options (req, res) {
+  
+  res.status(200).end()
+}
+
+
 module.exports = {
-  get, 
+  get, replacee, deletee, update, options
 }

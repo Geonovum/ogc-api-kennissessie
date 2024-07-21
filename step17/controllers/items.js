@@ -53,6 +53,12 @@ function get(req, res, next) {
 
 }
 
+function options (req, res) {
+  
+  res.status(200).end()
+}
+
+
 module.exports = {
-  get,
+  get, options
 }

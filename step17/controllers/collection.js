@@ -59,6 +59,15 @@ function getQueryables (req, res) {
   })
 }
 
+function create (req, res) {
+  
+  // check Content-Crs
+
+  var body = req.body
+
+  res.status(201).end()
+}
+
 module.exports = {
-  get, getQueryables, getSchema
+  get, getQueryables, create
 }
