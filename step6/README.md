@@ -5,7 +5,7 @@ We gaan dit 'hardcoded'doen, zonder gebruik te maken van javascript modules, zod
 
 
 ## Stap 1:
-Zoals altijd, ga naar de step6 directory met je command prompt, en installeer express als het de eerste keer dat je node gaat opstarten in deze directory. `npm install express --save`
+Zoals altijd, ga naar de step6 directory met je command prompt, en installeer express als het de eerste keer dat je node gaat opstarten in deze directory. `npm update`
 
 ## Code:
 
