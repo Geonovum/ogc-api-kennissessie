@@ -68,8 +68,5 @@ Resultaat:
 Landing Page:
 http://localhost/kontich?f=html
 
-## Test Content Negociation in PostMan of Insomnia:
-
-
 ## Klaar voor de volgende stap
 https://github.com/geonovum/ogc-api-kennissessie/blob/master/step8/README.md
