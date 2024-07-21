@@ -107,6 +107,7 @@ function deletee(serviceUrl, collectionId, itemId, callback) {
   return callback(undefined, {});
 }
 
+// TODO
 function update(serviceUrl, collectionId, itemId, body, callback) {
 
   if (body.type.toLowerCase() != 'feature')
@@ -138,7 +139,7 @@ function update(serviceUrl, collectionId, itemId, body, callback) {
     // TODO replace properties
   }
 
-  return callback(undefined, {});
+  return callback(undefined, feature);
 }
 
 module.exports = {
