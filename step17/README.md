@@ -11,6 +11,8 @@ https://docs.ogc.org/DRAFTS/20-002.html#create
 
 - options
 
+Todo: support for [ETag](https://docs.ogc.org/DRAFTS/20-002.html#optimistic_locking_clause)
+
 ## Testen:
 Run the app
 
