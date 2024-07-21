@@ -51,7 +51,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
       headers.push({ 'name': 'Content-Crs', 'value': query.crs })
 
-      _query.crs
+      delete _query.crs
     }
 
     var filterLang = 'filter'
