@@ -1,6 +1,7 @@
 # OGC API - Features - Part 2: CRS
 
-https://docs.ogc.org/is/18-058r1/18-058r1.html#crs-query
+R1: https://docs.ogc.org/is/18-058r1/18-058r1.html#crs-query
+R2 Draft: https://docs.ogc.org/DRAFTS/18-058r2.html
 
 ## Stap 0:
 
