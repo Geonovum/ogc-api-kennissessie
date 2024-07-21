@@ -55,7 +55,7 @@ Run de app
 
 `Example app listening at http://localhost:80`
 
-In je browser of via PostMan
+In je browser of Insomnia via PostMan
 
 Landing Page:
 - http://localhost/kontich
