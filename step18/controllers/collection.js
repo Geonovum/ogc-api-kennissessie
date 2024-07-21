@@ -55,10 +55,52 @@ function getQueryables (req, res) {
   debug(`collections getQueryables serviceUrl ${serviceUrl} collectionId ${collectionId}`)
 
   collection.getQueryables(serviceUrl, collectionId, function(err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
+    res.status(200).json(content)
+  })
+}
+
+function getSortables (req, res) {
+
+  var collectionId = req.params.collectionId
+  var serviceUrl = utils.getServiceUrl(req)
+
+  debug(`collections getSortables serviceUrl ${serviceUrl} collectionId ${collectionId}`)
+
+  collection.getSortables(serviceUrl, collectionId, function(err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
+    res.status(200).json(content)
+  })
+}
+
+function getSchema (req, res) {
+
+  var collectionId = req.params.collectionId
+  var serviceUrl = utils.getServiceUrl(req)
+
+  debug(`collections getSchema serviceUrl ${serviceUrl} collectionId ${collectionId}`)
+
+  collection.getSchema(serviceUrl, collectionId, function(err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
     res.status(200).json(content)
   })
 }
 
 module.exports = {
-  get, getQueryables
+  get, getQueryables, getSchema, getSortables
 }

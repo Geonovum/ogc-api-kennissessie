@@ -60,5 +60,5 @@ function getQueryables (req, res) {
 }
 
 module.exports = {
-  get, getQueryables
+  get, getQueryables, getSchema
 }
