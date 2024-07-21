@@ -49,9 +49,7 @@ router.get('/collections', function (req, res) {
 ```
 
 ## Testen:
-```
-node index.js
-```
+Run de app
 
 `Example app listening at http://localhost:80`
 
