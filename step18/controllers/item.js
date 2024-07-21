@@ -90,7 +90,7 @@ function update (req, res) {
       return
     }
 
-    res.status(204).end()
+    res.status(200).json(content)
   })
 }
 
