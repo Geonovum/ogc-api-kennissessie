@@ -41,10 +41,10 @@ http://localhost
 > `Hello World!`
 
 Echter, elk ander pad werkt nu niet meer
-http://localhost/kontich
+http://localhost/joepie
 
 geeft:
-> `Cannot GET /kontich`
+> `Cannot GET /joepie`
 
 en dat is prima (voor het moment)
 
