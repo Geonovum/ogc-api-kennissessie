@@ -83,6 +83,15 @@ function getSortables (req, res) {
   })
 }
 
+function create (req, res) {
+  
+  // check Content-Crs
+
+  var body = req.body
+
+  res.status(201).end()
+}
+
 function getSchema (req, res) {
 
   var collectionId = req.params.collectionId
@@ -102,5 +111,5 @@ function getSchema (req, res) {
 }
 
 module.exports = {
-  get, getQueryables, getSchema, getSortables
+  get, getQueryables, getSchema, getSortables, create
 }
