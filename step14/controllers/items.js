@@ -13,8 +13,9 @@ function get(req, res) {
   debug(`items serviceUrl ${serviceUrl} collectionId ${collectionId}`)
 
   var options = {}
-  options.offset = Number(req.query.offset) || 0
+  // (OAPIF) Requirement 21A The operation SHALL support a parameter limit
   options.limit = Number(req.query.limit) || 1000
+  options.offset = Number(req.query.offset) || 0
 
   // remve not to be confused with other query parameters
   delete req.query.offset;
