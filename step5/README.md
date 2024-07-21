@@ -8,6 +8,21 @@ Eerst even Express installeren (om de repo zo klein mogelijk te houden, zit `exp
 
 
 ## 2 Eerste voorzichtige stapjes
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 80
+
+var kontich = require('./kontich')
+
+app.use('/kontich', kontich)
+
+app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+```
+
+Vanuit `index.js` verwijzen we naar de paden in `kontich.js` - netter en handiger
+
 ```javascript
 var express = require('express')
 var router = express.Router()
