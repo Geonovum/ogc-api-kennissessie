@@ -87,9 +87,22 @@ function create (req, res) {
   
   // check Content-Crs
 
-  var body = req.body
+  debug(`replacee item ${req.url}`)
 
-  res.status(201).end()
+  var collectionId = req.params.collectionId
+  var itemId = req.params.itemId
+  var serviceUrl = utils.getServiceUrl(req)
+
+  item.create(serviceUrl, collectionId, itemId, req.body, function(err, content, newId) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
+    res.set('location', `${serviceUrl}/collections/${collectionId}/items/${newId}`)
+    res.status(204).end()
+  })
 }
 
 function getSchema (req, res) {
