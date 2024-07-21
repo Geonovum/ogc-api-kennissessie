@@ -25,6 +25,8 @@ fileNames.forEach(fileName => {
   else
     geojson.id = 'id'
 
+  geojson.lastModified = new Date()
+
   // calculate the bbox from geometry
   geojson.bbox = turf.bbox(turf.featureCollection(geojson.features));
 
