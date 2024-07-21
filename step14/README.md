@@ -4,7 +4,7 @@ https://docs.ogc.org/is/17-069r3/17-069r3.html
 # OGC API - Common - Part 1: Core
 https://docs.ogc.org/is/19-072/19-072.html
 
-# ISO 19168-1:2020
+# `ISO 191`68-1:2020
 https://www.iso.org/standard/32586.html
 
 ## Code is opgeruimd:
