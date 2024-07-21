@@ -2,6 +2,11 @@
 
 https://portal.ogc.org/files/108199#rc_returnables-and-receivables
 
+## Topics
+
+- Schema   ../{collectionId}/schema
+- Sortables ../{collectionId}/sortables
+
 ## Testen:
 Run the app
 
