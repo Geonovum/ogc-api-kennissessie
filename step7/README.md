@@ -51,9 +51,7 @@ De javascript module [landingPage](https://github.com/geonovum/ogc-api-kennisses
 
 
 ## Testen:
-```
-node index.js
-```
+Run de app
 
 `Example app listening at http://localhost:80`
 
