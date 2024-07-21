@@ -1,14 +1,57 @@
 const debug = require('debug')('models')
 
-function get (callback) {
-  
-    debug(`item`)
-    
-    var content = {};
+function get(serviceUrl, collectionId, itemId, callback) {
 
-    return callback(undefined, content);
-  }
+  debug(`get model item`)
+
+  var collections = database.getCollection()
+  var collection = collections[collectionId]
+
+  var id = collection.id;
+  // find the id in the features.properties.{id}
+
+  var index = 0
+  for (; index < collection.features.length; index++)
+    if (collection.features[index].properties[id] == itemId) break;
+
+  if (index >=  collection.features.length)
+    return callback({ 'httpCode': 404, 'code': `Item: ${itemId} not found`, 'description': 'Id needs to exist' }, undefined);
+
+  var content = collection.features[index]
+
+  return callback(undefined, content);
+}
   
-  module.exports = {
-    get,
-  }
+function replacee(serviceUrl, collectionId, itemId, body, callback) {
+
+  var collections = database.getCollection()
+  var collection = collections[collectionId]
+
+  var content = {};
+
+  return callback(undefined, content);
+}
+
+function deletee(serviceUrl, collectionId, itemId, callback) {
+
+  var collections = database.getCollection()
+  var collection = collections[collectionId]
+
+  var content = {};
+
+  return callback(undefined, content);
+}
+
+function update(serviceUrl, collectionId, itemId, body, callback) {
+
+  var collections = database.getCollection()
+  var collection = collections[collectionId]
+
+  var content = {};
+
+  return callback(undefined, content);
+}
+
+module.exports = {
+  get, replacee, deletee, update
+}

@@ -3,21 +3,35 @@ const debug = require('debug')('controller')
 
 function get (req, res) {
 
-  debug(`item ${req.url}`)
+  debug(`get item ${req.url}`)
 
-  var accept = req.headers['accept']
-  
-  //  console.log(dataDict);
-    /*
-    var urlParts = url.parse(req.url, true);
-    if (null == urlParts.query.f) 
-      res.send(make.collections("html", dataDict));
-    else if ("json" == urlParts.query.f) 
-      res.json(make.collections("json", dataDict));
-    else if ("html" == urlParts.query.f)
-      res.send(make.collections("html", dataDict));
-    else
-*/      res.json(400, "{'code': 'InvalidParameterValue', 'description': 'Invalid format'}")
+  var collectionId = req.params.collectionId
+  var itemId = req.params.itemId
+  var serviceUrl = utils.getServiceUrl(req)
+
+  item.get(serviceUrl, collectionId, itemId, function(err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
+    var accept = accepts(req)
+
+    switch (accept.type(['json', 'html'])) {
+      case `json`:
+        res.status(200).json(content)
+        break
+      case `html`:
+        var featureCollection = []
+        featureCollection.push(content)
+        content.geojson = JSON.stringify(featureCollection); // hack (see also in items)
+        res.status(200).render(`item`, { content: content })
+        break
+      default:
+        res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
+    }
+  })
 }
 
 module.exports = {
