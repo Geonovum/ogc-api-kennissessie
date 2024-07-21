@@ -44,10 +44,16 @@ function replacee (req, res) {
   var itemId = req.params.itemId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.replacee(serviceUrl, collectionId, itemId, req.body, function(err, content) {
+  item.replacee(serviceUrl, collectionId, itemId, req.body, function(err, content, newId) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
+    res.set('location', `${serviceUrl}/collections/${collectionId}/items/${newId}`)
     res.status(204).end()
   })
-
 }
 
 function deletee (req, res) {
@@ -59,9 +65,14 @@ function deletee (req, res) {
   var serviceUrl = utils.getServiceUrl(req)
 
   item.deletee(serviceUrl, collectionId, itemId, function(err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
     res.status(204).end()
   })
-
 }
 
 function update (req, res) {
@@ -73,6 +84,12 @@ function update (req, res) {
   var serviceUrl = utils.getServiceUrl(req)
 
   item.update(serviceUrl, collectionId, itemId, req.body, function(err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
     res.status(204).end()
   })
 }
@@ -81,7 +98,6 @@ function options (req, res) {
   
   res.status(200).end()
 }
-
 
 module.exports = {
   get, replacee, deletee, update, options
