@@ -63,8 +63,14 @@ function create (req, res) {
   
   // check Content-Crs
 
+  var collectionId = req.params.collectionId
+  var serviceUrl = utils.getServiceUrl(req)
+
   var body = req.body
 
+  var itemId = 'id'
+
+  res.set('location', `${serviceUrl}/collections/${collectionId}/items/${itemId}`)
   res.status(201).end()
 }
 

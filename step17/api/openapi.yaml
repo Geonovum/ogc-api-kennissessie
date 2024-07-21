@@ -486,13 +486,13 @@ paths:
             text/html:
               schema:
                 type: string
-  /collections/{collectionId}/items/{featureId}:
+  /collections/{collectionId}/items/{itemId}:
     get:
       tags:
       - Data
       summary: fetch a single feature
       description: |-
-        Fetch the feature with id `featureId` in the feature collection
+        Fetch the feature with id `itemId` in the feature collection
         with id `collectionId`.
 
         Use content negotiation to request HTML or GeoJSON.
@@ -504,7 +504,7 @@ paths:
         required: true
         schema:
           type: string
-      - name: featureId
+      - name: itemId
         in: path
         description: local identifier of a feature
         required: true
@@ -513,7 +513,7 @@ paths:
       responses:
         "200":
           description: |-
-            fetch the feature with id `featureId` in the feature collection
+            fetch the feature with id `itemId` in the feature collection
             with id `collectionId`
           content:
             application/geo+json:

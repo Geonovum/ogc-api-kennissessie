@@ -59,7 +59,7 @@ router.get('/collections/:collectionId.:ext?', collection.get)
 router.get('/collections/:collectionId/items.:ext?', items.get)
 
 // For every feature in a feature collection (path /collections/{collectionId}), 
-// the server SHALL support the HTTP GET operation at the path /collections/{collectionId}/items/{featureId}.
-router.get('/collections/:collectionId/items/:featureId', item.get)
+// the server SHALL support the HTTP GET operation at the path /collections/{collectionId}/items/{itemId}.
+router.get('/collections/:collectionId/items/:itemId', item.get)
 
 module.exports = router
