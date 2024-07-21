@@ -33,15 +33,17 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
   var _query = query
   if (_query) {
+    // (OAPIF P1) Requirement 23A The operation SHALL support a parameter bbox
+    // (OAPIF P2) Requirement 6 Each GET request on a 'features' resource SHALL support a query parameter bbox-crs 
     if (_query.bbox) {
       features.forEach(feature => {
-        // check within bbox
+        // check within bbox (also check bbox-crs)
       });
       delete _query.bbox
     }
 
     if (_query.crs) {
-      console.log('do crs conversion using proj4')
+      console.log('do crs conversion using proj4') // TODO
       var toEpsg = utils.UriToEPSG(query.crs)
       features = projgeojson(features, 'EPSG:4326', toEpsg);
 
@@ -49,7 +51,34 @@ function get(serviceUrl, collectionId, query, options, callback) {
       _query.crs
     }
 
-    // Filter
+    var filterLang = 'filter'
+    if (_query['filter-lang']) {
+      filterLang = _query['filter-lang'].replace(/^\W+|\W+$/g, '') // removes ' at start and end
+      delete _query['filter-lang']
+    }
+
+    if (_query.filter) {
+      var parts = _query.filter.split(' and ') // only AND supported (not OR)
+      parts.forEach(element => {
+          var ao = element.split(' ', 2)
+          var attributeName = ao[0]
+          var operator = ao[1]
+          var tv = ao.join(' ') + ' ' 
+          var targetValue = element.slice(tv.length).replace(/^\W+|\W+$/g, '') // removes ' at start and end
+
+          if (operator != 'eq')
+            return callback({'httpCode': 400, 'code': `Invalid operator: ${operator}`, 'description': 'Valid operators are: eq'}, undefined);
+
+          features = features.filter(
+            element =>
+              element.properties[attributeName] == targetValue)
+
+        });
+
+      delete _query.filter
+    }
+
+    // Filter parameters as query
     for (var attributeName in _query) {
       // is attribute part of the queryables?
       const hasAttribute = attributeName in collection.queryables;
@@ -58,7 +87,6 @@ function get(serviceUrl, collectionId, query, options, callback) {
         features = features.filter(
           element =>
             element.properties[attributeName] == targetValue)
-        console.log(features)
       }
       else
          return callback({'httpCode': 400, 'code': `The following query parameters are rejected: ${attributeName}`, 'description': 'Valid parameters for this request are ' + collection.queryables}, undefined);
