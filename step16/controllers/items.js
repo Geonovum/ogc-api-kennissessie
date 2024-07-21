@@ -3,7 +3,7 @@ const debug = require('debug')('controller')
 var items = require('../models/items.js')
 var utils = require('../utils/utils')
 
-function get(req, res) {
+function get(req, res, next) {
 
   debug(`items ${req.url}`)
 
@@ -23,6 +23,11 @@ function get(req, res) {
   var query = req.query
 
   items.get(serviceUrl, collectionId, query, options, function (err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
 
     // Content-Crs
     if (content.headerContentCrs)

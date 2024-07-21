@@ -319,7 +319,7 @@ paths:
         description: local identifier of a collection
         required: true
         schema:
-          type: string
+          type: string         
       - name: limit
         in: query
         description: |-

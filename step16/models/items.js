@@ -31,20 +31,40 @@ function get(serviceUrl, collectionId, query, options, callback) {
   if (options)
     features = content.features.slice(options.offset, options.offset + options.limit)
 
-  if (query) {
-    if (query.bbox) {
+  var _query = query
+  if (_query) {
+    if (_query.bbox) {
       features.forEach(feature => {
         // check within bbox
       });
+      delete _query.bbox
     }
 
-    if (query.crs) {
+    if (_query.crs) {
       console.log('do crs conversion using proj4')
       var toEpsg = utils.UriToEPSG(query.crs)
       features = projgeojson(features, 'EPSG:4326', toEpsg);
 
       content.headerContentCrs = query.crs
+      _query.crs
     }
+
+    // Filter
+    for (var attributeName in _query) {
+      // is attribute part of the queryables?
+      const hasAttribute = attributeName in collection.queryables;
+      if (hasAttribute) {
+        var targetValue = _query[attributeName]
+        features = features.filter(
+          element =>
+            element.properties[attributeName] == targetValue)
+        console.log(features)
+      }
+      else
+         return callback({'httpCode': 400, 'code': `The following query parameters are rejected: ${attributeName}`, 'description': 'Valid parameters for this request are ' + collection.queryables}, undefined);
+
+    }
+
   }
 
   // bring back subtracted list as 'main'

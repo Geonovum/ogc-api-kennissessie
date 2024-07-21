@@ -42,7 +42,7 @@ fileNames.forEach(fileName => {
     var item = {
       'title': propertyName,
       'description': `Description of ${propertyName}`,
-      'type': 'string'
+      'type': typeof properties[propertyName]
     }
     geojson.queryables[`${propertyName}`] = item
   }

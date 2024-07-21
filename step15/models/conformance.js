@@ -13,6 +13,7 @@ function get(serviceUrl, callback) {
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30");
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html");
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs");
   content.links = []
   content.links.push({ href: `${serviceUrl}/conformance?f=html`, rel: `alternate`, type: `text/html`, title: `this document` })
   content.links.push({ href: `${serviceUrl}/conformance?f=json`, rel: `self`, type: `application/json`, title: `this document in json` })
