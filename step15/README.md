@@ -17,7 +17,7 @@ Grote veranderingen:
 - Accepts (als middleware)
 
 ## Stap 1:
-Zoals altijd, ga naar de step14 directory met je command prompt, en installeer express als het de eerste keer dat je node gaat opstarten in deze directory. `npm install express --save`, alsook swig: `npm i swig-templates`
+Zoals altijd, ga naar de step14 directory met je command prompt, en installeer express als het de eerste keer dat je node gaat opstarten in deze directory. `npm update`
 
 ## Code for `/collections/:collectionId/items/:featureId`
 
