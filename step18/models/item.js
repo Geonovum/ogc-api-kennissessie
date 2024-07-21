@@ -138,7 +138,7 @@ function update(serviceUrl, collectionId, itemId, body, callback) {
     // TODO replace properties
   }
 
-  return callback(undefined, {});
+  return callback(undefined, feature);
 }
 
 module.exports = {
