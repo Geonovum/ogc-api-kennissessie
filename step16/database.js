@@ -24,6 +24,31 @@ fileNames.forEach(fileName => {
 
   var id = fileName.replace(/\.[^/.]+$/, "")
 
+  geojson.queryables = {}
+
+  // --- begin construct queryables ------------------- 
+  var feature = geojson.features[0]
+
+  var geometry = feature.geometry
+  var item = {
+    'title': 'geometry',
+    'description': `The geometry of ${id}`,
+    'format': geometry.type
+  }
+  geojson.queryables[`geometry`] = item
+
+  var properties = feature.properties
+  for (var propertyName in properties) {
+    var item = {
+      'title': propertyName,
+      'description': `Description of ${propertyName}`,
+      'type': 'string'
+    }
+    geojson.queryables[`${propertyName}`] = item
+  }
+
+  // --- end construct queryables ------------------- 
+
   dataDict[id] = geojson;
 });
 

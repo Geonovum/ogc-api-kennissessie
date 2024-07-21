@@ -66,13 +66,15 @@ function getQueryables(serviceUrl, collectionId, callback) {
   var document = collections[collectionId]
 
   var content = {}
+  // Requirement 4B The parameter collectionId is each id property in the
+  // Collections resource (JSONPath: $.collections[*].id).
   content.$id = `${serviceUrl}/collections/${collectionId}/queryables`
   content.$schema = 'https://json-schema.org/draft/2019-09/schema'
   content.type = 'object'
   // Recommendation 1A
   content.title = collectionId
   content.description = `Description of ${collectionId}`
-  content.properties = {}
+  content.properties = document.queryables
   content.additionalProperties = false
 
   return callback(undefined, content);
