@@ -4,7 +4,12 @@ https://docs.ogc.org/DRAFTS/20-002.html#create
 
 ## Topics:
 
+- create
+- update
+- replace
+- delete
 
+- options
 
 ## Testen:
 Run the app
