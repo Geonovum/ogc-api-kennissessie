@@ -85,6 +85,8 @@ function replacee(serviceUrl, collectionId, itemId, body, callback) {
   // create new resource
   collection.features.push(body)
 
+  collection.lastModified = Date.now()
+
   return callback(undefined, body, newId);
 }
 
@@ -138,6 +140,8 @@ function update(serviceUrl, collectionId, itemId, body, callback) {
   if (body.properties) {
     // TODO replace properties
   }
+
+  collection.lastModified = Date.now()
 
   return callback(undefined, feature);
 }

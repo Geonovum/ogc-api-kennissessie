@@ -19,6 +19,8 @@ fileNames.forEach(fileName => {
     geojson.crs.properties.name = 'urn:ogc:def:crs:OGC:1.3:CRS84' // default
   }
 
+  geojson.lastModified = Date.now()
+
   // check if the properties contain an 'id' (used to uniquely identify the item)
   if (!geojson.features[0].properties.id)
     geojson.id = 'gid' // frituren

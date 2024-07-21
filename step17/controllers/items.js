@@ -22,17 +22,15 @@ function get(req, res, next) {
 
   var query = req.query
 
-  items.get(serviceUrl, collectionId, query, options, function (err, content) {
+  items.get(serviceUrl, collectionId, query, options, function (err, content, headers) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
       return
     }
 
-    // Content-Crs
-    if (content.headerContentCrs)
-      res.set('Content-Crs', content.headerContentCrs)
-    delete content.headerContentCrs
+    headers.forEach(header => 
+      res.set(header.name, header.value))
 
     debug(`items content %j`, content)
 
