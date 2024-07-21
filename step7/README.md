@@ -2,6 +2,8 @@
 
 De Landing Page in Step6 was enkel beschikbaar in JSON, in deze les maken we die ook beschikbaar in HTML
 
+Dit is een belangrijke stap: de API zie resulaten kan geven voor a) een machine (JSON) of b) een mens (HTML)!
+
 ## Stap 1:
 Zoals altijd, ga naar de step7 directory met je command prompt, en installeer express als het de eerste keer dat je node gaat opstarten in deze directory. `npm update`
 
