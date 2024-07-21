@@ -9,7 +9,7 @@
 (Met dank aan Michel Stuyts, (voormalig) GIS-coördinator. Zie ook op https://michelstuyts.be/ - https://stuyts.xyz)
 
 ## Stap 1:
-Zoals altijd, ga naar de step8 directory met je command prompt, en installeer express als het de eerste keer dat je node gaat opstarten in deze directory. `npm install express --save` alsook swig: `npm i swig-templates`
+Zoals altijd, ga naar de step8 directory met je command prompt, en installeer express als het de eerste keer dat je node gaat opstarten in deze directory. `npm update`
 
 ## Lezen van de Datasets
 
@@ -49,9 +49,7 @@ router.get('/collections', function (req, res) {
 ```
 
 ## Testen:
-```
-node index.js
-```
+Run de app
 
 `Example app listening at http://localhost:80`
 

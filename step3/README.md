@@ -2,9 +2,9 @@
 
 Express routes
 
-Ga ook nu weer in de step3 directory staan via de command prompt. express moet opnieuw geinstalleerd worden:
+Ga ook nu weer in de step3 directory staan via de command prompt. De node packages (momenteel enkel express) moet opnieuw geinstalleerd worden:
 ```
-npm install express --save
+npm update
 ```
 
 ## 1: Express routes

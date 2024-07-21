@@ -1,5 +1,7 @@
 # We maken ons klaar voor de kennissessie
-Repository ten behoeve van kennissessie voor het bouwen van een OGC API Features node app
+Repository ten behoeve van kennissessie voor het bouwen van een OGC API Features node app.
+Download of clone deze [repo](https://github.com/Geonovum/ogc-api-kennissessie) op github
+
 
 ## Stap a
 Start Visual Studio Code (kort: Code) op. Dan "Open Folder" en kies de root folder van de kennissessie, en dan `step 0` en druk op "Open".
@@ -9,7 +11,7 @@ Start Visual Studio Code (kort: Code) op. Dan "Open Folder" en kies de root fold
 
 Code ziet er zo uit:
 
-<img width="1158" alt="Screenshot 2024-01-09 at 16 14 42" src="https://github.com/Geonovum/ogc-api-kennissessie/assets/4082369/276f00ae-8e93-40fd-b2bd-3b1ddcd8acff">
+<img width="1171" alt="Scherm­afbeelding 2024-07-21 om 12 43 44" src="https://github.com/user-attachments/assets/77707ad2-88bf-4801-b09c-663929c39768">
 
 
 ## Stap b

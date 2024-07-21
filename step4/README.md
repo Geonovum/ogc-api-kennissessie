@@ -5,7 +5,7 @@ In deze stap leer je het gebruik van Node `app.use`. Om niet alle code in dezelf
 ## 1: Klaar
 
 Niets nieuw: start een command prompt in de diectory step4
-(en eerst weer even Express installeren: `npm install express --save` en het de eerste keer is)
+(en eerst weer even de packages installeren: `npm update` en het de eerste keer is)
 
 ## 2: Go
 ```
