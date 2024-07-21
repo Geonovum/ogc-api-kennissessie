@@ -7,7 +7,7 @@ Het is te zeggen, we gaan de stubs opzetten voor de OGC API Feature service en z
 Eerst even Express installeren (om de repo zo klein mogelijk te houden, zit `express` er niet bij en moet je het installeren `npm update` bij de eerste keer dat je de code runt in de directory. Eenmaal het er staat, ben je OK)
 
 
-## 2 Eerste voorzichtige stapjes
+## 2 Tweede voorzichtige stapjes
 
 ```javascript
 const express = require('express')
