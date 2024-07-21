@@ -1,6 +1,7 @@
 const debug = require('debug')('controller')
 const accepts = require('accepts')
 const collection = require('../models/collection.js')
+const item = require('../models/item.js')
 const utils = require('../utils/utils')
 
 function get (req, res) {
@@ -59,6 +60,28 @@ function getQueryables (req, res) {
   })
 }
 
+function create (req, res) {
+  
+  // check Content-Crs
+
+  debug(`replacee item ${req.url}`)
+
+  var collectionId = req.params.collectionId
+  var itemId = req.params.itemId
+  var serviceUrl = utils.getServiceUrl(req)
+
+  item.create(serviceUrl, collectionId, itemId, req.body, function(err, content, newId) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
+    res.set('location', `${serviceUrl}/collections/${collectionId}/items/${newId}`)
+    res.status(204).end()
+  })
+}
+
 module.exports = {
-  get, getQueryables
+  get, getQueryables, create
 }

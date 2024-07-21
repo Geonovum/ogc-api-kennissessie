@@ -170,22 +170,22 @@ paths:
           $ref: 'https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/responses/InvalidParameter'
         '500':
           $ref: 'https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/responses/ServerError'
-  '/collections/buildings/items/{featureId}':
+  '/collections/buildings/items/{itemId}':
     get:
       tags:
         - Data
       summary: fetch a single building
       description: |-
-        Fetch the building with id `featureId`.
+        Fetch the building with id `itemId`.
 
         Use content negotiation to request HTML or GeoJSON.
       operationId: getFeature
       parameters:
-        - $ref: 'https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/parameters/featureId'
+        - $ref: 'https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/parameters/itemId'
       responses:
         '200':
           description: |-
-            fetch the building with id `featureId`
+            fetch the building with id `itemId`
           content:
             application/geo+json:
               schema:

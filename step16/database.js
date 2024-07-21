@@ -9,30 +9,34 @@ fileNames.forEach(fileName => {
   var rawData = fs.readFileSync(path.join(__dirname, "data", fileName));
   var geojson = JSON.parse(rawData);
 
+  geojson.crs = []
   if (geojson.crs && geojson.crs.properties && geojson.crs.properties.name) {
     if (geojson.crs.properties.name.startsWith('EPSG'))
-      geojson.crs.properties.name = 'http://www.opengis.net/def/crs/EPSG/0/' + geojson.crs.properties.name
+      geojson.crs.push('http://www.opengis.net/def/crs/EPSG/0/' + geojson.crs.properties.name)
+    geojson.crs.push('http://www.opengis.net/def/crs/EPSG/0/31370') // lambert
+    delete geojson.crs.properties
   }
   else {
-    geojson.crs = {}
-    geojson.crs.properties = {}
-    geojson.crs.properties.name = 'urn:ogc:def:crs:OGC:1.3:CRS84' // default
+    geojson.crs.push('urn:ogc:def:crs:OGC:1.3:CRS84') // 1st is default
+    geojson.crs.push('http://www.opengis.net/def/crs/EPSG/0/31370') // lambert
   }
 
-    // check if the properties contain an 'id' (used to uniquely identify the item)
-    if (!geojson.features[0].properties.id)
-      geojson.id = 'gid' // frituren
-    else
-      geojson.id = 'id'
-  
+  geojson.lastModified = new Date()
+
+  // check if the properties contain an 'id' (used to uniquely identify the item)
+  if (!geojson.features[0].properties.id)
+    geojson.id = 'gid' // frituren
+  else
+    geojson.id = 'id'
+
   // calculate the bbox from geometry
   geojson.bbox = turf.bbox(turf.featureCollection(geojson.features));
 
   var id = fileName.replace(/\.[^/.]+$/, "")
 
+  // --- begin construct queryables ------------------- 
   geojson.queryables = {}
 
-  // --- begin construct queryables ------------------- 
   var feature = geojson.features[0]
 
   var geometry = feature.geometry

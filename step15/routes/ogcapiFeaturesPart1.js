@@ -1,13 +1,13 @@
-var router = require('express').Router()
+const router = require('express').Router()
 
-var landingPage = require('../controllers/landingPage')
-var conformance = require('../controllers/conformance')
-var collections = require('../controllers/collections')
-var collection  = require('../controllers/collection')
-var items       = require('../controllers/items')
-var item        = require('../controllers/item')
+const landingPage = require('../controllers/landingPage')
+const conformance = require('../controllers/conformance')
+const collections = require('../controllers/collections')
+const collection  = require('../controllers/collection')
+const items       = require('../controllers/items')
+const item        = require('../controllers/item')
 //
-var api         = require('../controllers/api')
+const api         = require('../controllers/api')
 
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
@@ -59,7 +59,7 @@ router.get('/collections/:collectionId.:ext?', collection.get)
 router.get('/collections/:collectionId/items.:ext?', items.get)
 
 // For every feature in a feature collection (path /collections/{collectionId}), 
-// the server SHALL support the HTTP GET operation at the path /collections/{collectionId}/items/{featureId}.
-router.get('/collections/:collectionId/items/:featureId', item.get)
+// the server SHALL support the HTTP GET operation at the path /collections/{collectionId}/items/{itemId}.
+router.get('/collections/:collectionId/items/:itemId', item.get)
 
 module.exports = router

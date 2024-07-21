@@ -3,7 +3,7 @@ const debug = require('debug')('controller')
 var items = require('../models/items.js')
 var utils = require('../utils/utils')
 
-function get(req, res) {
+function get(req, res, next) {
 
   debug(`items ${req.url}`)
 
@@ -22,12 +22,15 @@ function get(req, res) {
 
   var query = req.query
 
-  items.get(serviceUrl, collectionId, query, options, function (err, content) {
+  items.get(serviceUrl, collectionId, query, options, function (err, content, headers) {
 
-    // Content-Crs
-    if (content.headerContentCrs)
-      res.set('Content-Crs', content.headerContentCrs)
-    delete content.headerContentCrs
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
+    headers.forEach(header => 
+      res.set(header.name, header.value))
 
     debug(`items content %j`, content)
 
@@ -40,6 +43,7 @@ function get(req, res) {
       case `html`:
         content.geojson = JSON.stringify(content.features); // hack
         res.status(200).render(`items`, { content: content })
+        delete content.geojson
         break
       default:
         res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
@@ -48,6 +52,12 @@ function get(req, res) {
 
 }
 
+function options (req, res) {
+  
+  res.status(200).end()
+}
+
+
 module.exports = {
-  get,
+  get, options
 }

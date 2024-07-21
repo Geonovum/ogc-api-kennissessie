@@ -10,9 +10,6 @@ function getContent(serviceUrl, name, document) {
   item.timestamp = new Date().toISOString()
   item.links = []
 
-  if (document.crs.properties.name)
-    item.headerContentCrs = document.crs.properties.name
-
   return item
 }
 
@@ -20,10 +17,14 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
   debug(`items`)
 
+  var headers = []
+
   var collections = database.getCollection()
   var collection = collections[collectionId]
 
   var content = getContent(serviceUrl, collectionId, collection)
+
+  headers.push({ 'name': 'Content-Crs', 'value': collection.crs[0] })
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
   var features = content.features
@@ -47,8 +48,9 @@ function get(serviceUrl, collectionId, query, options, callback) {
       var toEpsg = utils.UriToEPSG(query.crs)
       features = projgeojson(features, 'EPSG:4326', toEpsg);
 
-      content.headerContentCrs = query.crs
-      _query.crs
+      headers.push({ 'name': 'Content-Crs', 'value': query.crs })
+
+      delete _query.crs
     }
 
     var filterLang = 'filter'
@@ -60,20 +62,20 @@ function get(serviceUrl, collectionId, query, options, callback) {
     if (_query.filter) {
       var parts = _query.filter.split(' and ') // only AND supported (not OR)
       parts.forEach(element => {
-          var ao = element.split(' ', 2)
-          var attributeName = ao[0]
-          var operator = ao[1]
-          var tv = ao.join(' ') + ' ' 
-          var targetValue = element.slice(tv.length).replace(/^\W+|\W+$/g, '') // removes ' at start and end
+        var ao = element.split(' ', 2)
+        var attributeName = ao[0]
+        var operator = ao[1]
+        var tv = ao.join(' ') + ' '
+        var targetValue = element.slice(tv.length).replace(/^\W+|\W+$/g, '') // removes ' at start and end
 
-          if (operator != 'eq')
-            return callback({'httpCode': 400, 'code': `Invalid operator: ${operator}`, 'description': 'Valid operators are: eq'}, undefined);
+        if (operator != 'eq')
+          return callback({ 'httpCode': 400, 'code': `Invalid operator: ${operator}`, 'description': 'Valid operators are: eq' }, undefined);
 
-          features = features.filter(
-            element =>
-              element.properties[attributeName] == targetValue)
+        features = features.filter(
+          element =>
+            element.properties[attributeName] == targetValue)
 
-        });
+      });
 
       delete _query.filter
     }
@@ -89,7 +91,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
             element.properties[attributeName] == targetValue)
       }
       else
-         return callback({'httpCode': 400, 'code': `The following query parameters are rejected: ${attributeName}`, 'description': 'Valid parameters for this request are ' + collection.queryables}, undefined);
+        return callback({ 'httpCode': 400, 'code': `The following query parameters are rejected: ${attributeName}`, 'description': 'Valid parameters for this request are ' + collection.queryables }, undefined);
 
     }
 
@@ -107,7 +109,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
   if (content.numberReturned != content.numberMatched)
     content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `next`, type: `application/geo+json`, title: `Next page` })
 
-  return callback(undefined, content);
+  return callback(undefined, content, headers);
 }
 
 module.exports = {

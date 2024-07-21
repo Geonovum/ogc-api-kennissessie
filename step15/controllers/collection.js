@@ -1,6 +1,7 @@
 const debug = require('debug')('controller')
 const accepts = require('accepts')
 const collection = require('../models/collection.js')
+const item = require('../models/item.js')
 const utils = require('../utils/utils')
 
 function get (req, res) {
@@ -13,6 +14,11 @@ function get (req, res) {
   debug(`collections serviceUrl ${serviceUrl} collectionId ${collectionId}`)
 
   collection.get(serviceUrl, collectionId, function(err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
 
     debug(`collection content %j`, content)
 
@@ -42,6 +48,40 @@ function get (req, res) {
   
 }
 
+function getQueryables (req, res) {
+
+  var collectionId = req.params.collectionId
+  var serviceUrl = utils.getServiceUrl(req)
+
+  debug(`collections getQueryables serviceUrl ${serviceUrl} collectionId ${collectionId}`)
+
+  collection.getQueryables(serviceUrl, collectionId, function(err, content) {
+    res.status(200).json(content)
+  })
+}
+
+function create (req, res) {
+  
+  // check Content-Crs
+
+  debug(`replacee item ${req.url}`)
+
+  var collectionId = req.params.collectionId
+  var itemId = req.params.itemId
+  var serviceUrl = utils.getServiceUrl(req)
+
+  item.create(serviceUrl, collectionId, itemId, req.body, function(err, content, newId) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
+    res.set('location', `${serviceUrl}/collections/${collectionId}/items/${newId}`)
+    res.status(204).end()
+  })
+}
+
 module.exports = {
-  get, 
+  get, getQueryables, create
 }

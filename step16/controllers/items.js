@@ -22,17 +22,15 @@ function get(req, res, next) {
 
   var query = req.query
 
-  items.get(serviceUrl, collectionId, query, options, function (err, content) {
+  items.get(serviceUrl, collectionId, query, options, function (err, content, headers) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
       return
     }
 
-    // Content-Crs
-    if (content.headerContentCrs)
-      res.set('Content-Crs', content.headerContentCrs)
-    delete content.headerContentCrs
+    headers.forEach(header => 
+      res.set(header.name, header.value))
 
     debug(`items content %j`, content)
 
@@ -45,6 +43,7 @@ function get(req, res, next) {
       case `html`:
         content.geojson = JSON.stringify(content.features); // hack
         res.status(200).render(`items`, { content: content })
+        delete content.geojson
         break
       default:
         res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
@@ -53,6 +52,12 @@ function get(req, res, next) {
 
 }
 
+function options (req, res) {
+  
+  res.status(200).end()
+}
+
+
 module.exports = {
-  get,
+  get, options
 }

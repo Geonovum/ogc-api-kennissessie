@@ -35,11 +35,9 @@ function getMetaData(serviceUrl, name, document) {
   content.itemType = 'feature'
   // An optional list of coordinate reference systems (CRS) in which geometries may be returned by the server. 
   // The default value is a list with the default CRS (WGS 84 with axis order longitude/latitude);
-  content.crs = []
-  if (document.crs.properties.name)
-    content.crs.push(document.crs.properties.name)
+  content.crs = document.crs
 
-  content.storageCrs = document.crs.properties.name
+  content.storageCrs = document.crs[0] // 1st is storage crs
 
   return content
 }

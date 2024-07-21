@@ -11,12 +11,15 @@ function get (req, res) {
   var itemId = req.params.itemId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.get(serviceUrl, collectionId, itemId, function(err, content) {
+  item.get(serviceUrl, collectionId, itemId, function(err, content, headers) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
       return
     }
+
+    headers.forEach(header => 
+      res.set(header.name, header.value))
 
     var accept = accepts(req)
 
@@ -29,6 +32,7 @@ function get (req, res) {
         featureCollection.push(content)
         content.geojson = JSON.stringify(featureCollection); // hack (see also in items)
         res.status(200).render(`item`, { content: content })
+        delete content.geojson
         break
       default:
         res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
@@ -37,5 +41,5 @@ function get (req, res) {
 }
 
 module.exports = {
-  get, 
+  get
 }

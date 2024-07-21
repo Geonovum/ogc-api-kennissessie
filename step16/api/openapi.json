@@ -568,13 +568,13 @@
           }
         }
       },
-      "/collections/{collectionId}/items/{featureId}": {
+      "/collections/{collectionId}/items/{itemId}": {
         "get": {
           "tags": [
             "Data"
           ],
           "summary": "fetch a single feature",
-          "description": "Fetch the feature with id `featureId` in the feature collection\nwith id `collectionId`.\n\nUse content negotiation to request HTML or GeoJSON.",
+          "description": "Fetch the feature with id `itemId` in the feature collection\nwith id `collectionId`.\n\nUse content negotiation to request HTML or GeoJSON.",
           "operationId": "getFeature",
           "parameters": [
             {
@@ -587,7 +587,7 @@
               }
             },
             {
-              "name": "featureId",
+              "name": "itemId",
               "in": "path",
               "description": "local identifier of a feature",
               "required": true,
@@ -598,7 +598,7 @@
           ],
           "responses": {
             "200": {
-              "description": "fetch the feature with id `featureId` in the feature collection\nwith id `collectionId`",
+              "description": "fetch the feature with id `itemId` in the feature collection\nwith id `collectionId`",
               "content": {
                 "application/geo+json": {
                   "schema": {
