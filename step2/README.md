@@ -11,15 +11,16 @@ Op de website van [Express](https://expressjs.com) vind je alle information over
 Ga naar de directory van step2, en met een command prompt, typ:
 
 ```
-npm install express --save
+npm update
 ```
 
 Na de installatie zie je:
 
 ```
 ...
-+ express@4.17.1
-added 50 packages from 37 contributors and audited 50 packages in 1.563s
++ express@4.18.2
+added 64 packages, and audited 65 packages in 2s
+
 found 0 vulnerabilities
 ```
 
