@@ -26,35 +26,38 @@ function get(serviceUrl, collectionId, query, options, callback) {
   if (options)
     features = content.features.slice(options.offset, options.offset + options.limit)
 
-  // (OAPIF) Requirement 23A The operation SHALL support a parameter bbox
   var _query = query
   if (_query) {
     // (OAPIF P1) Requirement 23A The operation SHALL support a parameter bbox
     // (OAPIF P2) Requirement 6 Each GET request on a 'features' resource SHALL support a query parameter bbox-crs 
     if (_query.bbox) {
-      features.forEach(feature => {
-        // check within bbox (also check bbox-crs)
-      });
+      features = features.filter(
+        element =>
+          element.properties[attributeName] == targetValue
+      )
       delete _query.bbox
     }
 
+    // (OAPIF P1) Requirement 17A If features in the feature collection include a feature property that has
+    //            a simple value (for example, a string or integer) that is expected to be useful for 
+    //            applications using the service to filter the features of the collection based on this property
     if (_query.filter) {
       var parts = _query.filter.split(' and ') // only AND supported (not OR)
       parts.forEach(element => {
-          var ao = element.split(' ', 2)
-          var attributeName = ao[0]
-          var operator = ao[1]
-          var tv = ao.join(' ') + ' ' 
-          var targetValue = element.slice(tv.length).replace(/^\W+|\W+$/g, '') // removes ' at start and end
+        var ao = element.split(' ', 2)
+        var attributeName = ao[0]
+        var operator = ao[1]
+        var tv = ao.join(' ') + ' '
+        var targetValue = element.slice(tv.length).replace(/^\W+|\W+$/g, '') // removes ' at start and end
 
-          if (operator != 'eq')
-            return callback({'httpCode': 400, 'code': `Invalid operator: ${operator}`, 'description': 'Valid operators are: eq'}, undefined);
+        if (operator != 'eq')
+          return callback({ 'httpCode': 400, 'code': `Invalid operator: ${operator}`, 'description': 'Valid operators are: eq' }, undefined);
 
-          features = features.filter(
-            element =>
-              element.properties[attributeName] == targetValue)
+        features = features.filter(
+          element =>
+            element.properties[attributeName] == targetValue)
 
-        });
+      });
 
       delete _query.filter
     }
@@ -70,7 +73,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
             element.properties[attributeName] == targetValue)
       }
       else
-         return callback({'httpCode': 400, 'code': `The following query parameters are rejected: ${attributeName}`, 'description': 'Valid parameters for this request are ' + collection.queryables}, undefined);
+        return callback({ 'httpCode': 400, 'code': `The following query parameters are rejected: ${attributeName}`, 'description': 'Valid parameters for this request are ' + collection.queryables }, undefined);
 
     }
 

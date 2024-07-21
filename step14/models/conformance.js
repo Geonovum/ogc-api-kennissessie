@@ -9,6 +9,14 @@ function get(serviceUrl, callback) {
 
   var content = {};
   content.conformsTo = [];
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/html");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/json");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/oas30");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-2/0.0/conf/collections");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-2/0.0/conf/html");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-2/0.0/conf/json");
+
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core");
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30");
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html");
