@@ -9,6 +9,15 @@ function get(serviceUrl, callback) {
 
   var content = {};
   content.conformsTo = [];
+
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/html");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/json");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/oas30");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-2/0.0/conf/collections");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-2/0.0/conf/html");
+  content.conformsTo.push("http://www.opengis.net/spec/ogcapi-common-2/0.0/conf/json");
+
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core");
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30");
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html");
@@ -16,6 +25,7 @@ function get(serviceUrl, callback) {
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs");
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables");
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter");
+
   content.links = []
   content.links.push({ href: `${serviceUrl}/conformance?f=html`, rel: `alternate`, type: `text/html`, title: `this document` })
   content.links.push({ href: `${serviceUrl}/conformance?f=json`, rel: `self`, type: `application/json`, title: `this document in json` })
