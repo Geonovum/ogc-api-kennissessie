@@ -24,8 +24,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
   var content = getContent(serviceUrl, collectionId, collection)
 
-  if (collection.crs.properties.name)
-    headers.push({ 'name': 'Content-Crs', 'value': collection.crs.properties.name })
+  headers.push({ 'name': 'Content-Crs', 'value': collection.crs[0] })
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
   var features = content.features
