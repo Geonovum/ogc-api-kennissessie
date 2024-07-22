@@ -13,12 +13,12 @@ fileNames.forEach(fileName => {
   if (geojson.crs && geojson.crs.properties && geojson.crs.properties.name) {
     if (geojson.crs.properties.name.startsWith('EPSG'))
       geojson.crs.push('http://www.opengis.net/def/crs/EPSG/0/' + geojson.crs.properties.name)
-    geojson.crs.push('http://www.opengis.net/def/crs/EPSG/0/31370') // lambert
+    geojson.crs.push('http://www.opengis.net/def/crs/EPSG/0/31370') // bel lambert
     delete geojson.crs.properties
   }
   else {
     geojson.crs.push('urn:ogc:def:crs:OGC:1.3:CRS84') // 1st is default
-    geojson.crs.push('http://www.opengis.net/def/crs/EPSG/0/31370') // lambert
+    geojson.crs.push('http://www.opengis.net/def/crs/EPSG/0/31370') // bel lambert
   }
 
   geojson.lastModified = new Date()
