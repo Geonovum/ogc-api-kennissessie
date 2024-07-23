@@ -60,7 +60,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
     if (_query.crs) {
       console.log('do crs conversion using proj4') // TODO
       var toEpsg = utils.UriToEPSG(query.crs)
-      features = projgeojson(features, 'EPSG:4326', toEpsg);
+      features = projgeojson.projectFeatureCollection(features, 'EPSG:4326', toEpsg);
       if (!features)
           return callback({ 'httpCode': 400, 'code': `CRS conversion failed`, 'description': `CRS conversion failed. Does the ESPG ${toEpsg} exists in projs.json?` }, undefined);
 
