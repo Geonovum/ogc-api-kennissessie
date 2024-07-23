@@ -1,4 +1,4 @@
-# Wat heeft Kontich te bieden qua geo bestanden? (Cont)
+# Wat heeft amstelveen te bieden qua geo bestanden? (Cont)
 
 - Frituren
 - Groepsopvang Babys En Peuters 
@@ -50,9 +50,9 @@ node index.js
 In je browser of via PostMan
 
 Landing Page:
-- http://localhost/kontich/collections/groendienst
-- http://localhost/kontich/collections/groendienst?f=json
-- http://localhost/kontich/collections/groendienst?f=html
+- http://localhost/amstelveen/collections/groendienst
+- http://localhost/amstelveen/collections/groendienst?f=json
+- http://localhost/amstelveen/collections/groendienst?f=html
 
 Resultaat:
 
@@ -61,7 +61,7 @@ Resultaat:
 {
   "links": [
     {
-      "href": "http://localhost/kontich/collections",
+      "href": "http://localhost/amstelveen/collections",
       "rel": "self",
       "type": "application/json",
       "title": "Metadata about the feature collections"
@@ -74,7 +74,7 @@ Resultaat:
       "description": "",
       "links": [
         {
-          "href": "https://localhost/kontich/collections/Groendienst/items",
+          "href": "https://localhost/amstelveen/collections/Groendienst/items",
           "rel": "item",
           "type": "application/json",
           "title": "Groendienst"
@@ -93,13 +93,13 @@ groendienst (groendienst)
 groendienst.
 
 Links for the collection
-item = [groendienst](http://localhost/kontich/collections/groendienst/items) (application/json)
+item = [groendienst](http://localhost/amstelveen/collections/groendienst/items) (application/json)
 
 Links
-self = [Metadata about the feature collections](http://localhost/kontich/collections) (application/json)
+self = [Metadata about the feature collections](http://localhost/amstelveen/collections) (application/json)
 
 JSON output
-Get raw [JSON](http://localhost/kontich/collections?f=json)
+Get raw [JSON](http://localhost/amstelveen/collections?f=json)
 
 ## Klaar voor de volgende stap
 https://github.com/geonovum/ogc-api-kennissessie/blob/master/step10/README.md

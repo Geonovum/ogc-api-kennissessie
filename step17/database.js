@@ -25,7 +25,7 @@ fileNames.forEach(fileName => {
 
   // check if the properties contain an 'id' (used to uniquely identify the item)
   if (!geojson.features[0].properties.id)
-    geojson.id = 'gid' // frituren
+    geojson.id = 'fid' // hack
   else
     geojson.id = 'id'
 

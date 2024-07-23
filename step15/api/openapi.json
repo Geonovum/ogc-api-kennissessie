@@ -52,41 +52,41 @@
                     "$ref": "#/components/schemas/landingPage"
                   },
                   "example": {
-                    "title": "Datasets in Kontich",
-                    "description": "Access to data in the village of Kontich via a Web API that conforms to the OGC API Features specification.",
+                    "title": "Datasets in amstelveen",
+                    "description": "Access to data in the village of amstelveen via a Web API that conforms to the OGC API Features specification.",
                     "links": [
                       {
-                        "href": "http://localhost/kontich/",
+                        "href": "http://localhost/amstelveen/",
                         "rel": "self",
                         "type": "application/json",
                         "title": "this document in json"
                       },
                       {
-                        "href": "http://localhost/kontich/",
+                        "href": "http://localhost/amstelveen/",
                         "rel": "self",
                         "type": "text/html",
                         "title": "this document"
                       },
                       {
-                        "href": "http://localhost/kontich/api",
+                        "href": "http://localhost/amstelveen/api",
                         "rel": "service-desc",
                         "type": "application/vnd.oai.openapi+json;version=3.0",
                         "title": "the API definition"
                       },
                       {
-                        "href": "http://localhost/kontich/api.html",
+                        "href": "http://localhost/amstelveen/api.html",
                         "rel": "service-doc",
                         "type": "text/html",
                         "title": "the API documentation"
                       },
                       {
-                        "href": "http://localhost/kontich/conformance",
+                        "href": "http://localhost/amstelveen/conformance",
                         "rel": "conformance",
                         "type": "application/json",
                         "title": "OGC API conformance classes implemented by this server"
                       },
                       {
-                        "href": "http://localhost/kontich/collections",
+                        "href": "http://localhost/amstelveen/collections",
                         "rel": "data",
                         "type": "application/json",
                         "title": "Information about the feature collections"
@@ -187,13 +187,13 @@
                   "example": {
                     "links": [
                       {
-                        "href": "http://localhost/kontich/collections.json",
+                        "href": "http://localhost/amstelveen/collections.json",
                         "rel": "self",
                         "type": "application/json",
                         "title": "this document"
                       },
                       {
-                        "href": "http://localhost/kontich/collections.html",
+                        "href": "http://localhost/amstelveen/collections.html",
                         "rel": "alternate",
                         "type": "text/html",
                         "title": "this document as HTML"
@@ -239,13 +239,13 @@
                         },
                         "links": [
                           {
-                            "href": "http://localhost/kontich/collections/buildings/items",
+                            "href": "http://localhost/amstelveen/collections/buildings/items",
                             "rel": "items",
                             "type": "application/geo+json",
                             "title": "Buildings"
                           },
                           {
-                            "href": "http://localhost/kontich/collections/buildings/items.html",
+                            "href": "http://localhost/amstelveen/collections/buildings/items.html",
                             "rel": "items",
                             "type": "text/html",
                             "title": "Buildings"
@@ -344,13 +344,13 @@
                     },
                     "links": [
                       {
-                        "href": "http://localhost/kontich/collections/buildings/items",
+                        "href": "http://localhost/amstelveen/collections/buildings/items",
                         "rel": "items",
                         "type": "application/geo+json",
                         "title": "Buildings"
                       },
                       {
-                        "href": "http://localhost/kontich/collections/buildings/items.html",
+                        "href": "http://localhost/amstelveen/collections/buildings/items.html",
                         "rel": "items",
                         "type": "text/html",
                         "title": "Buildings"

@@ -21,8 +21,8 @@ app.use(express.json());
 app.use(encodings)
 
 // Mount API on this path
-app.use('/kontich', oapifp1)
-app.use('/kontich', oapifp3)
-app.use('/kontich', oapifp4)
+app.use('/amstelveen/v1', oapifp1)
+app.use('/amstelveen/v1', oapifp3)
+app.use('/amstelveen/v1', oapifp4)
 
 module.exports = app

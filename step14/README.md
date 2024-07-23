@@ -17,6 +17,6 @@ https://docs.ogc.org/is/19-072/19-072.html
 ## Testen:
 run the app
 
-`Example app listening at http://localhost:80/kontich`
+`Example app listening at http://localhost:80/amstelveen`
 
 In je browser of via PostMan

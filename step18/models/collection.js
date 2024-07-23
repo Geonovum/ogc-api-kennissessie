@@ -9,7 +9,7 @@ function getMetaData(serviceUrl, name, document) {
   // An optional title and description for the collection;
   content.title = name
   content.description = name
-  content.attribution = 'this dataset is attributed to the municipality of Kontich'
+  content.attribution = 'this dataset is attributed to the municipality of amstelveen'
   content.links = []
   // Requirement 15 A and B
   content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `items`, type: `application/geo+json`, title: `Access the features in the collection as GeoJSON` })

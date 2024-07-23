@@ -24,8 +24,6 @@ function get(serviceUrl, callback) {
     content.links.push({ href: `${serviceUrl}/collections?f=html`, rel: `data`, type: `text/html`, title: `Information about the feature collections` })
     content.links.push({ href: `${serviceUrl}/?f=html`, rel: `alternate`, type: `text/html`, title: `this document` })
     content.links.push({ href: `${serviceUrl}/?f=json`, rel: `self`, type: `application/json`, title: `this document in json` })
-    content.links.push({ href: `${serviceUrl}/collections?f=json`, rel: `self`, type: `application/json`, title: `This document` })
-    content.links.push({ href: `${serviceUrl}/collections?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
   
     debug(`landingPage content ${content}`)
 

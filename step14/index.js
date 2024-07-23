@@ -18,6 +18,6 @@ app.use(express.static(__dirname + '/public'));
 app.use(encodings)
 
 // Mount API on this path
-app.use('/kontich', route)
+app.use('/amstelveen/v1', route)
 
 module.exports = app

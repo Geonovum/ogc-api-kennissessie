@@ -56,6 +56,12 @@ function getQueryables (req, res) {
   debug(`collections getQueryables serviceUrl ${serviceUrl} collectionId ${collectionId}`)
 
   collection.getQueryables(serviceUrl, collectionId, function(err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
     res.status(200).json(content)
   })
 }

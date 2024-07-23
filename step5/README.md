@@ -1,6 +1,6 @@
 # Stap 5
 
-We gaan een OGC API Features service maken voor Kontich! Joepie
+We gaan een OGC API Features service maken voor amstelveen! Joepie
 Het is te zeggen, we gaan de stubs opzetten voor de OGC API Feature service en ze even in detail gaan bekijken.
 
 ## 1 Voorbereiding:
@@ -14,14 +14,14 @@ const express = require('express')
 const app = express()
 const port = 80
 
-var kontich = require('./kontich')
+var amstelveen = require('./amstelveen')
 
-app.use('/kontich', kontich)
+app.use('/amstelveen/v1', amstelveen)
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
 ```
 
-Vanuit `index.js` verwijzen we naar de paden in `kontich.js` - netter en handiger
+Vanuit `index.js` verwijzen we naar de paden in `amstelveen.js` - netter en handiger
 
 ```javascript
 var express = require('express')
@@ -35,7 +35,7 @@ router.use(function timeLog (req, res, next) {
 
 // The server SHALL support the HTTP GET operation at the path /.
 router.get('/', function (req, res) {
-  res.send('Kontich landing page')
+  res.send('amstelveen landing page')
 })
 
 // The server SHALL support the HTTP GET operation at the path /conformance.
@@ -81,9 +81,9 @@ Laten we eens in de spec kijken wat we hier mee aan moeten:
 
 ## Testen
 
-http://localhost/kontich/
+http://localhost/amstelveen/
 
-> `Kontich landing page`
+> `amstelveen landing page`
 
 ## Klaar voor de volgende stap
 https://github.com/geonovum/ogc-api-kennissessie/blob/master/step6/README.md

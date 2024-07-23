@@ -67,15 +67,18 @@ const projectFeature = function(feature, fromProj4, toProj4, digits = null){
 }
 
 const projectFeatureCollection = function(_features, codeSridFrom, codeSridTo, digits = null){
-    const fromProjection = getProjByCode(codeSridFrom)['proj4'];
-    const toProjection = getProjByCode(codeSridTo)['proj4'];
-    if (!fromProjection || !fromProjection){
-        return;
-    }
+    const fromProjection = getProjByCode(codeSridFrom);
+    if (!fromProjection) return undefined
+    const fromProj = fromProjection['proj4'];
+    const toProjection = getProjByCode(codeSridTo);
+    if (!toProjection) return undefined
+    const toProj = toProjection['proj4'];
+    if (!fromProj || !fromProj)
+        return _features;
 
     let features = JSON.parse(JSON.stringify(_features));
     for (let i = 0; i < features.length; i++){
-        const newFeat =  projectFeature(features[i],fromProjection,toProjection, digits);
+        const newFeat =  projectFeature(features[i],fromProj,toProj, digits);
         if (newFeat){
             features[i] = newFeat;
         }

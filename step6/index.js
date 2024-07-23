@@ -2,9 +2,9 @@ const express = require('express')
 const app = express()
 const port = 80
 
-var kontich = require('./kontich')
+var amstelveen = require('./amstelveen')
 
-app.use('/kontich', kontich)
+app.use('/amstelveen/v1', amstelveen)
 
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))

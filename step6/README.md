@@ -15,12 +15,12 @@ var make = require('./landingPage');
 ...
 router.get('/', function (req, res) {
 
-  var landingPage = make.header("Kontich", "Access to data about buildings in the city of Kontich via a Web API that conforms to the OGC API Features specification.");
-  landingPage.links.push(make.item("http://localhost/kontich/",            "self",         "application/json", "this document"));
-  landingPage.links.push(make.item("http://localhost/kontich/api",         "service-desc", "application/vnd.oai.openapi+json;version=3.0", "the API definition"));
-  landingPage.links.push(make.item("http://localhost/kontich/api.html",    "service-doc",  "text/html",        "the API documentation"));
-  landingPage.links.push(make.item("http://localhost/kontich/conformance", "conformance",  "application/json", "OGC API conformance classes implemented by this server"));
-  landingPage.links.push(make.item("http://localhost/kontich/collections", "data",         "application/json", "Information about the feature collections"));
+  var landingPage = make.header("amstelveen", "Access to data about buildings in the city of amstelveen via a Web API that conforms to the OGC API Features specification.");
+  landingPage.links.push(make.item("http://localhost/amstelveen/",            "self",         "application/json", "this document"));
+  landingPage.links.push(make.item("http://localhost/amstelveen/api",         "service-desc", "application/vnd.oai.openapi+json;version=3.0", "the API definition"));
+  landingPage.links.push(make.item("http://localhost/amstelveen/api.html",    "service-doc",  "text/html",        "the API documentation"));
+  landingPage.links.push(make.item("http://localhost/amstelveen/conformance", "conformance",  "application/json", "OGC API conformance classes implemented by this server"));
+  landingPage.links.push(make.item("http://localhost/amstelveen/collections", "data",         "application/json", "Information about the feature collections"));
 
   res.json(landingPage)
 })
@@ -66,16 +66,16 @@ node index.js
 In je browser of via PostMan
 
 Landing Page:
-http://localhost/kontich
+http://localhost/amstelveen
 
 Resultaat:
 
-> `{"title":"Kontich","description":"Access to data about buildings in the city of Kontich via a Web API that conforms to the OGC API Features specification.","links":[{"href":"http://localhost/kontich/","rel":"self","type":"application/json","title":"this document"},{"href":"http://localhost/kontich/api","rel":"service-desc","type":"application/vnd.oai.openapi+json;version=3.0","title":"the API definition"},{"href":"http://localhost/kontich/api.html","rel":"service-doc","type":"text/html","title":"the API documentation"},{"href":"http://localhost/kontich/conformance","rel":"conformance","type":"application/json","title":"OGC API conformance classes implemented by this server"},{"href":"http://localhost/kontich/collections","rel":"data","type":"application/json","title":"Information about the feature collections"}]}`
+> `{"title":"amstelveen","description":"Access to data about buildings in the city of amstelveen via a Web API that conforms to the OGC API Features specification.","links":[{"href":"http://localhost/amstelveen/","rel":"self","type":"application/json","title":"this document"},{"href":"http://localhost/amstelveen/api","rel":"service-desc","type":"application/vnd.oai.openapi+json;version=3.0","title":"the API definition"},{"href":"http://localhost/amstelveen/api.html","rel":"service-doc","type":"text/html","title":"the API documentation"},{"href":"http://localhost/amstelveen/conformance","rel":"conformance","type":"application/json","title":"OGC API conformance classes implemented by this server"},{"href":"http://localhost/amstelveen/collections","rel":"data","type":"application/json","title":"Information about the feature collections"}]}`
 
 Best leesbaar voor een computer, iets minder voor een mens...
 
 Conformance:
-http://localhost/kontich/conformance
+http://localhost/amstelveen/conformance
 
 > `{"conformsTo":["http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"]}`
 

@@ -25,6 +25,11 @@ function get(req, res) {
 
   items.get(serviceUrl, collectionId, query, options, function (err, content) {
 
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
     debug(`items content %j`, content)
 
     var accept = accepts(req)

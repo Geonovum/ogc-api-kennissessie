@@ -14,7 +14,7 @@ function get (req, res) {
     break
   case 'html':
     res.statusCode = 302; // redirect
-    res.setHeader("Location", "https://app.swaggerhub.com/apis/BartDeLathouwer/ogcapi-Kontich/1.0.0");
+    res.setHeader("Location", "https://app.swaggerhub.com/apis/BartDeLathouwer/ogcapi-amstelveen/1.0.0");
     res.end();    
     break
   case false:

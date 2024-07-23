@@ -17,6 +17,12 @@ function get(req, res) {
   debug(`collections serviceUrl ${serviceUrl}`)
 
   conformance.get(serviceUrl, function (err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
     debug(`conformance content %j`, content)
 
     // Recommendations 1, A 200-response SHOULD include the following links in the links property of the response:

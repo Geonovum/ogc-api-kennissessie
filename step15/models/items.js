@@ -21,6 +21,8 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
   var collections = database.getCollection()
   var collection = collections[collectionId]
+  if (!collection)
+    return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
   var content = getContent(serviceUrl, collectionId, collection)
 
@@ -47,6 +49,8 @@ function get(serviceUrl, collectionId, query, options, callback) {
       console.log('do crs conversion using proj4') // TODO
       var toEpsg = utils.UriToEPSG(query.crs)
       features = projgeojson(features, 'EPSG:4326', toEpsg);
+      if (!features)
+          return callback({ 'httpCode': 400, 'code': `CRS conversion failed`, 'description': `CRS conversion failed. Does the ESPG ${toEpsg} exists in projs.json?` }, undefined);
 
       headers.push({ 'name': 'Content-Crs', 'value': query.crs })
 

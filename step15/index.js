@@ -1,7 +1,5 @@
 const encodings = require('./middlewares/encodings')
 const oapifp1 = require('./routes/ogcapiFeaturesPart1')
-const oapifp3 = require('./routes/ogcapiFeaturesPart3')
-const oapifp4 = require('./routes/ogcapiFeaturesPart4')
 const swig = require('swig');
 const express = require('express')
 const port = 80
@@ -21,8 +19,6 @@ app.use(express.json());
 app.use(encodings)
 
 // Mount API on this path
-app.use('/kontich', oapifp1)
-app.use('/kontich', oapifp3)
-app.use('/kontich', oapifp4)
+app.use('/amstelveen/v1', oapifp1)
 
 module.exports = app

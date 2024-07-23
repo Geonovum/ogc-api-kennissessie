@@ -19,9 +19,9 @@ function link(href, rel, type, title) {
     return item;
 }
 
-const serviceTitle = "Kontich OGC API Feature server";
-const serviceDescription = "Access to data in the city of Kontich via a Web API that conforms to the OGC API Features specification.";
-const serviceUrl = "http://localhost/kontich/";
+const serviceTitle = "amstelveen OGC API Feature server";
+const serviceDescription = "Access to data in the city of amstelveen via a Web API that conforms to the OGC API Features specification.";
+const serviceUrl = "http://localhost/amstelveen/";
 
 function landingPageJSON() {
     var json = header(serviceTitle, serviceDescription);

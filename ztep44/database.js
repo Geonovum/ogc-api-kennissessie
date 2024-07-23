@@ -35,7 +35,7 @@ module.exports = {
     /*
         
         var query = { name: "groendienst" };
-        dbo.collection("Kontich").find({}).count(function (err, count) {
+        dbo.collection("amstelveen").find({}).count(function (err, count) {
             if (err) throw err;
             console.log(count);
         });

@@ -1,4 +1,4 @@
-# Wat heeft Kontich te bieden qua geo bestanden? (Cont)
+# Wat heeft amstelveen te bieden qua geo bestanden? (Cont)
 
 - Frituren
 - Groepsopvang Babys En Peuters 
@@ -35,6 +35,6 @@ node index.js
 In je browser of via PostMan
 
 Landing Page:
-- http://localhost/kontich/collections/water/items
-- http://localhost/kontich/collections/water/items?f=json
-- http://localhost/kontich/collections/water/items?f=html
+- http://localhost/amstelveen/collections/water/items
+- http://localhost/amstelveen/collections/water/items?f=json
+- http://localhost/amstelveen/collections/water/items?f=html

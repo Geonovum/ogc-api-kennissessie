@@ -1,4 +1,4 @@
-# Wat heeft Kontich te bieden qua geo bestanden?
+# Wat heeft amstelveen te bieden qua geo bestanden?
 
 - Frituren
 - Groepsopvang Babys En Peuters 
@@ -56,9 +56,9 @@ Run de app
 In je browser of via PostMan
 
 Landing Page:
-- http://localhost/kontich/collections
-- http://localhost/kontich/collections?f=json
-- http://localhost/kontich/collections?f=html
+- http://localhost/amstelveen/collections
+- http://localhost/amstelveen/collections?f=json
+- http://localhost/amstelveen/collections?f=html
 
 Resultaat:
 
@@ -67,7 +67,7 @@ in JSON
 {
   "links": [
     {
-      "href": "http://localhost/kontich/collections",
+      "href": "http://localhost/amstelveen/collections",
       "rel": "self",
       "type": "application/json",
       "title": "Metadata about the feature collections"
@@ -80,7 +80,7 @@ in JSON
       "description": "GroepsopvangBabysEnPeuters",
       "links": [
         {
-          "href": "https://localhost/kontich/collections/GroepsopvangBabysEnPeuters/items",
+          "href": "https://localhost/amstelveen/collections/GroepsopvangBabysEnPeuters/items",
           "rel": "item",
           "type": "application/json",
           "title": "Groepsopvang Babys En Peuters"
@@ -93,7 +93,7 @@ in JSON
       "description": "",
       "links": [
         {
-          "href": "https://localhost/kontich/collections/OpenluchtSportvelden/items",
+          "href": "https://localhost/amstelveen/collections/OpenluchtSportvelden/items",
           "rel": "item",
           "type": "application/json",
           "title": "Openlucht Sportvelden"
@@ -106,7 +106,7 @@ in JSON
       "description": "",
       "links": [
         {
-          "href": "https://localhost/kontich/collections/SportLokalen/items",
+          "href": "https://localhost/amstelveen/collections/SportLokalen/items",
           "rel": "item",
           "type": "application/json",
           "title": "Sport Lokalen"
@@ -119,7 +119,7 @@ in JSON
       "description": "",
       "links": [
         {
-          "href": "https://localhost/kontich/collections/septemberkermis/items",
+          "href": "https://localhost/amstelveen/collections/septemberkermis/items",
           "rel": "item",
           "type": "application/json",
           "title": "September Kermis"
@@ -132,7 +132,7 @@ in JSON
       "description": "",
       "links": [
         {
-          "href": "https://localhost/kontich/collections/Groendienst/items",
+          "href": "https://localhost/amstelveen/collections/Groendienst/items",
           "rel": "item",
           "type": "application/json",
           "title": "Groendienst"
@@ -149,11 +149,11 @@ in HTML:
 
 Name | Description
 ------ | -------------
-[Groepsopvang Babys En Peuters](http://localhost/kontich/collections/GroepsopvangBabysEnPeuters/items)|Groepsopvang Babys En Peuters uit de Informatie Vlaanderen API voor de gemeente Kontich
-[Openlucht Sportvelden](http://localhost/kontich/collections/OpenluchtSportvelden/items)|Openlucht Sportvelden uit de Informatie Vlaanderen API voor de gemeente Kontich
-[Sport lokalen](http://localhost/kontich/collections/SportLokalen/items)|Sport lokalen uit de Informatie Vlaanderen API voor de gemeente Kontich
-[September kermis](http://localhost/kontich/collections/septemberkermis/items)|Septemberkermis uit de Informatie Vlaanderen API voor de gemeente Kontich
-[Groendienst](http://localhost/kontich/collections/Groendienst/items)|Groendienst uit de Informatie Vlaanderen API voor de gemeente Kontich
+[Groepsopvang Babys En Peuters](http://localhost/amstelveen/collections/GroepsopvangBabysEnPeuters/items)|Groepsopvang Babys En Peuters uit de Informatie Vlaanderen API voor de gemeente amstelveen
+[Openlucht Sportvelden](http://localhost/amstelveen/collections/OpenluchtSportvelden/items)|Openlucht Sportvelden uit de Informatie Vlaanderen API voor de gemeente amstelveen
+[Sport lokalen](http://localhost/amstelveen/collections/SportLokalen/items)|Sport lokalen uit de Informatie Vlaanderen API voor de gemeente amstelveen
+[September kermis](http://localhost/amstelveen/collections/septemberkermis/items)|Septemberkermis uit de Informatie Vlaanderen API voor de gemeente amstelveen
+[Groendienst](http://localhost/amstelveen/collections/Groendienst/items)|Groendienst uit de Informatie Vlaanderen API voor de gemeente amstelveen
 
 ## Klaar voor de volgende stap
 https://github.com/geonovum/ogc-api-kennissessie/blob/master/step9/README.md

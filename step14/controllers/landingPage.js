@@ -22,6 +22,11 @@ function get(req, res) {
 
     landingPage.get(serviceUrl, function (err, content) {
 
+        if (err) {
+            res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
+            return
+        }
+
         // http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#encodings
         var accept = accepts(req)
 

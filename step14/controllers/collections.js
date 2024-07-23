@@ -12,6 +12,11 @@ function get(req, res) {
 
   collections.get(serviceUrl, function (err, content) {
 
+    if (err) {
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      return
+    }
+
     debug(`collections content %j`, content)
 
     var accept = accepts(req)

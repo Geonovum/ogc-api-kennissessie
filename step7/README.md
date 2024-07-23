@@ -60,15 +60,15 @@ Run de app
 In je browser of Insomnia via PostMan
 
 Landing Page:
-- http://localhost/kontich
-- http://localhost/kontich?f=json
+- http://localhost/amstelveen
+- http://localhost/amstelveen?f=json
 
 Resultaat:
 
-> `{"title":"Kontich","description":"Access to data about buildings in the city of Kontich via a Web API that conforms to the OGC API Features specification.","links":[{"href":"http://localhost/kontich/","rel":"self","type":"application/json","title":"this document"},{"href":"http://localhost/kontich/api","rel":"service-desc","type":"application/vnd.oai.openapi+json;version=3.0","title":"the API definition"},{"href":"http://localhost/kontich/api.html","rel":"service-doc","type":"text/html","title":"the API documentation"},{"href":"http://localhost/kontich/conformance","rel":"conformance","type":"application/json","title":"OGC API conformance classes implemented by this server"},{"href":"http://localhost/kontich/collections","rel":"data","type":"application/json","title":"Information about the feature collections"}]}`
+> `{"title":"amstelveen","description":"Access to data about buildings in the city of amstelveen via a Web API that conforms to the OGC API Features specification.","links":[{"href":"http://localhost/amstelveen/","rel":"self","type":"application/json","title":"this document"},{"href":"http://localhost/amstelveen/api","rel":"service-desc","type":"application/vnd.oai.openapi+json;version=3.0","title":"the API definition"},{"href":"http://localhost/amstelveen/api.html","rel":"service-doc","type":"text/html","title":"the API documentation"},{"href":"http://localhost/amstelveen/conformance","rel":"conformance","type":"application/json","title":"OGC API conformance classes implemented by this server"},{"href":"http://localhost/amstelveen/collections","rel":"data","type":"application/json","title":"Information about the feature collections"}]}`
 
 Landing Page:
-http://localhost/kontich?f=html
+http://localhost/amstelveen?f=html
 
 ## Klaar voor de volgende stap
 https://github.com/geonovum/ogc-api-kennissessie/blob/master/step8/README.md

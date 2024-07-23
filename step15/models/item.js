@@ -30,5 +30,5 @@ function get(serviceUrl, collectionId, itemId, callback) {
 }
 
 module.exports = {
-  get, create, replacee, deletee, update
+  get
 }

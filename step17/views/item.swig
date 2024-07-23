@@ -19,7 +19,7 @@
 <div id="mapid" style="width: 600px; height: 400px; position: relative;" </div>
 <script>
 
-	var mymap = L.map('mapid').setView([51.1352386, 4.4450065], 14);
+	var mymap = L.map('mapid').setView([52.300, 4.867], 12);
 
 	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
