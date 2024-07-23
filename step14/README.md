@@ -24,6 +24,7 @@ From Overview: https://ogcapi.ogc.org/features/overview.html en https://ogcapi.o
 - collection (_dataset)
 - conformance
 - items op kaartje
+- pagination (offset limit (config))
 - items met query filter
 - items met bbox
 - items met filter
