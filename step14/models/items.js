@@ -15,7 +15,7 @@ function getContent(serviceUrl, name, collection) {
 
 function get(serviceUrl, collectionId, query, options, callback) {
 
-  debug(`items`)
+  debug(`${serviceUrl} items ${collectionId}`)
 
   var collections = database.getCollection()
   var collection = collections[collectionId]
@@ -91,8 +91,8 @@ function get(serviceUrl, collectionId, query, options, callback) {
   // bring back subtracted list as 'main'
   content.features = features
 
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `self`, type: `application/geo+json`, title: `This document` })
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
+  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json`, rel: `self`, type: `application/geo+json`, title: `This document` })
+  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
 
   var offsetLimit = '';
   if (options.offset > 0 || options.limit != config.limit) {
@@ -102,14 +102,14 @@ function get(serviceUrl, collectionId, query, options, callback) {
   }
 
   if (options.offset + options.limit < content.numberMatched) { // only if we need pagination
-    content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `first`, type: `application/geo+json`, title: `Next page` })
-    content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json&offset=${options.offset + options.limit}` + (options.limit == config.limit ? '' : `&limit=${options.limit}`), rel: `next`, type: `application/geo+json`, title: `Next page` })
+    content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json`, rel: `first`, type: `application/geo+json`, title: `Next page` })
+    content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json&offset=${options.offset + options.limit}` + (options.limit == config.limit ? '' : `&limit=${options.limit}`), rel: `next`, type: `application/geo+json`, title: `Next page` })
   }
 
   var offset = options.offset - options.limit;
   if (offset < 0) offset = 0
   if (options.offset != 0)
-    content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json&offset=${offset}` + (options.limit == config.limit ? '' : `&limit=${options.limit}`), rel: `prev`, type: `application/geo+json`, title: `Previous page` })
+    content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json&offset=${offset}` + (options.limit == config.limit ? '' : `&limit=${options.limit}`), rel: `prev`, type: `application/geo+json`, title: `Previous page` })
 
   return callback(undefined, content);
 }
