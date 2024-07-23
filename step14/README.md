@@ -17,6 +17,17 @@ https://docs.ogc.org/is/19-072/19-072.html
 ## Testen:
 run the app
 
+From Overview: https://ogcapi.ogc.org/features/overview.html en https://ogcapi.ogc.org/features/
+
+- landing page met WFS parameters
+- collections
+- collection (_dataset)
+- conformance
+- items op kaartje
+- items met query filter
+- items met bbox
+- items met filter
+
 `Example app listening at http://localhost:80/amstelveen`
 
 In je browser of via PostMan

@@ -5,6 +5,9 @@ https://docs.ogc.org/DRAFTS/19-079r1.html
 ## Testen:
 Run the app
 
+- items met filter-lang
+- queryables
+- 
 `Example app listening at http://localhost:80`
 
 In je browser of via PostMan
