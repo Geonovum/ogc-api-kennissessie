@@ -29,9 +29,6 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
 
-  if (options)
-    features = content.features.slice(options.offset, options.offset + options.limit)
-
   var _query = query
   if (_query) {
     // (OAPIF P1) Requirement 23A The operation SHALL support a parameter bbox

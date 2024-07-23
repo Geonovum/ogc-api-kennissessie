@@ -31,9 +31,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
   headers.push({ 'name': 'Content-Crs', 'value': collection.crs[0] })
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
-
-  if (options)
-    features = content.features.slice(options.offset, options.offset + options.limit)
+  var features = content.features
 
   var _query = query
   if (_query) {
@@ -43,6 +41,15 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
       var corners = _query.bbox.split(',') // 
       var bbox = turf.bboxPolygon(corners);
+
+      if (_query['bbox-crs'])
+      {
+        // Assumption that content comes in WGS84
+        var fromEpsg = utils.UriToEPSG(_query['bbox-crs'])
+        bbox = projgeojson.projectBBox(bbox, fromEpsg, 'EPSG:4326')
+        delete _query['bbox-crs']
+      }
+
       features = features.filter(
         feature =>
           turf.booleanWithin(feature, bbox)

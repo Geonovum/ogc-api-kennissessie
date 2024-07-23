@@ -1,5 +1,6 @@
 const proj4 = require('proj4');
 const PROJS = require('./projs.json');
+const turf = require('@turf/turf');
 
 const getProjByCode = function(code){
     for (let i = 0; i < PROJS.length; i++){
@@ -87,4 +88,30 @@ const projectFeatureCollection = function(_features, codeSridFrom, codeSridTo, d
     return features;
 }
 
-module.exports = projectFeatureCollection;
+
+const projectBBox = function(featureBBox, codeSridFrom, codeSridTo, digits = null) {
+    const fromProjection = getProjByCode(codeSridFrom);
+    if (!fromProjection) return undefined
+    const fromProj = fromProjection['proj4'];
+    const toProjection = getProjByCode(codeSridTo);
+    if (!toProjection) return undefined
+    const toProj = toProjection['proj4'];
+    if (!fromProj || !fromProj)
+        return featureBBox;
+
+    var p1 = turf.point([Number(featureBBox.bbox[0]), Number(featureBBox.bbox[1])])
+    var p2 = turf.point([Number(featureBBox.bbox[2]), Number(featureBBox.bbox[3])])
+
+    const pp1 =  projectFeature(p1, fromProj, toProj, digits);
+    const pp2 =  projectFeature(p2, fromProj, toProj, digits);
+
+    var array = [pp1.geometry.coordinates[0], pp1.geometry.coordinates[1],
+                 pp2.geometry.coordinates[0], pp2.geometry.coordinates[1]]
+
+    var bbox = turf.bboxPolygon(array);
+    return bbox
+}
+
+
+
+module.exports = { projectFeatureCollection, projectBBox }
