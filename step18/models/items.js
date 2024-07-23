@@ -97,17 +97,33 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
   }
 
+  content.numberMatched = content.features.length
+
   // bring back subtracted list as 'main'
   content.features = features
   var featureCount = content.features.length
 
   content.numberReturned = featureCount
-  content.numberMatched = featureCount
 
   content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `self`, type: `application/geo+json`, title: `This document` })
   content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
-  if (content.numberReturned != content.numberMatched)
-    content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `next`, type: `application/geo+json`, title: `Next page` })
+
+  var offsetLimit = '';
+  if (options.offset > 0 || options.limit != config.limit) {
+    offsetLimit = `&offset=${options.offset}`;
+    if (options.limit != config.limit)
+      offsetLimit += `&limit=${options.limit}`;
+  }
+
+  if (options.offset + options.limit < content.numberMatched) { // only if we need pagination
+    content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `first`, type: `application/geo+json`, title: `Next page` })
+    content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json&offset=${options.offset + options.limit}` + (options.limit == config.limit ? '' : `&limit=${options.limit}`), rel: `next`, type: `application/geo+json`, title: `Next page` })
+  }
+
+  var offset = options.offset - options.limit;
+  if (offset < 0) offset = 0
+  if (options.offset != 0)
+    content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json&offset=${offset}` + (options.limit == config.limit ? '' : `&limit=${options.limit}`), rel: `prev`, type: `application/geo+json`, title: `Previous page` })
 
   return callback(undefined, content);
 }
