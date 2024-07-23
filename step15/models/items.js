@@ -29,7 +29,6 @@ function get(serviceUrl, collectionId, query, options, callback) {
   headers.push({ 'name': 'Content-Crs', 'value': collection.crs[0] })
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
-  var features = content.features
 
   if (options)
     features = content.features.slice(options.offset, options.offset + options.limit)
@@ -101,13 +100,15 @@ function get(serviceUrl, collectionId, query, options, callback) {
 
   }
 
-  content.numberMatched = content.features.length
+  content.numberMatched = features.length
+
+  if (options)
+    features = features.slice(options.offset, options.offset + options.limit)
+
+  content.numberReturned = features.length
 
   // bring back subtracted list as 'main'
   content.features = features
-  var featureCount = content.features.length
-
-  content.numberReturned = featureCount
 
   content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `self`, type: `application/geo+json`, title: `This document` })
   content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
