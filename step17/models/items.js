@@ -30,6 +30,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
   headers.push({ 'name': 'Content-Crs', 'value': collection.crs[0] })
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
+  var features = content.features
 
   var _query = query
   if (_query) {

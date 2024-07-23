@@ -28,6 +28,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
   var content = getContent(serviceUrl, collectionId, collection)
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
+  var features = content.features
 
   var _query = query
   if (_query) {
