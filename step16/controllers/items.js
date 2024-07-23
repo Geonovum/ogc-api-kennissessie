@@ -15,7 +15,7 @@ function get(req, res, next) {
   var options = {}
   options.offset = Number(req.query.offset) || 0
   options.limit = Number(req.query.limit) || 1000
-
+  
   // remve not to be confused with other query parameters
   delete req.query.offset;
   delete req.query.limit;
