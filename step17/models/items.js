@@ -3,6 +3,7 @@ const database = require('../database')
 const utils = require('../utils/utils')
 const config = require('../config/server') // see server.js file in /config
 const projgeojson = require('../utils/proj4')
+const turf = require('@turf/turf');
 
 function getContent(serviceUrl, name, document) {
   var item = {}
@@ -37,16 +38,29 @@ function get(serviceUrl, collectionId, query, options, callback) {
     // (OAPIF P1) Requirement 23A The operation SHALL support a parameter bbox
     // (OAPIF P2) Requirement 6 Each GET request on a 'features' resource SHALL support a query parameter bbox-crs 
     if (_query.bbox) {
-      features.forEach(feature => {
-        // check within bbox (also check bbox-crs)
-      });
+
+      var corners = _query.bbox.split(',') // 
+      var bbox = turf.bboxPolygon(corners);
+
+      if (_query['bbox-crs'])
+      {
+        // Assumption that content comes in WGS84
+        var fromEpsg = utils.UriToEPSG(_query['bbox-crs'])
+        bbox = projgeojson.projectBBox(bbox, fromEpsg, 'EPSG:4326')
+        delete _query['bbox-crs']
+      }
+
+      features = features.filter(
+        feature =>
+          turf.booleanWithin(feature, bbox)
+      )
       delete _query.bbox
     }
 
     if (_query.crs) {
       console.log('do crs conversion using proj4') // TODO
       var toEpsg = utils.UriToEPSG(query.crs)
-      features = projgeojson(features, 'EPSG:4326', toEpsg);
+      features = projgeojson.projectFeatureCollection(features, 'EPSG:4326', toEpsg);
 
       headers.push({ 'name': 'Content-Crs', 'value': query.crs })
 
@@ -92,9 +106,7 @@ function get(serviceUrl, collectionId, query, options, callback) {
       }
       else
         return callback({ 'httpCode': 400, 'code': `The following query parameters are rejected: ${attributeName}`, 'description': 'Valid parameters for this request are ' + collection.queryables }, undefined);
-
     }
-
   }
 
   content.numberMatched = features.length

@@ -112,6 +112,4 @@ const projectBBox = function(featureBBox, codeSridFrom, codeSridTo, digits = nul
     return bbox
 }
 
-
-
 module.exports = { projectFeatureCollection, projectBBox }

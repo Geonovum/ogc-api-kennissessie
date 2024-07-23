@@ -9,6 +9,8 @@ function get(serviceUrl, collectionId, itemId, callback) {
 
   var collections = database.getCollection()
   var collection = collections[collectionId]
+  if (!collection)
+    return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
   var id = collection.id;
 
@@ -36,6 +38,8 @@ function create(serviceUrl, collectionId, itemId, body, callback) {
 
   var collections = database.getCollection()
   var collection = collections[collectionId]
+  if (!collection)
+    return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
   var id = collection.id;
 
@@ -66,6 +70,8 @@ function replacee(serviceUrl, collectionId, itemId, body, callback) {
 
   var collections = database.getCollection()
   var collection = collections[collectionId]
+  if (!collection)
+    return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
   var id = collection.id;
 
@@ -108,6 +114,8 @@ function deletee(serviceUrl, collectionId, itemId, callback) {
 
   var collections = database.getCollection()
   var collection = collections[collectionId]
+  if (!collection)
+    return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
   var id = collection.id;
 
@@ -132,6 +140,8 @@ function update(serviceUrl, collectionId, itemId, body, callback) {
 
   var collections = database.getCollection()
   var collection = collections[collectionId]
+  if (!collection)
+    return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
   var id = collection.id;
 

@@ -62,6 +62,8 @@ function getQueryables(serviceUrl, collectionId, callback) {
 
   var collections = database.getCollection()
   var document = collections[collectionId]
+  if (!document)
+    return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
   var content = {}
   // Requirement 4B The parameter collectionId is each id property in the
