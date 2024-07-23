@@ -2,6 +2,8 @@ const debug = require('debug')('models')
 const database = require('../database')
 const utils = require('../utils/utils')
 const projgeojson = require('../utils/proj4')
+const turf = require('@turf/turf');
+const config = require('../config/server') 
 
 function getContent(serviceUrl, name, document) {
   var item = {}
@@ -38,9 +40,13 @@ function get(serviceUrl, collectionId, query, options, callback) {
     // (OAPIF P1) Requirement 23A The operation SHALL support a parameter bbox
     // (OAPIF P2) Requirement 6 Each GET request on a 'features' resource SHALL support a query parameter bbox-crs 
     if (_query.bbox) {
-      features.forEach(feature => {
-        // check within bbox (also check bbox-crs)
-      });
+
+      var corners = _query.bbox.split(',') // 
+      var bbox = turf.bboxPolygon(corners);
+      features = features.filter(
+        feature =>
+          turf.booleanWithin(feature, bbox)
+      )
       delete _query.bbox
     }
 
