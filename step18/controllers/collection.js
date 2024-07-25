@@ -102,7 +102,7 @@ function create (req, res) {
     }
 
     res.set('location', `${serviceUrl}/collections/${collectionId}/items/${newId}`)
-    res.status(204).end()
+    res.status(201).end()
   })
 }
 
