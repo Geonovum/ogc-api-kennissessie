@@ -9,12 +9,6 @@ const item        = require('../controllers/item')
 //
 const api         = require('../controllers/api')
 
-// middleware that is specific to this router
-router.use(function timeLog (req, res, next) {
-  console.log('Time: ', new Date().toISOString())
-  next()
-})
-
 // 7.5 The server SHOULD support the HTTP 1.1 method HEAD for all 
 // resources that support the method GET.
 

@@ -27,12 +27,6 @@ Vanuit `index.js` verwijzen we naar de paden in `amstelveen.js` - netter en hand
 var express = require('express')
 var router = express.Router()
 
-// middleware that is specific to this router
-router.use(function timeLog (req, res, next) {
-  console.log('Time: ', Date.now())
-  next()
-})
-
 // The server SHALL support the HTTP GET operation at the path /.
 router.get('/', function (req, res) {
   res.send('amstelveen landing page')
