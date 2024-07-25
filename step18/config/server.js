@@ -1,5 +1,8 @@
 var config = module.exports
 
+config.version = process.env.APIVERSION || '1.2.3'
+config.mountPath = process.env.MOUNTPATH || "amstelveen"
+
 config.express = {
   port: process.env.EXPRESS_PORT || 80,
 }

@@ -1,5 +1,7 @@
 const encodings = require('./middlewares/encodings')
-const version = require('./middlewares/version')
+const version = require('./middlewares/apiversion')
+const semver = require('semver')
+const config = require('./config/server') 
 const oapifp1 = require('./routes/ogcapiFeaturesPart1')
 const oapifp3 = require('./routes/ogcapiFeaturesPart3')
 const oapifp4 = require('./routes/ogcapiFeaturesPart4')
@@ -24,9 +26,9 @@ app.use(encodings)
 app.use(version)
 
 // Mount API on this path
-app.use('/amstelveen/v1', oapifp1)
-app.use('/amstelveen/v1', oapifp3)
-app.use('/amstelveen/v1', oapifp4)
-app.use('/amstelveen/v1', oapifp5)
+app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp1)
+app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp3)
+app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp4)
+app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp5)
 
 module.exports = app

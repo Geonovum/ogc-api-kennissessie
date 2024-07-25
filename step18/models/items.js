@@ -18,7 +18,7 @@ function getContent(serviceUrl, name, document) {
   return item
 }
 
-function get(serviceUrl, collectionId, query, options, callback) {
+function get(serviceUrl, collectionId, query, options, acceptType, callback) {
 
   debug(`items`)
 
