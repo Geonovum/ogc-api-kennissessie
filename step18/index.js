@@ -1,4 +1,5 @@
 const encodings = require('./middlewares/encodings')
+const version = require('./middlewares/version')
 const oapifp1 = require('./routes/ogcapiFeaturesPart1')
 const oapifp3 = require('./routes/ogcapiFeaturesPart3')
 const oapifp4 = require('./routes/ogcapiFeaturesPart4')
