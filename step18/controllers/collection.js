@@ -39,7 +39,7 @@ function get (req, res) {
         // This recommendation does not apply, if there are a large number of links included 
         // in a response or a link is not known when the HTTP headers of the response are created.
         // res.set('link', utils.makeHeaderLinks(content.links))
-        res.status(200).render(`collection`, { content: content })
+        res.status(200).render(`collection`, content )
         break
       default:
         res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)

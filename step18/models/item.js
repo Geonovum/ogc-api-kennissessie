@@ -1,7 +1,7 @@
 const debug = require('debug')('models')
 const database = require('../database')
 
-function get(serviceUrl, collectionId, itemId, callback) {
+function get(serviceUrl, collectionId, featureId, callback) {
 
   debug(`get model item`)
 
@@ -14,12 +14,16 @@ function get(serviceUrl, collectionId, itemId, callback) {
 
   var index = 0
   for (; index < collection.features.length; index++)
-    if (collection.features[index].properties[id] == itemId) break;
+    if (collection.features[index].properties[id] == featureId) break;
 
   if (index >= collection.features.length)
-    return callback({ 'httpCode': 404, 'code': `Item: ${itemId} not found`, 'description': 'Id needs to exist' }, undefined);
+    return callback({ 'httpCode': 404, 'code': `Item: ${featureId} not found`, 'description': 'Id needs to exist' }, undefined);
 
   var content = collection.features[index]
+  content.links = []
+  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items/${featureId}?f=json`, rel: `self`, type: `application/geo+json`, title: `This document` })
+  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items/${featureId}?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
+  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items`, rel: `collection`, type: `application/geo+json`, title: `he collection the feature belongs to` })
 
   return callback(undefined, content);
 }

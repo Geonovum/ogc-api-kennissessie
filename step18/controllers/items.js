@@ -44,9 +44,7 @@ function get(req, res, next) {
         res.status(200).json(content)
         break
       case `html`:
-        content.geojson = JSON.stringify(content.features); // hack
-        res.status(200).render(`items`, { content: content })
-        delete content.geojson
+        res.status(200).render(`items`, content )
         break
       default:
         res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)

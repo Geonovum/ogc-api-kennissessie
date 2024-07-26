@@ -1,8 +1,8 @@
 // define the home page route
 const debug = require('debug')('controller')
 const accepts = require('accepts')
-var landingPage = require('../models/landingPage.js');
-var utils = require('../utils/utils')
+const landingPage = require('../models/landingPage.js');
+const utils = require('../utils/utils')
 
 function get(req, res) {
 
@@ -39,7 +39,7 @@ function get(req, res) {
             case `html`:
                 // Recommendations 1, A 200-response SHOULD include the following links in the links property of the response:
                 res.set('link', utils.makeHeaderLinks(content.links))
-                res.status(200).render(`landingPage`, { content: content })
+                res.status(200).render(`landingPage`, content )
                 break
             default:
                 res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)

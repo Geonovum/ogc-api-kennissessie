@@ -33,7 +33,7 @@ function get(req, res) {
         // Recommendations 10, Links included in payload of responses SHOULD also be 
         // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
         res.set('link', utils.makeHeaderLinks(content.links))
-        res.status(200).render(`collections`, { content: content })
+        res.status(200).render(`collections`, content )
         break
       default:
         res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
