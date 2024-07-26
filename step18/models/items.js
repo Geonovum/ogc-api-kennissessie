@@ -112,12 +112,11 @@ function get(serviceUrl, collectionId, query, options, acceptType, callback) {
   content.numberMatched = features.length
 
   if (options)
-    features = features.slice(options.offset, options.offset + options.limit)
+    content.features = features.slice(options.offset, options.offset + options.limit)
+  else
+    content.features = features
 
-  content.numberReturned = features.length
-
-  // bring back subtracted list as 'main'
-  content.features = features
+  content.numberReturned = content.features.length
 
   content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json`, rel: `self`, type: `application/geo+json`, title: `This document` })
   content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
