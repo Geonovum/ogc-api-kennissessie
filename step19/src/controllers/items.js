@@ -39,7 +39,7 @@ function get(req, res, next) {
 
     debug(`items content %j`, content)
 
-    switch (accept.type(['json', 'html'])) {
+    switch (acceptType) {
       case `json`:
         res.status(200).json(content)
         break

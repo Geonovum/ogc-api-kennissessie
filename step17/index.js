@@ -1,30 +1,17 @@
-const encodings = require('./middlewares/encodings')
-const version = require('./middlewares/version')
-const oapifp1 = require('./routes/ogcapiFeaturesPart1')
-const oapifp3 = require('./routes/ogcapiFeaturesPart3')
-const oapifp4 = require('./routes/ogcapiFeaturesPart4')
-const swig = require('swig');
-const express = require('express')
-const port = 80
+process.browser = true
+global.window = { process: { type: 'renderer' } }
 
-const app = express()
+const debug = require('debug')('http') // see launch.json in .vscode
+const app = require('./app')
+const config = require('./config/server') // see server.js file in /config
 
-// For HTML rendering
-app.engine('swig',swig.renderFile);
-app.set('view engine', 'swig');
-app.set('views', __dirname + '/views');
+debug('booting..');
 
-app.use(express.static(__dirname + '/public'));
-app.use(express.json());
+app.listen(config.express.port, function (error) {
+  if (error) {
+    debug('Unable to listen for connections', error)
+    process.exit(10)
+  }
 
-// setup middleware to decode the content-type
-// see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_encodings
-app.use(encodings)
-app.use(version)
-
-// Mount API on this path
-app.use('/amstelveen/v1', oapifp1)
-app.use('/amstelveen/v1', oapifp3)
-app.use('/amstelveen/v1', oapifp4)
-
-module.exports = app
+  debug(`OGC API Feature listening on port ${config.express.port}`)
+})

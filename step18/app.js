@@ -1,17 +1,31 @@
-process.browser = true
-global.window = { process: { type: 'renderer' } }
+const encodings = require('./middlewares/encodings')
+const version = require('./middlewares/apiversion')
+const semver = require('semver')
+const config = require('./config/server') 
+const oapifp1 = require('./routes/ogcapiFeaturesPart1')
+const oapifp3 = require('./routes/ogcapiFeaturesPart3')
+const oapifp4 = require('./routes/ogcapiFeaturesPart4')
+const oapifp5 = require('./routes/ogcapiFeaturesPart5')
+const express = require('express')
 
-const debug = require('debug')('http') // see launch.json in .vscode
-const app = require('./index')
-const config = require('./config/server') // see server.js file in /config
+const app = express()
 
-debug('booting..');
+// For HTML rendering
+app.set('view engine', 'pug');
+app.set('views', __dirname + '/views');
 
-app.listen(config.express.port, function (error) {
-  if (error) {
-    debug('Unable to listen for connections', error)
-    process.exit(10)
-  }
+app.use(express.static(__dirname + '/public'));
+app.use(express.json());
 
-  debug(`OGC API Feature listening on port ${config.express.port}`)
-})
+// setup middleware to decode the content-type
+// see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_encodings
+app.use(encodings)
+app.use(version)
+
+// Mount API on this path
+app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp1)
+app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp3)
+app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp4)
+app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp5)
+
+module.exports = app
