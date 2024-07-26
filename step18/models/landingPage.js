@@ -25,8 +25,6 @@ function get(serviceUrl, callback) {
     content.links.push({ href: `${serviceUrl}/?f=html`, rel: `alternate`, type: `text/html`, title: `this document` })
     content.links.push({ href: `${serviceUrl}/?f=json`, rel: `self`, type: `application/json`, title: `this document in json` })
   
-    debug(`landingPage content ${content}`)
-
     return callback(undefined, content);
     //  })
 }

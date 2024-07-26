@@ -3,7 +3,7 @@ const database = require('../database')
 const utils = require('../utils/utils')
 const projgeojson = require('../utils/proj4')
 const turf = require('@turf/turf');
-const config = require('../config/server') 
+const config = require('../config/server')
 
 function getContent(serviceUrl, name, document) {
   var item = {}
@@ -20,7 +20,7 @@ function getContent(serviceUrl, name, document) {
 
 function get(serviceUrl, collectionId, query, options, acceptType, callback) {
 
-  debug(`items`)
+  debug(`get items`)
 
   var collections = database.getCollection()
   var collection = collections[collectionId]
@@ -37,12 +37,10 @@ function get(serviceUrl, collectionId, query, options, acceptType, callback) {
     // (OAPIF P1) Requirement 23A The operation SHALL support a parameter bbox
     // (OAPIF P2) Requirement 6 Each GET request on a 'features' resource SHALL support a query parameter bbox-crs 
     if (_query.bbox) {
-
       var corners = _query.bbox.split(',') // 
       var bbox = turf.bboxPolygon(corners);
 
-      if (_query['bbox-crs'])
-      {
+      if (_query['bbox-crs']) {
         // Assumption that content comes in WGS84
         var fromEpsg = utils.UriToEPSG(_query['bbox-crs'])
         bbox = projgeojson.projectBBox(bbox, fromEpsg, 'EPSG:4326')
@@ -74,20 +72,20 @@ function get(serviceUrl, collectionId, query, options, acceptType, callback) {
     if (_query.filter) {
       var parts = _query.filter.split(' and ') // only AND supported (not OR)
       parts.forEach(element => {
-          var ao = element.split(' ', 2)
-          var attributeName = ao[0]
-          var operator = ao[1]
-          var tv = ao.join(' ') + ' ' 
-          var targetValue = element.slice(tv.length).replace(/^\W+|\W+$/g, '') // removes ' at start and end
+        var ao = element.split(' ', 2)
+        var attributeName = ao[0]
+        var operator = ao[1]
+        var tv = ao.join(' ') + ' '
+        var targetValue = element.slice(tv.length).replace(/^\W+|\W+$/g, '') // removes ' at start and end
 
-          if (operator != 'eq')
-            return callback({'httpCode': 400, 'code': `Invalid operator: ${operator}`, 'description': 'Valid operators are: eq'}, undefined);
+        if (operator != 'eq')
+          return callback({ 'httpCode': 400, 'code': `Invalid operator: ${operator}`, 'description': 'Valid operators are: eq' }, undefined);
 
-          features = features.filter(
-            element =>
-              element.properties[attributeName] == targetValue)
+        features = features.filter(
+          element =>
+            element.properties[attributeName] == targetValue)
 
-        });
+      });
 
       delete _query.filter
     }
@@ -103,7 +101,7 @@ function get(serviceUrl, collectionId, query, options, acceptType, callback) {
             element.properties[attributeName] == targetValue)
       }
       else
-         return callback({'httpCode': 400, 'code': `The following query parameters are rejected: ${attributeName}`, 'description': 'Valid parameters for this request are ' + collection.queryables}, undefined);
+        return callback({ 'httpCode': 400, 'code': `The following query parameters are rejected: ${attributeName}`, 'description': 'Valid parameters for this request are ' + collection.queryables }, undefined);
 
     }
 
