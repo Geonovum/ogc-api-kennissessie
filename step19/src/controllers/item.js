@@ -1,11 +1,8 @@
 const accepts = require('accepts')
-const debug = require('debug')('controller')
 const item = require('../models/item.js')
 const utils = require('../utils/utils')
 
 function get (req, res) {
-
-  debug(`get item ${req.url}`)
 
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
@@ -35,8 +32,6 @@ function get (req, res) {
 
 function replacee (req, res) {
   
-  debug(`replacee item ${req.url}`)
-
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
@@ -55,8 +50,6 @@ function replacee (req, res) {
 
 function deletee (req, res) {
   
-  debug(`deletee item ${req.url}`)
-
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
@@ -74,8 +67,6 @@ function deletee (req, res) {
 
 function update (req, res) {
   
-  debug(`update item ${req.url}`)
-
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)

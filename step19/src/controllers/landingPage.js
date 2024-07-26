@@ -1,12 +1,9 @@
 // define the home page route
-const debug = require('debug')('controller')
 const accepts = require('accepts')
 const landingPage = require('../models/landingPage.js');
 const utils = require('../utils/utils')
 
 function get(req, res) {
-
-    debug(`landingPage ${req.url}`)
 
     // check to see if this is a WFS request, if so, return 400 indicating we do not support WFS
     if (req.query.SERVICE) {
@@ -17,8 +14,6 @@ function get(req, res) {
     }
 
     var serviceUrl = utils.getServiceUrl(req)
-
-    debug(`landingPage serviceUrl ${serviceUrl}`)
 
     landingPage.get(serviceUrl, function (err, content) {
 

@@ -1,14 +1,10 @@
-const debug = require('debug')('controllers')
 const accepts = require('accepts')
 const collections = require('../models/collections.js')
 const utils = require('../utils/utils')
 
 function get(req, res) {
 
-  debug(`collections ${req.url}`)
-
   var serviceUrl = utils.getServiceUrl(req)
-  debug(`collections serviceUrl ${serviceUrl}`)
 
   collections.get(serviceUrl, function (err, content) {
 
@@ -16,8 +12,6 @@ function get(req, res) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
       return
     }
-
-    debug(`collections content %j`, content)
 
     var accept = accepts(req)
 

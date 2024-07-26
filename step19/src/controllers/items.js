@@ -1,16 +1,11 @@
 const accepts = require('accepts')
-const debug = require('debug')('controller')
 var items = require('../models/items.js')
 var utils = require('../utils/utils')
 
 function get(req, res, next) {
 
-  debug(`items ${req.url}`)
-
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
-
-  debug(`items serviceUrl ${serviceUrl} collectionId ${collectionId}`)
 
   var options = {}
   options.offset = Number(req.query.offset) || 0
@@ -36,8 +31,6 @@ function get(req, res, next) {
     if (content.headerContentCrs)
       res.set('Content-Crs', content.headerContentCrs)
     delete content.headerContentCrs
-
-    debug(`items content %j`, content)
 
     switch (acceptType) {
       case `json`:

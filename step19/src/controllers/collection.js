@@ -1,4 +1,3 @@
-const debug = require('debug')('controller')
 const accepts = require('accepts')
 const collection = require('../models/collection.js')
 const item = require('../models/item.js')
@@ -6,12 +5,8 @@ const utils = require('../utils/utils')
 
 function get (req, res) {
    
-  debug(`collection ${req.url}`)
-
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
-
-  debug(`collections serviceUrl ${serviceUrl} collectionId ${collectionId}`)
 
   collection.get(serviceUrl, collectionId, function(err, content) {
 
@@ -47,8 +42,6 @@ function get (req, res) {
 function create (req, res) {
   
   // check Content-Crs
-
-  debug(`replacee item ${req.url}`)
 
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)

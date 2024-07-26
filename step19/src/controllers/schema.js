@@ -1,4 +1,3 @@
-const debug = require('debug')('controller')
 const utils = require('../utils/utils.js')
 const schema = require('../models/schema.js')
 const accepts = require('accepts')
@@ -7,8 +6,6 @@ function get (req, res) {
 
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
-
-  debug(`schema.get serviceUrl ${serviceUrl} collectionId ${collectionId}`)
 
   schema.get(serviceUrl, collectionId, function(err, content) {
 

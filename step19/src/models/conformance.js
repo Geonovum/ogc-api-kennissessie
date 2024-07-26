@@ -1,8 +1,4 @@
-const debug = require('debug')('models')
-
 function get(serviceUrl, callback) {
-
-  debug(`conformance`)
 
   // Recommendation 5 A: ... implementations SHOULD consider to support an HTML encoding.
   // Recommendation 6 A & B: ... implementations SHOULD consider to support GeoJSON as an encoding for features and feature collections

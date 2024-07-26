@@ -1,9 +1,6 @@
-const debug = require('debug')('models')
 const config = require('../config/config')
 
 function get(serviceUrl, callback) {
-
-    debug(`landingPage ${serviceUrl}`)
 
     var root = serviceUrl.pathname.replace(/^\/+/, '') // remove any trailing /
 

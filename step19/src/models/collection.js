@@ -1,4 +1,3 @@
-const debug = require('debug')('models')
 const database = require('../database/database')
 
 function getMetaData(serviceUrl, name, document) {
@@ -45,8 +44,6 @@ function getMetaData(serviceUrl, name, document) {
 }
 
 function get(serviceUrl, collectionId, callback) {
-
-  debug(`collection ${serviceUrl}`)
 
   var root = serviceUrl.pathname.replace(/^\/+/, '') // remove any trailing /
 

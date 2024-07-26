@@ -1,12 +1,9 @@
-const debug = require('debug')('models')
 const database = require('../database/database')
 const collection = require('./collection.js')
 const utils = require('../utils/utils')
 const config = require('../config/config')
 
 function get(serviceUrl, callback) {
-
-  debug(`collections ${serviceUrl}`)
 
   var root = serviceUrl.pathname.replace(/^\/+/, '') // remove any trailing /
 

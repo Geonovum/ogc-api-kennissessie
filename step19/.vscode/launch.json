@@ -13,9 +13,6 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/src/index.js",
-            "env": {
-				"DEBUG": "*",
-			},
         }
     ]
 }

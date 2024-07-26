@@ -1,4 +1,3 @@
-const debug = require('debug')('controller')
 const utils = require('../utils/utils')
 const conformance = require('../models/conformance.js')
 
@@ -11,14 +10,9 @@ const conformance = require('../models/conformance.js')
 
 function get(req, res) {
 
-  debug(`conformance ${req.url}`)
-
   var serviceUrl = utils.getServiceUrl(req)
-  debug(`collections serviceUrl ${serviceUrl}`)
 
   conformance.get(serviceUrl, function (err, content) {
-    debug(`conformance content %j`, content)
-
     // Recommendations 1, A 200-response SHOULD include the following links in the links property of the response:
     res.set('link', utils.makeHeaderLinks(content.links))
     res.status(200).json(content) // Requirement 6 A

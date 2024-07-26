@@ -8,8 +8,11 @@ const oapifp4 = require('./routes/ogcapiFeaturesPart4')
 const oapifp5 = require('./routes/ogcapiFeaturesPart5')
 const express = require('express')
 const cors = require('cors')
+const morgan = require('morgan')
 
 const app = express()
+
+app.use(morgan(':method :url :response-time', { stream: { write: msg => console.log(msg) } }));
 
 app.use(cors({ origin: true }));
 

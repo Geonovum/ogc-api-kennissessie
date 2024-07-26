@@ -1,4 +1,3 @@
-const debug = require('debug')('models')
 const database = require('../database/database')
 const utils = require('../utils/utils')
 const projgeojson = require('../utils/proj4')
@@ -19,8 +18,6 @@ function getContent(serviceUrl, name, document) {
 }
 
 function get(serviceUrl, collectionId, query, options, acceptType, callback) {
-
-  debug(`get items`)
 
   var collections = database.getCollection()
   var collection = collections[collectionId]
