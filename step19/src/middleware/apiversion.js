@@ -1,4 +1,4 @@
-const config = require('../config/server') 
+const config = require('../config/config') 
 
 var version = function (req, res, next) {
 

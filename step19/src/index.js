@@ -3,7 +3,7 @@ global.window = { process: { type: 'renderer' } }
 
 const debug = require('debug')('http') // see launch.json in .vscode
 const app = require('./app')
-const config = require('./config/server') // see server.js file in /config
+const config = require('./config/config') 
 
 debug('booting..');
 

@@ -2,11 +2,11 @@ const path = require('path');
 const fs = require('fs');
 const turf = require('@turf/turf');
 
-var fileNames = fs.readdirSync(path.join(__dirname, "data")).filter(fn => fn.endsWith('.geojson'));
+var fileNames = fs.readdirSync(path.join(__dirname, "../../data")).filter(fn => fn.endsWith('.geojson'));
 
 var dataDict = {};
 fileNames.forEach(fileName => {
-  var rawData = fs.readFileSync(path.join(__dirname, "data", fileName));
+  var rawData = fs.readFileSync(path.join(__dirname, "../../data", fileName));
   var geojson = JSON.parse(rawData);
 
   if (geojson.crs && geojson.crs.properties && geojson.crs.properties.name) {

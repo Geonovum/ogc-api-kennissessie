@@ -1,4 +1,5 @@
 const debug = require('debug')('models')
+const config = require('../config/config')
 
 function get(serviceUrl, callback) {
 
@@ -14,8 +15,8 @@ function get(serviceUrl, callback) {
     // - /conformance (relation type `conformance`)
     // - /collections (relation type `data`)
     var content = {}
-    content.title = 'Geonovum' // Requirement 2 B
-    content.description = 'This is a test dataset used in the Geonovum API summerschool'
+    content.title = config.title // Requirement 2 B
+    content.description = config.description
     content.links = []
     content.links.push({ href: `${serviceUrl}/api?f=json`, rel: `service-desc`, type: `application/vnd.oai.openapi+json;version=3.0`, title: `the API definition` })
     content.links.push({ href: `${serviceUrl}/api.html`, rel: `service-doc`, type: `text/html`, title: `the API documentation` })

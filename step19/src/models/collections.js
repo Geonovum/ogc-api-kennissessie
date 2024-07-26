@@ -1,7 +1,8 @@
 const debug = require('debug')('models')
-const database = require('../database')
-var collection = require('./collection.js')
+const database = require('../database/database')
+const collection = require('./collection.js')
 const utils = require('../utils/utils')
+const config = require('../config/config')
 
 function get(serviceUrl, callback) {
 
@@ -15,8 +16,8 @@ function get(serviceUrl, callback) {
   // (OAPIC P2) Requirement 3A: The content of that response SHALL be based upon the JSON schema collections.yaml.
   var content = {};
   // An optional title and description for the collection;
-  content.title = 'Geonovum'
-  content.description = 'This is a test dataset used in the Geonovum API summerschool'
+  content.title = config.title
+  content.description = config.description
   content.links = []
   // (OAPIC P2) Requirement 2B. The API SHALL support the HTTP GET operation on all links to a Collections Resource that have the relation type
   content.links.push({ href: `${serviceUrl}/collections?f=json`, rel: `self`, type: `application/json`, title: `This document` })

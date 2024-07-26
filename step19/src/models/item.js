@@ -1,5 +1,5 @@
 const debug = require('debug')('models')
-const database = require('../database')
+const database = require('../database/database')
 
 function get(serviceUrl, collectionId, featureId, callback) {
 

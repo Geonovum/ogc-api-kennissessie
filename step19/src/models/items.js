@@ -1,9 +1,9 @@
 const debug = require('debug')('models')
-const database = require('../database')
+const database = require('../database/database')
 const utils = require('../utils/utils')
 const projgeojson = require('../utils/proj4')
 const turf = require('@turf/turf');
-const config = require('../config/server')
+const config = require('../config/config')
 
 function getContent(serviceUrl, name, document) {
   var item = {}

@@ -3,6 +3,9 @@ var config = module.exports
 config.version = process.env.APIVERSION || '1.2.3'
 config.mountPath = process.env.MOUNTPATH || "amstelveen"
 
+config.title = process.env.TITLE || 'Geonovum'
+config.description = process.env.TITLE || 'This is a test service used in the Geonovum API summerschool'
+
 config.express = {
   port: process.env.EXPRESS_PORT || 80,
 }

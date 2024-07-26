@@ -1,14 +1,17 @@
 const encodings = require('./middleware/encodings')
 const version = require('./middleware/apiversion')
 const semver = require('semver')
-const config = require('./config/server') 
+const config = require('./config/config') 
 const oapifp1 = require('./routes/ogcapiFeaturesPart1')
 const oapifp3 = require('./routes/ogcapiFeaturesPart3')
 const oapifp4 = require('./routes/ogcapiFeaturesPart4')
 const oapifp5 = require('./routes/ogcapiFeaturesPart5')
 const express = require('express')
+const cors = require('cors')
 
 const app = express()
+
+app.use(cors({ origin: true }));
 
 // For HTML rendering
 app.set('view engine', 'pug');
