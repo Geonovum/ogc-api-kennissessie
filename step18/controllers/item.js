@@ -38,10 +38,10 @@ function replacee (req, res) {
   debug(`replacee item ${req.url}`)
 
   var collectionId = req.params.collectionId
-  var itemId = req.params.itemId
+  var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.replacee(serviceUrl, collectionId, itemId, req.body, function(err, content, newId) {
+  item.replacee(serviceUrl, collectionId, featureId, req.body, function(err, content, newId) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
@@ -58,10 +58,10 @@ function deletee (req, res) {
   debug(`deletee item ${req.url}`)
 
   var collectionId = req.params.collectionId
-  var itemId = req.params.itemId
+  var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.deletee(serviceUrl, collectionId, itemId, function(err, content) {
+  item.deletee(serviceUrl, collectionId, featureId, function(err, content) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
@@ -77,10 +77,10 @@ function update (req, res) {
   debug(`update item ${req.url}`)
 
   var collectionId = req.params.collectionId
-  var itemId = req.params.itemId
+  var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.update(serviceUrl, collectionId, itemId, req.body, function(err, content) {
+  item.update(serviceUrl, collectionId, featureId, req.body, function(err, content) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})

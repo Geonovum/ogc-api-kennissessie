@@ -31,7 +31,7 @@ function get(serviceUrl, collectionId, itemId, callback) {
   return callback(undefined, content, headers);
 }
 
-function create(serviceUrl, collectionId, itemId, body, callback) {
+function create(serviceUrl, collectionId, body, callback) {
 
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });

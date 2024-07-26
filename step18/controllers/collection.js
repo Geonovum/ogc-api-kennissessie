@@ -91,10 +91,9 @@ function create (req, res) {
   debug(`replacee item ${req.url}`)
 
   var collectionId = req.params.collectionId
-  var itemId = req.params.itemId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.create(serviceUrl, collectionId, itemId, req.body, function(err, content, newId) {
+  item.create(serviceUrl, collectionId, req.body, function(err, content, newId) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
