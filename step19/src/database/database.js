@@ -1,13 +1,27 @@
-const path = require('path');
-const fs = require('fs');
-const turf = require('@turf/turf');
+const path = require('path')
+const fs = require('fs')
+const turf = require('@turf/turf')
 
-var fileNames = fs.readdirSync(path.join(__dirname, "../../data")).filter(fn => fn.endsWith('.geojson'));
+function readGeoJSONfiles() {
+  var dir = path.join(__dirname, "../../data")
+
+  var fileNames = fs.readdirSync(dir).filter(fn => fn.endsWith('.geojson'))
+
+  fileNames.forEach(fileName => {
+    var rawData = fs.readFileSync(path.join(dir, fileName))
+    var id = fileName.replace(/\.[^/.]+$/, "")
+
+    var geojson = JSON.parse(rawData)
+    dataDict[id] = geojson
+  })
+}
 
 var dataDict = {};
-fileNames.forEach(fileName => {
-  var rawData = fs.readFileSync(path.join(__dirname, "../../data", fileName));
-  var geojson = JSON.parse(rawData);
+
+readGeoJSONfiles()
+
+Object.keys(dataDict).forEach(function (key) {
+  var geojson = dataDict[key]
 
   if (geojson.crs && geojson.crs.properties && geojson.crs.properties.name) {
     if (geojson.crs.properties.name.startsWith('EPSG'))
@@ -30,8 +44,6 @@ fileNames.forEach(fileName => {
   // calculate the bbox from geometry
   geojson.bbox = turf.bbox(turf.featureCollection(geojson.features));
 
-  var id = fileName.replace(/\.[^/.]+$/, "")
-
   // --- begin construct queryables ------------------- 
   geojson.queryables = {}
 
@@ -40,7 +52,7 @@ fileNames.forEach(fileName => {
   var geometry = feature.geometry
   var item = {
     'title': 'geometry',
-    'description': `The geometry of ${id}`,
+    'description': `The geometry of ${key}`,
     'format': geometry.type
   }
   geojson.queryables[`geometry`] = item
@@ -80,9 +92,7 @@ fileNames.forEach(fileName => {
   }
 
   // --- end construct schema ------------------- 
-
-  dataDict[id] = geojson;
-});
+})
 
 function getCollection() {
   return dataDict
