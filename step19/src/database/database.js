@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const turf = require('@turf/turf')
 
-async function readGeoJSONfiles() {
+function readGeoJSONfiles() {
   var dir = path.join(__dirname, "../../data")
 
   var fileNames = fs.readdirSync(dir).filter(fn => fn.endsWith('.geojson'))
@@ -18,7 +18,7 @@ async function readGeoJSONfiles() {
 
 var dataDict = {};
 
-async function load() {
+function load() {
 
   readGeoJSONfiles()
 
