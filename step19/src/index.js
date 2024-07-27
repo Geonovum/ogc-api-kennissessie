@@ -3,6 +3,9 @@ global.window = { process: { type: 'renderer' } }
 
 const app = require('./app')
 const config = require('./config/config') 
+const database = require('./database/database')
+
+database.load()
 
 app.listen(config.express.port, function (error) {
   if (error) {
