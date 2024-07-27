@@ -1,6 +1,11 @@
 const config = require('../config/config')
 
-function get(serviceUrl, callback) {
+async function get(serviceUrl, query, callback) {
+
+    // check to see if this is a WFS request, if so, return 400 indicating we do not support WFS
+    if (query.SERVICE) 
+        if (query.SERVICE == 'WFS') 
+            return callback({ 'httpCode': 400, 'code': `InvalidParameterValue`, 'description': 'This is not a WFS' });
 
     var root = serviceUrl.pathname.replace(/^\/+/, '') // remove any trailing /
 
@@ -22,7 +27,7 @@ function get(serviceUrl, callback) {
     content.links.push({ href: `${serviceUrl}/collections?f=html`, rel: `data`, type: `text/html`, title: `Information about the feature collections` })
     content.links.push({ href: `${serviceUrl}/?f=html`, rel: `alternate`, type: `text/html`, title: `this document` })
     content.links.push({ href: `${serviceUrl}/?f=json`, rel: `self`, type: `application/json`, title: `this document in json` })
-  
+
     return callback(undefined, content);
     //  })
 }

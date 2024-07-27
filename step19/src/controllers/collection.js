@@ -3,7 +3,7 @@ const collection = require('../models/collection.js')
 const item = require('../models/item.js')
 const utils = require('../utils/utils')
 
-function get (req, res) {
+async function get (req, res) {
    
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
@@ -39,14 +39,14 @@ function get (req, res) {
   
 }
 
-function create (req, res) {
+async function create (req, res) {
   
   // check Content-Crs
 
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.create(serviceUrl, collectionId, req.body, function(err, content, newId) {
+  await item.create(serviceUrl, collectionId, req.body, function(err, content, newId) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})

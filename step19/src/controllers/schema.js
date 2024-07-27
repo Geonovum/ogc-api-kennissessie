@@ -2,12 +2,12 @@ const utils = require('../utils/utils.js')
 const schema = require('../models/schema.js')
 const accepts = require('accepts')
 
-function get (req, res) {
+async function get (req, res) {
 
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
 
-  schema.get(serviceUrl, collectionId, function(err, content) {
+  await schema.get(serviceUrl, collectionId, function(err, content) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})

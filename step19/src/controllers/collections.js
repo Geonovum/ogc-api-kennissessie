@@ -2,11 +2,11 @@ const accepts = require('accepts')
 const collections = require('../models/collections.js')
 const utils = require('../utils/utils')
 
-function get(req, res) {
+async function get(req, res) {
 
   var serviceUrl = utils.getServiceUrl(req)
 
-  collections.get(serviceUrl, function (err, content) {
+  await collections.get(serviceUrl, function (err, content) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})

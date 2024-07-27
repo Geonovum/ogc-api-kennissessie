@@ -1,6 +1,6 @@
 const database = require('../database/database')
 
-function getMetaData(serviceUrl, name, document) {
+async function getMetaData(serviceUrl, name, document) {
 
   var content = {}
   // A local identifier for the collection that is unique for the dataset;
@@ -43,16 +43,16 @@ function getMetaData(serviceUrl, name, document) {
   return content
 }
 
-function get(serviceUrl, collectionId, callback) {
+async function get(serviceUrl, collectionId, callback) {
 
   var root = serviceUrl.pathname.replace(/^\/+/, '') // remove any trailing /
 
   var query = { type: 'FeatureCollection', name: `${collectionId}` };
   var projection = { name: 1, crs: 1, _id: 1 }
 
-  var collections = database.getCollection()
+  var collections = await database.getCollection()
 
-  var content = getMetaData(serviceUrl, collectionId, collections[collectionId])
+  var content = await getMetaData(serviceUrl, collectionId, collections[collectionId])
 
   return callback(undefined, content);
 }

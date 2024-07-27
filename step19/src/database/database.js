@@ -94,7 +94,7 @@ Object.keys(dataDict).forEach(function (key) {
   // --- end construct schema ------------------- 
 })
 
-function getCollection() {
+async function getCollection() {
   return dataDict
 }
 

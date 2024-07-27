@@ -2,7 +2,7 @@ const accepts = require('accepts')
 const item = require('../models/item.js')
 const utils = require('../utils/utils')
 
-function get (req, res) {
+async function get (req, res) {
 
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
@@ -30,13 +30,13 @@ function get (req, res) {
   })
 }
 
-function replacee (req, res) {
+async function replacee (req, res) {
   
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.replacee(serviceUrl, collectionId, featureId, req.body, function(err, content, newId) {
+  await item.replacee(serviceUrl, collectionId, featureId, req.body, function(err, content, newId) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
@@ -48,13 +48,13 @@ function replacee (req, res) {
   })
 }
 
-function deletee (req, res) {
+async function deletee (req, res) {
   
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.deletee(serviceUrl, collectionId, featureId, function(err, content) {
+  await item.deletee(serviceUrl, collectionId, featureId, function(err, content) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
@@ -65,13 +65,13 @@ function deletee (req, res) {
   })
 }
 
-function update (req, res) {
+async function update (req, res) {
   
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.update(serviceUrl, collectionId, featureId, req.body, function(err, content) {
+  await item.update(serviceUrl, collectionId, featureId, req.body, function(err, content) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
@@ -82,7 +82,7 @@ function update (req, res) {
   })
 }
 
-function options (req, res) {
+async function options (req, res) {
   
   res.status(200).end()
 }

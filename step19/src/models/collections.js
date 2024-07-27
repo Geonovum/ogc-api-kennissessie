@@ -3,7 +3,7 @@ const collection = require('./collection.js')
 const utils = require('../utils/utils')
 const config = require('../config/config')
 
-function get(serviceUrl, callback) {
+async function get(serviceUrl, callback) {
 
   var root = serviceUrl.pathname.replace(/^\/+/, '') // remove any trailing /
 
@@ -22,10 +22,10 @@ function get(serviceUrl, callback) {
 
   content.collections = [];
 
-  var collections = database.getCollection()
+  var collections = await database.getCollection()
 
   for (var name in collections) {
-    var item = collection.getMetaData(serviceUrl, name, collections[name])
+    var item = await collection.getMetaData(serviceUrl, name, collections[name])
   
     content.collections.push(item);
   };
