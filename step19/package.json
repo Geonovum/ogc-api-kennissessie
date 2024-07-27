@@ -1,4 +1,11 @@
 {
+  "name": "step19",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@turf/turf": "^7.0.0",
     "cors": "^2.8.5",
