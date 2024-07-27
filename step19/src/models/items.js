@@ -4,7 +4,7 @@ const projgeojson = require('../utils/proj4')
 const turf = require('@turf/turf');
 const config = require('../config/config')
 
-async function getContent(serviceUrl, name, document) {
+function getContent(serviceUrl, name, document) {
   var item = {}
   item.type = document.type
   item.features = document.features
@@ -17,14 +17,14 @@ async function getContent(serviceUrl, name, document) {
   return item
 }
 
-async function get(serviceUrl, collectionId, query, options, acceptType, callback) {
+function get(serviceUrl, collectionId, query, options, acceptType, callback) {
 
-  var collections = await database.getCollection()
+  var collections = database.getCollection()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var content = await getContent(serviceUrl, collectionId, collection)
+  var content = getContent(serviceUrl, collectionId, collection)
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
   var features = content.features
@@ -40,7 +40,7 @@ async function get(serviceUrl, collectionId, query, options, acceptType, callbac
       if (_query['bbox-crs']) {
         // Assumption that content comes in WGS84
         var fromEpsg = utils.UriToEPSG(_query['bbox-crs'])
-        bbox = await projgeojson.projectBBox(bbox, fromEpsg, 'EPSG:4326')
+        bbox = projgeojson.projectBBox(bbox, fromEpsg, 'EPSG:4326')
         delete _query['bbox-crs']
       }
 
@@ -54,7 +54,7 @@ async function get(serviceUrl, collectionId, query, options, acceptType, callbac
     if (_query.crs) {
       console.log('do crs conversion using proj4') // TODO
       var toEpsg = utils.UriToEPSG(query.crs)
-      features = await projgeojson.projectFeatureCollection(features, 'EPSG:4326', toEpsg);
+      features = projgeojson.projectFeatureCollection(features, 'EPSG:4326', toEpsg);
 
       content.headerContentCrs = query.crs
       delete _query.crs

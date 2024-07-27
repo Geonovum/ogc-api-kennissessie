@@ -2,7 +2,7 @@ const accepts = require('accepts')
 var items = require('../models/items.js')
 var utils = require('../utils/utils')
 
-async function get(req, res, next) {
+function get(req, res, next) {
 
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
@@ -20,7 +20,7 @@ async function get(req, res, next) {
   var accept = accepts(req)
   var acceptType = accept.type(['json', 'html'])
 
-  await items.get(serviceUrl, collectionId, query, options, acceptType, function (err, content) {
+  items.get(serviceUrl, collectionId, query, options, acceptType, function (err, content) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
@@ -46,7 +46,7 @@ async function get(req, res, next) {
 
 }
 
-async function options (req, res) {
+function options (req, res) {
   
   res.status(200).end()
 }

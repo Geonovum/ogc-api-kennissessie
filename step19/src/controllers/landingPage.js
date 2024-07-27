@@ -3,11 +3,19 @@ const accepts = require('accepts')
 const landingPage = require('../models/landingPage.js');
 const utils = require('../utils/utils')
 
-async function get(req, res) {
+function get(req, res) {
+
+    // check to see if this is a WFS request, if so, return 400 indicating we do not support WFS
+    if (req.query.SERVICE) {
+        if (req.query.SERVICE == 'WFS') {
+            res.status(400).json(`{'code': 'InvalidParameterValue', 'description': 'This is not a WFS'}`)
+            return
+        }
+    }
 
     var serviceUrl = utils.getServiceUrl(req)
 
-    await landingPage.get(serviceUrl, req.query, function (err, content) {
+    landingPage.get(serviceUrl, function (err, content) {
 
         if (err) {
             res.status(err.httpCode).json({'code': err.code, 'description': err.description})

@@ -1,7 +1,7 @@
 const accepts = require('accepts')
 var path = require('path');
 
-async function get(req, res) {
+function get(req, res) {
 
   var accept = accepts(req)
 

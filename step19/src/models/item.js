@@ -1,8 +1,8 @@
 const database = require('../database/database')
 
-async function get(serviceUrl, collectionId, featureId, callback) {
+function get(serviceUrl, collectionId, featureId, callback) {
 
-  var collections = await database.getCollection()
+  var collections = database.getCollection()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -25,12 +25,12 @@ async function get(serviceUrl, collectionId, featureId, callback) {
   return callback(undefined, content);
 }
 
-async function create(serviceUrl, collectionId, body, callback) {
+function create(serviceUrl, collectionId, body, callback) {
 
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });
 
-  var collections = await database.getCollection()
+  var collections = database.getCollection()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -55,12 +55,12 @@ async function create(serviceUrl, collectionId, body, callback) {
   return callback(undefined, body, newId);
 }
 
-async function replacee(serviceUrl, collectionId, featureId, body, callback) {
+function replacee(serviceUrl, collectionId, featureId, body, callback) {
 
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });
 
-  var collections = await database.getCollection()
+  var collections = database.getCollection()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -95,9 +95,9 @@ async function replacee(serviceUrl, collectionId, featureId, body, callback) {
   return callback(undefined, body, newId);
 }
 
-async function deletee(serviceUrl, collectionId, featureId, callback) {
+function deletee(serviceUrl, collectionId, featureId, callback) {
 
-  var collections = await database.getCollection()
+  var collections = database.getCollection()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -116,12 +116,12 @@ async function deletee(serviceUrl, collectionId, featureId, callback) {
   return callback(undefined, {});
 }
 
-async function update(serviceUrl, collectionId, featureId, body, callback) {
+function update(serviceUrl, collectionId, featureId, body, callback) {
 
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' }, undefined);
 
-  var collections = await database.getCollection()
+  var collections = database.getCollection()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);

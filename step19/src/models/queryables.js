@@ -1,8 +1,8 @@
 const database = require('../database/database')
 
-async function get(serviceUrl, collectionId, callback) {
+function get(serviceUrl, collectionId, callback) {
 
-  var collections = await database.getCollection()
+  var collections = database.getCollection()
   var document = collections[collectionId]
 
   var content = {}

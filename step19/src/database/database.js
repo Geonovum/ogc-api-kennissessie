@@ -97,7 +97,7 @@ async function load() {
   })
 }
 
-async function getCollection() {
+function getCollection() {
   return dataDict
 }
 

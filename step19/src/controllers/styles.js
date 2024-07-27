@@ -2,7 +2,7 @@ const utils = require('../utils/utils.js')
 const styles = require('../models/styles.js')
 const accepts = require('accepts')
 
-async function get(req, res) {
+function get(req, res) {
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
 
