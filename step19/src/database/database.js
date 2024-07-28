@@ -106,6 +106,6 @@ export function getCollection() {
   return dataDict
 }
 
-export default {
-  getCollection,
-}
+var aa = -0
+
+export default aa

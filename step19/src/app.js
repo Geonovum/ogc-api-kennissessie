@@ -9,6 +9,8 @@ import express, { json } from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 
+global.APIVERSION = "1.2.3"
+
 export const app = express()
 
 const __dirname = import.meta.dirname
@@ -31,8 +33,7 @@ app.use(apiVersion)
 
 // Mount API on this path
 const mountPath = process.env.MOUNTPATH // from config
-const version = "1.2.3"// from config
-app.use(`/${mountPath}/v${major(version)}`, oapifp1)
-app.use(`/${mountPath}/v${major(version)}`, oapifp3)
-app.use(`/${mountPath}/v${major(version)}`, oapifp4)
-app.use(`/${mountPath}/v${major(version)}`, oapifp5)
+app.use(`/${mountPath}/v${major(global.APIVERSION)}`, oapifp1)
+app.use(`/${mountPath}/v${major(global.APIVERSION)}`, oapifp3)
+app.use(`/${mountPath}/v${major(global.APIVERSION)}`, oapifp4)
+app.use(`/${mountPath}/v${major(global.APIVERSION)}`, oapifp5)
