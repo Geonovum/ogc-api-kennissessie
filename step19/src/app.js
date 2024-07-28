@@ -1,7 +1,6 @@
 import encodings from './middleware/encodings.js'
 import apiVersion from './middleware/apiversion.js'
 import { major } from 'semver'
-//import { mountPath, version as _version } from './config.env/index.js' 
 import oapifp1 from './routes/ogcapiFeaturesPart1.js'
 import oapifp3 from './routes/ogcapiFeaturesPart3.js'
 import oapifp4 from './routes/ogcapiFeaturesPart4.js'
@@ -22,7 +21,7 @@ app.use(cors({ origin: true }));
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
-//app.use(static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 app.use(json());
 
 // setup middleware to decode the content-type
@@ -31,7 +30,7 @@ app.use(encodings)
 app.use(apiVersion)
 
 // Mount API on this path
-const mountPath = "" // from config
+const mountPath = process.env.MOUNTPATH // from config
 const version = "1.2.3"// from config
 app.use(`/${mountPath}/v${major(version)}`, oapifp1)
 app.use(`/${mountPath}/v${major(version)}`, oapifp3)
