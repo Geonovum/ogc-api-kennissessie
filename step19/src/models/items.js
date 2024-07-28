@@ -1,8 +1,7 @@
-const database = require('../database/database')
-const utils = require('../utils/utils')
-const projgeojson = require('../utils/proj4')
-const turf = require('@turf/turf');
-const config = require('../config/config')
+import database from '../database/database.js';
+import utils from '../utils/utils.js';
+import projgeojson from '../utils/proj4.js';
+import { bboxPolygon, booleanWithin } from '@turf/turf';
 
 function getContent(serviceUrl, name, document) {
   var item = {}
@@ -35,7 +34,7 @@ function get(serviceUrl, collectionId, query, options, acceptType, callback) {
     // (OAPIF P2) Requirement 6 Each GET request on a 'features' resource SHALL support a query parameter bbox-crs 
     if (_query.bbox) {
       var corners = _query.bbox.split(',') // 
-      var bbox = turf.bboxPolygon(corners);
+      var bbox = bboxPolygon(corners);
 
       if (_query['bbox-crs']) {
         // Assumption that content comes in WGS84
@@ -46,7 +45,7 @@ function get(serviceUrl, collectionId, query, options, acceptType, callback) {
 
       features = features.filter(
         feature =>
-          turf.booleanWithin(feature, bbox)
+          booleanWithin(feature, bbox)
       )
       delete _query.bbox
     }
@@ -117,25 +116,25 @@ function get(serviceUrl, collectionId, query, options, acceptType, callback) {
   content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
 
   var offsetLimit = '';
-  if (options.offset > 0 || options.limit != config.limit) {
+  if (options.offset > 0 || options.limit != limit) {
     offsetLimit = `&offset=${options.offset}`;
-    if (options.limit != config.limit)
+    if (options.limit != limit)
       offsetLimit += `&limit=${options.limit}`;
   }
 
   if (options.offset + options.limit < content.numberMatched) { // only if we need pagination
     content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json`, rel: `first`, type: `application/geo+json`, title: `Next page` })
-    content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json&offset=${options.offset + options.limit}` + (options.limit == config.limit ? '' : `&limit=${options.limit}`), rel: `next`, type: `application/geo+json`, title: `Next page` })
+    content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json&offset=${options.offset + options.limit}` + (options.limit == limit ? '' : `&limit=${options.limit}`), rel: `next`, type: `application/geo+json`, title: `Next page` })
   }
 
   var offset = options.offset - options.limit;
   if (offset < 0) offset = 0
   if (options.offset != 0)
-    content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json&offset=${offset}` + (options.limit == config.limit ? '' : `&limit=${options.limit}`), rel: `prev`, type: `application/geo+json`, title: `Previous page` })
+    content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json&offset=${offset}` + (options.limit == limit ? '' : `&limit=${options.limit}`), rel: `prev`, type: `application/geo+json`, title: `Previous page` })
 
   return callback(undefined, content);
 }
 
-module.exports = {
+export default {
   get, getContent
 }

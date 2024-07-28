@@ -1,5 +1,5 @@
-var path = require('path');
-var url = require('url');
+import { extname } from 'path';
+import url from 'url';
 
 //-------------------------------------------------------------------
 // interpret all incoming requests before moving to the route handler
@@ -37,7 +37,7 @@ var encodings = function (req, res, next) {
 
   var mediaType = req.query.f
     || req.query.accept
-    || path.extname(req.path).replace(/^\./, '')
+    || extname(req.path).replace(/^\./, '')
 
   delete req.query.f;
   delete req.query.accept;
@@ -56,4 +56,4 @@ var encodings = function (req, res, next) {
   next()
 }
 
-module.exports = encodings
+export default encodings

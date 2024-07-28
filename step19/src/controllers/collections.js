@@ -1,6 +1,6 @@
-const accepts = require('accepts')
-const collections = require('../models/collections.js')
-const utils = require('../utils/utils')
+import accepts from 'accepts'
+import collections from '../models/collections.js'
+import utils from '../utils/utils.js'
 
 function get(req, res) {
 
@@ -35,6 +35,6 @@ function get(req, res) {
   })
 }
 
-module.exports = {
+export default {
   get,
 }

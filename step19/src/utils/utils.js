@@ -1,4 +1,4 @@
-var path = require('path')
+import { join } from 'path'
 
 function getServiceUrl(req) {
   // remove the optional extension from the baseUrl
@@ -6,7 +6,7 @@ function getServiceUrl(req) {
 
   const proxyHost = req.headers["x-forwarded-host"]
   var host = proxyHost || req.headers.host
-  host = path.join(host, root)
+  host = join(host, root)
   var serviceUrl = `${req.protocol}://${host}`
 
   return new URL(serviceUrl);
@@ -66,7 +66,7 @@ function EPSGtoProj4(epsg) {
   return "+proj=sterea +lat_0=52.1561605555556 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.4171,50.3319,465.5524,1.9342,-1.6677,9.1019,4.0725 +units=m +no_defs +type=crs";
 }
 
-module.exports = {
+export default {
   getServiceUrl,
   ISODateString,
   link,

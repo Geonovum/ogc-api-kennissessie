@@ -1,5 +1,3 @@
-const config = require('../config/config')
-
 function get(serviceUrl, callback) {
 
     var root = serviceUrl.pathname.replace(/^\/+/, '') // remove any trailing /
@@ -12,8 +10,8 @@ function get(serviceUrl, callback) {
     // - /conformance (relation type `conformance`)
     // - /collections (relation type `data`)
     var content = {}
-    content.title = config.title // Requirement 2 B
-    content.description = config.description
+    content.title = _title // Requirement 2 B
+    content.description = description
     content.links = []
     content.links.push({ href: `${serviceUrl}/api?f=json`, rel: `service-desc`, type: `application/vnd.oai.openapi+json;version=3.0`, title: `the API definition` })
     content.links.push({ href: `${serviceUrl}/api.html`, rel: `service-doc`, type: `text/html`, title: `the API documentation` })
@@ -27,6 +25,6 @@ function get(serviceUrl, callback) {
     //  })
 }
 
-module.exports = {
+export default {
     get
 }

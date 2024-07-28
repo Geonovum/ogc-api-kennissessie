@@ -1,10 +1,10 @@
 const router = require('express').Router()
 
-const schema  = require('../controllers/schema')
-const sortables  = require('../controllers/sortables')
+import { get as getSchema } from '../controllers/schema.js'
+import { get as getSortables } from '../controllers/sortables.js'
 
 // The server SHALL support the HTTP GET operation at the path /collections/{collectionId}.
-router.get('/collections/:collectionId/schema', schema.get)
-router.get('/collections/:collectionId/sortables', sortables.get)
+router.get('/collections/:collectionId/schema', getSchema)
+router.get('/collections/:collectionId/sortables', getSortables)
 
-module.exports = router
+export default router

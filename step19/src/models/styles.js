@@ -1,5 +1,5 @@
-const database = require('../database/database')
+import database from '../database/database.js'
 
-module.exports = {
+export default {
   get
 }

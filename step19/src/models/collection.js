@@ -1,4 +1,4 @@
-const database = require('../database/database')
+import database from '../database/database.js'
 
 function getMetaData(serviceUrl, name, document) {
 
@@ -57,6 +57,6 @@ function get(serviceUrl, collectionId, callback) {
   return callback(undefined, content);
 }
 
-module.exports = {
+export default {
   get, getMetaData
 }

@@ -1,5 +1,5 @@
-const accepts = require('accepts')
-var path = require('path');
+import accepts from 'accepts';
+import { join } from 'path';
 
 function get(req, res) {
 
@@ -11,11 +11,11 @@ function get(req, res) {
   switch (accept.type(['json', 'yaml', 'html'])) {
     case 'json':
       res.set('Content-Type', 'application/vnd.oai.openapi+json;version=3.0')
-      res.sendFile(path.join(__dirname, '..', 'api', 'openapi.json'))
+      res.sendFile(join(__dirname, '..', 'api', 'openapi.json'))
       break
     case 'yaml':
       res.set('Content-Type', 'application/vnd.oai.openapi;version=3.0')
-      res.sendFile(path.join(__dirname, '..', 'api', 'openapi.yaml'))
+      res.sendFile(join(__dirname, '..', 'api', 'openapi.yaml'))
       break
     case 'html':
       res.statusCode = 302; // redirect
@@ -28,6 +28,6 @@ function get(req, res) {
   }
 }
 
-module.exports = {
+export default {
   get,
 }

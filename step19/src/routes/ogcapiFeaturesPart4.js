@@ -1,14 +1,14 @@
 const router = require('express').Router()
 
-const collection  = require('../controllers/collection')
-const items       = require('../controllers/items')
-const item        = require('../controllers/item')
+import { create } from '../controllers/collection.js'
+import { options } from '../controllers/items.js'
+import { replacee, deletee, update, options as _options } from '../controllers/item.js'
 
-router.post('/collections/:collectionId/items', collection.create)
-router.put('/collections/:collectionId/items/:featureId', item.replacee)
-router.delete('/collections/:collectionId/items/:featureId', item.deletee)
-router.patch('/collections/:collectionId/items/:featureId', item.update)
-router.options('/collections/:collectionId/items', items.options)
-router.options('/collections/:collectionId/items/:featureId', item.options)
+router.post('/collections/:collectionId/items', create)
+router.put('/collections/:collectionId/items/:featureId', replacee)
+router.delete('/collections/:collectionId/items/:featureId', deletee)
+router.patch('/collections/:collectionId/items/:featureId', update)
+router.options('/collections/:collectionId/items', options)
+router.options('/collections/:collectionId/items/:featureId', _options)
 
-module.exports = router
+export default router

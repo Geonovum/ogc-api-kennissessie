@@ -1,6 +1,6 @@
-const utils = require('../utils/utils.js')
-const sortables = require('../models/sortables.js')
-const accepts = require('accepts')
+import utils from '../utils/utils.js'
+import sortables from '../models/sortables.js'
+import accepts from 'accepts'
 
 function get (req, res) {
 
@@ -38,6 +38,6 @@ function get (req, res) {
   })
 }
 
-module.exports = {
+export default {
   get
 }

@@ -1,6 +1,6 @@
-const utils = require('../utils/utils.js')
-const schema = require('../models/schema.js')
-const accepts = require('accepts')
+import utils from '../utils/utils.js'
+import schema from '../models/schema.js'
+import accepts from 'accepts'
 
 function get (req, res) {
 
@@ -39,6 +39,6 @@ function get (req, res) {
   })
 }
 
-module.exports = {
+export default {
   get
 }

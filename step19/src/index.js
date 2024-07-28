@@ -1,17 +1,16 @@
-process.browser = true
-global.window = { process: { type: 'renderer' } }
+//process.browser = true
+//global.window = { process: { type: 'renderer' } }
 
-const app = require('./app')
-const config = require('./config/config') 
-const database = require('./database/database')
+import { listen } from './app.js'
+import { load } from './database/database.js'
 
-database.load()
+load()
 
-app.listen(config.express.port, function (error) {
+listen(express.port, function (error) {
   if (error) {
     console.log('Unable to listen for connections', error)
     process.exit(10)
   }
 
-  console.log(`OGC API Feature listening on port ${config.express.port}`)
+  console.log(`OGC API Feature listening on port ${express.port}`)
 })

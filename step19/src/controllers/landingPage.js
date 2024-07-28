@@ -1,7 +1,7 @@
 // define the home page route
-const accepts = require('accepts')
-const landingPage = require('../models/landingPage.js');
-const utils = require('../utils/utils')
+import accepts from 'accepts';
+import landingPage from '../models/landingPage.js';
+import utils from '../utils/utils.js';
 
 function get(req, res) {
 
@@ -42,6 +42,6 @@ function get(req, res) {
     })
 }
 
-module.exports = {
+export default {
     get,
 }

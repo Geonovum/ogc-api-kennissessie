@@ -1,27 +1,27 @@
-const encodings = require('./middleware/encodings')
-const version = require('./middleware/apiversion')
-const semver = require('semver')
-const config = require('./config/config') 
-const oapifp1 = require('./routes/ogcapiFeaturesPart1')
-const oapifp3 = require('./routes/ogcapiFeaturesPart3')
-const oapifp4 = require('./routes/ogcapiFeaturesPart4')
-const oapifp5 = require('./routes/ogcapiFeaturesPart5')
-const express = require('express')
-const cors = require('cors')
-const morgan = require('morgan')
+import encodings from './middleware/encodings.js'
+import version from './middleware/apiversion.js'
+import { major } from 'semver'
+//import { mountPath, version as _version } from './config.env/index.js' 
+import oapifp1 from './routes/ogcapiFeaturesPart1.js'
+import oapifp3 from './routes/ogcapiFeaturesPart3.js'
+import oapifp4 from './routes/ogcapiFeaturesPart4.js'
+import oapifp5 from './routes/ogcapiFeaturesPart5.js'
+import express, { json } from 'express'
+//import cors from 'cors'
+//import morgan from 'morgan'
 
 const app = express()
 
-app.use(morgan(':method :url :response-time', { stream: { write: msg => console.log(msg) } }));
+//app.use(morgan(':method :url :response-time', { stream: { write: msg => console.log(msg) } }));
 
-app.use(cors({ origin: true }));
+//app.use(cors({ origin: true }));
 
 // For HTML rendering
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
-app.use(express.static(__dirname + '/public'));
-app.use(express.json());
+//app.use(static(__dirname + '/public'));
+app.use(json());
 
 // setup middleware to decode the content-type
 // see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_encodings
@@ -29,9 +29,9 @@ app.use(encodings)
 app.use(version)
 
 // Mount API on this path
-app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp1)
-app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp3)
-app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp4)
-app.use(`/${config.mountPath}/v${semver.major(config.version)}`, oapifp5)
+app.use(`/${mountPath}/v${major(_version)}`, oapifp1)
+app.use(`/${mountPath}/v${major(_version)}`, oapifp3)
+app.use(`/${mountPath}/v${major(_version)}`, oapifp4)
+app.use(`/${mountPath}/v${major(_version)}`, oapifp5)
 
-module.exports = app
+export default app

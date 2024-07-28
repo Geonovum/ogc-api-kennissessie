@@ -1,10 +1,10 @@
-const utils = require('../utils/utils.js')
-const styles = require('../models/styles.js')
-const accepts = require('accepts')
+import { getServiceUrl } from '../utils/utils.js'
+import styles from '../models/styles.js'
+import accepts from 'accepts'
 
 function get(req, res) {
   var collectionId = req.params.collectionId
-  var serviceUrl = utils.getServiceUrl(req)
+  var serviceUrl = getServiceUrl(req)
 
   var accept = accepts(req)
 
@@ -30,6 +30,6 @@ function get(req, res) {
 
 }
 
-module.exports = {
+export default {
   get
 }

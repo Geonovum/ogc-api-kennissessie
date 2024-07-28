@@ -1,4 +1,4 @@
-function get(serviceUrl, callback) {
+export function get(serviceUrl, callback) {
 
   // Recommendation 5 A: ... implementations SHOULD consider to support an HTML encoding.
   // Recommendation 6 A & B: ... implementations SHOULD consider to support GeoJSON as an encoding for features and feature collections
@@ -27,8 +27,4 @@ function get(serviceUrl, callback) {
   content.links.push({ href: `${serviceUrl}/conformance?f=json`, rel: `self`, type: `application/json`, title: `this document in json` })
 
   return callback(undefined, content);
-}
-
-module.exports = {
-  get,
 }

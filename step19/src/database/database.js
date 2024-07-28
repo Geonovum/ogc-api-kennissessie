@@ -1,14 +1,19 @@
-const path = require('path')
-const fs = require('fs')
-const turf = require('@turf/turf')
+import { join } from 'path'
+import { readdirSync, readFileSync } from 'fs'
+import { bbox, featureCollection } from '@turf/turf'
+
+const __dirname = import.meta.dirname
 
 function readGeoJSONfiles() {
-  var dir = path.join(__dirname, "../../data")
+  if (__dirname === undefined)
+    console.log('need node 20.16 or higher')
+  
+  var dir = join(__dirname, "../../data")
 
-  var fileNames = fs.readdirSync(dir).filter(fn => fn.endsWith('.geojson'))
+  var fileNames = readdirSync(dir).filter(fn => fn.endsWith('.geojson'))
 
   fileNames.forEach(fileName => {
-    var rawData = fs.readFileSync(path.join(dir, fileName))
+    var rawData = readFileSync(join(dir, fileName))
     var id = fileName.replace(/\.[^/.]+$/, "")
 
     var geojson = JSON.parse(rawData)
@@ -18,7 +23,7 @@ function readGeoJSONfiles() {
 
 var dataDict = {};
 
-function load() {
+export function load() {
 
   readGeoJSONfiles()
 
@@ -44,7 +49,7 @@ function load() {
     geojson.lastModified = new Date()
 
     // calculate the bbox from geometry
-    geojson.bbox = turf.bbox(turf.featureCollection(geojson.features));
+    geojson.bbox = bbox(featureCollection(geojson.features));
 
     // --- begin construct queryables ------------------- 
     geojson.queryables = {}
@@ -97,8 +102,8 @@ function load() {
   })
 }
 
-function getCollection() {
+export function getCollection() {
   return dataDict
 }
 
-module.exports = { load, getCollection }
+export default database

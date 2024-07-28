@@ -1,4 +1,4 @@
-const database = require('../database/database')
+import database from '../database/database.js';
 
 function get(serviceUrl, collectionId, featureId, callback) {
 
@@ -152,6 +152,6 @@ function update(serviceUrl, collectionId, featureId, body, callback) {
   return callback(undefined, feature);
 }
 
-module.exports = {
+export default {
   get, create, replacee, deletee, update
 }

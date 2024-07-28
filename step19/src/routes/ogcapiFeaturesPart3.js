@@ -1,8 +1,8 @@
 const router = require('express').Router()
 
-const queryables  = require('../controllers/queryables')
+import { get as getQueryables } from '../controllers/queryables.js'
 
 // The server SHALL support the HTTP GET operation at the path /collections/{collectionId}.
-router.get('/collections/:collectionId/queryables', queryables.get)
+router.get('/collections/:collectionId/queryables', getQueryables)
 
-module.exports = router
+export default router
