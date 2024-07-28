@@ -2,7 +2,7 @@ import utils from '../utils/utils.js'
 import schema from '../models/schema.js'
 import accepts from 'accepts'
 
-function get (req, res) {
+export function get (req, res) {
 
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
@@ -37,8 +37,4 @@ function get (req, res) {
     }
 
   })
-}
-
-export default {
-  get
 }

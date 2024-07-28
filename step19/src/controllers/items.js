@@ -2,7 +2,7 @@ import accepts from 'accepts'
 import items from '../models/items.js'
 import utils from '../utils/utils.js'
 
-function get(req, res, next) {
+export function get(req, res, next) {
 
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
@@ -46,12 +46,7 @@ function get(req, res, next) {
 
 }
 
-function options (req, res) {
+export function options (req, res) {
   
   res.status(200).end()
-}
-
-
-export default {
-  get, options
 }

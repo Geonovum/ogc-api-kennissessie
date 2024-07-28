@@ -3,7 +3,7 @@ import collection from '../models/collection.js'
 import item from '../models/item.js'
 import utils from '../utils/utils.js'
 
-function get (req, res) {
+export function get (req, res) {
    
   var collectionId = req.params.collectionId
   var serviceUrl = utils.getServiceUrl(req)
@@ -39,7 +39,7 @@ function get (req, res) {
   
 }
 
-function create (req, res) {
+export function create (req, res) {
   
   // check Content-Crs
 
@@ -56,8 +56,4 @@ function create (req, res) {
     res.set('location', `${serviceUrl}/collections/${collectionId}/items/${newId}`)
     res.status(201).end()
   })
-}
-
-export default {
-  get, create
 }

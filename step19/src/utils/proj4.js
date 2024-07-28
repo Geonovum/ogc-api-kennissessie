@@ -1,6 +1,8 @@
 import proj4 from 'proj4'
-import PROJS, { length } from './projs.json' with { type: "json" }
 import { point as _point, bboxPolygon } from '@turf/turf'
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const PROJS = require("./projs.json");
 
 const getProjByCode = function(code){
     for (let i = 0; i < length; i++){

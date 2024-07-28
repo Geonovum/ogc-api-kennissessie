@@ -1,4 +1,4 @@
-const router = require('express').Router()
+import express from 'express';
 
 import { get as getLandingPage } from '../controllers/landingPage.js'
 import { get as getConformance } from '../controllers/conformance.js'
@@ -8,6 +8,8 @@ import { get as getItems } from '../controllers/items.js'
 import { get as getItem } from '../controllers/item.js'
 //
 import { get as getAPI } from '../controllers/api.js'
+
+const router = express.Router();
 
 // 7.5 The server SHOULD support the HTTP 1.1 method HEAD for all 
 // resources that support the method GET.

@@ -106,4 +106,6 @@ export function getCollection() {
   return dataDict
 }
 
-export default database
+export default {
+  getCollection,
+}

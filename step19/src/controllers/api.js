@@ -1,7 +1,9 @@
 import accepts from 'accepts';
 import { join } from 'path';
 
-function get(req, res) {
+const __dirname = import.meta.dirname
+
+export function get(req, res) {
 
   var accept = accepts(req)
 
@@ -26,8 +28,4 @@ function get(req, res) {
     default:
       res.status(400).json("{'code': 'InvalidParameterValue', 'description': 'Invalid format'}")
   }
-}
-
-export default {
-  get,
 }

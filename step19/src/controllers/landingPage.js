@@ -3,7 +3,7 @@ import accepts from 'accepts';
 import landingPage from '../models/landingPage.js';
 import utils from '../utils/utils.js';
 
-function get(req, res) {
+export function get(req, res) {
 
     // check to see if this is a WFS request, if so, return 400 indicating we do not support WFS
     if (req.query.SERVICE) {
@@ -40,8 +40,4 @@ function get(req, res) {
                 res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
         }
     })
-}
-
-export default {
-    get,
 }

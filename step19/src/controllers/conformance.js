@@ -8,7 +8,7 @@ import { get as _get } from '../models/conformance.js'
 // The content of that response SHALL be based upon the OpenAPI 3.0 schema confClasses.yaml 
 // and list all OGC API conformance classes that the server conforms to.
 
-function get(req, res) {
+export function get(req, res) {
 
   var serviceUrl = utils.getServiceUrl(req)
 
@@ -17,8 +17,4 @@ function get(req, res) {
     res.set('link', utils.makeHeaderLinks(content.links))
     res.status(200).json(content) // Requirement 6 A
   })
-}
-
-export default {
-  get,
 }

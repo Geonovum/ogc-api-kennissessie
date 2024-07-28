@@ -2,7 +2,7 @@ import { getServiceUrl } from '../utils/utils.js'
 import styles from '../models/styles.js'
 import accepts from 'accepts'
 
-function get(req, res) {
+export function get(req, res) {
   var collectionId = req.params.collectionId
   var serviceUrl = getServiceUrl(req)
 
@@ -28,8 +28,4 @@ function get(req, res) {
       res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
   }
 
-}
-
-export default {
-  get
 }

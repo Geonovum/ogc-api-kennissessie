@@ -2,7 +2,7 @@ import accepts from 'accepts'
 import item from '../models/item.js'
 import utils from '../utils/utils.js'
 
-function get (req, res) {
+export function get (req, res) {
 
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
@@ -30,7 +30,7 @@ function get (req, res) {
   })
 }
 
-function replacee (req, res) {
+export function replacee (req, res) {
   
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
@@ -48,7 +48,7 @@ function replacee (req, res) {
   })
 }
 
-function deletee (req, res) {
+export function deletee (req, res) {
   
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
@@ -65,7 +65,7 @@ function deletee (req, res) {
   })
 }
 
-function update (req, res) {
+export function update (req, res) {
   
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
@@ -82,11 +82,7 @@ function update (req, res) {
   })
 }
 
-function options (req, res) {
+export function options (req, res) {
   
   res.status(200).end()
-}
-
-export default {
-  get, replacee, deletee, update, options
 }
