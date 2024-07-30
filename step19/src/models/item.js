@@ -1,8 +1,8 @@
-import database from '../database/database.js';
+import { getDatabases } from '../database/database.js'
 
 function get(serviceUrl, collectionId, featureId, callback) {
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -30,7 +30,7 @@ function create(serviceUrl, collectionId, body, callback) {
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -60,7 +60,7 @@ function replacee(serviceUrl, collectionId, featureId, body, callback) {
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -97,7 +97,7 @@ function replacee(serviceUrl, collectionId, featureId, body, callback) {
 
 function deletee(serviceUrl, collectionId, featureId, callback) {
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);

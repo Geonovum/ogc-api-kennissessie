@@ -1,11 +1,28 @@
 import accepts from 'accepts'
 import items from '../models/items.js'
 import utils from '../utils/utils.js'
+import { join } from 'path'
+
+function getNeutralUrl(req) {
+  var root = req.baseUrl.replace(/\.[^.]*$/, '')
+
+  const proxyHost = req.headers["x-forwarded-host"]
+  var host = proxyHost || req.headers.host
+  host = join(host, root)
+
+  var query = ''
+  for (var propName in req.query)
+    query += `${propName}=${req.query[propName]}`
+
+  return new URL(`${req.protocol}://${host}${req.path}?${query}`)
+}
+
 
 export function get(req, res, next) {
 
   var collectionId = req.params.collectionId
-  var serviceUrl = utils.getServiceUrl(req)
+
+  var neutralUrl = getNeutralUrl(req)
 
   var options = {}
   options.offset = Number(req.query.offset) || 0
@@ -15,12 +32,10 @@ export function get(req, res, next) {
   delete req.query.offset;
   delete req.query.limit;
 
-  var query = req.query
-
   var accept = accepts(req)
-  var acceptType = accept.type(['json', 'html'])
+  var format = accept.type(JSON.parse(process.env.FORMATS))
 
-  items.get(serviceUrl, collectionId, query, options, acceptType, function (err, content) {
+  items.get(neutralUrl, format, collectionId, req.query, options, function (err, content) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
@@ -32,7 +47,7 @@ export function get(req, res, next) {
       res.set('Content-Crs', content.headerContentCrs)
     delete content.headerContentCrs
 
-    switch (acceptType) {
+    switch (format) {
       case `json`:
         res.status(200).json(content)
         break

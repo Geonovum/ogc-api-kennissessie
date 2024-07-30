@@ -1,4 +1,4 @@
-import database from '../database/database.js'
+import { getDatabases } from '../database/database.js'
 
 function getMetaData(serviceUrl, name, document) {
 
@@ -50,7 +50,7 @@ function get(serviceUrl, collectionId, callback) {
   var query = { type: 'FeatureCollection', name: `${collectionId}` };
   var projection = { name: 1, crs: 1, _id: 1 }
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
 
   var content = getMetaData(serviceUrl, collectionId, collections[collectionId])
 

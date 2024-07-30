@@ -14,10 +14,9 @@ function readGeoJSONfiles() {
 
   fileNames.forEach(fileName => {
     var rawData = readFileSync(join(dir, fileName))
-    var id = fileName.replace(/\.[^/.]+$/, "")
 
     var geojson = JSON.parse(rawData)
-    dataDict[id] = geojson
+    dataDict[geojson.name] = geojson
   })
 }
 
@@ -102,10 +101,8 @@ export function load() {
   })
 }
 
-export function getCollection() {
+export function getDatabases() {
   return dataDict
 }
 
-var aa = -0
-
-export default aa
+export default getDatabases

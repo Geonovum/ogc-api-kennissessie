@@ -1,5 +1,8 @@
 import { join } from 'path'
 
+var _formats = JSON.parse(process.env.FORMATS)
+var _encodings = JSON.parse(process.env.ENCODINGS)
+
 function getServiceUrl(req) {
   // remove the optional extension from the baseUrl
   var root = req.baseUrl.replace(/\.[^.]*$/, '')
@@ -54,6 +57,20 @@ function makeHeaderLinks(hls) {
   return link;
 }
 
+function getTypeFromFormat(format) {
+  var i = _formats.indexOf(format);
+  return _encodings[i]
+}
+
+function getAlternateFormats(format) {
+  var alternateFormats = [..._formats]
+  alternateFormats = alternateFormats.filter(item => {
+    return item !== format
+  })
+
+  return alternateFormats;
+}
+
 function UriToEPSG(uri) {
   var parts = uri.split('/');
   var identifier = parts.pop()
@@ -73,4 +90,6 @@ export default {
   header,
   makeHeaderLinks,
   UriToEPSG,
+  getTypeFromFormat,
+  getAlternateFormats
 }

@@ -1,29 +1,35 @@
-import database from '../database/database.js';
-import utils from '../utils/utils.js';
-import projgeojson from '../utils/proj4.js';
-import { bboxPolygon, booleanWithin } from '@turf/turf';
+import { getDatabases } from '../database/database.js'
+import utils from '../utils/utils.js'
+import projgeojson from '../utils/proj4.js'
+import { bboxPolygon, booleanWithin } from '@turf/turf'
 
-function getContent(serviceUrl, name, document) {
+function getContent(neutralUrl, format, collection) {
+
   var item = {}
-  item.type = document.type
-  item.features = document.features
+  item.type = collection.type
+  item.features = collection.features
   item.timestamp = new Date().toISOString()
   item.links = []
 
-  if (document.crs.properties.name)
-    item.headerContentCrs = document.crs.properties.name
+  item.links.push({ href: `${neutralUrl}/?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
+  utils.getAlternateFormats(format).forEach(altFormat =>
+    item.links.push({ href: `${neutralUrl}/?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
+  )
+
+  if (collection.crs.properties.name)
+    item.headerContentCrs = collection.crs.properties.name
 
   return item
 }
 
-function get(serviceUrl, collectionId, query, options, acceptType, callback) {
+function get(neutralUrl, format, collectionId, query, options, callback) {
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var content = getContent(serviceUrl, collectionId, collection)
+  var content = getContent(neutralUrl, format, collection)
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
   var features = content.features
@@ -80,7 +86,6 @@ function get(serviceUrl, collectionId, query, options, acceptType, callback) {
         features = features.filter(
           element =>
             element.properties[attributeName] == targetValue)
-
       });
 
       delete _query.filter
@@ -112,25 +117,22 @@ function get(serviceUrl, collectionId, query, options, acceptType, callback) {
 
   content.numberReturned = content.features.length
 
-  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json`, rel: `self`, type: `application/geo+json`, title: `This document` })
-  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
-
   var offsetLimit = '';
-  if (options.offset > 0 || options.limit != limit) {
+  if (options.offset > 0 || options.limit != process.env.LIMIT) {
     offsetLimit = `&offset=${options.offset}`;
-    if (options.limit != limit)
+    if (options.limit != process.env.LIMIT)
       offsetLimit += `&limit=${options.limit}`;
   }
 
   if (options.offset + options.limit < content.numberMatched) { // only if we need pagination
-    content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json`, rel: `first`, type: `application/geo+json`, title: `Next page` })
-    content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json&offset=${options.offset + options.limit}` + (options.limit == limit ? '' : `&limit=${options.limit}`), rel: `next`, type: `application/geo+json`, title: `Next page` })
+    content.links.push({ href: `${neutralUrl}?f=${format}`, rel: `first`, type: getTypeFromFormat(format), title: `Next page` })
+    content.links.push({ href: `${neutralUrl}?f=${format}&offset=${options.offset + options.limit}` + (options.limit == process.env.LIMIT ? '' : `&limit=${options.limit}`), rel: `next`, type: getTypeFromFormat(format), title: `Next page` })
   }
 
   var offset = options.offset - options.limit;
   if (offset < 0) offset = 0
   if (options.offset != 0)
-    content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items?f=json&offset=${offset}` + (options.limit == limit ? '' : `&limit=${options.limit}`), rel: `prev`, type: `application/geo+json`, title: `Previous page` })
+    content.links.push({ href: `${neutralUrl}?f=${format}&offset=${offset}` + (options.limit == process.env.LIMIT ? '' : `&limit=${options.limit}`), rel: `prev`, type: `application/geo+json`, title: `Previous page` })
 
   return callback(undefined, content);
 }
