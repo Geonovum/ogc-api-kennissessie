@@ -10,13 +10,15 @@ function getNeutralUrl(req) {
   var host = proxyHost || req.headers.host
   host = join(host, root)
 
-  var query = ''
-  for (var propName in req.query)
-    query += `${propName}=${req.query[propName]}`
+  var url = new URL(`${req.protocol}://${host}${req.path}`)
 
-  return new URL(`${req.protocol}://${host}${req.path}?${query}`)
+  for (var propName in req.query) {
+    if (req.query.hasOwnProperty(propName)) 
+          url.searchParams.append(propName, req.query[propName])
+  }
+
+  return url
 }
-
 
 export function get(req, res, next) {
 
@@ -38,7 +40,7 @@ export function get(req, res, next) {
   items.get(neutralUrl, format, collectionId, req.query, options, function (err, content) {
 
     if (err) {
-      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
       return
     }
 
@@ -47,12 +49,24 @@ export function get(req, res, next) {
       res.set('Content-Crs', content.headerContentCrs)
     delete content.headerContentCrs
 
+    var link = content.links.filter((link) => link.rel === 'self' && link.href.includes('bbox'))[0]
+    if (typeof link !== 'undefined')
+    {
+        const url = new URL(link.href)
+        console.log(url)
+        const bbox = url.searchParams.get('bbox')
+        console.log(bbox)
+        var coords = bbox.split(',')
+        var bounds = [[coords[0], coords[1]], [coords[2], coords[3]]];
+
+    }
+
     switch (format) {
       case `json`:
         res.status(200).json(content)
         break
       case `html`:
-        res.status(200).render(`items`, content )
+        res.status(200).render(`items`, content)
         break
       default:
         res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
@@ -61,7 +75,7 @@ export function get(req, res, next) {
 
 }
 
-export function options (req, res) {
-  
+export function options(req, res) {
+
   res.status(200).end()
 }

@@ -11,10 +11,15 @@ function getContent(neutralUrl, format, collection) {
   item.timestamp = new Date().toISOString()
   item.links = []
 
-  item.links.push({ href: `${neutralUrl}/?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
-  utils.getAlternateFormats(format).forEach(altFormat =>
-    item.links.push({ href: `${neutralUrl}/?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
-  )
+  var selfUrl = neutralUrl
+  selfUrl.searchParams.append('f', format)
+  item.links.push({ href: `${selfUrl}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
+
+  utils.getAlternateFormats(format).forEach(altFormat => {
+    var alternateUrl = neutralUrl
+    alternateUrl.searchParams.append('f', altFormat)
+    item.links.push({ href: `${alternateUrl}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
+})
 
   if (collection.crs.properties.name)
     item.headerContentCrs = collection.crs.properties.name
@@ -125,14 +130,14 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   }
 
   if (options.offset + options.limit < content.numberMatched) { // only if we need pagination
-    content.links.push({ href: `${neutralUrl}?f=${format}`, rel: `first`, type: getTypeFromFormat(format), title: `Next page` })
-    content.links.push({ href: `${neutralUrl}?f=${format}&offset=${options.offset + options.limit}` + (options.limit == process.env.LIMIT ? '' : `&limit=${options.limit}`), rel: `next`, type: getTypeFromFormat(format), title: `Next page` })
+    content.links.push({ href: `${neutralUrl}?f=${format}`, rel: `first`, type: utils.getTypeFromFormat(format), title: `Next page` })
+    content.links.push({ href: `${neutralUrl}?f=${format}&offset=${options.offset + options.limit}` + (options.limit == process.env.LIMIT ? '' : `&limit=${options.limit}`), rel: `next`, type: utils.getTypeFromFormat(format), title: `Next page` })
   }
 
   var offset = options.offset - options.limit;
   if (offset < 0) offset = 0
   if (options.offset != 0)
-    content.links.push({ href: `${neutralUrl}?f=${format}&offset=${offset}` + (options.limit == process.env.LIMIT ? '' : `&limit=${options.limit}`), rel: `prev`, type: `application/geo+json`, title: `Previous page` })
+    content.links.push({ href: `${neutralUrl}?f=${format}&offset=${offset}` + (options.limit == process.env.LIMIT ? '' : `&limit=${options.limit}`), rel: `prev`, type: utils.getTypeFromFormat(format), title: `Previous page` })
 
   return callback(undefined, content);
 }
