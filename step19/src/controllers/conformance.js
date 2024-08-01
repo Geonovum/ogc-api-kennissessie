@@ -1,3 +1,4 @@
+import accepts from 'accepts'
 import utils from '../utils/utils.js'
 import { get as _get } from '../models/conformance.js'
 
@@ -10,11 +11,42 @@ import { get as _get } from '../models/conformance.js'
 
 export function get(req, res) {
 
-  var serviceUrl = utils.getServiceUrl(req)
+  // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
+  // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
+  if (utils.ifTrailingSlash(req, res)) return
 
-  _get(serviceUrl, function (err, content) {
-    // Recommendations 1, A 200-response SHOULD include the following links in the links property of the response:
-    res.set('link', utils.makeHeaderLinks(content.links))
-    res.status(200).json(content) // Requirement 6 A
+  // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
+  //         if the request URI includes a query parameter that is not specified in the API definition
+  if (!utils.checkForAllowedQueryParams(req.query, ['f'], res)) return
+
+  // get the url without the f= query parameter
+  var formatFreeUrl = utils.getFormatFreeUrl(req)
+
+  var accept = accepts(req)
+  var format = accept.type(['json', 'html'])
+
+  _get(formatFreeUrl, format, function (err, content) {
+
+    if (err) {
+      res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
+      return
+    }
+
+    switch (format) {
+      case `json`:
+        // Recommendations 10, Links included in payload of responses SHOULD also be 
+        // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
+        res.set('link', utils.makeHeaderLinks(content.links))
+        res.status(200).json(content)
+        break
+      case `html`:
+        // Recommendations 10, Links included in payload of responses SHOULD also be 
+        // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
+        res.set('link', utils.makeHeaderLinks(content.links))
+        res.status(200).render(`conformance`, content )
+        break
+      default:
+        res.status(400).json({'code': 'InvalidParameterValue', 'description': `${accept} is an invalid format`})
+    }
   })
 }

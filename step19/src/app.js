@@ -31,7 +31,19 @@ app.use(apiVersion)
 
 // Mount API on this path
 const mountPath = process.env.MOUNTPATH // from config
-app.use(`/${mountPath}/v${major(process.env.APIVERSION)}`, oapifp1)
-app.use(`/${mountPath}/v${major(process.env.APIVERSION)}`, oapifp3)
-app.use(`/${mountPath}/v${major(process.env.APIVERSION)}`, oapifp4)
-app.use(`/${mountPath}/v${major(process.env.APIVERSION)}`, oapifp5)
+const serviceRoot = `/${mountPath}/v${major(process.env.APIVERSION)}`
+
+app.use(serviceRoot, oapifp1)
+app.use(serviceRoot, oapifp3)
+app.use(serviceRoot, oapifp4)
+app.use(serviceRoot, oapifp5)
+
+// (ADR) /core/http-methods: Only apply standard HTTP methods
+// https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/http-methods
+app.all('*', function (req, res, next) {
+//    var stdHttpMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+//    if (stdHttpMethods.includes(req.method))
+//        next()
+//    else
+        res.status(405).json({ 'code': `Method Not Allowed`, 'description': `Not allowed` })
+});

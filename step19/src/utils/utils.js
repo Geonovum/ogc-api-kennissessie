@@ -1,7 +1,7 @@
 import { join } from 'path'
 
-var _formats = JSON.parse(process.env.FORMATS)
-var _encodings = JSON.parse(process.env.ENCODINGS)
+var _formats = ['json', 'html', 'csv']
+var _encodings = ['application/geo+json', 'text/html', 'text/csv']
 
 function getServiceUrl(req) {
   // remove the optional extension from the baseUrl
@@ -52,7 +52,7 @@ function makeHeaderLinks(hls) {
   });
 
   // remove last ,
-  link = link.slice(0, -1); 
+  link = link.slice(0, -1);
 
   return link;
 }
@@ -62,8 +62,8 @@ function getTypeFromFormat(format) {
   return _encodings[i]
 }
 
-function getAlternateFormats(format) {
-  var alternateFormats = [..._formats]
+function getAlternateFormats(format, formats) {
+  var alternateFormats = formats
   alternateFormats = alternateFormats.filter(item => {
     return item !== format
   })
@@ -83,6 +83,47 @@ function EPSGtoProj4(epsg) {
   return "+proj=sterea +lat_0=52.1561605555556 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.4171,50.3319,465.5524,1.9342,-1.6677,9.1019,4.0725 +units=m +no_defs +type=crs";
 }
 
+function ifTrailingSlash(req, res) {
+  if (req.url.endsWith('/')) {
+    res.status(404).json({ 'code': 'Path contains a trailing slash', 'description': 'A URI MUST never contain a trailing slash' })
+    return true
+  }
+  return false
+}
+
+function checkForAllowedQueryParams(query, params, res) {
+  var rejected = []
+  for (var propName in query) {
+    if (query.hasOwnProperty(propName)) 
+      if (!params.includes(propName)) 
+        rejected.push(propName)
+  }
+
+  if (rejected.length > 0) {
+    res.status(400).json({ 'code': 'Bad Request', 'description': `The following query parameters are rejected: ${rejected}. Valid parameters for this request are: ${params}` })
+    return false
+  }
+
+  return true;
+}
+
+function getFormatFreeUrl(req) {
+  var root = req.baseUrl.replace(/\.[^.]*$/, '')
+
+  const proxyHost = req.headers["x-forwarded-host"]
+  var host = proxyHost || req.headers.host
+  host = join(host, root)
+
+  var url = new URL(`${req.protocol}://${host}${req.path}`)
+
+  for (var propName in req.query) {
+    if (req.query.hasOwnProperty(propName))
+      url.searchParams.append(propName, req.query[propName])
+  }
+
+  return url
+}
+
 export default {
   getServiceUrl,
   ISODateString,
@@ -91,5 +132,8 @@ export default {
   makeHeaderLinks,
   UriToEPSG,
   getTypeFromFormat,
-  getAlternateFormats
+  getAlternateFormats,
+  ifTrailingSlash,
+  getFormatFreeUrl,
+  checkForAllowedQueryParams
 }

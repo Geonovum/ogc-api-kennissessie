@@ -1,6 +1,6 @@
-function get(serviceUrl, callback) {
+import utils from '../utils/utils.js'
 
-    var root = serviceUrl.pathname.replace(/^\/+/, '') // remove any trailing /
+function get(neutralUrl, format, callback) {
 
     // Requirement 2 A & B
     // The content of that response SHALL be based upon the OpenAPI 3.0 schema landingPage.yaml (http://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/schemas/landingPage.yaml)
@@ -13,16 +13,23 @@ function get(serviceUrl, callback) {
     content.title = process.env.TITLE // Requirement 2 B
     content.description = process.env.DESCRIPTION
     content.links = []
-    content.links.push({ href: `${serviceUrl}/api?f=json`, rel: `service-desc`, type: `application/vnd.oai.openapi+json;version=3.0`, title: `the API definition` })
-    content.links.push({ href: `${serviceUrl}/api.html`, rel: `service-doc`, type: `text/html`, title: `the API documentation` })
-    content.links.push({ href: `${serviceUrl}/conformance`, rel: `conformance`, type: `application/json`, title: `OGC API conformance classes implemented by this server` })
-    content.links.push({ href: `${serviceUrl}/collections?f=json`, rel: `data`, type: `application/json`, title: `Information about the feature collections` })
-    content.links.push({ href: `${serviceUrl}/collections?f=html`, rel: `data`, type: `text/html`, title: `Information about the feature collections` })
-    content.links.push({ href: `${serviceUrl}/?f=html`, rel: `alternate`, type: `text/html`, title: `this document` })
-    content.links.push({ href: `${serviceUrl}/?f=json`, rel: `self`, type: `application/json`, title: `this document in json` })
+
+    content.links.push({ href: `${neutralUrl}/?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
+
+    utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
+        content.links.push({ href: `${neutralUrl}/?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
+    })
+
+    content.links.push({ href: `${neutralUrl}/conformance`, rel: `conformance`,                                        title: `OGC API conformance classes implemented by this server` })
+    content.links.push({ href: `${neutralUrl}/conformance`, rel: `http://www.opengis.net/def/rel/ogc/1.0/conformance`, title: `OGC API conformance classes implemented by this server` })
+
+    content.links.push({ href: `${neutralUrl}/api?f=json`, rel: `service-desc`, type: `application/vnd.oai.openapi+json;version=3.0`, title: `Definition of the API in OpenAPI 3.0` })
+    content.links.push({ href: `${neutralUrl}/api?f=yaml`, rel: `service-desc`, type: `application/vnd.oai.openapi;version=3.0`,      title: `Definition of the API in OpenAPI 3.0` })
+    content.links.push({ href: `${neutralUrl}/api?f=html`, rel: `service-doc`,  type: `text/html`,                                    title: `Documentation of the API` })
+    
+    content.links.push({ href: `${neutralUrl}/collections`, rel: `data`, title: `Access the data` })
   
     return callback(undefined, content);
-    //  })
 }
 
 export default {

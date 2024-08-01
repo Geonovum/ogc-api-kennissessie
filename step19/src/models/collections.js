@@ -1,12 +1,8 @@
 import { getDatabases } from '../database/database.js'
 import collection from './collection.js'
+import utils from '../utils/utils.js'
 
-function get(serviceUrl, callback) {
-
-  var root = serviceUrl.pathname.replace(/^\/+/, '') // remove any trailing /
-
-  var query = { type: 'FeatureCollection' }
-  var projection = { name: 1, crs: 1, _id: 1 }
+function get(neutralUrl, format, callback) {
 
   // (OAPIC P2) Requirement 3A: The content of that response SHALL be based upon the JSON schema collections.yaml.
   var content = {};
@@ -15,15 +11,17 @@ function get(serviceUrl, callback) {
   content.description = process.env.DESCRIPTION
   content.links = []
   // (OAPIC P2) Requirement 2B. The API SHALL support the HTTP GET operation on all links to a Collections Resource that have the relation type
-  content.links.push({ href: `${serviceUrl}/collections?f=json`, rel: `self`, type: `application/json`, title: `This document` })
-  content.links.push({ href: `${serviceUrl}/collections?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
+  content.links.push({ href: `${neutralUrl}?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
+  utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
+    content.links.push({ href: `${neutralUrl}?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
+  })
 
   content.collections = [];
 
   var collections = getDatabases()
 
   for (var name in collections) {
-    var item = collection.getMetaData(serviceUrl, name, collections[name])
+    var item = collection.getMetaData(neutralUrl, format, name, collections[name])
   
     content.collections.push(item);
   };

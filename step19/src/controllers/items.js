@@ -1,30 +1,23 @@
 import accepts from 'accepts'
 import items from '../models/items.js'
+import geojson2csv from '../utils/csv.js'
 import utils from '../utils/utils.js'
-import { join } from 'path'
-
-function getNeutralUrl(req) {
-  var root = req.baseUrl.replace(/\.[^.]*$/, '')
-
-  const proxyHost = req.headers["x-forwarded-host"]
-  var host = proxyHost || req.headers.host
-  host = join(host, root)
-
-  var url = new URL(`${req.protocol}://${host}${req.path}`)
-
-  for (var propName in req.query) {
-    if (req.query.hasOwnProperty(propName)) 
-          url.searchParams.append(propName, req.query[propName])
-  }
-
-  return url
-}
 
 export function get(req, res, next) {
 
+  // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
+  // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
+  if (utils.ifTrailingSlash(req, res)) return
+
   var collectionId = req.params.collectionId
 
-  var neutralUrl = getNeutralUrl(req)
+  // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
+  //         if the request URI includes a query parameter that is not specified in the API definition
+  if (!utils.checkForAllowedQueryParams(req.query, ['f', 'bbox', 'limit', 'offset', 'filter'], res)) return // TODO: add entire schema
+
+  // TODO: the above means that the API is constructed from the schema of the database!!!!!
+
+  var formatFreeUrl = utils.getFormatFreeUrl(req)
 
   var options = {}
   options.offset = Number(req.query.offset) || 0
@@ -35,9 +28,9 @@ export function get(req, res, next) {
   delete req.query.limit;
 
   var accept = accepts(req)
-  var format = accept.type(JSON.parse(process.env.FORMATS))
+  var format = accept.type(['json', 'html', 'csv'])
 
-  items.get(neutralUrl, format, collectionId, req.query, options, function (err, content) {
+  items.get(formatFreeUrl, format, collectionId, req.query, options, function (err, content) {
 
     if (err) {
       res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
@@ -50,14 +43,13 @@ export function get(req, res, next) {
     delete content.headerContentCrs
 
     var link = content.links.filter((link) => link.rel === 'self' && link.href.includes('bbox'))[0]
-    if (typeof link !== 'undefined')
-    {
-        const url = new URL(link.href)
-        console.log(url)
-        const bbox = url.searchParams.get('bbox')
-        console.log(bbox)
-        var coords = bbox.split(',')
-        var bounds = [[coords[0], coords[1]], [coords[2], coords[3]]];
+    if (typeof link !== 'undefined') {
+      const url = new URL(link.href)
+      console.log(url)
+      const bbox = url.searchParams.get('bbox')
+      console.log(bbox)
+      var coords = bbox.split(',')
+      var bounds = [[coords[0], coords[1]], [coords[2], coords[3]]];
 
     }
 
@@ -68,8 +60,14 @@ export function get(req, res, next) {
       case `html`:
         res.status(200).render(`items`, content)
         break
+      case 'csv':
+        res.removeHeader('Content-Crs');
+        res.set('Content-Type', utils.getTypeFromFormat(format));
+        res.set('Content-Disposition', `inline; filename="${collectionId}.csv"`);
+        res.send(geojson2csv(content));
+        break;
       default:
-        res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
+        res.status(400).json({'code': 'InvalidParameterValue', 'description': `${accept} is an invalid format`})
     }
   })
 

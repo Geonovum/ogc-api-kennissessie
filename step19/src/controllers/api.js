@@ -5,12 +5,13 @@ const __dirname = import.meta.dirname
 
 export function get(req, res) {
 
-  var accept = accepts(req)
+  var accept = accepts(req) // TODO: doesn't work for yaml application/vnd.oai.openapi;version=3.0
+  var format = accept.type(['json', 'html', 'yaml'])
 
   // Recommendations 1
   // A 200-response SHOULD include the following links in the links property of the response:
 
-  switch (accept.type(['json', 'yaml', 'html'])) {
+  switch (format) {
     case 'json':
       res.set('Content-Type', 'application/vnd.oai.openapi+json;version=3.0')
       res.sendFile(join(__dirname, '..', 'api', 'openapi.json'))
@@ -26,6 +27,6 @@ export function get(req, res) {
       break
     case false:
     default:
-      res.status(400).json("{'code': 'InvalidParameterValue', 'description': 'Invalid format'}")
+      res.status(400).json({'code': 'InvalidParameterValue', 'description': 'Invalid format'})
   }
 }

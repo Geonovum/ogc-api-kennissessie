@@ -15,7 +15,7 @@ function getContent(neutralUrl, format, collection) {
   selfUrl.searchParams.append('f', format)
   item.links.push({ href: `${selfUrl}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
 
-  utils.getAlternateFormats(format).forEach(altFormat => {
+  utils.getAlternateFormats(format, ['json', 'html', 'csv']).forEach(altFormat => {
     var alternateUrl = neutralUrl
     alternateUrl.searchParams.append('f', altFormat)
     item.links.push({ href: `${alternateUrl}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
@@ -30,6 +30,7 @@ function getContent(neutralUrl, format, collection) {
 function get(neutralUrl, format, collectionId, query, options, callback) {
 
   var collections = getDatabases()
+  
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);

@@ -1,6 +1,6 @@
 import database from '../database/database.js';
 
-function get(serviceUrl, collectionId, callback) {
+function get(neutralUrl, format, collectionId, callback) {
 
   var collections = database.getCollection()
   var document = collections[collectionId]

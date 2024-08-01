@@ -4,19 +4,28 @@ import utils from '../utils/utils.js'
 
 export function get(req, res) {
 
-  var serviceUrl = utils.getServiceUrl(req)
+  // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
+  // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
+  if (utils.ifTrailingSlash(req, res)) return
 
-  collections.get(serviceUrl, function (err, content) {
+  // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
+  //         if the request URI includes a query parameter that is not specified in the API definition
+  if (!utils.checkForAllowedQueryParams(req.query, ['f'], res)) return
+
+  var formatFreeUrl = utils.getFormatFreeUrl(req)
+
+  var accept = accepts(req)
+  var format = accept.type(['json', 'html'])
+
+  collections.get(formatFreeUrl, format, function (err, content) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
       return
     }
 
-    var accept = accepts(req)
-
     // (OAPIC P2) Requirement 3A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 200.
-    switch (accept.type(['json', 'html'])) {
+    switch (format) {
       case `json`:
         // Recommendations 10, Links included in payload of responses SHOULD also be 
         // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
@@ -30,7 +39,7 @@ export function get(req, res) {
         res.status(200).render(`collections`, content )
         break
       default:
-        res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
+        res.status(400).json({'code': 'InvalidParameterValue', 'description': `${accept} is an invalid format`})
     }
   })
 }

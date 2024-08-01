@@ -57,5 +57,5 @@ router.get('/collections/:collectionId/items', getItems)
 // For every feature in a feature collection (path /collections/{collectionId}), 
 // the server SHALL support the HTTP GET operation at the path /collections/{collectionId}/items/{featureId}.
 router.get('/collections/:collectionId/items/:featureId', getItem)
-
+  
 export default router

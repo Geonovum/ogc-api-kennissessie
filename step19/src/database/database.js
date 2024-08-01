@@ -8,7 +8,7 @@ function readGeoJSONfiles() {
   if (__dirname === undefined)
     console.log('need node 20.16 or higher')
   
-  var dir = join(__dirname, "../../data")
+  var dir = process.env.DATA_PATH  || join(__dirname, "../../data")
 
   var fileNames = readdirSync(dir).filter(fn => fn.endsWith('.geojson'))
 

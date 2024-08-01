@@ -1,6 +1,7 @@
 import { getDatabases } from '../database/database.js'
+import utils from '../utils/utils.js'
 
-function get(serviceUrl, collectionId, featureId, callback) {
+function get(neutralUrl, format, collectionId, featureId, callback) {
 
   var collections = getDatabases()
   var collection = collections[collectionId]
@@ -18,9 +19,14 @@ function get(serviceUrl, collectionId, featureId, callback) {
 
   var content = collection.features[index]
   content.links = []
-  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items/${featureId}?f=json`, rel: `self`, type: `application/geo+json`, title: `This document` })
-  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items/${featureId}?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
-  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items`, rel: `collection`, type: `application/geo+json`, title: `he collection the feature belongs to` })
+  content.links.push({ href: `${neutralUrl}?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
+  utils.getAlternateFormats(format, ['json', 'html', 'csv']).forEach(altFormat => {
+    content.links.push({ href: `${neutralUrl}?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
+  })
+
+  col = neutralUrl.toString()
+  var col = col.substr(0, col.lastIndexOf("/"));
+  content.links.push({ href: `${col}?f=${format}`, rel: `collection`, type: utils.getTypeFromFormat(format), title: `The collection the feature belongs to` })
 
   return callback(undefined, content);
 }
