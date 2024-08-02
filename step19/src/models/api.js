@@ -82,9 +82,6 @@ function get(neutralUrl, callback) {
 
         paths.paths['/collections'] = content['/collections']
 
-        var collectionTemplate = content['/collections/{{:collectionId}}']
-        var ff = JSON.stringify(collectionTemplate)
-
         var jsonStr = readFileSync(join(__dirname, '..', 'api', 'collections', 'components', 'parameters.json'))
         var parameters = JSON.parse(jsonStr)
 
@@ -104,17 +101,53 @@ function get(neutralUrl, callback) {
         for (var name in databases) {
             var database = databases[name]
 
+            var collectionTemplate = content['/collections/{{:collectionId}}']
+            var ff = JSON.stringify(collectionTemplate)
+    
             var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
             var collection = JSON.parse(ff)
-
-            { // features
-                // TODO
-            }
 
             paths.paths[`/collections/${name}`] = collection
         }
     }
 
+    { // items
+
+        var databases = getDatabases()
+
+        for (var name in databases) {
+            var database = databases[name]
+
+            var jsonStr = readFileSync(join(__dirname, '..', 'api', 'features', 'paths.json'))
+            var content = JSON.parse(jsonStr)
+
+            var ff = JSON.stringify(content)
+            var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
+            var items = JSON.parse(ff)
+
+            var jsonStr = readFileSync(join(__dirname, '..', 'api', 'features', 'components', 'parameters.json'))
+            var parameters = JSON.parse(jsonStr)
+            var ff = JSON.stringify(parameters)
+            var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
+            var parameters = JSON.parse(ff)
+
+            var jsonStr = readFileSync(join(__dirname, '..', 'api', 'features', 'components', 'schema.json'))
+            var schemas = JSON.parse(jsonStr)
+            var ff = JSON.stringify(schemas)
+            var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
+            var schemas = JSON.parse(ff)
+
+            for (var parameter in parameters) {
+                components.components.parameters[parameter] = parameters[parameter]
+            }
+
+            for (var schema in schemas) {
+                components.components.schemas[schema] = schemas[schema]
+            }
+
+            paths.paths[`/collections/${name}/items`] = items
+        }
+    }
 
     var content = { ...openapi, ...info, ...servers, ...tags, ...paths, ...components }
 
