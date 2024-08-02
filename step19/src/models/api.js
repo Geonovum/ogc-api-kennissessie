@@ -17,7 +17,7 @@ function get(neutralUrl, callback) {
 
     { // OpenAPI header, version
         var openapi = {}
-        openapi.openapi = '3.0.2'
+        openapi.openapi = '3.0.2' // OpenAPI version (not the version this OGC API Features)
     }
 
     { // Info
@@ -136,6 +136,8 @@ function get(neutralUrl, callback) {
             var ff = JSON.stringify(schemas)
             var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
             var schemas = JSON.parse(ff)
+
+            // TODO featureGeoJson from database schema
 
             for (var parameter in parameters) {
                 components.components.parameters[parameter] = parameters[parameter]
