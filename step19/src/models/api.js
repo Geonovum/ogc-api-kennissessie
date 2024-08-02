@@ -102,14 +102,19 @@ function get(neutralUrl, callback) {
         var databases = getDatabases()
 
         for (var name in databases) {
-            var collection = databases[name]
+            var database = databases[name]
 
-            var oo = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
-            var aa = JSON.parse(oo)
+            var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
+            var collection = JSON.parse(ff)
 
-            paths.paths[`/collections/${name}`] = aa
+            { // features
+                // TODO
+            }
+
+            paths.paths[`/collections/${name}`] = collection
         }
     }
+
 
     var content = { ...openapi, ...info, ...servers, ...tags, ...paths, ...components }
 
