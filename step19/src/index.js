@@ -1,6 +1,7 @@
 import { app } from './app.js'
 import { load } from './database/database.js'
 
+// Load data (TODO: async)
 load()
 
 app.listen(process.env.PORT, function (error) {

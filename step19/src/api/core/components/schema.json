@@ -1,0 +1,155 @@
+{
+    "Link": {
+        "required": [
+            "href"
+        ],
+        "type": "object",
+        "properties": {
+            "href": {
+                "type": "string",
+                "format": "uri-reference"
+            },
+            "rel": {
+                "type": "string"
+            },
+            "type": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            }
+        }
+    },
+    "Extent": {
+        "type": "object",
+        "properties": {
+            "temporal": {
+                "$ref": "#/components/schemas/TemporalExtent"
+            },
+            "spatial": {
+                "$ref": "#/components/schemas/SpatialExtent"
+            }
+        }
+    },
+    "SpatialExtent": {
+        "required": [
+            "bbox",
+            "crs"
+        ],
+        "type": "object",
+        "properties": {
+            "crs": {
+                "type": "string"
+            },
+            "bbox": {
+                "$ref": "#/components/schemas/doubleArrayArray"
+            }
+        }
+    },
+    "doubleArrayArray": {
+        "type": "array",
+        "items": {
+            "$ref": "#/components/schemas/doubleArray"
+        }
+    },
+    "doubleArray": {
+        "type": "array",
+        "items": {
+            "type": "number"
+        }
+    },
+    "StringArray": {
+        "type": "array",
+        "items": {
+            "type": "string"
+        }
+    },
+    "StringArrayArray": {
+        "type": "array",
+        "items": {
+            "$ref": "#/components/schemas/StringArray"
+        }
+    },
+    "TemporalExtent": {
+        "required": [
+            "interval",
+            "trs"
+        ],
+        "type": "object",
+        "properties": {
+            "interval": {
+                "$ref": "#/components/schemas/StringArrayArray"
+            },
+            "trs": {
+                "type": "string"
+            }
+        }
+    },
+    "ExternalDocumentation": {
+        "required": [
+            "url"
+        ],
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            }
+        }
+    },
+    "htmlSchema": {
+        "type": "string",
+        "example": "<html>...</html>"
+    },
+    "ConformanceDeclaration": {
+        "type": "object",
+        "properties": {
+            "conformsTo": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "description": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "links": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Link"
+                }
+            }
+        }
+    },
+    "LandingPage": {
+        "type": "object",
+        "properties": {
+            "extent": {
+                "$ref": "#/components/schemas/Extent"
+            },
+            "attribution": {
+                "type": "string"
+            },
+            "externalDocs": {
+                "$ref": "#/components/schemas/ExternalDocumentation"
+            },
+            "description": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "links": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Link"
+                }
+            }
+        }
+    }
+}

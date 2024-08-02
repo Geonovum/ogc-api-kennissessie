@@ -1,0 +1,72 @@
+{
+    "Collections": {
+        "type": "object",
+        "properties": {
+            "crs": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "collections": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Collection"
+                }
+            },
+            "description": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "links": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Link"
+                }
+            }
+        }
+    },
+    "Collection": {
+        "required": [
+            "id"
+        ],
+        "type": "object",
+        "properties": {
+            "storageCrs": {
+                "type": "string"
+            },
+            "extent": {
+                "$ref": "#/components/schemas/Extent"
+            },
+            "storageCrsCoordinateEpoch": {
+                "type": "number"
+            },
+            "crs": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "itemType": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "links": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Link"
+                }
+            }
+        }
+    }
+}
