@@ -22,7 +22,15 @@ function get(neutralUrl, callback) {
 
     { // Info
         var jsonStr = readFileSync(join(__dirname, '..', 'api', 'info.json'))
-        var info = JSON.parse(jsonStr)
+        var content = JSON.parse(jsonStr)
+
+        var ff = JSON.stringify(content)
+
+        ff = ff.replace(new RegExp('{{:title}}', 'g'), process.env.TITLE);
+        ff = ff.replace(new RegExp('{{:description}}', 'g'), process.env.DESCRIPTION);
+        ff = ff.replace(new RegExp('{{:version}}', 'g'), process.env.APIVERSION);
+
+        var info = JSON.parse(ff)
     }
 
     { // Servers

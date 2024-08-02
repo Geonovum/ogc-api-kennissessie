@@ -35,6 +35,9 @@
                 "400": {
                     "description": "Bad Request"
                 },
+                "405": {
+                    "description": "Method Not Allowed"
+                },
                 "406": {
                     "description": "Not Acceptable"
                 },
@@ -80,6 +83,9 @@
                 },
                 "400": {
                     "description": "Bad Request"
+                },
+                "405": {
+                    "description": "Method Not Allowed"
                 },
                 "406": {
                     "description": "Not Acceptable"
