@@ -138,6 +138,16 @@ function get(neutralUrl, callback) {
             var schemas = JSON.parse(ff)
 
             // TODO featureGeoJson from database schema
+            var properties = schemas[`featureGeoJson_${name}`].properties.properties.properties
+            var required = schemas[`featureGeoJson_${name}`].properties.properties.required
+            required.push(database.id)
+            for (var propName in database.schema) {
+                var property = database.schema[propName]
+                if (property['x-ogc-role'] == 'type')
+                {
+                    properties[property['title']] = {'title': property['title'], 'type': property['type']}
+                }
+            }
 
             for (var parameter in parameters) {
                 components.components.parameters[parameter] = parameters[parameter]
