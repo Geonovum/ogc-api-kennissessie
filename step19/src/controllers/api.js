@@ -19,7 +19,7 @@ export function get(req, res) {
 
   var formatFreeUrl = utils.getFormatFreeUrl(req)
 
-  var accept = accepts(req) // TODO: doesn't work for yaml application/vnd.oai.openapi;version=3.0
+  var accept = accepts(req)
   var format = accept.type(['json', 'html', 'yaml'])
 
   api.get(formatFreeUrl, function (err, content) {
