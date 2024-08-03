@@ -124,6 +124,9 @@
                 "400": {
                     "description": "Bad Request"
                 },
+                "404": {
+                    "description": "Not Found"
+                },
                 "405": {
                     "description": "Method Not Allowed"
                 },

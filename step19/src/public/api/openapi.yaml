@@ -650,6 +650,8 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: Not Found
         "405":
           description: Method Not Allowed
         "406":
@@ -843,6 +845,8 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: Not Found
         "405":
           description: Method Not Allowed
         "406":
@@ -1045,6 +1049,8 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: Not Found
         "405":
           description: Method Not Allowed
         "406":
@@ -1233,6 +1239,8 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: Not Found
         "405":
           description: Method Not Allowed
         "406":
@@ -1431,6 +1439,8 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: Not Found
         "405":
           description: Method Not Allowed
         "406":
@@ -1623,6 +1633,8 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: Not Found
         "405":
           description: Method Not Allowed
         "406":
@@ -1818,6 +1830,8 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: Not Found
         "405":
           description: Method Not Allowed
         "406":
@@ -2918,14 +2932,19 @@ components:
         items:
           type: string
           enum:
-            - id
-            - F_CODE
-            - ZI001_SDV
-            - UFI
-            - ZI005_FNA
-            - FCSUBTYPE
-            - ZI006_MEM
-            - ZI001_SDP
+            - fid
+            - boutnr
+            - nap_in_m
+            - gvl
+            - muurcoord_x
+            - muurcoord_y
+            - ligging
+            - omschrijving
+            - eigenaar
+            - status
+            - x_coord
+            - y_coord
+            - id_kv
     resultTypeFeatures:
       name: result-type
       in: query
@@ -3139,14 +3158,14 @@ components:
         items:
           type: string
           enum:
-            - id
-            - F_CODE
-            - ZI001_SDV
-            - UFI
-            - ZI005_FNA
-            - FCSUBTYPE
-            - ZI006_MEM
-            - ZI001_SDP
+            - fid
+            - buurtcode
+            - buurtnaam
+            - wijkcode
+            - gemeentecode
+            - gemeentenaam
+            - wijknaam
+            - id_kv
     fid_Buurten:
       name: fid
       in: query
@@ -3269,14 +3288,23 @@ components:
         items:
           type: string
           enum:
-            - id
-            - F_CODE
-            - ZI001_SDV
-            - UFI
-            - ZI005_FNA
-            - FCSUBTYPE
-            - ZI006_MEM
-            - ZI001_SDP
+            - fid
+            - identificatie_bag_vbo
+            - energielabel
+            - definitief
+            - pand_gebouwtype
+            - pand_gebouwsubtype
+            - status
+            - gebruiksdoel
+            - openbare_ruimte
+            - huisnummer
+            - huisletter
+            - toevoeging
+            - postcode
+            - woonplaats
+            - buurtnaam
+            - wijknaam
+            - id_kv
     fid_energielabels:
       name: fid
       in: query
@@ -3489,14 +3517,9 @@ components:
         items:
           type: string
           enum:
-            - id
-            - F_CODE
-            - ZI001_SDV
-            - UFI
-            - ZI005_FNA
-            - FCSUBTYPE
-            - ZI006_MEM
-            - ZI001_SDP
+            - fid
+            - gemeentenaam
+            - id_kv
     fid_gemeenteGrens:
       name: fid
       in: query
@@ -3569,14 +3592,19 @@ components:
         items:
           type: string
           enum:
-            - id
-            - F_CODE
-            - ZI001_SDV
-            - UFI
-            - ZI005_FNA
-            - FCSUBTYPE
-            - ZI006_MEM
-            - ZI001_SDP
+            - fid
+            - volgnummer
+            - zaaknummer
+            - globale_locatie
+            - bagid_vbo
+            - type_woning
+            - status_aanvraag
+            - aantal_complex
+            - maximaal_complex
+            - buurtnaam
+            - wijknaam
+            - id_kv
+            - dr_kv
     fid_kemersgewijze_verhuur:
       name: fid
       in: query
@@ -3749,14 +3777,13 @@ components:
         items:
           type: string
           enum:
-            - id
-            - F_CODE
-            - ZI001_SDV
-            - UFI
-            - ZI005_FNA
-            - FCSUBTYPE
-            - ZI006_MEM
-            - ZI001_SDP
+            - fid
+            - projectnummer
+            - projectnaam
+            - fase
+            - project_type
+            - url
+            - id_kv
     fid_projecten_openbare_ruimte:
       name: fid
       in: query
@@ -3869,14 +3896,15 @@ components:
         items:
           type: string
           enum:
-            - id
-            - F_CODE
-            - ZI001_SDV
-            - UFI
-            - ZI005_FNA
-            - FCSUBTYPE
-            - ZI006_MEM
-            - ZI001_SDP
+            - fid
+            - identificatie
+            - bouwjaar
+            - status
+            - gebruiksdoel
+            - oppervlakte_panelen
+            - aantal_panelen
+            - opbrengst
+            - id_kv
     fid_Inventarisatie_zonnepanelen:
       name: fid
       in: query

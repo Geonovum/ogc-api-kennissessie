@@ -134,16 +134,19 @@ function get(neutralUrl, callback) {
             var parameter = JSON.parse(jsonStr)
 
             var itemsParameters = items[`/collections/${name}/items`]['get']['parameters']
+            var propertiesSchema = parameters[`properties_${name}`]['schema']['items']['enum']
 
             for (var propName in database.schema) {
                 var property = database.schema[propName]
-                if (property['x-ogc-role'] == 'type')
+                if (property['x-ogc-role'] != 'primary-geometry')
                 {
                     var ff = JSON.stringify(parameter)
                     var ff = ff.replace(new RegExp('{{:propertyId}}', 'g'), propName);
                     var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
 
                     parameters[`${propName}_${name}`] = JSON.parse(ff)[`${propName}_${name}`] 
+
+                    propertiesSchema.push(propName)
 
                     itemsParameters.push({'$ref': `#/components/parameters/${propName}_${name}`})
                 }
@@ -161,7 +164,7 @@ function get(neutralUrl, callback) {
             required.push(database.id)
             for (var propName in database.schema) {
                 var property = database.schema[propName]
-                if (property['x-ogc-role'] == 'type')
+                if (property['x-ogc-role'] != 'primary-geometry')
                 {
                     properties[property['title']] = {'title': property['title'], 'type': property['type']}
                 }

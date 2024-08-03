@@ -41,14 +41,14 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
-  //         if the request URI includes a query parameter that is not specified in the API definition
-  var queryParams = ['f', 'bbox', 'limit', 'offset', 'filter', 'filter-crs', 'filter-lang']
+  var queryParams = ['f', 'bbox', 'limit', 'offset', 'filter', 'filter-crs', 'filter-lang', 'skipGeometry']
   // All attributes from schema can be queried
   for (var attributeName in collection.schema)
     if (collection.schema[attributeName]['x-ogc-role'] != 'primary-geometry')
       queryParams.push(attributeName)
 
+  // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
+  //         if the request URI includes a query parameter that is not specified in the API definition
   var rejected = utils.checkForAllowedQueryParams(query, queryParams)
   if (rejected.length > 0) 
     return callback({ 'httpCode': 400, 'code': `The following query parameters are rejected: ${rejected}`, 'description': 'Valid parameters for this request are ' + queryParams }, undefined);
@@ -115,6 +115,13 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       delete _query.filter
     }
 
+    if (_query.skipGeometry)
+    {
+      features.forEach(function(feature){ delete feature.geometry });
+
+      delete _query.skipGeometry
+    }
+  
     // Filter parameters as query
     for (var attributeName in _query) {
       // is attribute part of the queryables?

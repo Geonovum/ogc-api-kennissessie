@@ -181,14 +181,6 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "id",
-                    "F_CODE",
-                    "ZI001_SDV",
-                    "UFI",
-                    "ZI005_FNA",
-                    "FCSUBTYPE",
-                    "ZI006_MEM",
-                    "ZI001_SDP"
                 ]
             }
         }
