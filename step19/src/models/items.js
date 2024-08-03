@@ -27,6 +27,12 @@ function getContent(neutralUrl, format, collection) {
   return item
 }
 
+function getDatabase(collectionId)
+{
+  var collections = getDatabases()
+  return collections[collectionId]
+}
+
 function get(neutralUrl, format, collectionId, query, options, callback) {
 
   var collections = getDatabases()
@@ -34,6 +40,18 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
+
+  // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
+  //         if the request URI includes a query parameter that is not specified in the API definition
+  var queryParams = ['f', 'bbox', 'limit', 'offset', 'filter', 'filter-crs', 'filter-lang']
+  // All attributes from schema can be queried
+  for (var attributeName in collection.schema)
+    if (collection.schema[attributeName]['x-ogc-role'] != 'primary-geometry')
+      queryParams.push(attributeName)
+
+  var rejected = utils.checkForAllowedQueryParams(query, queryParams)
+  if (rejected.length > 0) 
+    return callback({ 'httpCode': 400, 'code': `The following query parameters are rejected: ${rejected}`, 'description': 'Valid parameters for this request are ' + queryParams }, undefined);
 
   var content = getContent(neutralUrl, format, collection)
 
@@ -144,5 +162,5 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
 }
 
 export default {
-  get, getContent
+  get, getContent, getDatabase
 }

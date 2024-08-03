@@ -11,12 +11,6 @@ export function get(req, res, next) {
 
   var collectionId = req.params.collectionId
 
-  // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
-  //         if the request URI includes a query parameter that is not specified in the API definition
-  if (!utils.checkForAllowedQueryParams(req.query, ['f', 'bbox', 'limit', 'offset', 'filter'], res)) return // TODO: add entire schema
-
-  // TODO: the above means that the API is constructed from the schema of the database!!!!!
-
   var formatFreeUrl = utils.getFormatFreeUrl(req)
 
   var options = {}
@@ -67,7 +61,7 @@ export function get(req, res, next) {
         res.send(geojson2csv(content));
         break;
       default:
-        res.status(400).json({'code': 'InvalidParameterValue', 'description': `${accept} is an invalid format`})
+        res.status(400).json({ 'code': 'InvalidParameterValue', 'description': `${accept} is an invalid format` })
     }
   })
 

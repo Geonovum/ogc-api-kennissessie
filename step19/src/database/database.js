@@ -80,6 +80,9 @@ export function load() {
 
     var feature = geojson.features[0]
 
+    // (OAPIF P5) Requirement 4 The keyword "x-ogc-role" SHALL be used to declare a specific role of the property
+
+    // (OAPIF P5) Requirement 9 A property with "x-ogc-role" set to "primary-geometry" SHALL be a spatial property.
     var geometry = feature.geometry
     var item = {
       'x-ogc-role': 'primary-geometry',
@@ -91,9 +94,18 @@ export function load() {
     for (var propertyName in properties) {
       var item = {
         'title': propertyName,
-        'x-ogc-role': 'type',
         'type': typeof properties[propertyName]
       }
+
+        // (OAPIF P5) Requirement 5 A property with "x-ogc-role" set to "id" SHALL be the identifier of the 
+        //            item in the collection that contains the item.
+        if (propertyName == geojson.id) item['x-ogc-role'] = 'id'
+        // (OAPIF P5) Requirement 14 If the features have a property that represents the feature type, 
+        //            the role "type" can be used for this property.
+        //  Requirement 14A: A property with "x-ogc-role" set to "type" SHALL be a string property.
+        //  Requirement 14B: At most one property in a schema SHALL have "x-ogc-role" with a value "type".
+        // else if (item.type == 'string') item['x-ogc-role'] = 'type'
+
       geojson.schema[`${propertyName}`] = item
     }
 

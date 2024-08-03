@@ -91,20 +91,14 @@ function ifTrailingSlash(req, res) {
   return false
 }
 
-function checkForAllowedQueryParams(query, params, res) {
+function checkForAllowedQueryParams(query, params) {
   var rejected = []
   for (var propName in query) {
     if (query.hasOwnProperty(propName)) 
       if (!params.includes(propName)) 
         rejected.push(propName)
   }
-
-  if (rejected.length > 0) {
-    res.status(400).json({ 'code': 'Bad Request', 'description': `The following query parameters are rejected: ${rejected}. Valid parameters for this request are: ${params}` })
-    return false
-  }
-
-  return true;
+  return rejected;
 }
 
 function getFormatFreeUrl(req) {
