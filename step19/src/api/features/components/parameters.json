@@ -233,5 +233,16 @@
             "type": "boolean",
             "default": false
         }
+    },
+    "featureId": {
+        "name": "featureId",
+        "in": "path",
+        "description": "The local identifier of a feature, unique within the feature collection.",
+        "required": true,
+        "schema": {
+            "pattern": "[^/ ]+",
+            "type": "string"
+        }
     }
+
 }

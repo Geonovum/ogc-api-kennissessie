@@ -72,7 +72,6 @@ function get(neutralUrl, callback) {
         for (var schema in schemas) {
             components.components.schemas[schema] = schemas[schema]
         }
-
     }
 
     { // Collections
@@ -157,7 +156,10 @@ function get(neutralUrl, callback) {
                 components.components.schemas[schema] = schemas[schema]
             }
 
-            paths.paths[`/collections/${name}/items`] = items
+            for (var part in items) {
+                paths.paths[part] = items[part]
+            }
+
         }
     }
 
