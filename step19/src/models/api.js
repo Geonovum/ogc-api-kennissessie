@@ -130,6 +130,25 @@ function get(neutralUrl, callback) {
             var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
             var parameters = JSON.parse(ff)
 
+            var jsonStr = readFileSync(join(__dirname, '..', 'api', 'features', 'components', 'parameter.json'))
+            var parameter = JSON.parse(jsonStr)
+
+            var itemsParameters = items[`/collections/${name}/items`]['get']['parameters']
+
+            for (var propName in database.schema) {
+                var property = database.schema[propName]
+                if (property['x-ogc-role'] == 'type')
+                {
+                    var ff = JSON.stringify(parameter)
+                    var ff = ff.replace(new RegExp('{{:propertyId}}', 'g'), propName);
+                    var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
+
+                    parameters[`${propName}_${name}`] = JSON.parse(ff)[`${propName}_${name}`] 
+
+                    itemsParameters.push({'$ref': `#/components/parameters/${propName}_${name}`})
+                }
+            }
+
             var jsonStr = readFileSync(join(__dirname, '..', 'api', 'features', 'components', 'schema.json'))
             var schemas = JSON.parse(jsonStr)
             var ff = JSON.stringify(schemas)
