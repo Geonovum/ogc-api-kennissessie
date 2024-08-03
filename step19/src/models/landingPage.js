@@ -1,3 +1,4 @@
+import { getDatabases } from '../database/database.js'
 import utils from '../utils/utils.js'
 
 function get(neutralUrl, format, callback) {
@@ -12,8 +13,23 @@ function get(neutralUrl, format, callback) {
     var content = {}
     content.title = process.env.TITLE // Requirement 2 B
     content.description = process.env.DESCRIPTION
-    content.links = []
+    content.attribution = 'Thanks to Acme'
 
+    content.extend = {}
+    content.extend.spatial = {}
+    content.extend.spatial.bbox = []
+    content.extend.temporal = {}
+    content.extend.temporal.interval = [[]]
+    content.extend.temporal.trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
+
+    var collections = getDatabases()
+    for (var name in collections) {
+        var collection = collections[name]
+        content.extend.spatial.bbox.push(collection.bbox)
+        content.extend.spatial.crs = collection.crs
+    }
+
+    content.links = []
     content.links.push({ href: `${neutralUrl}/?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
 
     utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
@@ -28,6 +44,8 @@ function get(neutralUrl, format, callback) {
     content.links.push({ href: `${neutralUrl}/api?f=html`, rel: `service-doc`,  type: `text/html`,                                    title: `Documentation of the API` })
     
     content.links.push({ href: `${neutralUrl}/collections`, rel: `data`, title: `Access the data` })
+
+    content.links.push({ href: `http://creativecommons.org/publicdomain/zero/1.0/deed.nl`, rel: `license`, title: `CC0 1.0`, type: `text/html` })
   
     return callback(undefined, content);
 }

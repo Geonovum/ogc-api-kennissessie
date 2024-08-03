@@ -21,7 +21,8 @@ app.use(morgan(':method :url :response-time', { stream: { write: msg => console.
 // (OAPIF P1) 7.8 Recommendation 5 If the server is intended to be accessed from the browser, 
 //         cross-origin requests SHOULD be supported. 
 //         Note that support can also be added in a proxy layer on top of the server.
-app.use(cors({ origin: true }));
+// (OAPIC P1) 8.5 Support for Cross-Origin Requests
+app.use(cors()); // Enable All CORS Requests
 
 // For HTML rendering
 app.set('view engine', 'pug');

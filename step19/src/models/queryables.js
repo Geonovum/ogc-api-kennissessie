@@ -14,7 +14,6 @@ function get(neutralUrl, format, collectionId, callback) {
   content.type = 'object'
   // Recommendation 1A
   content.title = collectionId
-  content.description = `Description of ${collectionId}`
   content.properties = collection.queryables
   content.additionalProperties = false
 
