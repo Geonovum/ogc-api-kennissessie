@@ -56,7 +56,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   var content = getContent(neutralUrl, format, collection)
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
-  var features = content.features
+  var features = structuredClone(content.features) // deep copy
 
   var _query = query
   if (_query) {
