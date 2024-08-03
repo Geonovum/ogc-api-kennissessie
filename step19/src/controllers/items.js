@@ -11,8 +11,6 @@ export function get(req, res, next) {
 
   var collectionId = req.params.collectionId
 
-  var formatFreeUrl = utils.getFormatFreeUrl(req)
-
   var options = {}
   options.offset = Number(req.query.offset) || 0
   options.limit = Number(req.query.limit) || 1000
@@ -23,6 +21,8 @@ export function get(req, res, next) {
 
   var accept = accepts(req)
   var format = accept.type(['json', 'html', 'csv'])
+
+  var formatFreeUrl = utils.getFormatFreeUrl(req)
 
   items.get(formatFreeUrl, format, collectionId, req.query, options, function (err, content) {
 
@@ -35,17 +35,6 @@ export function get(req, res, next) {
     if (content.headerContentCrs)
       res.set('Content-Crs', content.headerContentCrs)
     delete content.headerContentCrs
-
-    var link = content.links.filter((link) => link.rel === 'self' && link.href.includes('bbox'))[0]
-    if (typeof link !== 'undefined') {
-      const url = new URL(link.href)
-      console.log(url)
-      const bbox = url.searchParams.get('bbox')
-      console.log(bbox)
-      var coords = bbox.split(',')
-      var bounds = [[coords[0], coords[1]], [coords[2], coords[3]]];
-
-    }
 
     switch (format) {
       case `json`:

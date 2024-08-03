@@ -109,12 +109,12 @@ function getFormatFreeUrl(req) {
   host = join(host, root)
 
   var url = new URL(`${req.protocol}://${host}${req.path}`)
-
+/*
   for (var propName in req.query) {
     if (req.query.hasOwnProperty(propName))
       url.searchParams.append(propName, req.query[propName])
   }
-
+*/
   return url
 }
 

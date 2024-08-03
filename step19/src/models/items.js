@@ -11,12 +11,12 @@ function getContent(neutralUrl, format, collection) {
   item.timestamp = new Date().toISOString()
   item.links = []
 
-  var selfUrl = neutralUrl
+  var selfUrl = new URL(neutralUrl)
   selfUrl.searchParams.append('f', format)
   item.links.push({ href: `${selfUrl}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
 
   utils.getAlternateFormats(format, ['json', 'html', 'csv']).forEach(altFormat => {
-    var alternateUrl = neutralUrl
+    var alternateUrl = new URL(neutralUrl)
     alternateUrl.searchParams.append('f', altFormat)
     item.links.push({ href: `${alternateUrl}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
 })

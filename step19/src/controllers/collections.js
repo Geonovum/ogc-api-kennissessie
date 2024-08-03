@@ -10,7 +10,13 @@ export function get(req, res) {
 
   // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
   //         if the request URI includes a query parameter that is not specified in the API definition
-  if (!utils.checkForAllowedQueryParams(req.query, ['f'], res)) return
+  var queryParams = ['f']
+  var rejected = utils.checkForAllowedQueryParams(req.query, queryParams)
+  if (rejected.length > 0) 
+  {
+      res.status(400).json({'code': `The following query parameters are rejected: ${rejected}`, 'description': 'Valid parameters for this request are ' + queryParams })
+      return 
+  }
 
   var formatFreeUrl = utils.getFormatFreeUrl(req)
 
