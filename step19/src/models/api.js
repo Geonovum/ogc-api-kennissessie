@@ -21,7 +21,7 @@ function get(neutralUrl, callback) {
     }
 
     { // Info
-        var jsonStr = readFileSync(join(__dirname, '..', 'api', 'info.json'))
+        var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'info.json'))
         var content = JSON.parse(jsonStr)
 
         var ff = JSON.stringify(content)
@@ -45,18 +45,18 @@ function get(neutralUrl, callback) {
     }
 
     { // Tags
-        var jsonStr = readFileSync(join(__dirname, '..', 'api', 'tags.json'))
+        var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'tags.json'))
         var tags = JSON.parse(jsonStr)
     }
 
     { // Core
-        var jsonStr = readFileSync(join(__dirname, '..', 'api', 'core', 'paths.json'))
+        var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'core', 'paths.json'))
         var content = JSON.parse(jsonStr)
 
-        var jsonStr = readFileSync(join(__dirname, '..', 'api', 'core', 'components', 'parameters.json'))
+        var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'core', 'components', 'parameters.json'))
         var parameters = JSON.parse(jsonStr)
 
-        var jsonStr = readFileSync(join(__dirname, '..', 'api', 'core', 'components', 'schema.json'))
+        var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'core', 'components', 'schema.json'))
         var schemas = JSON.parse(jsonStr)
 
         var paths = { 'paths': content }
@@ -76,15 +76,15 @@ function get(neutralUrl, callback) {
 
     { // Collections
 
-        var jsonStr = readFileSync(join(__dirname, '..', 'api', 'collections', 'paths.json'))
+        var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'collections', 'paths.json'))
         var content = JSON.parse(jsonStr)
 
         paths.paths['/collections'] = content['/collections']
 
-        var jsonStr = readFileSync(join(__dirname, '..', 'api', 'collections', 'components', 'parameters.json'))
+        var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'collections', 'components', 'parameters.json'))
         var parameters = JSON.parse(jsonStr)
 
-        var jsonStr = readFileSync(join(__dirname, '..', 'api', 'collections', 'components', 'schema.json'))
+        var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'collections', 'components', 'schema.json'))
         var schemas = JSON.parse(jsonStr)
 
         for (var parameter in parameters) {
@@ -117,20 +117,20 @@ function get(neutralUrl, callback) {
         for (var name in databases) {
             var database = databases[name]
 
-            var jsonStr = readFileSync(join(__dirname, '..', 'api', 'features', 'paths.json'))
+            var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'features', 'paths.json'))
             var content = JSON.parse(jsonStr)
 
             var ff = JSON.stringify(content)
             var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
             var items = JSON.parse(ff)
 
-            var jsonStr = readFileSync(join(__dirname, '..', 'api', 'features', 'components', 'parameters.json'))
+            var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'features', 'components', 'parameters.json'))
             var parameters = JSON.parse(jsonStr)
             var ff = JSON.stringify(parameters)
             var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
             var parameters = JSON.parse(ff)
 
-            var jsonStr = readFileSync(join(__dirname, '..', 'api', 'features', 'components', 'parameter.json'))
+            var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'features', 'components', 'parameter.json'))
             var parameter = JSON.parse(jsonStr)
 
             var itemsParameters = items[`/collections/${name}/items`]['get']['parameters']
@@ -149,7 +149,7 @@ function get(neutralUrl, callback) {
                 }
             }
 
-            var jsonStr = readFileSync(join(__dirname, '..', 'api', 'features', 'components', 'schema.json'))
+            var jsonStr = readFileSync(join(__dirname, '..', 'apiTemplates', 'features', 'components', 'schema.json'))
             var schemas = JSON.parse(jsonStr)
             var ff = JSON.stringify(schemas)
             var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
