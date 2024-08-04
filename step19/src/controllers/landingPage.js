@@ -35,7 +35,7 @@ export function get(req, res) {
         //         implementations SHOULD consider to support GeoJSON as an encoding for features and feature 
         //         collections.
         switch (format) {
-            case `json`:
+            case 'json':
                 // Recommendations 1, A 200-response SHOULD include the following links in the links property of the response:
                 res.set('link', utils.makeHeaderLinks(content.links))
 console.log(content)

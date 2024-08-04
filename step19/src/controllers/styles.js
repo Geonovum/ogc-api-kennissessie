@@ -26,7 +26,7 @@ export function get(req, res) {
   var format = accept.type(['json', 'html'])
 
   switch (format) {
-    case `json`:
+    case 'json':
       // Recommendations 10, Links included in payload of responses SHOULD also be 
       // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
       // This recommendation does not apply, if there are a large number of links included 
