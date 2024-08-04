@@ -31,7 +31,7 @@ export function get(req, res) {
   {
     // application/vnd.oai.openapi+json;version=3.0 and application/vnd.oai.openapi;version=3.0
     // or (application/openapi+yaml and application/openapi+json) are not yet taken up by iana or
-    // by mime-db.
+    // by mime-db. So accepts does not return the correct format!
     // So deal with them here manually, until they are accepted
     var accept = req.get('accept')
     if (accept.includes('vnd.oai.openapi+json'))
@@ -39,7 +39,6 @@ export function get(req, res) {
     else if (accept.includes('vnd.oai.openapi'))
       format = 'yaml'
   }
-
 
   api.get(formatFreeUrl, function (err, content) {
 
