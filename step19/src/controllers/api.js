@@ -27,6 +27,19 @@ export function get(req, res) {
 
   var accept = accepts(req)
   var format = accept.type(['json', 'html', 'yaml'])
+  if (!format)
+  {
+    // application/vnd.oai.openapi+json;version=3.0 and application/vnd.oai.openapi;version=3.0
+    // or (application/openapi+yaml and application/openapi+json) are not yet taken up by iana or
+    // by mime-db.
+    // So deal with them here manually, until they are accepted
+    var accept = req.get('accept')
+    if (accept.includes('vnd.oai.openapi+json'))
+      format = 'json'
+    else if (accept.includes('vnd.oai.openapi'))
+      format = 'yaml'
+  }
+
 
   api.get(formatFreeUrl, function (err, content) {
 
@@ -38,6 +51,7 @@ export function get(req, res) {
     switch (format) {
       case 'json':
         var filename = join(__dirname, '..', 'public', 'api', 'openapi.json')
+console.log(content)
         writeFileSync(filename, JSON.stringify(content))
         res.set('Content-Type', 'application/vnd.oai.openapi+json;version=3.0')
         res.sendFile(filename)
