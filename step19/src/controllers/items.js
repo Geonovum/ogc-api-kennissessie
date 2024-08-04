@@ -1,11 +1,15 @@
-const accepts = require('accepts')
-var items = require('../models/items.js')
-var utils = require('../utils/utils')
+import accepts from 'accepts'
+import items from '../models/items.js'
+import geojson2csv from '../utils/csv.js'
+import utils from '../utils/utils.js'
 
-function get(req, res, next) {
+export function get(req, res, next) {
+
+  // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
+  // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
+  if (utils.ifTrailingSlash(req, res)) return
 
   var collectionId = req.params.collectionId
-  var serviceUrl = utils.getServiceUrl(req)
 
   var options = {}
   options.offset = Number(req.query.offset) || 0
@@ -15,15 +19,15 @@ function get(req, res, next) {
   delete req.query.offset;
   delete req.query.limit;
 
-  var query = req.query
-
   var accept = accepts(req)
-  var acceptType = accept.type(['json', 'html'])
+  var format = accept.type(['json', 'html', 'csv'])
 
-  items.get(serviceUrl, collectionId, query, options, acceptType, function (err, content) {
+  var formatFreeUrl = utils.getFormatFreeUrl(req)
+
+  items.get(formatFreeUrl, format, collectionId, req.query, options, function (err, content) {
 
     if (err) {
-      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
       return
     }
 
@@ -32,26 +36,27 @@ function get(req, res, next) {
       res.set('Content-Crs', content.headerContentCrs)
     delete content.headerContentCrs
 
-    switch (acceptType) {
+    switch (format) {
       case `json`:
         res.status(200).json(content)
         break
       case `html`:
-        res.status(200).render(`items`, content )
+        res.status(200).render(`items`, content)
         break
+      case 'csv':
+        res.removeHeader('Content-Crs');
+        res.set('Content-Type', utils.getTypeFromFormat(format));
+        res.set('Content-Disposition', `inline; filename="${collectionId}.csv"`);
+        res.send(geojson2csv(content));
+        break;
       default:
-        res.status(400).json(`{'code': 'InvalidParameterValue', 'description': '${accept} is an invalid format'}`)
+        res.status(400).json({ 'code': 'InvalidParameterValue', 'description': `${accept} is an invalid format` })
     }
   })
 
 }
 
-function options (req, res) {
-  
+export function options(req, res) {
+
   res.status(200).end()
-}
-
-
-module.exports = {
-  get, options
 }

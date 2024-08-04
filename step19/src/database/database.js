@@ -1,24 +1,28 @@
-const path = require('path')
-const fs = require('fs')
-const turf = require('@turf/turf')
+import { join } from 'path'
+import { readdirSync, readFileSync } from 'fs'
+import { bbox, featureCollection } from '@turf/turf'
+
+const __dirname = import.meta.dirname
 
 function readGeoJSONfiles() {
-  var dir = path.join(__dirname, "../../data")
+  if (__dirname === undefined)
+    console.log('need node 20.16 or higher')
+  
+  var dir = process.env.DATA_PATH  || join(__dirname, "../../data")
 
-  var fileNames = fs.readdirSync(dir).filter(fn => fn.endsWith('.geojson'))
+  var fileNames = readdirSync(dir).filter(fn => fn.endsWith('.geojson'))
 
   fileNames.forEach(fileName => {
-    var rawData = fs.readFileSync(path.join(dir, fileName))
-    var id = fileName.replace(/\.[^/.]+$/, "")
+    var rawData = readFileSync(join(dir, fileName))
 
     var geojson = JSON.parse(rawData)
-    dataDict[id] = geojson
+    dataDict[geojson.name] = geojson
   })
 }
 
 var dataDict = {};
 
-function load() {
+export function load() {
 
   readGeoJSONfiles()
 
@@ -44,7 +48,7 @@ function load() {
     geojson.lastModified = new Date()
 
     // calculate the bbox from geometry
-    geojson.bbox = turf.bbox(turf.featureCollection(geojson.features));
+    geojson.bbox = bbox(featureCollection(geojson.features));
 
     // --- begin construct queryables ------------------- 
     geojson.queryables = {}
@@ -76,6 +80,9 @@ function load() {
 
     var feature = geojson.features[0]
 
+    // (OAPIF P5) Requirement 4 The keyword "x-ogc-role" SHALL be used to declare a specific role of the property
+
+    // (OAPIF P5) Requirement 9 A property with "x-ogc-role" set to "primary-geometry" SHALL be a spatial property.
     var geometry = feature.geometry
     var item = {
       'x-ogc-role': 'primary-geometry',
@@ -87,9 +94,18 @@ function load() {
     for (var propertyName in properties) {
       var item = {
         'title': propertyName,
-        'x-ogc-role': 'type',
         'type': typeof properties[propertyName]
       }
+
+        // (OAPIF P5) Requirement 5 A property with "x-ogc-role" set to "id" SHALL be the identifier of the 
+        //            item in the collection that contains the item.
+        if (propertyName == geojson.id) item['x-ogc-role'] = 'id'
+        // (OAPIF P5) Requirement 14 If the features have a property that represents the feature type, 
+        //            the role "type" can be used for this property.
+        //  Requirement 14A: A property with "x-ogc-role" set to "type" SHALL be a string property.
+        //  Requirement 14B: At most one property in a schema SHALL have "x-ogc-role" with a value "type".
+        // else if (item.type == 'string') item['x-ogc-role'] = 'type'
+
       geojson.schema[`${propertyName}`] = item
     }
 
@@ -97,8 +113,8 @@ function load() {
   })
 }
 
-function getCollection() {
+export function getDatabases() {
   return dataDict
 }
 
-module.exports = { load, getCollection }
+export default getDatabases

@@ -1,13 +1,15 @@
-const router = require('express').Router()
+import express from 'express';
 
-const landingPage = require('../controllers/landingPage')
-const conformance = require('../controllers/conformance')
-const collections = require('../controllers/collections')
-const collection  = require('../controllers/collection')
-const items       = require('../controllers/items')
-const item        = require('../controllers/item')
+import { get as getLandingPage } from '../controllers/landingPage.js'
+import { get as getConformance } from '../controllers/conformance.js'
+import { get as getCollections } from '../controllers/collections.js'
+import { get as getCollection } from '../controllers/collection.js'
+import { get as getItems } from '../controllers/items.js'
+import { get as getItem } from '../controllers/item.js'
 //
-const api         = require('../controllers/api')
+import { get as getAPI } from '../controllers/api.js'
+
+const router = express.Router();
 
 // 7.5 The server SHOULD support the HTTP 1.1 method HEAD for all 
 // resources that support the method GET.
@@ -24,16 +26,16 @@ const api         = require('../controllers/api')
 // OGC API Features Part 1 - Core
 
 // OGC API Common Part 1 - Core
-router.get('/.:ext?', landingPage.get)
+router.get('/', getLandingPage)
 
 // (OAPIF P1) Requirement 5 A: The server SHALL support the HTTP GET operation at the path /conformance
-router.get('/conformance.:ext?', conformance.get)
+router.get('/conformance', getConformance)
 
 // Every OGC Web API is expected to provide a definition that describes the capabilities of the 
 // server and which can be used by developers to understand the API, by software clients to connect 
 // to the server, or by development tools to support the implementation of servers and clients.
 // Requirement 3 and Permission 1
-router.get('/api.:ext?', api.get)
+router.get('/api.:ext?', getAPI)
 
 // OGC API Common Part 2 - Collections
 
@@ -43,17 +45,17 @@ router.get('/api.:ext?', api.get)
 // (OAPIC P2) Recommendation 2: An implementation of the /Collections Requirements Class SHOULD also 
 //            implement the Landing Page Conformance Class defined in OGC API - Common Part 1.
 // (OAPIC P2) Requirement 2A. The API SHALL support the HTTP GET operation at the path /collections
-router.get('/collections.:ext?', collections.get)
+router.get('/collections', getCollections)
 
 // The server SHALL support the HTTP GET operation at the path /collections/{collectionId}.
-router.get('/collections/:collectionId.:ext?', collection.get)
+router.get('/collections/:collectionId', getCollection)
 
 // For every feature collection identified in the feature collections response (path /collections), 
 // the server SHALL support the HTTP GET operation at the path /collections/{collectionId}/items.
-router.get('/collections/:collectionId/items.:ext?', items.get)
+router.get('/collections/:collectionId/items', getItems)
 
 // For every feature in a feature collection (path /collections/{collectionId}), 
 // the server SHALL support the HTTP GET operation at the path /collections/{collectionId}/items/{featureId}.
-router.get('/collections/:collectionId/items/:featureId', item.get)
-
-module.exports = router
+router.get('/collections/:collectionId/items/:featureId', getItem)
+  
+export default router

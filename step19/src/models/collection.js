@@ -1,6 +1,7 @@
-const database = require('../database/database')
+import { getDatabases } from '../database/database.js'
+import utils from '../utils/utils.js'
 
-function getMetaData(serviceUrl, name, document) {
+function getMetaData(neutralUrl, format, name, document) {
 
   var content = {}
   // A local identifier for the collection that is unique for the dataset;
@@ -11,11 +12,16 @@ function getMetaData(serviceUrl, name, document) {
   content.attribution = 'this dataset is attributed to the municipality of amstelveen'
   content.links = []
   // Requirement 15 A and B
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=json`, rel: `items`, type: `application/geo+json`, title: `Access the features in the collection as GeoJSON` })
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}/items?f=html`, rel: `items`, type: `text/html`, title: `Access the features in the collection as HTML` })
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}`, rel: `alternate`, type: `text/html`, title: `The '${content.title}' feature collection in HTML` })
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}`, rel: `self`, title: `The '${content.title}' feature collection` })
-  content.links.push({ href: `${serviceUrl}/collections/${content.title}/queryables`, rel: `http://www.opengis.net/def/rel/ogc/1.0/queryables`, title: `Queryable attributes` })
+  content.links.push({ href: `${neutralUrl}/${name}?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `The Document` })
+  utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
+    content.links.push({ href: `${neutralUrl}/${name}?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `The Docuemnt as ${altFormat}` })
+  })
+
+  content.links.push({ href: `${neutralUrl}/${name}/items?f=${format}`, rel: `items`, type: utils.getTypeFromFormat(format), title: `Access the features in the collection as ${format}` })
+  utils.getAlternateFormats(format, ['json', 'html', 'csv']).forEach(altFormat => {
+    content.links.push({ href: `${neutralUrl}/${name}/items?f=html`, rel: `items`, type: utils.getTypeFromFormat(altFormat), title: `Access the features in the collection as ${altFormat}` })
+  })
+
   // An optional extent that can be used to provide an indication of the spatial and temporal 
   // extent of the collection - typically derived from the data;
   content.extent = {}
@@ -43,20 +49,18 @@ function getMetaData(serviceUrl, name, document) {
   return content
 }
 
-function get(serviceUrl, collectionId, callback) {
-
-  var root = serviceUrl.pathname.replace(/^\/+/, '') // remove any trailing /
+function get(neutralUrl, format, collectionId, callback) {
 
   var query = { type: 'FeatureCollection', name: `${collectionId}` };
   var projection = { name: 1, crs: 1, _id: 1 }
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
 
-  var content = getMetaData(serviceUrl, collectionId, collections[collectionId])
+  var content = getMetaData(neutralUrl, format, collectionId, collections[collectionId])
 
   return callback(undefined, content);
 }
 
-module.exports = {
+export default {
   get, getMetaData
 }

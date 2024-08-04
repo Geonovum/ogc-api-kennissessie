@@ -1,8 +1,9 @@
-const database = require('../database/database')
+import { getDatabases } from '../database/database.js'
+import utils from '../utils/utils.js'
 
-function get(serviceUrl, collectionId, featureId, callback) {
+function get(neutralUrl, format, collectionId, featureId, callback) {
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -18,9 +19,14 @@ function get(serviceUrl, collectionId, featureId, callback) {
 
   var content = collection.features[index]
   content.links = []
-  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items/${featureId}?f=json`, rel: `self`, type: `application/geo+json`, title: `This document` })
-  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items/${featureId}?f=html`, rel: `alternate`, type: `text/html`, title: `This document as HTML` })
-  content.links.push({ href: `${serviceUrl}/collections/${collectionId}/items`, rel: `collection`, type: `application/geo+json`, title: `he collection the feature belongs to` })
+  content.links.push({ href: `${neutralUrl}?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
+  utils.getAlternateFormats(format, ['json', 'html', 'csv']).forEach(altFormat => {
+    content.links.push({ href: `${neutralUrl}?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
+  })
+
+  col = neutralUrl.toString()
+  var col = col.substr(0, col.lastIndexOf("/"));
+  content.links.push({ href: `${col}?f=${format}`, rel: `collection`, type: utils.getTypeFromFormat(format), title: `The collection the feature belongs to` })
 
   return callback(undefined, content);
 }
@@ -30,7 +36,7 @@ function create(serviceUrl, collectionId, body, callback) {
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -60,7 +66,7 @@ function replacee(serviceUrl, collectionId, featureId, body, callback) {
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -97,7 +103,7 @@ function replacee(serviceUrl, collectionId, featureId, body, callback) {
 
 function deletee(serviceUrl, collectionId, featureId, callback) {
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
@@ -152,6 +158,6 @@ function update(serviceUrl, collectionId, featureId, body, callback) {
   return callback(undefined, feature);
 }
 
-module.exports = {
+export default {
   get, create, replacee, deletee, update
 }

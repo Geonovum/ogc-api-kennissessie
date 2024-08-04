@@ -1,10 +1,8 @@
-const config = require('../config/config') 
+export var apiVersion = function (req, res, next) {
 
-var version = function (req, res, next) {
-
-    res.set('API-Version', config.version)
+    res.set('API-Version', process.env.APIVERSION)
 
     next()
 }
 
-module.exports = version
+export default apiVersion

@@ -12,5 +12,3 @@ Run the app
 
 `Example app listening at http://localhost:80`
 
-In je browser of via PostMan
-

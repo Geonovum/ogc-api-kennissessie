@@ -1,4 +1,6 @@
-function get(serviceUrl, callback) {
+import utils from '../utils/utils.js'
+
+export function get(neutralUrl, format, callback) {
 
   // Recommendation 5 A: ... implementations SHOULD consider to support an HTML encoding.
   // Recommendation 6 A & B: ... implementations SHOULD consider to support GeoJSON as an encoding for features and feature collections
@@ -23,12 +25,11 @@ function get(serviceUrl, callback) {
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter");
 
   content.links = []
-  content.links.push({ href: `${serviceUrl}/conformance?f=html`, rel: `alternate`, type: `text/html`, title: `this document` })
-  content.links.push({ href: `${serviceUrl}/conformance?f=json`, rel: `self`, type: `application/json`, title: `this document in json` })
+  content.links.push({ href: `${neutralUrl}/conformance?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
+
+  utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
+    content.links.push({ href: `${neutralUrl}/conformance?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
+  })
 
   return callback(undefined, content);
-}
-
-module.exports = {
-  get,
 }
