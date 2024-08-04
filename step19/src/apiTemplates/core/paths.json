@@ -2,7 +2,7 @@
     "/": {
         "get": {
             "tags": [
-                "Capabilities"
+                "Common"
             ],
             "summary": "landing page",
             "description": "The landing page provides links to the API definition (link relations `service-desc` and `service-doc`), the Conformance declaration (path `/conformance`, link relation `conformance`), and other resources in the API.",
@@ -47,10 +47,39 @@
             }
         }
     },
+    "/api": {
+        "get": {
+            "description": "This document",
+            "operationId": "getOpenApi",
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/fCommon"
+                }
+            ],
+            "responses": {
+                "400": {
+                    "description": "Bad Request"
+                },
+                "405": {
+                    "description": "Method Not Allowed"
+                },
+                "406": {
+                    "description": "Not Acceptable"
+                },
+                "500": {
+                    "description": "Server Error"
+                }
+            },
+            "summary": "This document",
+            "tags": [
+                "Common"
+            ]
+        }
+    },
     "/conformance": {
         "get": {
             "tags": [
-                "Capabilities"
+                "Common"
             ],
             "summary": "conformance declaration",
             "description": "The URIs of all conformance classes supported by the server. This information is provided to support 'generic' clients that want to access multiple OGC API implementations - and not 'just' a specific API. For clients accessing only a single API, this information is in general not relevant and the OpenAPI definition details the required information about the API.",
