@@ -21,7 +21,7 @@ export function get(req, res) {
   var formatFreeUrl = utils.getFormatFreeUrl(req)
 
   var accept = accepts(req)
-  var format = accept.type(['json', 'html'])
+  var format = accept.type(['geojson', 'json', 'html'])
 
   collections.get(formatFreeUrl, format, function (err, content) {
 
@@ -32,10 +32,12 @@ export function get(req, res) {
 
     // (OAPIC P2) Requirement 3A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 200.
     switch (format) {
-      case `json`:
-        // Recommendations 10, Links included in payload of responses SHOULD also be 
+      case 'json':
+      case 'geojson':
+          // Recommendations 10, Links included in payload of responses SHOULD also be 
         // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
         res.set('link', utils.makeHeaderLinks(content.links))
+console.log(content)
         res.status(200).json(content)
         break
       case `html`:

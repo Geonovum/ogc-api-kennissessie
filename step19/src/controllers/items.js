@@ -23,7 +23,7 @@ export function get(req, res, next) {
   delete req.query.limit;
 
   var accept = accepts(req)
-  var format = accept.type(['json', 'html', 'csv'])
+  var format = accept.type(['json', 'geojson', 'html', 'csv'])
 
   var formatFreeUrl = utils.getFormatFreeUrl(req)
 
@@ -40,7 +40,9 @@ export function get(req, res, next) {
     delete content.headerContentCrs
 
     switch (format) {
-      case `json`:
+      case 'json':
+      case 'geojson':
+console.log(content)
         res.status(200).json(content)
         break
       case `html`:

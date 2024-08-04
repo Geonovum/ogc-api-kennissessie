@@ -24,7 +24,7 @@ export function get (req, res) {
   var formatFreeUrl = utils.getFormatFreeUrl(req)
 
   var accept = accepts(req)
-  var format = accept.type(['json', 'html'])
+  var format = accept.type(['geojson', 'json', 'html'])
 
   item.get(formatFreeUrl, format, collectionId, featureId, function(err, content) {
 
@@ -34,7 +34,8 @@ export function get (req, res) {
     }
 
     switch (format) {
-      case `json`:
+      case 'json':
+      case 'geojson':
         res.status(200).json(content)
         break
       case `html`:

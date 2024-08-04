@@ -24,7 +24,7 @@ export function get (req, res) {
   var formatFreeUrl = utils.getFormatFreeUrl(req)
 
   var accept = accepts(req)
-  var format = accept.type(['json', 'html'])
+  var format = accept.type(['geojson', 'json', 'html'])
 
   collection.get(formatFreeUrl, format, collectionId, function(err, content) {
 
@@ -34,11 +34,13 @@ export function get (req, res) {
     }
 
     switch (format) {
-      case `json`:
-        // Recommendations 10, Links included in payload of responses SHOULD also be 
+      case 'json':
+      case 'geojson':
+          // Recommendations 10, Links included in payload of responses SHOULD also be 
         // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
         // This recommendation does not apply, if there are a large number of links included 
         // in a response or a link is not known when the HTTP headers of the response are created.
+console.log(content)
         res.status(200).json(content)
         break
       case `html`:
