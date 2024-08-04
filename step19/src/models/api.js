@@ -1,4 +1,4 @@
-import urlJoin from 'url-join'
+import { join } from 'path'
 import { readFileSync } from 'fs'
 import { getDatabases } from '../database/database.js'
 
