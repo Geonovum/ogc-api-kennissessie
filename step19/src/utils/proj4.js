@@ -10,8 +10,7 @@ const getProjByCode = function(code){
             return PROJS[i];
         }
     }
-    console.log(code + ' doesn\'t exist in projs.json');
-    return undefined;
+    return undefined // code does not exist
 }
 
 const projectPoint = function(point, fromProj4, toProj4, digits = null){
@@ -69,12 +68,18 @@ const projectFeature = function(feature, fromProj4, toProj4, digits = null){
     return feature;
 }
 
-const projectFeatureCollection = function(_features, codeSridFrom, codeSridTo, digits = null){
-    const fromProjection = getProjByCode(codeSridFrom)['proj4'];
-    const toProjection = getProjByCode(codeSridTo)['proj4'];
-    if (!fromProjection || !fromProjection){
-        return;
-    }
+const projectFeatureCollection = function(_features, codeSridFrom, codeSridTo, digits = null) {
+
+    if (codeSridFrom == codeSridTo) return _features
+
+    const fromProjection = getProjByCode(codeSridFrom)
+    if (fromProjection == undefined) return
+    const fromProj = fromProjection['proj4']
+    const toProjection = getProjByCode(codeSridTo)
+    if (toProjection == undefined) return
+    const toProjec = toProjection['proj4']
+    if (!fromProjection || !toProjection)
+        return
 
     let features = JSON.parse(JSON.stringify(_features));
     for (let i = 0; i < features.length; i++){

@@ -18,9 +18,9 @@ function getMetaData(neutralUrl, format, name, document) {
     content.links.push({ href: urlJoin(neutralUrl, `?f=${altFormat}`), rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `The Docuemnt as ${altFormat}` })
   })
 
-  content.links.push({ href: urlJoin(neutralUrl, `/items?f=${format}`), rel: `items`, type: utils.getTypeFromFormat(format), title: `Access the features in the collection as ${format}` })
+  content.links.push({ href: urlJoin(neutralUrl, `items?f=${format}`), rel: `items`, type: utils.getTypeFromFormat(format), title: `Access the features in the collection as ${format}` })
   utils.getAlternateFormats(format, ['geojson', 'json', 'html', 'csv']).forEach(altFormat => {
-    content.links.push({ href: urlJoin(neutralUrl, `/items?f=${altFormat}`), rel: `items`, type: utils.getTypeFromFormat(altFormat), title: `Access the features in the collection as ${altFormat}` })
+    content.links.push({ href: urlJoin(neutralUrl, `items?f=${altFormat}`), rel: `items`, type: utils.getTypeFromFormat(altFormat), title: `Access the features in the collection as ${altFormat}` })
   })
 
   // An optional extent that can be used to provide an indication of the spatial and temporal 
@@ -63,5 +63,5 @@ function get(neutralUrl, format, collectionId, callback) {
 }
 
 export default {
-  get, getMetaData
+  get
 }

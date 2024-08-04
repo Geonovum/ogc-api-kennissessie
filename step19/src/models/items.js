@@ -41,7 +41,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var queryParams = ['f', 'bbox', 'bbox-crs', 'limit', 'offset', 'filter', 'filter-crs', 'filter-lang', 'skipGeometry', 'properties']
+  var queryParams = ['f', 'crs', 'bbox', 'bbox-crs', 'limit', 'offset', 'filter', 'filter-crs', 'filter-lang', 'skipGeometry', 'properties']
   // All attributes from schema can be queried
   for (var attributeName in collection.schema)
     if (collection.schema[attributeName]['x-ogc-role'] != 'primary-geometry')
@@ -74,7 +74,10 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         // Assumption that content comes in WGS84
         var fromEpsg = utils.UriToEPSG(_query['bbox-crs'])
         bbox = projgeojson.projectBBox(bbox, fromEpsg, 'EPSG:4326')
-        delete _query['bbox-crs']
+        if (bbox == undefined)
+          return callback({ 'httpCode': 400, 'code': `Bad Request`, 'description': `Invalid bbox-crs: ${fromEpsg}` }, undefined);
+        
+          delete _query['bbox-crs']
       }
 
       features = features.filter(
@@ -87,6 +90,8 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     if (_query.crs) {
       var toEpsg = utils.UriToEPSG(query.crs)
       features = projgeojson.projectFeatureCollection(features, 'EPSG:4326', toEpsg);
+      if (features == undefined)
+        return callback({ 'httpCode': 400, 'code': `Bad Request`, 'description': `Invalid operator: ${query.crs}` }, undefined);
 
       content.headerContentCrs = query.crs
       delete _query.crs
