@@ -94,8 +94,8 @@ function ifTrailingSlash(req, res) {
 function checkForAllowedQueryParams(query, params) {
   var rejected = []
   for (var propName in query) {
-    if (query.hasOwnProperty(propName)) 
-      if (!params.includes(propName)) 
+    if (query.hasOwnProperty(propName))
+      if (!params.includes(propName))
         rejected.push(propName)
   }
   return rejected;
@@ -109,13 +109,25 @@ function getFormatFreeUrl(req) {
   host = join(host, root)
 
   var url = new URL(`${req.protocol}://${host}${req.path}`)
-/*
-  for (var propName in req.query) {
-    if (req.query.hasOwnProperty(propName))
-      url.searchParams.append(propName, req.query[propName])
-  }
-*/
+  /*
+    for (var propName in req.query) {
+      if (req.query.hasOwnProperty(propName))
+        url.searchParams.append(propName, req.query[propName])
+    }
+  */
   return url
+}
+
+function checkNumeric(value, name, res) {
+
+  if (value == undefined) return true
+
+  if (isNaN(value)) {
+    res.status(400).json({ 'code': 'Bad request', 'description': `Parameter value '${value}' is invalid for parameter '${name}': The value is not an integer.` })
+    return false
+  }
+
+  return true
 }
 
 export default {
@@ -129,5 +141,6 @@ export default {
   getAlternateFormats,
   ifTrailingSlash,
   getFormatFreeUrl,
-  checkForAllowedQueryParams
+  checkForAllowedQueryParams,
+  checkNumeric
 }

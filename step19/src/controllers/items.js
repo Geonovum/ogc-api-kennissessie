@@ -11,6 +11,9 @@ export function get(req, res, next) {
 
   var collectionId = req.params.collectionId
 
+  if (!utils.checkNumeric(req.query.offset, 'offset', res)) return
+  if (!utils.checkNumeric(req.query.limit, 'limit', res)) return
+
   var options = {}
   options.offset = Number(req.query.offset) || 0
   options.limit = Number(req.query.limit) || 1000
