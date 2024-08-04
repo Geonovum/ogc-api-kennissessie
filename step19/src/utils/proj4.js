@@ -5,7 +5,7 @@ const require = createRequire(import.meta.url);
 const PROJS = require("./projs.json");
 
 const getProjByCode = function(code){
-    for (let i = 0; i < length; i++){
+    for (let i = 0; i < PROJS.length; i++){
         if(PROJS[i]['code'] == code){
             return PROJS[i];
         }
@@ -94,7 +94,7 @@ const projectBBox = function(featureBBox, codeSridFrom, codeSridTo, digits = nul
     const toProjection = getProjByCode(codeSridTo);
     if (!toProjection) return undefined
     const toProj = toProjection['proj4'];
-    if (!fromProj || !fromProj)
+    if (!fromProj || !toProj)
         return featureBBox;
 
     var p1 = _point([Number(featureBBox.bbox[0]), Number(featureBBox.bbox[1])])

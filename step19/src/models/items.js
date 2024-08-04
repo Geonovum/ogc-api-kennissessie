@@ -41,7 +41,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var queryParams = ['f', 'bbox', 'limit', 'offset', 'filter', 'filter-crs', 'filter-lang', 'skipGeometry', 'properties']
+  var queryParams = ['f', 'bbox', 'bbox-crs', 'limit', 'offset', 'filter', 'filter-crs', 'filter-lang', 'skipGeometry', 'properties']
   // All attributes from schema can be queried
   for (var attributeName in collection.schema)
     if (collection.schema[attributeName]['x-ogc-role'] != 'primary-geometry')
@@ -85,7 +85,6 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     }
 
     if (_query.crs) {
-      console.log('do crs conversion using proj4') // TODO
       var toEpsg = utils.UriToEPSG(query.crs)
       features = projgeojson.projectFeatureCollection(features, 'EPSG:4326', toEpsg);
 

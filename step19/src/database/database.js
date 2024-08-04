@@ -36,7 +36,7 @@ export function load() {
     else {
       geojson.crs = {}
       geojson.crs.properties = {}
-      geojson.crs.properties.name = 'urn:ogc:def:crs:OGC:1.3:CRS84' // default
+      geojson.crs.properties.name = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84' // default
     }
 
     // check if the properties contain an 'id' (used to uniquely identify the item)

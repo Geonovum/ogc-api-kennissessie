@@ -1,7 +1,7 @@
 import { join } from 'path'
 
-var _formats = ['json', 'html', 'csv']
-var _encodings = ['application/json', 'text/html', 'text/csv']
+var _formats = ['json', 'geojson', 'html', 'csv']
+var _encodings = ['application/json', 'application/geo+json', 'text/html', 'text/csv']
 
 function getServiceUrl(req) {
   // remove the optional extension from the baseUrl
@@ -72,6 +72,10 @@ function getAlternateFormats(format, formats) {
 }
 
 function UriToEPSG(uri) {
+
+if (uri == 'http://www.opengis.net/def/crs/OGC/1.3/CRS84')
+  uri = 'https://www.opengis.net/def/crs/EPSG/0/4326'
+
   var parts = uri.split('/');
   var identifier = parts.pop()
   parts.pop()

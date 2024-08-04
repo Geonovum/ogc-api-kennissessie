@@ -1,7 +1,7 @@
 {
 "type": "FeatureCollection",
 "name": "projecten_openbare_ruimte",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"crs": { "type": "name", "properties": { "name": "http://www.opengis.net/def/crs/OGC/1.3/CRS84" } },
 "features": [
 { "type": "Feature", "properties": { "fid": 1, "projectnummer": 40901, "projectnaam": "Reconstructie Selderust-noord e.o.", "fase": "initiatief", "project_type": "Renovatie openbare ruimte", "url": null, "id_kv": 1 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 4.866819560922954, 52.310883093728378 ], [ 4.869995831576705, 52.3114323349945 ], [ 4.87048115196502, 52.31040865649139 ], [ 4.869316976412693, 52.312891629937347 ], [ 4.8654133550635, 52.31303808354869 ], [ 4.86553653630852, 52.31267962701537 ], [ 4.866399363664781, 52.310855024790264 ], [ 4.866399363664781, 52.310855024790264 ], [ 4.866819560922954, 52.310883093728378 ] ] ] ] } },
 { "type": "Feature", "properties": { "fid": 2, "projectnummer": 40894, "projectnaam": "Van der Hooplaan-Startbaan", "fase": "initiatief", "project_type": "Verkeer", "url": null, "id_kv": 3 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 4.853389780857316, 52.287003288580991 ], [ 4.853896254376815, 52.286931090085133 ], [ 4.854205777205831, 52.286678984980213 ], [ 4.854160978654941, 52.28646969367361 ], [ 4.853774682160612, 52.286295603532089 ], [ 4.853191722947716, 52.286397963680187 ], [ 4.852995263831972, 52.286666682058673 ], [ 4.853052666556366, 52.286876105780308 ], [ 4.853389780857316, 52.287003288580991 ] ] ] ] } },

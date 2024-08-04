@@ -55,4 +55,4 @@ app.use(serviceRoot, oapifp5)
 // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/http-methods
 app.all('*', function (req, res, next) {
   res.status(405).json({ 'code': `Method Not Allowed`, 'description': `Not allowed` })
-});
+})
