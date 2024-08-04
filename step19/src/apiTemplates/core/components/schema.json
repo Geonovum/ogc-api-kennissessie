@@ -36,28 +36,37 @@
     },
     "SpatialExtent": {
         "required": [
-            "bbox"        ],
+            "bbox"
+        ],
         "type": "object",
         "properties": {
             "crs": {
                 "type": "string"
             },
             "bbox": {
-                "$ref": "#/components/schemas/doubleArrayArray"
+                "$ref": "#/components/schemas/bbox"
             }
         }
     },
-    "doubleArrayArray": {
-        "type": "array",
+    "bbox": {
+        "description": "One or more bounding boxes that describe the spatial extent of the dataset.",
+        "example": [
+            7.01,
+            50.63,
+            7.22,
+            50.78
+        ],
         "items": {
-            "$ref": "#/components/schemas/doubleArray"
-        }
-    },
-    "doubleArray": {
-        "type": "array",
-        "items": {
-            "type": "number"
-        }
+            "description": "West, south, east, north edges of the bounding box. Specified as coordinates separated by commas. The coordinates\nare in the coordinate reference system specified in `crs`. By default\nthis is WGS 84 longitude/latitude (CRS84).",
+            "items": {
+                "type": "number"
+            },
+            "maxItems": 6,
+            "minItems": 4,
+            "type": "array"
+        },
+        "minItems": 1,
+        "type": "array"
     },
     "TemporalExtent": {
         "required": [
