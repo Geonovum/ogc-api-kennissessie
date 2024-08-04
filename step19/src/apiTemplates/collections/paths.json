@@ -44,8 +44,7 @@
                 "500": {
                     "description": "Server Error"
                 }
-            },
-            "x-maturity": "STABLE_OGC"
+            }
         }
     },
     "/collections/{{:collectionId}}": {

@@ -1,7 +1,8 @@
 {
     "Link": {
         "required": [
-            "href"
+            "href",
+            "rel"
         ],
         "type": "object",
         "properties": {
@@ -10,6 +11,8 @@
                 "format": "uri-reference"
             },
             "rel": {
+                "description": "The type or semantics of the relation.",
+                "example": "alternate",
                 "type": "string"
             },
             "type": {
@@ -33,9 +36,7 @@
     },
     "SpatialExtent": {
         "required": [
-            "bbox",
-            "crs"
-        ],
+            "bbox"        ],
         "type": "object",
         "properties": {
             "crs": {
@@ -58,18 +59,6 @@
             "type": "number"
         }
     },
-    "StringArray": {
-        "type": "array",
-        "items": {
-            "type": "string"
-        }
-    },
-    "StringArrayArray": {
-        "type": "array",
-        "items": {
-            "$ref": "#/components/schemas/StringArray"
-        }
-    },
     "TemporalExtent": {
         "required": [
             "interval",
@@ -78,12 +67,41 @@
         "type": "object",
         "properties": {
             "interval": {
-                "$ref": "#/components/schemas/StringArrayArray"
+                "$ref": "#/components/schemas/TemporalInterval"
             },
             "trs": {
-                "type": "string"
+                "$ref": "#/components/schemas/trs"
             }
         }
+    },
+    "TemporalInterval": {
+        "description": "One or more time intervals that describe the temporal extent of the dataset.\nThe value `null` is supported and indicates an open time intervall.\nIn the Core only a single time interval is supported. Extensions may support\nmultiple intervals. If multiple intervals are provided, the union of the\nintervals describes the temporal extent.",
+        "items": {
+            "description": "Begin and end times of the time interval. The timestamps\nare in the coordinate reference system specified in `trs`. By default\nthis is the Gregorian calendar.",
+            "example": [
+                "2010-02-15T12:34:56Z",
+                null
+            ],
+            "items": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+        },
+        "minItems": 1,
+        "nullable": true,
+        "type": "array"
+    },
+    "trs": {
+        "default": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian",
+        "description": "Coordinate reference system of the coordinates in the temporal extent\n(property `interval`). The default reference system is the Gregorian calendar.\nIn the Core this is the only supported temporal coordinate reference system.\nExtensions may support additional temporal coordinate reference systems and add\nadditional enum values.",
+        "enum": [
+            "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        ],
+        "type": "string"
     },
     "ExternalDocumentation": {
         "required": [
@@ -105,10 +123,17 @@
     },
     "ConformanceDeclaration": {
         "type": "object",
+        "required": [
+            "conformsTo"
+        ],
         "properties": {
             "conformsTo": {
+                "example": [
+                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/core"
+                ],
                 "type": "array",
                 "items": {
+                    "format": "uri",
                     "type": "string"
                 }
             },
@@ -128,6 +153,9 @@
     },
     "LandingPage": {
         "type": "object",
+        "required": [
+            "links"
+        ],
         "properties": {
             "extent": {
                 "$ref": "#/components/schemas/Extent"

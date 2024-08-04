@@ -1,6 +1,10 @@
 {
     "Collections": {
         "type": "object",
+        "required": [
+            "links",
+            "collections"
+        ],
         "properties": {
             "crs": {
                 "type": "array",
@@ -11,7 +15,14 @@
             "collections": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/Collection"
+                    "allOf": [
+                        {
+                            "$ref": "#/components/schemas/Collection"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Collection-link"
+                        }
+                    ]
                 }
             },
             "description": {
@@ -28,11 +39,25 @@
             }
         }
     },
-    "Collection": {
+    "Collection-link": {
+        "properties": {
+            "links": {
+                "items": {
+                    "$ref": "#/components/schemas/Link"
+                },
+                "type": "array"
+            }
+        },
         "required": [
-            "id"
+            "links"
         ],
+        "type": "object"
+    },
+    "Collection": {
         "type": "object",
+        "required": [
+            "id", "links"
+        ],
         "properties": {
             "storageCrs": {
                 "type": "string"

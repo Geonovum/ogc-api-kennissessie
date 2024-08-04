@@ -44,8 +44,7 @@
                 "500": {
                     "description": "Server Error"
                 }
-            },
-            "x-maturity": "STABLE_OGC"
+            }
         }
     },
     "/conformance": {
@@ -70,6 +69,15 @@
                     "description": "The operation was executed successfully.",
                     "content": {
                         "application/json": {
+                            "example": {
+                                "conformsTo": [
+                                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core",
+                                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/landingPage",
+                                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/oas30",
+                                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/html",
+                                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/json"
+                                ]
+                            },
                             "schema": {
                                 "$ref": "#/components/schemas/ConformanceDeclaration"
                             }
@@ -93,8 +101,7 @@
                 "500": {
                     "description": "Server Error"
                 }
-            },
-            "x-maturity": "STABLE_OGC"
+            }
         }
     }
 }
