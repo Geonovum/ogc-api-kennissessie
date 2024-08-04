@@ -1,4 +1,4 @@
-import { join } from 'path'
+import urlJoin from 'url-join'
 import { readFileSync } from 'fs'
 import { getDatabases } from '../database/database.js'
 
@@ -34,7 +34,7 @@ function get(neutralUrl, callback) {
     }
 
     { // Servers
-        serverUrl = neutralUrl.toString() // remove /api from neutralUrl
+        serverUrl = neutralUrl // remove /api from neutralUrl
         var serverUrl = serverUrl.substr(0, serverUrl.lastIndexOf("/"));
 
         var servers = { "servers": [] }

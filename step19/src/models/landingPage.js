@@ -1,3 +1,4 @@
+import urlJoin from 'url-join'
 import { getDatabases } from '../database/database.js'
 import utils from '../utils/utils.js'
 
@@ -30,20 +31,21 @@ function get(neutralUrl, format, callback) {
     }
 
     content.links = []
-    content.links.push({ href: `${neutralUrl}/?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
+    content.links.push({ href: urlJoin(neutralUrl, `?f=${format}`), rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
 
     utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
-        content.links.push({ href: `${neutralUrl}/?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
+        content.links.push({ href: urlJoin(neutralUrl, `?f=${altFormat}`), rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
     })
 
-    content.links.push({ href: `${neutralUrl}/conformance`, rel: `conformance`,                                        title: `OGC API conformance classes implemented by this server` })
-    content.links.push({ href: `${neutralUrl}/conformance`, rel: `http://www.opengis.net/def/rel/ogc/1.0/conformance`, title: `OGC API conformance classes implemented by this server` })
+    content.links.push({ href: urlJoin(neutralUrl, 'conformance'), rel: `conformance`,                                        title: `OGC API conformance classes implemented by this server` })
+    content.links.push({ href: urlJoin(neutralUrl, 'conformance'), rel: `http://www.opengis.net/def/rel/ogc/1.0/conformance`, title: `OGC API conformance classes implemented by this server` })
 
-    content.links.push({ href: `${neutralUrl}/api?f=json`, rel: `service-desc`, type: `application/vnd.oai.openapi+json;version=3.0`, title: `Definition of the API in OpenAPI 3.0` })
-    content.links.push({ href: `${neutralUrl}/api?f=yaml`, rel: `service-desc`, type: `application/vnd.oai.openapi;version=3.0`,      title: `Definition of the API in OpenAPI 3.0` })
-    content.links.push({ href: `${neutralUrl}/api?f=html`, rel: `service-doc`,  type: `text/html`,                                    title: `Documentation of the API` })
+    content.links.push({ href: urlJoin(neutralUrl, 'api?f=json'), rel: `service-desc`, type: `application/vnd.oai.openapi+json;version=3.0`, title: `Definition of the API in OpenAPI 3.0` })
+    content.links.push({ href: urlJoin(neutralUrl, 'api?f=yaml'), rel: `service-desc`, type: `application/vnd.oai.openapi;version=3.0`,      title: `Definition of the API in OpenAPI 3.0` })
+    content.links.push({ href: urlJoin(neutralUrl, 'api?f=html'), rel: `service-doc`,  type: `text/html`,                                    title: `Documentation of the API` })
     
-    content.links.push({ href: `${neutralUrl}/collections`, rel: `data`, title: `Access the data` })
+    content.links.push({ href: urlJoin(neutralUrl, 'collections'), rel: `data`, title: `Access the data` })
+    content.links.push({ href: urlJoin(neutralUrl, 'collections'), rel: `http://www.opengis.net/def/rel/ogc/1.0/data`, title: `Access the data` })
 
     content.links.push({ href: `http://creativecommons.org/publicdomain/zero/1.0/deed.nl`, rel: `license`, title: `CC0 1.0`, type: `text/html` })
   

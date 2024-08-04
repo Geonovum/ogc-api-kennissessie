@@ -1,3 +1,4 @@
+import urlJoin from 'url-join'
 import database from '../database/database.js';
 
 function get(neutralUrl, format, collectionId, callback) {
@@ -10,7 +11,7 @@ function get(neutralUrl, format, collectionId, callback) {
   var content = {}
   // Requirement 4B The parameter collectionId is each id property in the
   // Collections resource (JSONPath: $.collections[*].id).
-  content.$id = `${serviceUrl}/collections/${collectionId}/sortables`
+  content.$id = urlJoin(neutralUrl, 'collections' , collectionId, 'sortables')
   content.$schema = 'https://json-schema.org/draft/2020-12/schema'
   content.type = 'object'
   // Recommendation 1A

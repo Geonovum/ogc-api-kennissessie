@@ -1,3 +1,4 @@
+import urlJoin from 'url-join'
 import database from '../database/database.js';
 
 function get(neutralUrl, format, collectionId, callback) {
@@ -13,7 +14,7 @@ function get(neutralUrl, format, collectionId, callback) {
   //    "$schema" is "https://json-schema.org/draft/2020-12/schema";
   //    "$id" is a HTTP(S) URI without query parameters that returns the schema, if requested with the header "Accept: application/schema+json"
   //    "type" is "object".
-  content.$id = `${serviceUrl}/collections/${collectionId}/queryables`
+  content.$id = urlJoin(neutralUrl, 'collections' , collectionId, 'queryables')
   content.$schema = 'https://json-schema.org/draft/2020-12/schema'
   content.type = 'object'
 

@@ -1,3 +1,4 @@
+import urlJoin from 'url-join'
 import { getDatabases } from '../database/database.js'
 import utils from '../utils/utils.js'
 
@@ -12,14 +13,14 @@ function getMetaData(neutralUrl, format, name, document) {
   content.attribution = 'this dataset is attributed to the municipality of amstelveen'
   content.links = []
   // Requirement 15 A and B
-  content.links.push({ href: `${neutralUrl}/${name}?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `The Document` })
+  content.links.push({ href: urlJoin(neutralUrl, `${name}?f=${format}`), rel: `self`, type: utils.getTypeFromFormat(format), title: `The Document` })
   utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
-    content.links.push({ href: `${neutralUrl}/${name}?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `The Docuemnt as ${altFormat}` })
+    content.links.push({ href: urlJoin(neutralUrl, `${name}?f=${altFormat}`), rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `The Docuemnt as ${altFormat}` })
   })
 
-  content.links.push({ href: `${neutralUrl}/${name}/items?f=${format}`, rel: `items`, type: utils.getTypeFromFormat(format), title: `Access the features in the collection as ${format}` })
+  content.links.push({ href: urlJoin(neutralUrl, `${name}/items?f=${format}`), rel: `items`, type: utils.getTypeFromFormat(format), title: `Access the features in the collection as ${format}` })
   utils.getAlternateFormats(format, ['json', 'html', 'csv']).forEach(altFormat => {
-    content.links.push({ href: `${neutralUrl}/${name}/items?f=html`, rel: `items`, type: utils.getTypeFromFormat(altFormat), title: `Access the features in the collection as ${altFormat}` })
+    content.links.push({ href: urlJoin(neutralUrl, `${name}/items?f=html`), rel: `items`, type: utils.getTypeFromFormat(altFormat), title: `Access the features in the collection as ${altFormat}` })
   })
 
   // An optional extent that can be used to provide an indication of the spatial and temporal 

@@ -1,3 +1,4 @@
+import urlJoin from 'url-join'
 import utils from '../utils/utils.js'
 
 export function get(neutralUrl, format, callback) {
@@ -25,10 +26,10 @@ export function get(neutralUrl, format, callback) {
   content.conformsTo.push("http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter");
 
   content.links = []
-  content.links.push({ href: `${neutralUrl}/conformance?f=${format}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
+  content.links.push({ href: urlJoin(neutralUrl, `conformance?f=${format}`), rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
 
   utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
-    content.links.push({ href: `${neutralUrl}/conformance?f=${altFormat}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
+    content.links.push({ href: urlJoin(neutralUrl, `conformance?f=${altFormat}`), rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
   })
 
   return callback(undefined, content);

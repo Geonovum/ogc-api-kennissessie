@@ -1,7 +1,7 @@
 import { join } from 'path'
 
 var _formats = ['json', 'html', 'csv']
-var _encodings = ['application/geo+json', 'text/html', 'text/csv']
+var _encodings = ['application/json', 'text/html', 'text/csv']
 
 function getServiceUrl(req) {
   // remove the optional extension from the baseUrl
@@ -115,7 +115,7 @@ function getFormatFreeUrl(req) {
         url.searchParams.append(propName, req.query[propName])
     }
   */
-  return url
+  return url.toString()
 }
 
 function checkNumeric(value, name, res) {

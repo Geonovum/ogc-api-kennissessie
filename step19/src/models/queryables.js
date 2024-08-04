@@ -1,3 +1,4 @@
+import urlJoin from 'url-join'
 import { getDatabases } from '../database/database.js'
 
 function get(neutralUrl, format, collectionId, callback) {

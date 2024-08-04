@@ -3,7 +3,7 @@ import cors from 'cors'
 import morgan from 'morgan'
 import { major } from 'semver'
 import favicon from 'serve-favicon'
-import { join } from 'path';
+import { join } from 'path'
 import encodings from './middleware/encodings.js'
 import apiVersion from './middleware/apiversion.js'
 import oapifp1 from './routes/ogcapiFeaturesPart1.js'
