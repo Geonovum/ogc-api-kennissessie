@@ -19,7 +19,7 @@ function getContent(neutralUrl, format, collection) {
     var alternateUrl = new URL(neutralUrl)
     alternateUrl.searchParams.append('f', altFormat)
     item.links.push({ href: `${alternateUrl}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
-})
+  })
 
   if (collection.crs.properties.name)
     item.headerContentCrs = collection.crs.properties.name
@@ -27,8 +27,7 @@ function getContent(neutralUrl, format, collection) {
   return item
 }
 
-function getDatabase(collectionId)
-{
+function getDatabase(collectionId) {
   var collections = getDatabases()
   return collections[collectionId]
 }
@@ -36,12 +35,12 @@ function getDatabase(collectionId)
 function get(neutralUrl, format, collectionId, query, options, callback) {
 
   var collections = getDatabases()
-  
+
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var queryParams = ['f', 'bbox', 'limit', 'offset', 'filter', 'filter-crs', 'filter-lang', 'skipGeometry']
+  var queryParams = ['f', 'bbox', 'limit', 'offset', 'filter', 'filter-crs', 'filter-lang', 'skipGeometry', 'properties']
   // All attributes from schema can be queried
   for (var attributeName in collection.schema)
     if (collection.schema[attributeName]['x-ogc-role'] != 'primary-geometry')
@@ -50,14 +49,17 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
   //         if the request URI includes a query parameter that is not specified in the API definition
   var rejected = utils.checkForAllowedQueryParams(query, queryParams)
-  if (rejected.length > 0) 
+  if (rejected.length > 0)
     return callback({ 'httpCode': 400, 'code': `The following query parameters are rejected: ${rejected}`, 'description': 'Valid parameters for this request are ' + queryParams }, undefined);
 
   var content = getContent(neutralUrl, format, collection)
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
   var features = content.features
-//  var features = structuredClone(content.features) // deep copy for skipGeometry (don't understand)
+  //  var features = structuredClone(content.features) // deep copy for skipGeometry (don't understand)
+
+  var doSkipGeometry = false
+  var doProperties = []
 
   var _query = query
   if (_query) {
@@ -117,12 +119,13 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     }
 
     if (_query.skipGeometry)
-    {
-      features.forEach(function(feature){ delete feature.geometry });
+      doSkipGeometry = true
+    delete _query.skipGeometry
 
-      delete _query.skipGeometry
-    }
-  
+    if (_query.properties)
+      doProperties = _query.properties.split(',')
+    delete _query.properties
+
     // Filter parameters as query
     for (var attributeName in _query) {
       // is attribute part of the queryables?
@@ -137,7 +140,6 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         return callback({ 'httpCode': 400, 'code': `The following query parameters are rejected: ${attributeName}`, 'description': 'Valid parameters for this request are ' + collection.queryables }, undefined);
 
     }
-
   }
 
   content.numberMatched = features.length
@@ -146,6 +148,17 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     content.features = features.slice(options.offset, options.offset + options.limit)
   else
     content.features = features
+
+  if (doSkipGeometry)
+    features.forEach(function (feature) { delete feature.geometry });
+
+  if (doProperties.length > 0) {
+    features.forEach(function (feature) {
+      for (var propertyName in feature.properties)
+        if (!doProperties.includes(propertyName)) 
+          delete feature.properties[propertyName]
+    })
+  }
 
   content.numberReturned = content.features.length
 
