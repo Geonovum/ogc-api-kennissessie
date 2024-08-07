@@ -43,7 +43,6 @@ export function get(req, res) {
         // Recommendations 10, Links included in payload of responses SHOULD also be 
         // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
         res.set('link', utils.makeHeaderLinks(content.links))
-console.log(content)
         res.status(200).json(content)
         break
       case `html`:

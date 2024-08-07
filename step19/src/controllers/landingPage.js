@@ -38,7 +38,6 @@ export function get(req, res) {
             case 'json':
                 // Recommendations 1, A 200-response SHOULD include the following links in the links property of the response:
                 res.set('link', utils.makeHeaderLinks(content.links))
-console.log(content)
                 res.status(200).json(content)
                 break
             case `html`:

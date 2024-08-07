@@ -122,18 +122,18 @@ function getContent(neutralUrl, format, collection) {
 
   if (format == 'geojson') format = 'json'
 
-  var item = {}
-  item.type = collection.type
-  item.features = collection.features
-  item.timeStamp = new Date().toISOString()
-  item.links = []
+  var items = {}
+  items.type = collection.type
+  items.features = collection.features
+  items.timeStamp = new Date().toISOString()
+  items.links = []
 
-  getLinks(neutralUrl, format, item.links)
+  getLinks(neutralUrl, format, items.links)
 
   if (collection.crs.properties.name)
-    item.headerContentCrs = collection.crs.properties.name
+    items.headerContentCrs = collection.crs.properties.name
 
-  return item
+  return items
 }
 
 function getDatabase(collectionId) {

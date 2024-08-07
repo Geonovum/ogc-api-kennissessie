@@ -15,7 +15,7 @@ export const app = express()
 
 const __dirname = import.meta.dirname
 
-//app.use(morgan(':method :url :response-time', { stream: { write: msg => console.log(msg) } }));
+app.use(morgan(':method :url :response-time', { stream: { write: msg => console.log(msg) } }));
 
 // (OAPIF P1) 7.5 Servers implementing CORS will implement the method OPTIONS, too.
 // (OAPIF P1) 7.8 Recommendation 5 If the server is intended to be accessed from the browser, 

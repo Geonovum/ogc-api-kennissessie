@@ -50,7 +50,6 @@ export function get(req, res) {
     switch (format) {
       case 'json':
         var filename = join(__dirname, '..', 'public', 'api', 'openapi.json')
-console.log(content)
         writeFileSync(filename, JSON.stringify(content))
         res.set('Content-Type', 'application/vnd.oai.openapi+json;version=3.0')
         res.sendFile(filename)

@@ -1,6 +1,5 @@
 import urlJoin from 'url-join'
 import { getDatabases } from '../database/database.js'
-import collection from './collection.js'
 import utils from '../utils/utils.js'
 
 function getLinks(neutralUrl, format, name, links) {  
@@ -86,9 +85,9 @@ function get(neutralUrl, format, callback) {
 
   // get content per :collection
   for (var name in collections) {
-    var item = getContent(neutralUrl, format, name, collections[name])
+    var collection = getContent(neutralUrl, format, name, collections[name])
   
-    content.collections.push(item);
+    content.collections.push(collection);
   }
 
   return callback(undefined, content);

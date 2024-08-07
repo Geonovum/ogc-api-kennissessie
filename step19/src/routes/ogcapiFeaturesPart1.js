@@ -5,7 +5,7 @@ import { get as getConformance } from '../controllers/conformance.js'
 import { get as getCollections } from '../controllers/collections.js'
 import { get as getCollection } from '../controllers/collection.js'
 import { get as getItems } from '../controllers/items.js'
-import { get as getItem } from '../controllers/item.js'
+import { get as getFeature } from '../controllers/feature.js'
 //
 import { get as getAPI } from '../controllers/api.js'
 
@@ -56,6 +56,6 @@ router.get('/collections/:collectionId/items', getItems)
 
 // For every feature in a feature collection (path /collections/{collectionId}), 
 // the server SHALL support the HTTP GET operation at the path /collections/{collectionId}/items/{featureId}.
-router.get('/collections/:collectionId/items/:featureId', getItem)
+router.get('/collections/:collectionId/items/:featureId', getFeature)
   
 export default router
