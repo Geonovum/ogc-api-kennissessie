@@ -214,6 +214,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
             element => dates.from(element.properties[datetimeAttribName].toString(), datetimes[0]))
         }
         else if (beginDate == '..' && endDate == '..') { // non-bounded [.., ..] - everything passes
+          // no filter
         }
       }
       delete _query.datetime

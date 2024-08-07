@@ -5,6 +5,8 @@ import projgeojson from '../utils/proj4.js'
 
 function getLinks(neutralUrl, format, links) {
 
+  if (format == 'geojson') format = 'json'
+
   function getTypeFromFormat(format) {
     var _formats = ['json', 'geojson',  'html', 'csv']
     var _encodings = ['application/geo+json', 'application/geo+json', 'text/html', 'text/csv']
@@ -21,6 +23,8 @@ function getLinks(neutralUrl, format, links) {
 
 function getParentLink(neutralUrl, format, links) {
 
+  if (format == 'geojson') format = 'json'
+
   function getTypeFromFormat(format) {
     var _formats = ['json', 'html']
     var _encodings = ['application/json', 'text/html']
@@ -34,7 +38,13 @@ function getParentLink(neutralUrl, format, links) {
   // remove 'items'
   neutralUrl = neutralUrl.substr(0, neutralUrl.lastIndexOf("/"));
 
-  links.push({ href: urlJoin(neutralUrl, `?f=${format}`), rel: `collection`, type: getTypeFromFormat(format), title: `The collection the feature belongs to` })
+  links.push({ href: urlJoin(neutralUrl, `?f=${format}`), rel: `collection`, type: getTypeFromFormat(format), type: 'application/json', title: `The collection the feature belongs to as ${format}` })
+  utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
+    links.push({ href: urlJoin(neutralUrl, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `The collection the feature belongs to as ${altFormat}` })
+  })
+}
+
+function getContent(neutralUrl, format, collection) {
 }
 
 function get(neutralUrl, format, collectionId, featureId, query, callback) {
