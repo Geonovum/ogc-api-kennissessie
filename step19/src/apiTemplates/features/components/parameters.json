@@ -135,7 +135,7 @@
         "style": "form",
         "explode": false,
         "schema": {
-            "maximum": 10000,
+            "maximum": 1000,
             "minimum": 1,
             "type": "integer",
             "format": "int32",

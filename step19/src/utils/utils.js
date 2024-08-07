@@ -1,7 +1,8 @@
 import { join } from 'path'
 
-var _formats = ['json', 'geojson', 'html', 'csv']
-var _encodings = ['application/json', 'application/geo+json', 'text/html', 'text/csv']
+var _formats = ['json', 'html', 'csv']
+var _encodings = ['application/json', 'text/html', 'text/csv']
+var _encodingsItems = ['application/geo+json', 'text/html', 'text/csv']
 
 function getServiceUrl(req) {
   // remove the optional extension from the baseUrl
@@ -28,8 +29,8 @@ function ISODateString(d) {
 }
 
 function header(collection) {
-  collection.title = "Title of " + collection.id;
-  collection.description = "Description of " + collection.id;
+  collection.title = "Title of " + collection.idName;
+  collection.description = "Description of " + collection.idName;
   collection.links = [];
 
   return collection;
@@ -60,6 +61,11 @@ function makeHeaderLinks(hls) {
 function getTypeFromFormat(format) {
   var i = _formats.indexOf(format);
   return _encodings[i]
+}
+
+function getTypeItemsFromFormat(format) {
+  var i = _formats.indexOf(format);
+  return _encodingsItems[i]
 }
 
 function getAlternateFormats(format, formats) {
@@ -142,6 +148,7 @@ export default {
   makeHeaderLinks,
   UriToEPSG,
   getTypeFromFormat,
+  getTypeItemsFromFormat,
   getAlternateFormats,
   ifTrailingSlash,
   getFormatFreeUrl,

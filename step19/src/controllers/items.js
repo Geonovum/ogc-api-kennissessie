@@ -34,14 +34,15 @@ export function get(req, res, next) {
       return
     }
 
-    // Content-Crs
+    // (OAPIF P2) Requirement 16: Content-Crs
     if (content.headerContentCrs)
-      res.set('Content-Crs', content.headerContentCrs)
+      res.set('Content-Crs', `<${content.headerContentCrs}>`)
     delete content.headerContentCrs
 
     switch (format) {
       case 'json':
       case 'geojson':
+console.log(decodeURI(req.originalUrl))
 console.log(content)
         res.status(200).json(content)
         break

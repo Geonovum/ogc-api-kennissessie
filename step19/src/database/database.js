@@ -7,8 +7,8 @@ const __dirname = import.meta.dirname
 function readGeoJSONfiles() {
   if (__dirname === undefined)
     console.log('need node 20.16 or higher')
-  
-  var dir = process.env.DATA_PATH  || join(__dirname, "../../data")
+
+  var dir = process.env.DATA_PATH || join(__dirname, "../../data")
 
   var fileNames = readdirSync(dir).filter(fn => fn.endsWith('.geojson'))
 
@@ -26,6 +26,10 @@ export function load() {
 
   readGeoJSONfiles()
 
+  function roundToSeven(num) {
+    return +(Math.round(num + "e+7") + "e-7");
+  }
+
   Object.keys(dataDict).forEach(function (key) {
     var geojson = dataDict[key]
 
@@ -41,14 +45,24 @@ export function load() {
 
     // check if the properties contain an 'id' (used to uniquely identify the item)
     if (!geojson.features[0].properties.id)
-      geojson.id = 'fid' // hack
+      geojson.idName = 'fid' // hack
     else
-      geojson.id = 'id'
+      geojson.idName = 'id'
+
+    // each Feature resource has id member
+    geojson.features.forEach((feature) => feature.id = feature.properties[geojson.idName])
 
     geojson.lastModified = new Date()
 
     // calculate the bbox from geometry
     geojson.bbox = bbox(featureCollection(geojson.features));
+    // Note: some bbox numbers can get quite precise, up to 12 decimals behind the comma (I know, nonsensical),
+    // that can get clipped when rounded to 7 decimals. This clipping is not always rounded in the 
+    // correct way. To fix this, extend the bbox just a little (at the 7th decimal)
+    geojson.bbox[0] = (geojson.bbox[0] - 0.0000001).toFixed(7)
+    geojson.bbox[1] = (geojson.bbox[1] - 0.0000001).toFixed(7)
+    geojson.bbox[2] = (geojson.bbox[2] + 0.0000001).toFixed(7)
+    geojson.bbox[3] = (geojson.bbox[3] + 0.0000001).toFixed(7)
 
     // --- begin construct queryables ------------------- 
     geojson.queryables = {}
@@ -97,14 +111,22 @@ export function load() {
         'type': typeof properties[propertyName]
       }
 
-        // (OAPIF P5) Requirement 5 A property with "x-ogc-role" set to "id" SHALL be the identifier of the 
-        //            item in the collection that contains the item.
-        if (propertyName == geojson.id) item['x-ogc-role'] = 'id'
-        // (OAPIF P5) Requirement 14 If the features have a property that represents the feature type, 
-        //            the role "type" can be used for this property.
-        //  Requirement 14A: A property with "x-ogc-role" set to "type" SHALL be a string property.
-        //  Requirement 14B: At most one property in a schema SHALL have "x-ogc-role" with a value "type".
-        // else if (item.type == 'string') item['x-ogc-role'] = 'type'
+      // BEGIN HACK because lack of information in the geojson file
+      // hardcoded information
+      if ((key == 'kamersgewijze_verhuur' && propertyName == 'dr_kv') || (key == 'Inventarisatie_zonnepanelen' && propertyName == 'bouwjaar')) {
+        properties[propertyName] = new Date(properties[propertyName])
+        item.format = 'date-time'
+      }
+      // END HACK
+
+      // (OAPIF P5) Requirement 5 A property with "x-ogc-role" set to "id" SHALL be the identifier of the 
+      //            item in the collection that contains the item.
+      if (propertyName == geojson.idName) item['x-ogc-role'] = 'id'
+      // (OAPIF P5) Requirement 14 If the features have a property that represents the feature type, 
+      //            the role "type" can be used for this property.
+      //  Requirement 14A: A property with "x-ogc-role" set to "type" SHALL be a string property.
+      //  Requirement 14B: At most one property in a schema SHALL have "x-ogc-role" with a value "type".
+      // else if (item.type == 'string') item['x-ogc-role'] = 'type'
 
       geojson.schema[`${propertyName}`] = item
     }

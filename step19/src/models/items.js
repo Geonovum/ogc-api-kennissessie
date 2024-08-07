@@ -4,7 +4,43 @@ import utils from '../utils/utils.js'
 import projgeojson from '../utils/proj4.js'
 import { bboxPolygon, booleanWithin } from '@turf/turf'
 
+function getPaginationLinks(links, options) {
+  // Use the self link as the basis for 'first', 'next' and 'previous'
+  var paginationBase = links.filter(l => l.rel === 'self')[0]
+
+  // First
+  if (options.offset > 0)
+    links.push({ href: paginationBase.href, rel: `first`, type: paginationBase.type, title: `First page` })
+
+  // Next
+  links.push({ href: `${paginationBase.href}&offset=${options.offset + options.limit}` + (options.limit == process.env.LIMIT ? '' : `&limit=${options.limit}`), rel: `next`, type: paginationBase.type, title: `Next page` })
+
+  // Previous
+  var offset = options.offset - options.limit;
+  if (offset < 0) offset = 0
+  if (options.offset != 0)
+    links.push({ href: `${paginationBase.href}&offset=${offset}` + (options.limit == process.env.LIMIT ? '' : `&limit=${options.limit}`), rel: `prev`, type: paginationBase.type, title: `Previous page` })
+}
+
+function getLinks(neutralUrl, format, links) {
+
+  function getTypeFromFormat(format) {
+    var _formats = ['json', 'html', 'csv']
+    var _encodings = ['application/geo+json', 'text/html', 'text/csv']
+
+    var i = _formats.indexOf(format);
+    return _encodings[i]
+  }
+
+  links.push({ href: urlJoin(neutralUrl, `?f=${format}`), rel: `self`, type: getTypeFromFormat(format), title: `Access the features in the collection as ${format}` })
+  utils.getAlternateFormats(format, ['json', 'html', 'csv']).forEach(altFormat => {
+    links.push({ href: urlJoin(neutralUrl, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `Access the features in the collection as ${altFormat}` })
+  })
+}
+
 function getContent(neutralUrl, format, collection) {
+
+  if (format == 'geojson') format = 'json'
 
   var item = {}
   item.type = collection.type
@@ -12,15 +48,7 @@ function getContent(neutralUrl, format, collection) {
   item.timestamp = new Date().toISOString()
   item.links = []
 
-  var selfUrl = new URL(neutralUrl)
-  selfUrl.searchParams.append('f', format)
-  item.links.push({ href: `${selfUrl}`, rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
-
-  utils.getAlternateFormats(format, ['json', 'html', 'csv']).forEach(altFormat => {
-    var alternateUrl = new URL(neutralUrl)
-    alternateUrl.searchParams.append('f', altFormat)
-    item.links.push({ href: `${alternateUrl}`, rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
-  })
+  getLinks(neutralUrl, format, item.links)
 
   if (collection.crs.properties.name)
     item.headerContentCrs = collection.crs.properties.name
@@ -36,17 +64,15 @@ function getDatabase(collectionId) {
 function get(neutralUrl, format, collectionId, query, options, callback) {
 
   var collections = getDatabases()
-
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var queryParams = ['f', 'crs', 'bbox', 'bbox-crs', 'limit', 'offset', 'filter', 'filter-crs', 'filter-lang', 'skipGeometry', 'properties']
+  var queryParams = ['f', 'crs', 'bbox', 'bbox-crs', 'limit', 'offset', 'datetime', 'filter', 'filter-crs', 'filter-lang', 'skipGeometry', 'properties', 'featuresLimit']
   // All attributes from schema can be queried
   for (var attributeName in collection.schema)
     if (collection.schema[attributeName]['x-ogc-role'] != 'primary-geometry')
       queryParams.push(attributeName)
-
   // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
   //         if the request URI includes a query parameter that is not specified in the API definition
   var rejected = utils.checkForAllowedQueryParams(query, queryParams)
@@ -57,13 +83,50 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
   var features = content.features
-  //  var features = structuredClone(content.features) // deep copy for skipGeometry (don't understand)
+  //  var features = structuredClone(content.features) // deep copy for skipGeometry (i don't understand for the moment)
 
   var doSkipGeometry = false
   var doProperties = []
 
   var _query = query
   if (_query) {
+
+    // simple queries that limit the features go on top. Its better to have the complex (geo) queries on smaller features collections
+    if (_query.datetime) {
+      var datetimes = _query.datetime.split('/')
+      if (datetimes.length <= 0 || datetimes.length > 2)
+        return callback({ 'httpCode': 400, 'code': `Bad Request`, 'description': `Excepting 1 or 2 dates, got ${datetimes.length}` }, undefined);
+
+      // (OAPIF C) Requirement 26 Only features that have a temporal geometry that intersects the temporal information in the datetime 
+      //           parameter SHALL be part of the result set, if the parameter is provided.
+      // check if we have temporal geometry (aka fields in the properties) 
+      // (what with features that have no temperal geometry??)
+
+      if (datetimes.length == 1) {
+        var instant = new Date(datetimes[0])
+      }
+      else {
+        var beginDate = datetimes[0]
+        var endDate = datetimes[1]
+        if (beginDate != '..' && endDate != '..') {
+          // bounded
+          var beginDate = new Date(datetimes[0])
+          var endDate = new Date(datetimes[1])
+        }
+        else if (beginDate == '..' && endDate != '..') {
+          // half-bounded [.., date]
+          var endDate = new Date(datetimes[1])
+        }
+        else if (beginDate != '..' && endDate == '..') {
+          // half-bounded [date, ..]
+          var beginDate = new Date(datetimes[0])
+        }
+        else if (beginDate == '..' && endDate == '..') {
+          // non-bounded [.., ..] - everything passes
+        }
+      }
+    }
+
     // (OAPIF P1) Requirement 23A The operation SHALL support a parameter bbox
     // (OAPIF P2) Requirement 6 Each GET request on a 'features' resource SHALL support a query parameter bbox-crs 
     if (_query.bbox) {
@@ -76,14 +139,17 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         bbox = projgeojson.projectBBox(bbox, fromEpsg, 'EPSG:4326')
         if (bbox == undefined)
           return callback({ 'httpCode': 400, 'code': `Bad Request`, 'description': `Invalid bbox-crs: ${fromEpsg}` }, undefined);
-        
-          delete _query['bbox-crs']
+
+        delete _query['bbox-crs']
       }
+
+      //      features.forEach((feature) => {if (!booleanWithin(feature, bbox))   console.log(feature)})
 
       features = features.filter(
         feature =>
           booleanWithin(feature, bbox)
       )
+
       delete _query.bbox
     }
 
@@ -160,29 +226,16 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   if (doProperties.length > 0) {
     features.forEach(function (feature) {
       for (var propertyName in feature.properties)
-        if (!doProperties.includes(propertyName)) 
+        if (!doProperties.includes(propertyName))
           delete feature.properties[propertyName]
     })
   }
 
   content.numberReturned = content.features.length
 
-  var offsetLimit = '';
-  if (options.offset > 0 || options.limit != process.env.LIMIT) {
-    offsetLimit = `&offset=${options.offset}`;
-    if (options.limit != process.env.LIMIT)
-      offsetLimit += `&limit=${options.limit}`;
-  }
-
-  if (options.offset + options.limit < content.numberMatched) { // only if we need pagination
-    content.links.push({ href: `${neutralUrl}?f=${format}`, rel: `first`, type: utils.getTypeFromFormat(format), title: `Next page` })
-    content.links.push({ href: `${neutralUrl}?f=${format}&offset=${options.offset + options.limit}` + (options.limit == process.env.LIMIT ? '' : `&limit=${options.limit}`), rel: `next`, type: utils.getTypeFromFormat(format), title: `Next page` })
-  }
-
-  var offset = options.offset - options.limit;
-  if (offset < 0) offset = 0
-  if (options.offset != 0)
-    content.links.push({ href: `${neutralUrl}?f=${format}&offset=${offset}` + (options.limit == process.env.LIMIT ? '' : `&limit=${options.limit}`), rel: `prev`, type: utils.getTypeFromFormat(format), title: `Previous page` })
+  // Pagination
+  if (options.offset + options.limit < content.numberMatched)
+    getPaginationLinks(content.links, options)
 
   return callback(undefined, content);
 }

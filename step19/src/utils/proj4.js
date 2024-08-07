@@ -43,7 +43,7 @@ const projectMultiRings = function(multiRings, fromProj4, toProj4, digits = null
     return multiRings;
 }
 
-const projectFeature = function(feature, fromProj4, toProj4, digits = null){
+const _projectFeature = function(feature, fromProj4, toProj4, digits = null){
     if (!feature){
         return
     }
@@ -63,9 +63,25 @@ const projectFeature = function(feature, fromProj4, toProj4, digits = null){
     } else if ( feature.geometry.type === 'MultiPolygon'){
         feature.geometry.coordinates = projectMultiRings(feature.geometry.coordinates ,fromProj4, toProj4, digits )
     } else {
-        console.log( 'oups')
+        console.log( 'unsupported geometry type')
     }
     return feature;
+}
+
+const projectFeature = function(feature, codeSridFrom, codeSridTo, digits = null){
+
+    if (codeSridFrom == codeSridTo) return feature
+
+    const fromProjection = getProjByCode(codeSridFrom)
+    if (fromProjection == undefined) return
+    const fromProj = fromProjection['proj4']
+    const toProjection = getProjByCode(codeSridTo)
+    if (toProjection == undefined) return
+    const toProjec = toProjection['proj4']
+    if (!fromProjection || !toProjection)
+        return
+
+    return _projectFeature(feature, fromProjection, toProjection, digits)
 }
 
 const projectFeatureCollection = function(_features, codeSridFrom, codeSridTo, digits = null) {
@@ -83,7 +99,7 @@ const projectFeatureCollection = function(_features, codeSridFrom, codeSridTo, d
 
     let features = JSON.parse(JSON.stringify(_features));
     for (let i = 0; i < features.length; i++){
-        const newFeat =  projectFeature(features[i],fromProjection,toProjection, digits);
+        const newFeat =  _projectFeature(features[i], fromProjection, toProjection, digits);
         if (newFeat){
             features[i] = newFeat;
         }
@@ -105,8 +121,8 @@ const projectBBox = function(featureBBox, codeSridFrom, codeSridTo, digits = nul
     var p1 = _point([Number(featureBBox.bbox[0]), Number(featureBBox.bbox[1])])
     var p2 = _point([Number(featureBBox.bbox[2]), Number(featureBBox.bbox[3])])
 
-    const pp1 =  projectFeature(p1, fromProj, toProj, digits);
-    const pp2 =  projectFeature(p2, fromProj, toProj, digits);
+    const pp1 =  _projectFeature(p1, fromProj, toProj, digits);
+    const pp2 =  _projectFeature(p2, fromProj, toProj, digits);
 
     var array = [pp1.geometry.coordinates[0], pp1.geometry.coordinates[1],
                  pp2.geometry.coordinates[0], pp2.geometry.coordinates[1]]
@@ -115,4 +131,4 @@ const projectBBox = function(featureBBox, codeSridFrom, codeSridTo, digits = nul
     return bbox
 }
 
-export default { projectFeatureCollection, projectBBox }
+export default { projectFeatureCollection, projectFeature, projectBBox }

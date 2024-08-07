@@ -2,7 +2,7 @@ import accepts from 'accepts'
 import item from '../models/item.js'
 import utils from '../utils/utils.js'
 
-export function get (req, res) {
+export function get(req, res) {
 
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
   // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
@@ -10,12 +10,11 @@ export function get (req, res) {
 
   // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400, 
   //         if the request URI includes a query parameter that is not specified in the API definition
-  var queryParams = ['f']
+  var queryParams = ['f', 'crs']
   var rejected = utils.checkForAllowedQueryParams(req.query, queryParams)
-  if (rejected.length > 0) 
-  {
-      res.status(400).json({'code': `The following query parameters are rejected: ${rejected}`, 'description': 'Valid parameters for this request are ' + queryParams })
-      return 
+  if (rejected.length > 0) {
+    res.status(400).json({ 'code': `The following query parameters are rejected: ${rejected}`, 'description': 'Valid parameters for this request are ' + queryParams })
+    return
   }
 
   var collectionId = req.params.collectionId
@@ -26,12 +25,17 @@ export function get (req, res) {
   var accept = accepts(req)
   var format = accept.type(['geojson', 'json', 'html'])
 
-  item.get(formatFreeUrl, format, collectionId, featureId, function(err, content) {
+  item.get(formatFreeUrl, format, collectionId, featureId, req.query, function (err, content) {
 
     if (err) {
-      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
       return
     }
+
+    // (OAPIF P2) Requirement 16: Content-Crs
+    if (content.headerContentCrs)
+      res.set('Content-Crs', `<${content.headerContentCrs}>`)
+    delete content.headerContentCrs
 
     switch (format) {
       case 'json':
@@ -39,16 +43,16 @@ export function get (req, res) {
         res.status(200).json(content)
         break
       case `html`:
-        res.status(200).render(`item`, content )
+        res.status(200).render(`item`, content)
         break
       default:
-        res.status(400).json({'code': 'InvalidParameterValue', 'description': `${accept} is an invalid format`})
+        res.status(400).json({ 'code': 'InvalidParameterValue', 'description': `${accept} is an invalid format` })
     }
   })
 }
 
-export function replacee (req, res) {
-  
+export function replacee(req, res) {
+
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
   // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
   if (utils.ifTrailingSlash(req, res)) return
@@ -57,10 +61,10 @@ export function replacee (req, res) {
   var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.replacee(serviceUrl, collectionId, featureId, req.body, function(err, content, newId) {
+  item.replacee(serviceUrl, collectionId, featureId, req.body, function (err, content, newId) {
 
     if (err) {
-      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
       return
     }
 
@@ -69,8 +73,8 @@ export function replacee (req, res) {
   })
 }
 
-export function deletee (req, res) {
-  
+export function deletee(req, res) {
+
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
   // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
   if (utils.ifTrailingSlash(req, res)) return
@@ -79,10 +83,10 @@ export function deletee (req, res) {
   var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.deletee(serviceUrl, collectionId, featureId, function(err, content) {
+  item.deletee(serviceUrl, collectionId, featureId, function (err, content) {
 
     if (err) {
-      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
       return
     }
 
@@ -90,8 +94,8 @@ export function deletee (req, res) {
   })
 }
 
-export function update (req, res) {
-  
+export function update(req, res) {
+
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
   // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
   if (utils.ifTrailingSlash(req, res)) return
@@ -100,10 +104,10 @@ export function update (req, res) {
   var featureId = req.params.featureId
   var serviceUrl = utils.getServiceUrl(req)
 
-  item.update(serviceUrl, collectionId, featureId, req.body, function(err, content) {
+  item.update(serviceUrl, collectionId, featureId, req.body, function (err, content) {
 
     if (err) {
-      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
       return
     }
 
@@ -111,7 +115,7 @@ export function update (req, res) {
   })
 }
 
-export function options (req, res) {
-  
+export function options(req, res) {
+
   res.status(200).end()
 }
