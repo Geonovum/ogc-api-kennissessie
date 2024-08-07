@@ -81,9 +81,17 @@ export function load() {
     for (var propertyName in properties) {
       var item = {
         'title': propertyName,
-        'description': `Description of ${propertyName}`,
         'type': typeof properties[propertyName]
       }
+
+      // BEGIN HACK because lack of information in the geojson file
+      // hardcoded information
+      if ((key == 'kamersgewijze_verhuur' && propertyName == 'dr_kv') || (key == 'Inventarisatie_zonnepanelen' && propertyName == 'bouwjaar')) {
+        item.type = 'string'
+        item.format = 'date-time'
+      }
+      // END HACK
+
       geojson.queryables[`${propertyName}`] = item
     }
 
@@ -114,6 +122,7 @@ export function load() {
       // BEGIN HACK because lack of information in the geojson file
       // hardcoded information
       if ((key == 'kamersgewijze_verhuur' && propertyName == 'dr_kv') || (key == 'Inventarisatie_zonnepanelen' && propertyName == 'bouwjaar')) {
+        item.type = 'string'
         item.format = 'date-time'
       }
       // END HACK
