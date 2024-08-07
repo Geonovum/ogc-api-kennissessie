@@ -4,6 +4,58 @@ import utils from '../utils/utils.js'
 import projgeojson from '../utils/proj4.js'
 import { bboxPolygon, booleanWithin } from '@turf/turf'
 
+var dates = {
+  convert:function(d) {
+      // Converts the date in d to a date-object. The input can be:
+      //   a date object: returned without modification
+      //  an array      : Interpreted as [year,month,day]. NOTE: month is 0-11.
+      //   a number     : Interpreted as number of milliseconds
+      //                  since 1 Jan 1970 (a timestamp) 
+      //   a string     : Any format supported by the javascript engine, like
+      //                  "YYYY/MM/DD", "MM/DD/YYYY", "Jan 31 2009" etc.
+      //  an object     : Interpreted as an object with year, month and date
+      //                  attributes.  **NOTE** month is 0-11.
+      return (
+          d.constructor === Date ? d :
+          d.constructor === Array ? new Date(d[0],d[1],d[2]) :
+          d.constructor === Number ? new Date(d) :
+          d.constructor === String ? new Date(d) :
+          typeof d === "object" ? new Date(d.year,d.month,d.date) :
+          NaN
+      );
+  },
+  compare:function(a,b) {
+      // Compare two dates (could be of any type supported by the convert
+      // function above) and returns:
+      //  -1 : if a < b
+      //   0 : if a = b
+      //   1 : if a > b
+      // NaN : if a or b is an illegal date
+      // NOTE: The code inside isFinite does an assignment (=).
+      return (
+          isFinite(a=this.convert(a).valueOf()) &&
+          isFinite(b=this.convert(b).valueOf()) ?
+          (a>b)-(a<b) :
+          NaN
+      );
+  },
+  inRange:function(d,start,end) {
+      // Checks if date in d is between dates in start and end.
+      // Returns a boolean or NaN:
+      //    true  : if d is between start and end (inclusive)
+      //    false : if d is before start or after end
+      //    NaN   : if one or more of the dates is illegal.
+      // NOTE: The code inside isFinite does an assignment (=).
+     return (
+          isFinite(d=this.convert(d).valueOf()) &&
+          isFinite(start=this.convert(start).valueOf()) &&
+          isFinite(end=this.convert(end).valueOf()) ?
+          start <= d && d <= end :
+          NaN
+      );
+  }
+}
+
 function getPaginationLinks(links, options) {
   // Use the self link as the basis for 'first', 'next' and 'previous'
   var paginationBase = links.filter(l => l.rel === 'self')[0]
@@ -45,7 +97,7 @@ function getContent(neutralUrl, format, collection) {
   var item = {}
   item.type = collection.type
   item.features = collection.features
-  item.timestamp = new Date().toISOString()
+  item.timeStamp = new Date().toISOString()
   item.links = []
 
   getLinks(neutralUrl, format, item.links)
@@ -97,34 +149,48 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       if (datetimes.length <= 0 || datetimes.length > 2)
         return callback({ 'httpCode': 400, 'code': `Bad Request`, 'description': `Excepting 1 or 2 dates, got ${datetimes.length}` }, undefined);
 
+      // find the datetime property in the schema
+      var datetimeAttribName = undefined
+      for (var attributeName in collection.schema) {
+        var value = collection.schema[attributeName]
+        if (value.format != 'undefined' && value.format == 'date-time') {
+          datetimeAttribName = attributeName
+          break;
+        }
+      }
+      if (datetimeAttribName == undefined)
+        return callback({ 'httpCode': 400, 'code': `Bad Request`, 'description': `datetime query requested, but no datetime field in database` }, undefined);
+
       // (OAPIF C) Requirement 26 Only features that have a temporal geometry that intersects the temporal information in the datetime 
       //           parameter SHALL be part of the result set, if the parameter is provided.
       // check if we have temporal geometry (aka fields in the properties) 
       // (what with features that have no temperal geometry??)
 
       if (datetimes.length == 1) {
-        var instant = new Date(datetimes[0])
+        features = features.filter(
+          element => dates.compare(element.properties[datetimeAttribName], datetimes[0]) == 0)
       }
       else {
         var beginDate = datetimes[0]
         var endDate = datetimes[1]
         if (beginDate != '..' && endDate != '..') {
           // bounded
-          var beginDate = new Date(datetimes[0])
-          var endDate = new Date(datetimes[1])
+          var beginDate = datetimes[0]
+          var endDate = datetimes[1]
         }
         else if (beginDate == '..' && endDate != '..') {
           // half-bounded [.., date]
-          var endDate = new Date(datetimes[1])
+          var endDate = datetimes[1]
         }
         else if (beginDate != '..' && endDate == '..') {
           // half-bounded [date, ..]
-          var beginDate = new Date(datetimes[0])
+          var beginDate = datetimes[0]
         }
         else if (beginDate == '..' && endDate == '..') {
           // non-bounded [.., ..] - everything passes
         }
       }
+      delete _query.datetime
     }
 
     // (OAPIF P1) Requirement 23A The operation SHALL support a parameter bbox

@@ -114,7 +114,6 @@ export function load() {
       // BEGIN HACK because lack of information in the geojson file
       // hardcoded information
       if ((key == 'kamersgewijze_verhuur' && propertyName == 'dr_kv') || (key == 'Inventarisatie_zonnepanelen' && propertyName == 'bouwjaar')) {
-        properties[propertyName] = new Date(properties[propertyName])
         item.format = 'date-time'
       }
       // END HACK

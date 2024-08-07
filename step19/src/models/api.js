@@ -144,6 +144,8 @@ function get(neutralUrl, callback) {
                     var ff = ff.replace(new RegExp('{{:propertyId}}', 'g'), propName);
                     var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
 
+                    var schema = parameter.schema
+
                     parameters[`${propName}_${name}`] = JSON.parse(ff)[`${propName}_${name}`] 
 
                     propertiesSchema.push(propName)
@@ -161,12 +163,13 @@ function get(neutralUrl, callback) {
             // TODO featureGeoJson from database schema
             var properties = schemas[`featureGeoJson_${name}`].properties.properties.properties
             var required = schemas[`featureGeoJson_${name}`].properties.properties.required
-            required.push(database.id)
+            required.push(database.idName)
             for (var propName in database.schema) {
                 var property = database.schema[propName]
                 if (property['x-ogc-role'] != 'primary-geometry')
                 {
-                    properties[property['title']] = {'title': property['title'], 'type': property['type']}
+                    properties[property['title']] = property;
+                    delete properties[property['title']]['x-ogc-role']
                 }
             }
 
