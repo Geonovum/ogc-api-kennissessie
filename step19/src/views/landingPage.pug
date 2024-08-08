@@ -9,14 +9,18 @@ block content
   h1 #{title}
   h2 #{description}
   h3 OGC API Features - Part 1: Core
-  h2 Links
+  h3 OGC API Features - Part 2: Coordinate Reference Systems by Reference
+
+  h2 Links to the main resources
 
   each link in links
     p #{link.rel} = 
       a(href= link.href)  #{link.title} 
       | (#{link.type})
 
-  h2 Spatial Extent
+  h2 API information
+
+  h3 Spatial Extent
   #map(style='width: 600px; height: 400px; position: relative;')
   script.
     var map = L.map("map").setView([52.300, 4.867], 12);
