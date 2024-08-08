@@ -25,7 +25,7 @@
             "links": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/Link"
+                    "$ref": "#/components/schemas/link"
                 }
             },
             "timeStamp": {
@@ -58,7 +58,7 @@
             "links": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/Link"
+                    "$ref": "#/components/schemas/link"
                 }
             },
             "id": {

@@ -22,7 +22,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/LandingPage"
+                                "$ref": "#/components/schemas/landingPage"
                             }
                         },
                         "text/html": {
@@ -57,6 +57,9 @@
                 }
             ],
             "responses": {
+                "200": {
+                    "description": "OK"
+                },
                 "400": {
                     "description": "Bad Request"
                 },
@@ -108,7 +111,7 @@
                                 ]
                             },
                             "schema": {
-                                "$ref": "#/components/schemas/ConformanceDeclaration"
+                                "$ref": "#/components/schemas/conformanceClasses"
                             }
                         },
                         "text/html": {

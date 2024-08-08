@@ -1,11 +1,10 @@
 import urlJoin from 'url-join'
-import database from '../database/database.js';
+import { getDatabases } from '../database/database.js'
 
 function get(neutralUrl, format, collectionId, callback) {
 
-  var collections = database.getCollection()
-  var document = collections[collectionId]
-  if (!document)
+  var collection = getDatabases()[collectionId]
+  if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
   var content = {}

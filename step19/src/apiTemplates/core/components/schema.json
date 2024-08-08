@@ -1,5 +1,5 @@
 {
-    "Link": {
+    "link": {
         "required": [
             "href",
             "rel"
@@ -23,18 +23,18 @@
             }
         }
     },
-    "Extent": {
+    "extent": {
         "type": "object",
         "properties": {
             "temporal": {
-                "$ref": "#/components/schemas/TemporalExtent"
+                "$ref": "#/components/schemas/temporalExtent"
             },
             "spatial": {
-                "$ref": "#/components/schemas/SpatialExtent"
+                "$ref": "#/components/schemas/spatialExtent"
             }
         }
     },
-    "SpatialExtent": {
+    "spatialExtent": {
         "required": [
             "bbox"
         ],
@@ -68,7 +68,7 @@
         "minItems": 1,
         "type": "array"
     },
-    "TemporalExtent": {
+    "temporalExtent": {
         "required": [
             "interval",
             "trs"
@@ -76,14 +76,14 @@
         "type": "object",
         "properties": {
             "interval": {
-                "$ref": "#/components/schemas/TemporalInterval"
+                "$ref": "#/components/schemas/temporalInterval"
             },
             "trs": {
                 "$ref": "#/components/schemas/trs"
             }
         }
     },
-    "TemporalInterval": {
+    "temporalInterval": {
         "description": "One or more time intervals that describe the temporal extent of the dataset.\nThe value `null` is supported and indicates an open time intervall.\nIn the Core only a single time interval is supported. Extensions may support\nmultiple intervals. If multiple intervals are provided, the union of the\nintervals describes the temporal extent.",
         "items": {
             "description": "Begin and end times of the time interval. The timestamps\nare in the coordinate reference system specified in `trs`. By default\nthis is the Gregorian calendar.",
@@ -112,7 +112,7 @@
         ],
         "type": "string"
     },
-    "ExternalDocumentation": {
+    "externalDocumentation": {
         "required": [
             "url"
         ],
@@ -130,7 +130,7 @@
         "type": "string",
         "example": "<html>...</html>"
     },
-    "ConformanceDeclaration": {
+    "conformanceClasses": {
         "type": "object",
         "required": [
             "conformsTo"
@@ -155,25 +155,25 @@
             "links": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/Link"
+                    "$ref": "#/components/schemas/link"
                 }
             }
         }
     },
-    "LandingPage": {
+    "landingPage": {
         "type": "object",
         "required": [
             "links"
         ],
         "properties": {
             "extent": {
-                "$ref": "#/components/schemas/Extent"
+                "$ref": "#/components/schemas/extent"
             },
             "attribution": {
                 "type": "string"
             },
             "externalDocs": {
-                "$ref": "#/components/schemas/ExternalDocumentation"
+                "$ref": "#/components/schemas/externalDocumentation"
             },
             "description": {
                 "type": "string"
@@ -184,7 +184,7 @@
             "links": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/Link"
+                    "$ref": "#/components/schemas/link"
                 }
             }
         }

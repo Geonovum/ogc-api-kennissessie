@@ -34,7 +34,7 @@
             "links": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/Link"
+                    "$ref": "#/components/schemas/link"
                 }
             }
         }
@@ -43,7 +43,7 @@
         "properties": {
             "links": {
                 "items": {
-                    "$ref": "#/components/schemas/Link"
+                    "$ref": "#/components/schemas/link"
                 },
                 "type": "array"
             }
@@ -63,7 +63,7 @@
                 "type": "string"
             },
             "extent": {
-                "$ref": "#/components/schemas/Extent"
+                "$ref": "#/components/schemas/extent"
             },
             "storageCrsCoordinateEpoch": {
                 "type": "number"
@@ -89,7 +89,7 @@
             "links": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/Link"
+                    "$ref": "#/components/schemas/link"
                 }
             }
         }
