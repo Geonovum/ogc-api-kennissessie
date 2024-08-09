@@ -1,0 +1,46 @@
+---
+id: Kamergewijze verhuur
+title: Kamergewijze verhuur
+description: Verleende vergunningen voor kamergewijze verhuur in de gemeente Amstelveen, Dataset is voor de website hierdoor doet de filtering het niet. Dit komt door de aangepast presentatie.
+keywords: 
+  - Wonen
+  - Kamergewijzerverhuur
+  - Amstelveen
+  - Airbnb
+  - verhuren
+  - Cultuur en recreatie
+schema:
+  type: Object
+  properties:
+    fid:
+      name: fid
+      type: number
+      role: ID
+      label: Vineyard register number
+    volgnummer:
+      type: number
+    zaaknummer:
+      type: string
+    globale_locatie:
+      type: string
+    bagid_vbo:
+      type: string
+    type_woning:
+      type: string
+    status_aanvraag:
+      type: string
+    aantal_complex:
+      type: number
+    maximaal_complex:
+      type: number
+    buurtnaam:
+      type: string
+    wijknaam:
+      type: string
+    maximaal_complex:
+      type: string
+    id_kv:
+      type: number
+    dr_kv:
+      type: string
+      format: date-time

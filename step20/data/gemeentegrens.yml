@@ -1,0 +1,20 @@
+---
+id: Gemeentegrens
+title: Gemeente grens Amstelveen
+description: De CBS gebiedsindelingen geven de geografische gebiedsindelingen weer die het CBS hanteert.
+keywords: 
+  - Gebiedsindelingen
+  - Grenzen
+  - Grens
+  - Ruimte en infrastructuur
+schema:
+  type: Object
+  properties:
+    fid:
+      name: fid
+      type: number
+      role: ID
+    gemeentenaam:
+      type: string
+    id_kv:
+      type: number
