@@ -27,7 +27,7 @@ function get(neutralUrl, format, collectionId, callback) {
   //    Each spatial property SHALL not include a "type" or "$ref" member.
   content.properties = document.schema
 
-  content.required = {}
+  content.required = [] // TODO: from yml file??
 
   return callback(undefined, content);
 }

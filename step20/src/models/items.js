@@ -130,15 +130,9 @@ function getContent(neutralUrl, format, collection) {
 
   getLinks(neutralUrl, format, items.links)
 
-  if (collection.crs.properties.name)
-    items.headerContentCrs = collection.crs.properties.name
+  items.headerContentCrs = collection.crs[0]
 
   return items
-}
-
-function getDatabase(collectionId) {
-  var collections = getDatabases()
-  return collections[collectionId]
 }
 
 function get(neutralUrl, format, collectionId, query, options, callback) {
@@ -162,8 +156,8 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   var content = getContent(neutralUrl, format, collection)
 
   // make local copy to do subtraction (limit, offset, bbox,...) on
-  var features = content.features
-  //  var features = structuredClone(content.features) // deep copy for skipGeometry (i don't understand for the moment)
+  //var features = content.features
+  var features = structuredClone(content.features) // deep copy for skipGeometry (i don't understand for the moment)
 
   var doSkipGeometry = false
   var doProperties = []
@@ -334,5 +328,5 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
 }
 
 export default {
-  get, getContent, getDatabase
+  get, getContent
 }

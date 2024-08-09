@@ -68,10 +68,10 @@ function get(neutralUrl, format, collectionId, featureId, query, callback) {
   if (rejected.length > 0)
     return callback({ 'httpCode': 400, 'code': `The following query parameters are rejected: ${rejected}`, 'description': 'Valid parameters for this request are ' + queryParams }, undefined);
 
-  var feature = collection.features[index]
+  var feature = structuredClone(collection.features[index])
 
   // default crs from collection
-  feature.headerContentCrs = collection.crs.properties.name
+  feature.headerContentCrs = collection.crs[0]
 
   var doSkipGeometry = false
   var doProperties = []

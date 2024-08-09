@@ -50,27 +50,16 @@ function getMetaData(neutralUrl, format, name, document) {
 
   // An optional extent that can be used to provide an indication of the spatial and temporal 
   // extent of the collection - typically derived from the data;
-  content.extent = {}
-  content.extent.spatial = {}
+  content.extent = document.extent
   // Requirement 16 A and B
-  content.extent.spatial.bbox = []
-  content.extent.spatial.bbox.push(document.bbox)
-  content.extent.spatial.crs = document.crs.properties.name
-  content.extent.temporal = {}
-  content.extent.temporal.interval = []
-  content.extent.temporal.interval.push(['2010-02-15T12:34:56Z', '2030-02-15T12:34:56Z'])
-  content.extent.temporal.trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
 
   // An optional indicator about the type of the items in the collection 
   // (the default value, if the indicator is not provided, is 'feature').
   content.itemType = 'feature'
   // An optional list of coordinate reference systems (CRS) in which geometries may be returned by the server. 
   // The default value is a list with the default CRS (WGS 84 with axis order longitude/latitude);
-  content.crs = []
-  if (document.crs.properties.name)
-    content.crs.push(document.crs.properties.name)
-
-  content.storageCrs = document.crs.properties.name
+  content.crs = document.crs
+  content.storageCrs = document.storageCrs
 
   return content
 }

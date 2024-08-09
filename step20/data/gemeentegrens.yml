@@ -8,7 +8,7 @@ keywords:
   - Grens
   - Ruimte en infrastructuur
 crs:
-  - "EPSG:28992"
+  - "http://www.opengis.net/def/crs/EPSG/0/28992"
 schema:
   type: Object
   properties:

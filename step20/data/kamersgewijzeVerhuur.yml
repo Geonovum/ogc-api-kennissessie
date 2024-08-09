@@ -10,7 +10,7 @@ keywords:
   - verhuren
   - Cultuur en recreatie
 crs:
-  - "EPSG:28992"
+  - "http://www.opengis.net/def/crs/EPSG/0/28992"
 schema:
   type: Object
   properties:

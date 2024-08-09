@@ -41,6 +41,10 @@ app.use(favicon(join(__dirname,'public', 'images', 'favicon.ico')));
 app.use(express.static(join(__dirname, 'public')));
 app.use(json());
 
+// No need to tell the world what tools we are using, it only gives
+// out information to not-so-nice people
+app.disable('x-powered-by');
+
 // setup middleware to decode the content-type
 // see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_encodings
 app.use(encodings)

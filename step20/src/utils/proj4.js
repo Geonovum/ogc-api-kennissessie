@@ -81,7 +81,7 @@ const projectFeature = function(feature, codeSridFrom, codeSridTo, digits = null
     if (!fromProjection || !toProjection)
         return
 
-    return _projectFeature(feature, fromProjection, toProjection, digits)
+    return _projectFeature(feature, fromProj, toProjec, digits)
 }
 
 const projectFeatureCollection = function(_features, codeSridFrom, codeSridTo, digits = null) {
@@ -99,7 +99,7 @@ const projectFeatureCollection = function(_features, codeSridFrom, codeSridTo, d
 
     let features = JSON.parse(JSON.stringify(_features));
     for (let i = 0; i < features.length; i++){
-        const newFeat =  _projectFeature(features[i], fromProjection, toProjection, digits);
+        const newFeat =  _projectFeature(features[i], fromProj, toProjec, digits);
         if (newFeat){
             features[i] = newFeat;
         }

@@ -16,17 +16,29 @@ function getId(dataDef) {
     return
 }
 
+function getDateTimeFromSchema(schema) {
+    if (schema == undefined)
+        return
+    for (let property in schema) {
+        if (schema.hasOwnProperty(property)) {
+            var value = schema[property];
+            if (value.format !== undefined)
+                if (value.format == 'date-time') return property
+        }
+    }
+
+    return
+}
+
 export function makeOAPIF(geojson, dataDef) {
 
-    if (geojson.crs && geojson.crs.properties && geojson.crs.properties.name) {
-        if (geojson.crs.properties.name.startsWith('EPSG'))
-            geojson.crs.properties.name = 'http://www.opengis.net/def/crs/EPSG/0/' + geojson.crs.properties.name
-    }
-    else {
-        geojson.crs = {}
-        geojson.crs.properties = {}
-        geojson.crs.properties.name = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84' // default
-    }
+    // Ignore the optional name and crs values in the GeoJSON file, but use
+    // the information from dataDef
+
+    geojson.crs = []
+    geojson.crs.push('http://www.opengis.net/def/crs/OGC/1.3/CRS84') // because its a GeoJSON file
+    geojson.crs = geojson.crs.concat(dataDef.crs)
+    geojson.storageCrs = "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
 
     var idName = getId(dataDef)
     if (idName == undefined) return
@@ -41,19 +53,7 @@ export function makeOAPIF(geojson, dataDef) {
 
     geojson.lastModified = new Date()
 
-    // calculate the bbox from geometry
-    geojson.bbox = bbox(featureCollection(geojson.features));
-    // Note: some bbox numbers can get quite precise, up to 12 decimals behind the comma (I know, nonsensical),
-    // that can get clipped when rounded to 7 decimals. This clipping is not always rounded in the 
-    // correct way. To fix this, extend the bbox just a little (at the 7th decimal)
-    geojson.bbox[0] = (geojson.bbox[0] - 0.0000001).toFixed(7)
-    geojson.bbox[1] = (geojson.bbox[1] - 0.0000001).toFixed(7)
-    geojson.bbox[2] = (geojson.bbox[2] + 0.0000001).toFixed(7)
-    geojson.bbox[3] = (geojson.bbox[3] + 0.0000001).toFixed(7)
-
-    // --- begin construct schema ------------------- 
     geojson.schema = {}
-
     for (let propertyName in dataDef.schema.properties) {
         if (dataDef.schema.properties.hasOwnProperty(propertyName)) {
             var property = dataDef.schema.properties[propertyName]
@@ -61,6 +61,8 @@ export function makeOAPIF(geojson, dataDef) {
             var item = {}
             if (property['label'])
                 item.title = property['label']
+            if (property['description'])
+                item.description = property['description']
             if (property['type'])
                 item.type = property['type']
             if (property['format'])
@@ -91,6 +93,7 @@ export function makeOAPIF(geojson, dataDef) {
         geojson.schema['geometry'] = item
     }
 
+
     geojson.queryables = {}
     if (dataDef.queryables) {
         if (dataDef.queryables.spatial) {
@@ -107,6 +110,42 @@ export function makeOAPIF(geojson, dataDef) {
         }
         if (dataDef.queryables.other) {
         }
+    }
+
+    // calculate the bbox from geometry
+    var _bbox = bbox(featureCollection(geojson.features));
+    // Note: some bbox numbers can get quite precise, up to 12 decimals behind the comma (I know, nonsensical),
+    // that can get clipped when rounded to 7 decimals. This clipping is not always rounded in the 
+    // correct way. To fix this, extend the bbox just a little (at the 7th decimal)
+    _bbox[0] = (_bbox[0] - 0.0000001).toFixed(7)
+    _bbox[1] = (_bbox[1] - 0.0000001).toFixed(7)
+    _bbox[2] = (_bbox[2] + 0.0000001).toFixed(7)
+    _bbox[3] = (_bbox[3] + 0.0000001).toFixed(7)
+
+    geojson.extent = {}
+    geojson.extent.spatial = {}
+    geojson.extent.spatial.bbox = _bbox
+    geojson.extent.spatial.crs = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'
+    geojson.extent.temporal = {}
+    geojson.extent.interval = ['..', '..']
+    geojson.extent.trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
+    
+    // calculate temperal extent (if a datetime field is in the schema)
+    var dateTimePropertyName = getDateTimeFromSchema(geojson.schema)
+    if (dateTimePropertyName !== undefined)
+    {
+        let minDate = new Date(8640000000000000)
+        let maxDate = new Date(-8640000000000000)
+
+        geojson.features.forEach((feature) => 
+        {
+            var dateTime = new Date(feature.properties[dateTimePropertyName])
+            if (dateTime > maxDate) maxDate = dateTime;
+            if (dateTime < minDate) minDate = dateTime;
+        })
+
+        geojson.extent.interval[0] = minDate
+        geojson.extent.interval[1] = maxDate
     }
 
     return geojson
