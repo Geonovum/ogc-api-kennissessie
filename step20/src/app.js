@@ -6,7 +6,7 @@ import favicon from 'serve-favicon'
 import { join } from 'path'
 import YAML from 'yaml'
 import { readFileSync } from 'fs'
-import options from './middleware/options.js'
+import { options as mwOptions } from './middleware/options.js'
 import encodings from './middleware/encodings.js'
 import apiVersion from './middleware/apiversion.js'
 import oapifp1 from './routes/ogcapiFeaturesPart1.js'
@@ -24,9 +24,10 @@ var configPath = process.env.DATA_PATH || join(__dirname, "../configuration")
 var yamlStr = readFileSync(join(configPath, `${process.env.ID}.yml`))
 global.config = YAML.parse(yamlStr.toString())
 
-//app.use(options)
-
 app.use(morgan(':method :url :response-time', { stream: { write: msg => console.log(msg) } }));
+
+// Deal with 'options' prior to cors,
+app.options('*', mwOptions)
 
 // (OAPIF P1) 7.5 Servers implementing CORS will implement the method OPTIONS, too.
 // (OAPIF P1) 7.8 Recommendation 5 If the server is intended to be accessed from the browser, 

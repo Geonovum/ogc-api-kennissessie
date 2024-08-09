@@ -119,6 +119,5 @@ export function update(req, res) {
 }
 
 export function options(req, res) {
-
-  res.status(200).end()
+  res.set('allow', 'GET, HEAD, PUT, PATCH, DELETE')
 }
