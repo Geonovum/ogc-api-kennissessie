@@ -102,7 +102,7 @@ function get(neutralUrl, callback) {
 
             var collectionTemplate = content['/collections/{{:collectionId}}']
             var ff = JSON.stringify(collectionTemplate)
-    
+
             var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
             var collection = JSON.parse(ff)
 
@@ -138,19 +138,18 @@ function get(neutralUrl, callback) {
 
             for (var propName in database.schema) {
                 var property = database.schema[propName]
-                if (property['x-ogc-role'] != 'primary-geometry')
-                {
+                if (property['x-ogc-role'] != 'primary-geometry') {
                     var ff = JSON.stringify(parameter)
                     var ff = ff.replace(new RegExp('{{:propertyId}}', 'g'), propName);
                     var ff = ff.replace(new RegExp('{{:collectionId}}', 'g'), name);
 
                     var schema = parameter.schema
 
-                    parameters[`${propName}_${name}`] = JSON.parse(ff)[`${propName}_${name}`] 
+                    parameters[`${propName}_${name}`] = JSON.parse(ff)[`${propName}_${name}`]
 
                     propertiesSchema.push(propName)
 
-                    itemsParameters.push({'$ref': `#/components/parameters/${propName}_${name}`})
+                    itemsParameters.push({ '$ref': `#/components/parameters/${propName}_${name}` })
                 }
             }
 
@@ -163,13 +162,17 @@ function get(neutralUrl, callback) {
             // TODO featureGeoJson from database schema
             var properties = schemas[`featureGeoJson_${name}`].properties.properties.properties
             var required = schemas[`featureGeoJson_${name}`].properties.properties.required
- //           required.push(database.idName) // why was this here?
+
             for (var propName in database.schema) {
                 var property = database.schema[propName]
-                if (property['x-ogc-role'] != 'primary-geometry')
-                {
-                    properties[property['title']] = property;
-                    delete properties[property['title']]['x-ogc-role']
+
+                if (property['x-ogc-role'] != 'primary_geometry') {
+                    properties[propName] = structuredClone(property)
+
+                    if (property['x-ogc-role'] !== undefined && property['x-ogc-role'] == 'id')
+                        required.push(propName)
+
+                    delete properties[propName]['x-ogc-role']
                 }
             }
 
