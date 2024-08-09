@@ -4,7 +4,8 @@ import { get as getQueryables } from '../controllers/queryables.js'
 
 const router = express.Router();
 
-// The server SHALL support the HTTP GET operation at the path /collections/{collectionId}.
+// (OAPIF P3) Requirement 2A: The Queryables resource SHALL support the HTTP GET operation 
+//            and the media type application/schema+json.
 router.get('/collections/:collectionId/queryables', getQueryables)
 
 export default router

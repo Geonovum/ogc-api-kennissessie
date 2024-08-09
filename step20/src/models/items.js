@@ -175,7 +175,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       var datetimeAttribName = undefined
       for (var attributeName in collection.schema) {
         var value = collection.schema[attributeName]
-        if (value.format != 'undefined' && value.format == 'date-time') {
+        if (value.format != 'undefined' && (value.format == 'date-time' || value.format == 'date')) {
           datetimeAttribName = attributeName
           break;
         }

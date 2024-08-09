@@ -19,11 +19,11 @@ function getId(dataDef) {
 function getDateTimeFromSchema(schema) {
     if (schema == undefined)
         return
-    for (let property in schema) {
-        if (schema.hasOwnProperty(property)) {
-            var value = schema[property];
+    for (let propertyname in schema) {
+        if (schema.hasOwnProperty(propertyname)) {
+            var value = schema[propertyname];
             if (value.format !== undefined)
-                if (value.format == 'date-time') return property
+                if (value.format == 'date-time' || value.format == 'date') return { 'name': propertyname, 'format': value.format }
         }
     }
 
@@ -131,15 +131,15 @@ export function makeOAPIF(geojson, dataDef) {
     geojson.extent.trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
     
     // calculate temperal extent (if a datetime field is in the schema)
-    var dateTimePropertyName = getDateTimeFromSchema(geojson.schema)
-    if (dateTimePropertyName !== undefined)
+    var dateTimeProperty = getDateTimeFromSchema(geojson.schema)
+    if (dateTimeProperty !== undefined)
     {
         let minDate = new Date(8640000000000000)
         let maxDate = new Date(-8640000000000000)
 
         geojson.features.forEach((feature) => 
         {
-            var dateTime = new Date(feature.properties[dateTimePropertyName])
+            var dateTime = new Date(feature.properties[dateTimeProperty.name])
             if (dateTime > maxDate) maxDate = dateTime;
             if (dateTime < minDate) minDate = dateTime;
         })

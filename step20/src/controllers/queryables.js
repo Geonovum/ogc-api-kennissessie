@@ -35,12 +35,10 @@ export function get(req, res) {
 
     switch (format) {
       case 'json':
-        // Recommendations 10, Links included in payload of responses SHOULD also be 
-        // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
-        // This recommendation does not apply, if there are a large number of links included 
-        // in a response or a link is not known when the HTTP headers of the response are created.
-        // res.set('link', utils.makeHeaderLinks(content.links))
-        res.status(200).json(content)
+        // (OAPIF P3) Requirement 2A: The Queryables resource SHALL support the HTTP GET operation 
+        //            and the media type application/schema+json.
+        res.set('Content-Type', 'application/schema+json')
+        res.status(200).send(content)
         break
       case `html`:
         // Recommendations 10, Links included in payload of responses SHOULD also be 
