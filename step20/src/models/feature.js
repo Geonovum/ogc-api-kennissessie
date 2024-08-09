@@ -257,7 +257,19 @@ function update(collectionId, featureId, body, callback) {
   }
 
   if (body.properties) {
-    // TODO replace properties
+    // Replace Property, if they exist in the schema
+    for (let propertyName in body.properties) {
+      if (body.properties.hasOwnProperty(propertyName)) {
+        var value = body.properties[propertyName];
+        var propertyType = typeof value
+
+        var schemaProperty = collection.schema[propertyName]
+        if (schemaProperty == undefined)
+          return callback({ 'httpCode': 400, 'code': `Property not found`, 'description': `${propertyName} in body not found in schema` }, undefined);
+
+        feature.properties[propertyName] = value
+      }
+    }
   }
 
   return callback(undefined, feature);
