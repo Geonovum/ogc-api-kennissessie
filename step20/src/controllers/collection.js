@@ -60,16 +60,23 @@ export function create (req, res) {
   // check Content-Crs
 
   var collectionId = req.params.collectionId
-  var serviceUrl = utils.getServiceUrl(req)
 
-  feature.create(serviceUrl, collectionId, req.body, function(err, content, newId) {
+  var formatFreeUrl = utils.getFormatFreeUrl(req)
+
+  var accept = accepts(req)
+  var format = accept.type(['geojson', 'json', 'html'])
+
+  feature.create(formatFreeUrl, collectionId, req.body, function(err, content, locationUri) {
 
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
       return
     }
 
-    res.set('location', `${serviceUrl}/collections/${collectionId}/items/${newId}`)
+    // (OAPIF P4) Requirememt 6B: A response with HTTP status code 201 SHALL include a Location header 
+    //           with the URI of the newly added resource (i.e. path of the resource endpoint).
+    res.set('location', locationUri)
+    // (OAPIF P4) Requirememt 6A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 201.
     res.status(201).end()
   })
 }

@@ -131,7 +131,7 @@ function get(neutralUrl, format, collectionId, featureId, query, callback) {
   return callback(undefined, feature);
 }
 
-function create(serviceUrl, collectionId, body, callback) {
+function create(formatFreeUrl, collectionId, body, callback) {
 
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });
@@ -141,24 +141,30 @@ function create(serviceUrl, collectionId, body, callback) {
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var id = collection.id;
-
-  // (OAPIF P4) Requirement 4 If the operation completes successfully, the server SHALL assign a new, unique identifier 
-  //      within the collection for the newly added resource.
+  // (OAPIF P5) Permission 3: If the representation of the resource submitted in the request body contained a resource identifier, 
+  //         the server MAY use this identifier as the new resource identifier in the collection 
+  //         or the server MAY ignore the value and assign its own identifier for the resource.
+  // (here is go for option 2: generate own id)
+  delete body.id
 
   // generate new id (than largest id and add 1)
-  var index = 0
+  var i = 0
   var newId = -1
-  for (; index < collection.features.length; index++)
-    if (collection.features[index].properties[id] > newId) newId = collection.features[index].properties[id];
+  for (; i < collection.features.length; i++)
+    if (collection.features[i].id > newId)
+      newId = collection.features[i].id;
   newId++
 
-  body.properties[id] = newId
+  // (OAPIF P4) Requirement 5 If the operation completes successfully, the server SHALL assign a new, unique identifier 
+  //      within the collection for the newly added resource.
+  body.id = newId
 
-  // create new resource
+  // (OAPIF P4) Requirement 3A: The body of a POST request SHALL contain a representation of the resource to be added to the specified collection.
   collection.features.push(body)
 
-  return callback(undefined, body, newId);
+  formatFreeUrl = join(formatFreeUrl, newId.toString())
+
+  return callback(undefined, body, formatFreeUrl);
 }
 
 function replacee(formatFreeUrl, collectionId, featureId, body, callback) {
@@ -199,7 +205,6 @@ function replacee(formatFreeUrl, collectionId, featureId, body, callback) {
 
   var formatFreeUrl = formatFreeUrl.substr(0, formatFreeUrl.lastIndexOf("/"));
   formatFreeUrl = join(formatFreeUrl, newId.toString())
-
 
   return callback(undefined, body, formatFreeUrl);
 }
