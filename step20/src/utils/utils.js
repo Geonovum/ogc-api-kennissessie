@@ -28,24 +28,6 @@ function ISODateString(d) {
     + pad(d.getUTCSeconds()) + 'Z';
 }
 
-function header(collection) {
-  collection.title = "Title of " + collection.idName;// TODO
-  collection.description = "Description of " + collection.idName;// TODO
-  collection.links = [];
-
-  return collection;
-}
-
-function link(href, rel, type, title) {
-  var item = {};
-  item.href = href;
-  item.rel = rel;
-  item.type = type;
-  item.title = title;
-
-  return item;
-}
-
 function makeHeaderLinks(hls) {
   var link = ""
   hls.forEach(hl => {

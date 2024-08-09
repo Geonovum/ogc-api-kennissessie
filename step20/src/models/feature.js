@@ -1,7 +1,24 @@
 import urlJoin from 'url-join'
+import { join } from 'path'
 import { getDatabases } from '../database/database.js'
 import utils from '../utils/utils.js'
 import projgeojson from '../utils/proj4.js'
+
+function getId(schema) {
+  if (schema == undefined)
+      return
+
+
+  for (let property in schema) {
+      if (schema.hasOwnProperty(property)) {
+          var value = schema[property];
+          if (value.role !== undefined)
+              if (value.role == 'ID') return value.name
+      }
+  }
+
+  return
+}
 
 function getLinks(neutralUrl, format, links) {
 
@@ -144,7 +161,7 @@ function create(serviceUrl, collectionId, body, callback) {
   return callback(undefined, body, newId);
 }
 
-function replacee(serviceUrl, collectionId, featureId, body, callback) {
+function replacee(formatFreeUrl, format, collectionId, featureId, body, callback) {
 
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });
@@ -154,34 +171,37 @@ function replacee(serviceUrl, collectionId, featureId, body, callback) {
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var id = collection.idName;// TODO
-
-  var index = 0
-  for (; index < collection.features.length; index++)
-    if (collection.features[index].properties[id] == featureId) break;
-
-  if (index >= collection.features.length)
-    return callback({ 'httpCode': 404, 'code': `Item: ${featureId} not found`, 'description': 'Id needs to exist' });
-
-  // delete the 'old' resource
-  collection.features.splice(index, 1);
+  // Find feature, based on index
+  var oldId = 0
+  for (; oldId < collection.features.length; oldId++)
+    if (collection.features[oldId].id == featureId) break;
+  if (oldId >= collection.features.length)
+    return callback({ 'httpCode': 404, 'code': `Item: ${featureId} not found`, 'description': 'Id needs to exist' }, undefined);
 
   // (OAPIF P4) Requirement 4 If the operation completes successfully, the server SHALL assign a new, unique identifier 
   //      within the collection for the newly added resource.
 
   // generate new id (than largest id and add 1)
-  var index = 0
+  var i = 0
   var newId = -1
-  for (; index < collection.features.length; index++)
-    if (collection.features[index].properties[id] > newId) newId = collection.features[index].properties[id];
+  for (; i < collection.features.length; i++)
+    if (collection.features[i].id > newId) 
+      newId = collection.features[i].id;
   newId++
 
-  body.properties[id] = newId
+  { // the Transaction
+    // delete the 'old' resource
+    collection.features.splice(oldId, 1);
+    // create new resource
+    body.id = newId
+    collection.features.push(body)
+  }
 
-  // create new resource
-  collection.features.push(body)
+  var formatFreeUrl = formatFreeUrl.substr(0, formatFreeUrl.lastIndexOf("/"));
+  formatFreeUrl = join(formatFreeUrl, newId.toString())
 
-  return callback(undefined, body, newId);
+
+  return callback(undefined, body, formatFreeUrl);
 }
 
 function deletee(serviceUrl, collectionId, featureId, callback) {

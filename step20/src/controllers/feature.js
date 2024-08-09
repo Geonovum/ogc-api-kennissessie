@@ -59,16 +59,20 @@ export function replacee(req, res) {
 
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
-  var serviceUrl = utils.getServiceUrl(req)
 
-  feature.replacee(serviceUrl, collectionId, featureId, req.body, function (err, content, newId) {
+  var formatFreeUrl = utils.getFormatFreeUrl(req)
+
+  var accept = accepts(req)
+  var format = accept.type(['geojson', 'json', 'html'])
+
+  feature.replacee(formatFreeUrl, format, collectionId, featureId, req.body, function (err, content, resourceUrl) {
 
     if (err) {
       res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
       return
     }
 
-    res.set('location', `${serviceUrl}/collections/${collectionId}/items/${newId}`)
+    res.set('location', resourceUrl)
     res.status(204).end()
   })
 }

@@ -163,7 +163,7 @@ function get(neutralUrl, callback) {
             // TODO featureGeoJson from database schema
             var properties = schemas[`featureGeoJson_${name}`].properties.properties.properties
             var required = schemas[`featureGeoJson_${name}`].properties.properties.required
- //           required.push(database.idName)
+ //           required.push(database.idName) // why was this here?
             for (var propName in database.schema) {
                 var property = database.schema[propName]
                 if (property['x-ogc-role'] != 'primary-geometry')
