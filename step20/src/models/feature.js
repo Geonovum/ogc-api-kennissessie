@@ -6,15 +6,15 @@ import projgeojson from '../utils/proj4.js'
 
 function getId(schema) {
   if (schema == undefined)
-      return
+    return
 
 
   for (let property in schema) {
-      if (schema.hasOwnProperty(property)) {
-          var value = schema[property];
-          if (value.role !== undefined)
-              if (value.role == 'ID') return value.name
-      }
+    if (schema.hasOwnProperty(property)) {
+      var value = schema[property];
+      if (value.role !== undefined)
+        if (value.role == 'ID') return value.name
+    }
   }
 
   return
@@ -25,9 +25,9 @@ function getLinks(neutralUrl, format, links) {
   if (format == 'geojson') format = 'json'
 
   function getTypeFromFormat(format) {
-    var _formats = ['json', 'geojson',  'html', 'csv']
+    var _formats = ['json', 'geojson', 'html', 'csv']
     var _encodings = ['application/geo+json', 'application/geo+json', 'text/html', 'text/csv']
-  
+
     var i = _formats.indexOf(format);
     return _encodings[i]
   }
@@ -45,7 +45,7 @@ function getParentLink(neutralUrl, format, links) {
   function getTypeFromFormat(format) {
     var _formats = ['json', 'html']
     var _encodings = ['application/json', 'text/html']
-  
+
     var i = _formats.indexOf(format);
     return _encodings[i]
   }
@@ -118,9 +118,9 @@ function get(neutralUrl, format, collectionId, featureId, query, callback) {
     features.forEach(function (feature) { delete feature.geometry });
 
   if (doProperties.length > 0) {
-      for (var propertyName in feature.properties)
-        if (!doProperties.includes(propertyName))
-          delete feature.properties[propertyName]
+    for (var propertyName in feature.properties)
+      if (!doProperties.includes(propertyName))
+        delete feature.properties[propertyName]
   }
 
   feature.links = []
@@ -185,7 +185,7 @@ function replacee(formatFreeUrl, collectionId, featureId, body, callback) {
   var i = 0
   var newId = -1
   for (; i < collection.features.length; i++)
-    if (collection.features[i].id > newId) 
+    if (collection.features[i].id > newId)
       newId = collection.features[i].id;
   newId++
 
@@ -223,26 +223,25 @@ function deletee(collectionId, featureId, callback) {
   return callback(undefined, {});
 }
 
-function update(serviceUrl, collectionId, featureId, body, callback) {
+function update(collectionId, featureId, body, callback) {
 
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' }, undefined);
 
-  var collections = database.getCollection()
+  var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var id = collection.idName; // TODO
-
   var index = 0
   for (; index < collection.features.length; index++)
-    if (collection.features[index].properties[id] == featureId) break;
-
+    if (collection.features[index].id == featureId) break;
   if (index >= collection.features.length)
     return callback({ 'httpCode': 404, 'code': `Item: ${featureId} not found`, 'description': 'Id needs to exist' }, undefined);
-
   var feature = collection.features[index]
+
+  // (OAPIF P4) Requirement 21: If the representation of the updated resource submitted in the request body contained a resource identifier, the server SHALL ignore this identifier.
+  delete body.id
 
   // check if geometry type is the same
   if (body.geometry) {

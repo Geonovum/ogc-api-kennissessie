@@ -106,16 +106,15 @@ export function update(req, res) {
 
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
-  var serviceUrl = utils.getServiceUrl(req)
 
-  feature.update(serviceUrl, collectionId, featureId, req.body, function (err, content) {
+  feature.update(collectionId, featureId, req.body, function (err, content) {
 
     if (err) {
       res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
       return
     }
 
-    res.status(200).json(content)
+    res.status(204).json(content)
   })
 }
 
