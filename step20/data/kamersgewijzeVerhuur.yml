@@ -9,6 +9,8 @@ keywords:
   - Airbnb
   - verhuren
   - Cultuur en recreatie
+crs:
+  - "EPSG:28992"
 schema:
   type: Object
   properties:
@@ -16,7 +18,7 @@ schema:
       name: fid
       type: number
       role: ID
-      label: Vineyard register number
+      label: Feature id
     volgnummer:
       type: number
     zaaknummer:
@@ -37,10 +39,9 @@ schema:
       type: string
     wijknaam:
       type: string
-    maximaal_complex:
-      type: string
     id_kv:
       type: number
     dr_kv:
       type: string
       format: date-time
+queryables:

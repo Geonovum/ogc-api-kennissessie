@@ -35,6 +35,10 @@ export function makeOAPIF(geojson, dataDef) {
     // each Feature resource has id member
     geojson.features.forEach((feature) => feature.id = feature.properties[idName])
 
+    // override name and description from metadata, 
+    geojson.name = dataDef.title
+    geojson.description = dataDef.description
+
     geojson.lastModified = new Date()
 
     // calculate the bbox from geometry
@@ -91,35 +95,21 @@ export function makeOAPIF(geojson, dataDef) {
     if (dataDef.queryables) {
         if (dataDef.queryables.spatial) {
             dataDef.queryables.spatial.forEach((geom) => {
-                var item = {
-                    'title': geom,
-                    'x-ogc-role': dataDef.schema.geometry.role.toLowerCase(),
-                    'format': `geometry-${dataDef.schema.geometry.geometryType}`
-                }
-                geojson.queryables[`geometry`] = item
+                geojson.queryables[`geometry`] = geojson.schema[geom]
             })
         }
         if (dataDef.queryables.temporal) {
-
         }
         if (dataDef.queryables.q) {
             dataDef.queryables.q.forEach((propertyName) => {
-                var property = dataDef.schema.properties[propertyName]
-                var item = {}
-                item.title = property['label'] || propertyName
-                item.type = property['type']
-                if (property.values)
-                    item.enum = property.values
-                // TODO: additional keywords x-ogc-
-
-                geojson.queryables[`${propertyName}`] = item
+                geojson.queryables[propertyName] = geojson.schema[propertyName]
             })
         }
         if (dataDef.queryables.other) {
         }
     }
 
-
+    return geojson
 }
 
 export default makeOAPIF

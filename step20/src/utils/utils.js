@@ -143,8 +143,6 @@ function checkNumeric(value, name, res) {
 export default {
   getServiceUrl,
   ISODateString,
-  link,
-  header,
   makeHeaderLinks,
   UriToEPSG,
   getTypeFromFormat,

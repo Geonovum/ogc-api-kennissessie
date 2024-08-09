@@ -40,8 +40,8 @@ function getMetaData(neutralUrl, format, name, document) {
   // A local identifier for the collection that is unique for the dataset;
   content.id = name // required
   // An optional title and description for the collection;
-  content.title = name
-  content.description = name
+  content.title = document.name
+  content.description = document.description
   content.attribution = 'this dataset is attributed to the municipality of amstelveen'
   content.links = []
 
@@ -81,8 +81,11 @@ function get(neutralUrl, format, collectionId, callback) {
   var projection = { name: 1, crs: 1, _id: 1 }
 
   var collections = getDatabases()
+  var collection = collections[collectionId]
+  if (!collection)
+    return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var content = getMetaData(neutralUrl, format, collectionId, collections[collectionId])
+  var content = getMetaData(neutralUrl, format, collectionId, collection)
 
   return callback(undefined, content);
 }

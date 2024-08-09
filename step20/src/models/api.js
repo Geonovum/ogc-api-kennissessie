@@ -26,8 +26,8 @@ function get(neutralUrl, callback) {
 
         var ff = JSON.stringify(content)
 
-        ff = ff.replace(new RegExp('{{:title}}', 'g'), process.env.TITLE);
-        ff = ff.replace(new RegExp('{{:description}}', 'g'), process.env.DESCRIPTION);
+        ff = ff.replace(new RegExp('{{:title}}', 'g'), global.config.title);
+        ff = ff.replace(new RegExp('{{:description}}', 'g'), global.config.description);
         ff = ff.replace(new RegExp('{{:version}}', 'g'), process.env.APIVERSION);
 
         var info = JSON.parse(ff)
@@ -163,7 +163,7 @@ function get(neutralUrl, callback) {
             // TODO featureGeoJson from database schema
             var properties = schemas[`featureGeoJson_${name}`].properties.properties.properties
             var required = schemas[`featureGeoJson_${name}`].properties.properties.required
-            required.push(database.idName)
+ //           required.push(database.idName)
             for (var propName in database.schema) {
                 var property = database.schema[propName]
                 if (property['x-ogc-role'] != 'primary-geometry')

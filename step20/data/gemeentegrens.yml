@@ -7,6 +7,8 @@ keywords:
   - Grenzen
   - Grens
   - Ruimte en infrastructuur
+crs:
+  - "EPSG:28992"
 schema:
   type: Object
   properties:
@@ -18,3 +20,4 @@ schema:
       type: string
     id_kv:
       type: number
+queryables:

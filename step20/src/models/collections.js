@@ -28,8 +28,8 @@ function getContent(neutralUrl, format, name, document) {
   // A local identifier for the collection that is unique for the dataset;
   content.id = name // required
   // An optional title and description for the collection;
-  content.title = 'something' 
-  content.description = 'hdhd'
+  content.title = document.name
+  content.description = document.description
   content.attribution = global.config.metadata.attribution
 
   content.links = []

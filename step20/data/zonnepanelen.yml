@@ -8,6 +8,8 @@ keywords:
   - Energie
   - Energielabels
   - Solar
+crs:
+  - "EPSG:28992"
 schema:
   type: Object
   properties:
@@ -32,3 +34,4 @@ schema:
       type: number
     id_kv:
       type: string
+queryables:
