@@ -161,7 +161,7 @@ function create(serviceUrl, collectionId, body, callback) {
   return callback(undefined, body, newId);
 }
 
-function replacee(formatFreeUrl, format, collectionId, featureId, body, callback) {
+function replacee(formatFreeUrl, collectionId, featureId, body, callback) {
 
   if (body.type.toLowerCase() != 'feature')
     return callback({ 'httpCode': 400, 'code': `Type not "feature"`, 'description': 'Type must be "feature"' });
@@ -204,23 +204,21 @@ function replacee(formatFreeUrl, format, collectionId, featureId, body, callback
   return callback(undefined, body, formatFreeUrl);
 }
 
-function deletee(serviceUrl, collectionId, featureId, callback) {
+function deletee(collectionId, featureId, callback) {
 
   var collections = getDatabases()
   var collection = collections[collectionId]
   if (!collection)
     return callback({ 'httpCode': 404, 'code': `Collection not found: ${collectionId}`, 'description': 'Make sure you use an existing collectionId. See /Collections' }, undefined);
 
-  var id = collection.idName;// TODO
-
-  var index = 0
-  for (; index < collection.features.length; index++)
-    if (collection.features[index].properties[id] == featureId) break;
-
-  if (index >= collection.features.length)
+  // Find feature, based on index
+  var oldId = 0
+  for (; oldId < collection.features.length; oldId++)
+    if (collection.features[oldId].id == featureId) break;
+  if (oldId >= collection.features.length)
     return callback({ 'httpCode': 404, 'code': `Item: ${featureId} not found`, 'description': 'Id needs to exist' }, undefined);
 
-  collection.features.splice(index, 1);
+  collection.features.splice(oldId, 1);
 
   return callback(undefined, {});
 }

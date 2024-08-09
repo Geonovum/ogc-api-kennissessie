@@ -65,7 +65,7 @@ export function replacee(req, res) {
   var accept = accepts(req)
   var format = accept.type(['geojson', 'json', 'html'])
 
-  feature.replacee(formatFreeUrl, format, collectionId, featureId, req.body, function (err, content, resourceUrl) {
+  feature.replacee(formatFreeUrl, collectionId, featureId, req.body, function (err, content, resourceUrl) {
 
     if (err) {
       res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
@@ -85,15 +85,15 @@ export function deletee(req, res) {
 
   var collectionId = req.params.collectionId
   var featureId = req.params.featureId
-  var serviceUrl = utils.getServiceUrl(req)
 
-  feature.deletee(serviceUrl, collectionId, featureId, function (err, content) {
+  feature.deletee(collectionId, featureId, function (err, content) {
 
     if (err) {
       res.status(err.httpCode).json({ 'code': err.code, 'description': err.description })
       return
     }
 
+    // (OAPI P4) Requirement 14A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 or 204.
     res.status(204).end()
   })
 }
