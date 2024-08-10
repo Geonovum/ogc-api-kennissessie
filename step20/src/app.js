@@ -20,8 +20,8 @@ const __dirname = import.meta.dirname
 if (__dirname === undefined)
   console.log('need node 20.16 or higher')
 
-var configPath = process.env.DATA_PATH || join(__dirname, "../configuration")
-var yamlStr = readFileSync(join(configPath, `${process.env.ID}.yml`))
+const configPath = process.env.DATA_PATH || join(__dirname, "../configuration")
+const yamlStr = readFileSync(join(configPath, `${process.env.ID}.yml`))
 global.config = YAML.parse(yamlStr.toString())
 
 app.use(morgan(':method :url :response-time', { stream: { write: msg => console.log(msg) } }));

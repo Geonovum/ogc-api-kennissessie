@@ -16,18 +16,18 @@ function get(neutralUrl, format, callback) {
     content.description = global.config.description
     content.attribution = global.config.metadata.attribution
 
-    content.extend = {}
-    content.extend.spatial = {}
-    content.extend.spatial.bbox = []
-    content.extend.temporal = {}
-    content.extend.temporal.interval = [[]]
-    content.extend.temporal.trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
+    content.extent = {}
+    content.extent.spatial = {}
+    content.extent.spatial.bbox = []
+    content.extent.temporal = {}
+    content.extent.temporal.interval = [[]]
+    content.extent.temporal.trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
 
     var collections = getDatabases()
     for (var name in collections) {
         var collection = collections[name]
-        content.extend.spatial.bbox.push(collection.bbox)
-        content.extend.spatial.crs = collection.crs
+        content.extent.spatial.bbox.push(collection.extent.spatial.bbox)
+        content.extent.spatial.crs = collection.crs
     }
 
     content.links = []
