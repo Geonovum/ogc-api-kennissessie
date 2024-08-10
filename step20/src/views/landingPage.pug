@@ -23,15 +23,10 @@ block content
   h3 Spatial Extent
   #map(style='width: 600px; height: 400px; position: relative;')
   script.
-    var map = L.map("map").setView([52.300, 4.867], 12);
+    const map = L.map("map").setView([52.300, 4.867], 12);
     L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
       
-    var bboxs = !{JSON.stringify(extent.spatial.bbox)}
-    bboxs.forEach((coords) => {
-      if (coords.length == 4)
-      {
-        var bounds = [[coords[1], coords[0]], [coords[3], coords[2]]];
-        L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
-      }
-    });
+    const coords = !{JSON.stringify(extent.spatial.bbox)}
+    const bounds = [[coords[1], coords[0]], [coords[3], coords[2]]];
+    L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
 

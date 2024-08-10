@@ -1,4 +1,4 @@
-import { bbox, featureCollection } from '@turf/turf'
+import * as turf from '@turf/turf'
 
 function getId(dataDef) {
     if (dataDef.schema == undefined || dataDef.schema.properties == undefined)
@@ -113,7 +113,7 @@ export function makeOAPIF(geojson, dataDef) {
     }
 
     // calculate the bbox from geometry
-    var _bbox = bbox(featureCollection(geojson.features));
+    let _bbox = turf.bbox(turf.featureCollection(geojson.features));
     // Note: some bbox numbers can get quite precise, up to 12 decimals behind the comma (I know, nonsensical),
     // that can get clipped when rounded to 7 decimals. This clipping is not always rounded in the 
     // correct way. To fix this, extend the bbox just a little (at the 7th decimal)
@@ -127,11 +127,11 @@ export function makeOAPIF(geojson, dataDef) {
     geojson.extent.spatial.bbox = _bbox
     geojson.extent.spatial.crs = 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'
     geojson.extent.temporal = {}
-    geojson.extent.interval = ['..', '..']
-    geojson.extent.trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
+    geojson.extent.temporal.interval = ['..', '..']
+    geojson.extent.temporal.trs = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
     
     // calculate temperal extent (if a datetime field is in the schema)
-    var dateTimeProperty = getDateTimeFromSchema(geojson.schema)
+    let dateTimeProperty = getDateTimeFromSchema(geojson.schema)
     if (dateTimeProperty !== undefined)
     {
         let minDate = new Date(8640000000000000)
@@ -139,13 +139,13 @@ export function makeOAPIF(geojson, dataDef) {
 
         geojson.features.forEach((feature) => 
         {
-            var dateTime = new Date(feature.properties[dateTimeProperty.name])
+            const dateTime = new Date(feature.properties[dateTimeProperty.name])
             if (dateTime > maxDate) maxDate = dateTime;
             if (dateTime < minDate) minDate = dateTime;
         })
 
-        geojson.extent.interval[0] = minDate
-        geojson.extent.interval[1] = maxDate
+        geojson.extent.temporal.interval[0] = minDate
+        geojson.extent.temporal.interval[1] = maxDate
     }
 
     return geojson
