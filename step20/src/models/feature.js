@@ -4,19 +4,6 @@ import { getDatabases } from "../database/database.js";
 import utils from "../utils/utils.js";
 import projgeojson from "../utils/proj4.js";
 
-function getId(schema) {
-  if (schema == undefined) return;
-
-  for (let property in schema) {
-    if (schema.hasOwnProperty(property)) {
-      var value = schema[property];
-      if (value.role !== undefined) if (value.role == "ID") return value.name;
-    }
-  }
-
-  return;
-}
-
 function getLinks(neutralUrl, format, links) {
   if (format == "geojson") format = "json";
 
@@ -84,8 +71,6 @@ function getParentLink(neutralUrl, format, links) {
   });
 }
 
-function getContent(neutralUrl, format, collection) {}
-
 function get(neutralUrl, format, collectionId, featureId, query, callback) {
   const collections = getDatabases();
   const collection = collections[collectionId];
@@ -117,8 +102,8 @@ function get(neutralUrl, format, collectionId, featureId, query, callback) {
   var queryParams = ["f", "crs", "skipGeometry", "properties"];
   // All attributes from schema can be queried
   for (let attributeName in collection.schema)
-    if (collection.schema[attributeName]['x-ogc-role'] != 'primary-geometry')
-      queryParams.push(attributeName)
+    if (collection.schema[attributeName]["x-ogc-role"] != "primary-geometry")
+      queryParams.push(attributeName);
   // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400,
   //         if the request URI includes a query parameter that is not specified in the API definition
   var rejected = utils.checkForAllowedQueryParams(query, queryParams);
@@ -159,16 +144,14 @@ function get(neutralUrl, format, collectionId, featureId, query, callback) {
       delete _query.crs;
     }
 
-    if (_query.skipGeometry === 'true')
-      doSkipGeometry = true;
+    if (_query.skipGeometry === "true") doSkipGeometry = true;
     delete _query.skipGeometry;
 
     if (_query.properties) doProperties = _query.properties.split(",");
     delete _query.properties;
   }
 
-  if (doSkipGeometry) 
-    delete feature.geometry;
+  if (doSkipGeometry) delete feature.geometry;
 
   if (doProperties.length > 0) {
     for (var propertyName in feature.properties)
