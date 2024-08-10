@@ -134,19 +134,6 @@
             "default": 10
         }
     },
-    "maxAllowableOffset": {
-        "name": "maxAllowableOffset",
-        "in": "query",
-        "description": "This option can be used to specify the maxAllowableOffset to be used for simplifying the geometries in the response. The maxAllowableOffset is in the units of the response coordinate reference system.",
-        "required": false,
-        "style": "form",
-        "explode": false,
-        "schema": {
-            "type": "number",
-            "example": 0.05,
-            "default": 0
-        }
-    },
     "offsetFeatures": {
         "name": "offset",
         "in": "query",

@@ -40,9 +40,6 @@
                     "$ref": "#/components/parameters/limitFeatures"
                 },
                 {
-                    "$ref": "#/components/parameters/maxAllowableOffset"
-                },
-                {
                     "$ref": "#/components/parameters/offsetFeatures"
                 },
                 {
@@ -131,9 +128,6 @@
                 },
                 {
                     "$ref": "#/components/parameters/fFeatures"
-                },
-                {
-                    "$ref": "#/components/parameters/maxAllowableOffset"
                 },
                 {
                     "$ref": "#/components/parameters/properties_{{:collectionId}}"

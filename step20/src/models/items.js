@@ -1,8 +1,9 @@
+import { bboxPolygon, booleanWithin } from '@turf/turf'
+import { JSONPath } from 'jsonpath-plus'
 import urlJoin from 'url-join'
 import { getDatabases } from '../database/database.js'
 import utils from '../utils/utils.js'
 import projgeojson from '../utils/proj4.js'
-import { bboxPolygon, booleanWithin } from '@turf/turf'
 
 var dates = {
   convert: function (d) {
@@ -276,7 +277,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       delete _query.filter
     }
 
-    if (_query.skipGeometry)
+    if (_query.skipGeometry === 'true')
       doSkipGeometry = true
     delete _query.skipGeometry
 
@@ -284,7 +285,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       doProperties = _query.properties.split(',')
     delete _query.properties
 
-    // Filter parameters as query
+    // Filter parameters as query (TODO: using JSONPath Plus, https://github.com/JSONPath-Plus/JSONPath)
     for (var attributeName in _query) {
       // is attribute part of the queryables?
       const hasAttribute = attributeName in collection.queryables;
