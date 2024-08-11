@@ -147,15 +147,16 @@ function getLinks(neutralUrl, format, links) {
 function getContent(neutralUrl, format, collection) {
   if (format == "geojson") format = "json";
 
-  var items = {};
-  items.type = collection.type;
-  items.features = collection.features;
-  items.timeStamp = new Date().toISOString();
-  items.links = [];
+  var items = {}
+  items.type = collection.type
+  items.features = collection.features
+  items.defaultSortOrder = ["+fid"]
+  items.timeStamp = new Date().toISOString()
+  items.links = []
 
-  getLinks(neutralUrl, format, items.links);
+  getLinks(neutralUrl, format, items.links)
 
-  items.headerContentCrs = collection.crs[0];
+  items.headerContentCrs = collection.crs[0]
 
   return items;
 }
@@ -421,13 +422,22 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     }
 
     if (_query["sortby"]) {
+      // (OAPIF P8) Requirement 6A: If the sortby parameter is specified, then the resources in a response SHALL be ordered by
+      //            the keys and sort directions (i.e. ascending or descending) specified.
+      //            Requirement 6B: The specific set of keys that may be used for sorting SHALL be specified by
+      //            the /collections/{collectionId}/sortables resource.
+
+      // (OAPIF P8) At a sortable resource endpoint, the operation SHALL support a parameter sortby with the following
+      //            characteristics (using an OpenAPI Specification 3.0 fragment):
+      //            -     pattern: '[+|-]?[A-Za-z_].*'
       let parts = _query["sortby"].split(",");
 
       function fieldSorter(fields) {
         return function (a, b) {
           return fields
             .map(function (o) {
-              var dir = 1;
+              // `Req 5B: The default sort order SHALL be ascending (i.e. +).
+              var dir = 1; // +
               if (o[0] === "-") {
                 dir = -1;
                 o = o.substring(1);
@@ -445,8 +455,6 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         };
       }
 
-      // first char is - or +
-      // when - or + not present, assume +
       features.sort(fieldSorter(parts));
 
       delete _query["sortby"];
