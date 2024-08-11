@@ -17,6 +17,7 @@
     "pug": "^3.0.3",
     "semver": "^7.6.3",
     "serve-favicon": "^2.5.0",
+    "swagger-ui-express": "^5.0.1",
     "url-join": "^5.0.0",
     "yaml": "^2.5.0"
   }

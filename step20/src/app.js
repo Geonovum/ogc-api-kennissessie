@@ -42,6 +42,7 @@ app.set('views', join(__dirname, 'views'));
 
 app.use(favicon(join(__dirname,'public', 'images', 'favicon.ico')));
 
+//app.use(express.static(pathToSwaggerUi))
 app.use(express.static(join(__dirname, 'public')));
 app.use(json());
 
