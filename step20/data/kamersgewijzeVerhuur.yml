@@ -45,3 +45,21 @@ schema:
       type: string
       format: date-time
 queryables:
+  spatial:
+    - geometry
+  temporal:
+  q:
+    - fid
+    - volgnummer
+    - zaaknummer
+    - globale_locatie
+    - bagid_vbo
+    - type_woning
+    - status_aanvraag
+    - aantal_complex
+    - maximaal_complex
+    - buurtnaam
+    - wijknaam
+    - id_kv
+    - dr_kv
+  other:

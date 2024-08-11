@@ -36,3 +36,16 @@ schema:
     id_kv:
       type: number
 queryables:
+  spatial:
+    - geometry
+  temporal:
+  q:
+    - fid
+    - buurtcode
+    - buurtnaam
+    - wijkcode
+    - gemeentecode
+    - gemeentenaam
+    - wijknaam
+    - id_kv
+  other:

@@ -21,3 +21,11 @@ schema:
     id_kv:
       type: number
 queryables:
+  spatial:
+    - geometry
+  temporal:
+  q:
+    - fid
+    - gemeentenaam
+    - id_kv
+  other:

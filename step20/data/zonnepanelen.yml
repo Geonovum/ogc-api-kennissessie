@@ -35,3 +35,17 @@ schema:
     id_kv:
       type: string
 queryables:
+  spatial:
+    - geometry
+  temporal:
+  q:
+    - fid
+    - identificatie
+    - bouwjaar
+    - status
+    - gebruiksdoel
+    - oppervlakte_panelen
+    - aantal_panelen
+    - opbrengst
+    - id_kv
+  other:

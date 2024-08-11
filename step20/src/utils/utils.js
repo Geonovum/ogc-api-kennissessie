@@ -133,5 +133,4 @@ export default {
   ifTrailingSlash,
   getFormatFreeUrl,
   checkForAllowedQueryParams,
-  checkNumeric
-}
+  checkNumeric}

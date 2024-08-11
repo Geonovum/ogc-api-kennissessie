@@ -1,4 +1,4 @@
-import { bboxPolygon, booleanWithin } from "@turf/turf";
+import * as turf from "@turf/turf";
 import { JSONPath } from "jsonpath-plus";
 import urlJoin from "url-join";
 import { getDatabases } from "../database/database.js";
@@ -186,8 +186,11 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     "filter-crs",
     "filter-lang",
     "skipGeometry",
-    "properties",
+    "properties", // Part 6: Property Selection
     "featuresLimit",
+    "sortby",
+    "zoom-level", // Part 7: Geometry Simplification
+    "q", // Part 9: Text Search
   ];
   // All attributes from schema can be queried
   for (var attributeName in collection.schema)
@@ -214,6 +217,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
 
   var doSkipGeometry = false;
   var doProperties = [];
+  var sortby = "";
 
   var _query = query;
   if (_query) {
@@ -305,7 +309,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     // (OAPIF P2) Requirement 6 Each GET request on a 'features' resource SHALL support a query parameter bbox-crs
     if (_query.bbox) {
       var corners = _query.bbox.split(","); //
-      var bbox = bboxPolygon(corners);
+      var bbox = turf.bboxPolygon(corners);
 
       if (_query["bbox-crs"]) {
         // Assumption that content comes in WGS84
@@ -326,7 +330,9 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
 
       //      features.forEach((feature) => {if (!booleanWithin(feature, bbox))   console.log(feature)})
 
-      features = features.filter((feature) => booleanWithin(feature, bbox));
+      features = features.filter((feature) =>
+        turf.booleanWithin(feature, bbox)
+      );
 
       delete _query.bbox;
     }
@@ -385,6 +391,39 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       delete _query.filter;
     }
 
+    if (_query["zoom-level"]) {
+      let zoomLevel = Number(_query["zoom-level"]);
+      let tolerance = zoomLevel;
+      features.forEach((feature) => {
+        var options = {};
+        options.tolerance = tolerance;
+        options.highQuality = false;
+        options.mutate = true;
+        feature = turf.simplify(feature, options);
+      });
+      delete _query["zoom-level"];
+    }
+
+    // (OAPIF P8) Recommendation 1 The q operator SHOULD, at least, be applied to the following resource properties if present:
+    // - title
+    // - description
+    // - keywords
+    if (_query["q"]) {
+      // Req 1: If a single search term is specified, then only resources that contain that search term in one or
+      //        more of the searched text fields SHALL be in the result set.
+      // Req 2: For multiple search terms that are comma separated (logical OR), only resources that contain one
+      //        or more the specified search terms in one or more of the searched text fields SHALL be in the result set.
+      // Req 3: For multiple search terms that are white space separated, only resources that contain all the search terms
+      //        specified, in the order specified and separated by any number of white spaces in one or more of the
+      //        searched text fields SHALL be in the result set.
+      var parts = _query["q"].split(",");
+
+      delete _query["q"];
+    }
+
+    if (_query["sortby"]) sortby = _query["sortby"];
+    delete _query["sortby"];
+
     if (_query.skipGeometry === "true") doSkipGeometry = true;
     delete _query.skipGeometry;
 
@@ -414,6 +453,37 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   }
 
   content.numberMatched = features.length;
+
+  if (sortby) {
+    let parts = sortby.split(",");
+
+    function fieldSorter(fields) {
+      return function (a, b) {
+        return fields
+          .map(function (o) {
+            var dir = 1;
+            if (o[0] === "-") {
+              dir = -1;
+              o = o.substring(1);
+            }
+            else if (o[0] === "+") {
+              dir = 1;
+              o = o.substring(1);
+            }
+            if (a.properties[o] > b.properties[o]) return dir;
+            if (a.properties[o] < b.properties[o]) return -dir;
+            return 0;
+          })
+          .reduce(function firstNonZeroValue(p, n) {
+            return p ? p : n;
+          }, 0)
+      }
+    }
+
+    // first char is - or +
+    // when - or + not present, assume +
+    features.sort(fieldSorter(parts));
+  }
 
   if (options)
     content.features = features.slice(
