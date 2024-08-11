@@ -217,7 +217,6 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
 
   var doSkipGeometry = false;
   var doProperties = [];
-  var sortby = "";
 
   var _query = query;
   if (_query) {
@@ -421,8 +420,37 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       delete _query["q"];
     }
 
-    if (_query["sortby"]) sortby = _query["sortby"];
-    delete _query["sortby"];
+    if (_query["sortby"]) {
+      let parts = _query["sortby"].split(",");
+
+      function fieldSorter(fields) {
+        return function (a, b) {
+          return fields
+            .map(function (o) {
+              var dir = 1;
+              if (o[0] === "-") {
+                dir = -1;
+                o = o.substring(1);
+              } else if (o[0] === "+") {
+                dir = 1;
+                o = o.substring(1);
+              }
+              if (a.properties[o] > b.properties[o]) return dir;
+              if (a.properties[o] < b.properties[o]) return -dir;
+              return 0;
+            })
+            .reduce(function firstNonZeroValue(p, n) {
+              return p ? p : n;
+            }, 0);
+        };
+      }
+
+      // first char is - or +
+      // when - or + not present, assume +
+      features.sort(fieldSorter(parts));
+
+      delete _query["sortby"];
+    }
 
     if (_query.skipGeometry === "true") doSkipGeometry = true;
     delete _query.skipGeometry;
@@ -453,37 +481,6 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   }
 
   content.numberMatched = features.length;
-
-  if (sortby) {
-    let parts = sortby.split(",");
-
-    function fieldSorter(fields) {
-      return function (a, b) {
-        return fields
-          .map(function (o) {
-            var dir = 1;
-            if (o[0] === "-") {
-              dir = -1;
-              o = o.substring(1);
-            }
-            else if (o[0] === "+") {
-              dir = 1;
-              o = o.substring(1);
-            }
-            if (a.properties[o] > b.properties[o]) return dir;
-            if (a.properties[o] < b.properties[o]) return -dir;
-            return 0;
-          })
-          .reduce(function firstNonZeroValue(p, n) {
-            return p ? p : n;
-          }, 0)
-      }
-    }
-
-    // first char is - or +
-    // when - or + not present, assume +
-    features.sort(fieldSorter(parts));
-  }
 
   if (options)
     content.features = features.slice(
