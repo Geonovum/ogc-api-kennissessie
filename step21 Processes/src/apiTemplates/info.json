@@ -1,0 +1,16 @@
+{
+    "info": {
+        "title": "{{:title}}",
+        "description": "{{:description}}",
+        "contact": {
+            "name": "Geonovum",
+            "url": "https://geonovum.nl",
+            "email": "info@geonovum.nl"
+        },
+        "license": {
+            "name": "CC-BY 4.0 license",
+            "url": "https://creativecommons.org/licenses/by/4.0"
+        },
+        "version": "{{:version}}"
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "name": "rekenmodule",
+    "version": "0.0.1",
+    "jobControlOptions": ["async-execute", "sync-execute"],
+    "outputTransmission": ["value", "reference"]
+}
