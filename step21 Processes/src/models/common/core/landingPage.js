@@ -1,7 +1,7 @@
 import urlJoin from "url-join";
 import * as turf from "@turf/turf";
-import { getDatabases } from "../database/database.js";
-import utils from "../utils/utils.js";
+import { getDatabases } from "../../../database/database.js";
+import utils from "../../../utils/utils.js";
 
 function get(neutralUrl, format, callback) {
   // Requirement 2 A & B

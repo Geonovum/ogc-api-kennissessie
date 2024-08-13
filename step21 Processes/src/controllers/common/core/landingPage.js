@@ -1,6 +1,6 @@
 import accepts from 'accepts';
-import landingPage from '../models/landingPage.js';
-import utils from '../utils/utils.js';
+import landingPage from '../../../models/common/core/landingPage.js';
+import utils from '../../../utils/utils.js';
 
 export function get(req, res) {
 

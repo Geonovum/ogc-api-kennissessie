@@ -1,6 +1,6 @@
 import accepts from 'accepts'
-import utils from '../utils/utils.js'
-import { get as _get } from '../models/conformance.js'
+import utils from '../../../utils/utils.js'
+import { get as _get } from '../../../models/common/core/conformance.js'
 
 // To support "generic" clients that want to access multiple OGC API Features implementations
 //  - and not "just" a specific API / server, the server has to declare the conformance classes 

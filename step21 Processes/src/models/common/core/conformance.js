@@ -1,5 +1,5 @@
 import urlJoin from 'url-join'
-import utils from '../utils/utils.js'
+import utils from '../../../utils/utils.js'
 
 export function get(neutralUrl, format, callback) {
 

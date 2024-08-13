@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { get as getLandingPage } from '../controllers/landingPage.js'
-import { get as getConformance } from '../controllers/conformance.js'
+import { get as getLandingPage } from '../controllers/common/core/landingPage.js'
+import { get as getConformance } from '../controllers/common/core/conformance.js'
 import { get as getCollections } from '../controllers/collections.js'
 import { get as getCollection } from '../controllers/collection.js'
 import { get as getItems } from '../controllers/items.js'
