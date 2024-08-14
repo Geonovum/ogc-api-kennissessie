@@ -28,7 +28,7 @@ export function post (req, res) {
   execution.post(formatFreeUrl, processId, req.body, function(err, content) {
 
     if (err) {
-      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
+      res.status(err.code).json({'code': err.code, 'description': err.description})
       return
     }
 

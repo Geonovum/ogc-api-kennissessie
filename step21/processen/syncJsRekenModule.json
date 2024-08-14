@@ -22,7 +22,7 @@
     }
   },
   "outputs": {
-    "numberOut": {
+    "result": {
       "title": "Sum of numbers",
       "description": "This is an example of a NUMBER literal output.",
       "schema": {

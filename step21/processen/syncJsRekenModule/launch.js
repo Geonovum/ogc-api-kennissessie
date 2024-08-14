@@ -1,10 +1,4 @@
-function add(numbers) {
-  let sum = 0;
-  numbers.forEach((number) => {
-    sum += number;
-  });
-  return sum;
-}
+import add from './add.js'
 
 export function launch(process, parameters, callback) {
   var values = [];
@@ -15,14 +9,14 @@ export function launch(process, parameters, callback) {
   }
 
   var result = {};
-  if (process.jobControlOptions == "sync-execute") result = add(values);
+  if (process.jobControlOptions == "sync-execute") result = add(values[0], values[1]);
   else return callback({ code: 500, description: "only runs sync" }, undefined);
 
   let content = {};
   for (let [key, processOutput] of Object.entries(process.outputs)) {
     var outputParameter = parameters.outputs[key];
     if (!outputParameter)
-      callback({ code: 500, description: `${key} not found` }, undefined);
+      return callback({ code: 500, description: `${key} not found in outputs declaration` }, undefined);
 
     if (outputParameter.transmissionMode == "value") content[key] = result;
   }
