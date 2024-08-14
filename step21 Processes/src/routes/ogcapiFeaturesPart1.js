@@ -7,7 +7,7 @@ import { get as getCollection } from '../controllers/collection.js'
 import { get as getItems } from '../controllers/items.js'
 import { get as getFeature } from '../controllers/feature.js'
 //
-import { get as getAPI } from '../controllers/api.js'
+import { get as getAPI } from '../controllers/common/core/api.js'
 
 const router = express.Router();
 

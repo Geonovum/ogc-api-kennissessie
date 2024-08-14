@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { readFileSync } from 'fs'
-import { getDatabases } from '../database/database.js'
+import { getDatabases } from '../../../database/database.js'
 
 const __dirname = import.meta.dirname
 

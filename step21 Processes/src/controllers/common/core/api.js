@@ -2,8 +2,8 @@ import accepts from "accepts";
 import { join } from "path";
 import YAML from "yaml";
 import { writeFileSync } from "fs";
-import api from "../models/api.js";
-import utils from "../utils/utils.js";
+import api from "../../../models/common/core/api.js";
+import utils from "../../../utils/utils.js";
 
 const __dirname = import.meta.dirname;
 
