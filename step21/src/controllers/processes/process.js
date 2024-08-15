@@ -1,8 +1,8 @@
 import accepts from 'accepts'
-import execution from '../models/execution.js'
-import utils from '../utils/utils.js'
+import process from '../../models/processes/process.js'
+import utils from '../../utils/utils.js'
 
-export function post (req, res) {
+export function get (req, res) {
    
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
   // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
@@ -23,12 +23,12 @@ export function post (req, res) {
   var formatFreeUrl = utils.getFormatFreeUrl(req)
 
   var accept = accepts(req)
-  var format = accept.type(['json'])
+  var format = accept.type(['json', 'html'])
 
-  execution.post(formatFreeUrl, processId, req.body, function(err, content) {
+  process.get(formatFreeUrl, format, processId, function(err, content) {
 
     if (err) {
-      res.status(err.code).json({'code': err.code, 'description': err.description})
+      res.status(err.httpCode).json({'code': err.code, 'description': err.description})
       return
     }
 
@@ -40,7 +40,14 @@ export function post (req, res) {
         // in a response or a link is not known when the HTTP headers of the response are created.
         res.status(200).json(content)
         break
-      default:
+        case `html`:
+          // Recommendations 10, Links included in payload of responses SHOULD also be 
+          // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
+          // This recommendation does not apply, if there are a large number of links included 
+          // in a response or a link is not known when the HTTP headers of the response are created.
+          res.status(200).render(`process`, content )
+          break
+        default:
         res.status(400).json({'code': 'InvalidParameterValue', 'description': `${accept} is an invalid format`})
     }
   })

@@ -1,6 +1,6 @@
 import urlJoin from 'url-join'
-import utils from '../utils/utils.js'
-import { getProcesses } from '../database/processes.js'
+import utils from '../../utils/utils.js'
+import { getProcesses } from '../../database/processes.js'
 
 function getLinks(neutralUrl, format, name, links) {  
   links.push({ href: urlJoin(neutralUrl, name, ), type: 'application/json', rel: `self`, title: `process description` })

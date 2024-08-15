@@ -1,6 +1,6 @@
 import urlJoin from 'url-join'
-import utils from '../utils/utils.js'
-import { getProcesses } from '../database/processes.js'
+import utils from '../../utils/utils.js'
+import { getProcesses } from '../../database/processes.js'
 
 function getLinks(neutralUrl, format, name, links) {
 
@@ -44,7 +44,7 @@ function get(neutralUrl, format, processId, callback) {
   var processes = getProcesses()
   var process = processes[processId]
   if (!process)
-    return callback({ 'httpCode': 404, 'code': `Process not found: ${processId}`, 'description': 'Make sure you use an existing collectionId. See /processes' }, undefined);
+    return callback({ 'httpCode': 404, 'code': `Process not found: ${processId}`, 'description': 'Make sure you use an existing processId. See /processes' }, undefined);
 
   var content = getContent(neutralUrl, format, processId, process)
 

@@ -1,5 +1,5 @@
 {
-    "name": "rekenModule",
+    "name": "syncShRekenModule",
     "version": "0.0.1",
     "jobControlOptions": ["sync-execute"],
     "outputTransmission": ["value"],
@@ -23,7 +23,7 @@
     },
     "outputs": {
       "result": {
-        "title": "Sum of numbers",
+        "title": "Sum of 2 numbers",
         "description": "This is an example of a NUMBER literal output.",
         "schema": {
           "type": "number",

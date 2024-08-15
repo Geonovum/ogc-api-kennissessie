@@ -1,6 +1,6 @@
 import urlJoin from 'url-join'
-import utils from '../utils/utils.js'
-import { getJobs } from '../database/processes.js'
+import utils from '../../utils/utils.js'
+import { getJobs } from '../../database/processes.js'
 
 function getLinks(neutralUrl, format, name, links) {  
 

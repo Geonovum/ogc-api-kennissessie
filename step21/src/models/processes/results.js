@@ -1,6 +1,5 @@
 import urlJoin from "url-join";
-import utils from "../utils/utils.js";
-import { getJobs } from '../database/processes.js'
+import utils from "../../utils/utils.js";
 
 function getLinks(neutralUrl, format, name, links) {
   function getTypeFromFormat(format) {
@@ -49,7 +48,7 @@ function get(neutralUrl, format, jobId, callback) {
       {
         httpCode: 404,
         code: `Job not found: ${jobId}`,
-        description: "Make sure you use an existing jobId. See /Collections",
+        description: "Make sure you use an existing jobId. See /Jobs",
       },
       undefined
     );
@@ -59,10 +58,6 @@ function get(neutralUrl, format, jobId, callback) {
   return callback(undefined, content);
 }
 
-function delete_(neutralUrl, format, jobId, callback) {
-  return callback(undefined, {});
-}
-
 export default {
-  get, delete_
+  get
 };

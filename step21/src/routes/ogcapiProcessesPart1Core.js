@@ -1,11 +1,11 @@
 import express from 'express';
 
-import { get as getProcesses } from '../controllers/processes.js'
-import { get as getProcess } from '../controllers/process.js'
-import { post as postExecution } from '../controllers/execution.js'
-import { get as getJobs } from '../controllers/jobs.js'
-import { get as getJob, delete_ as deleteJob,  } from '../controllers/job.js'
-import { get as getResults,  } from '../controllers/results.js'
+import { get as getProcesses } from '../controllers/processes/processes.js'
+import { get as getProcess } from '../controllers/processes/process.js'
+import { post as postExecution } from '../controllers/processes/execution.js'
+import { get as getJobs } from '../controllers/processes/jobs.js'
+import { get as getJob, delete_ as deleteJob,  } from '../controllers/processes/job.js'
+import { get as getResults,  } from '../controllers/processes/results.js'
 
 const router = express.Router();
 
