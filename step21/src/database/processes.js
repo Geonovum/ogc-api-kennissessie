@@ -1,5 +1,4 @@
 import { join } from "path";
-import YAML from "yaml";
 import { readdirSync, readFileSync } from "fs";
 
 export function readProcesses(dir) {
@@ -14,14 +13,32 @@ export function readProcesses(dir) {
     oapip.location = path;
 
     var name = fileName.replace(/\.\w+$/, "");
-    dataDict[name] = oapip;
+    _processes[name] = oapip;
   });
 }
 
-var dataDict = {};
+function readJobs() {
+  var job = {};
+  job.jobID = '81574318-1eb1-4d7c-af61-4b3fbcf33c4f';
+  job.status = "accepted";
+  job.message = "process started";
+  job.progress = 12;
+  job.created = "2021-05-04T10:13:00+05:00";
 
-export function getProcesses() {
-  return dataDict;
+  _jobs[job.jobID] = job
 }
 
-export default getProcesses;
+var _processes = {};
+var _jobs = {};
+
+readJobs() // demo
+
+export function getProcesses() {
+  return _processes;
+}
+
+export function getJobs() {
+  return _jobs;
+}
+
+export default { getProcesses, getJobs };

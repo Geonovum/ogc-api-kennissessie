@@ -1,6 +1,5 @@
 import urlJoin from "url-join";
 import utils from "../utils/utils.js";
-import { getJobs } from '../database/processes.js'
 
 function getLinks(neutralUrl, format, name, links) {
   function getTypeFromFormat(format) {
@@ -59,10 +58,6 @@ function get(neutralUrl, format, jobId, callback) {
   return callback(undefined, content);
 }
 
-function delete_(neutralUrl, format, jobId, callback) {
-  return callback(undefined, {});
-}
-
 export default {
-  get, delete_
+  get
 };

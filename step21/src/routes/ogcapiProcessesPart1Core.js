@@ -4,7 +4,8 @@ import { get as getProcesses } from '../controllers/processes.js'
 import { get as getProcess } from '../controllers/process.js'
 import { post as postExecution } from '../controllers/execution.js'
 import { get as getJobs } from '../controllers/jobs.js'
-import { get as getJob } from '../controllers/job.js'
+import { get as getJob, delete_ as deleteJob,  } from '../controllers/job.js'
+import { get as getResults,  } from '../controllers/results.js'
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ router.post('/processes/:processId/execution', postExecution)
 
 router.get('/jobs', getJobs)
 router.get('/jobs/:jobId', getJob)
+router.delete('/jobs/:jobId', deleteJob)
+router.get('/jobs/:jobId/results', getResults)
 
-  
 export default router

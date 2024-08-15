@@ -1,5 +1,6 @@
 import urlJoin from 'url-join'
 import utils from '../utils/utils.js'
+import { getJobs } from '../database/processes.js'
 
 function getLinks(neutralUrl, format, name, links) {  
 
@@ -11,9 +12,9 @@ function getLinks(neutralUrl, format, name, links) {
     return _encodings[i]
   }
 
-  links.push({ href: urlJoin(neutralUrl, name, ), rel: `self`, title: `Jobs document` })
+  links.push({ href: urlJoin(neutralUrl, name ), rel: `self`, title: `Job document` })
   utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
-    links.push({ href: urlJoin(neutralUrl, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `Jobs Document as ${altFormat}` })
+    links.push({ href: urlJoin(neutralUrl, name, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `Job Document as ${altFormat}` })
   })
 
 }
@@ -21,12 +22,11 @@ function getLinks(neutralUrl, format, name, links) {
 function getContent(neutralUrl, format, name, document) {
 
   var content = {}
-  // A local identifier for the collection that is unique for the dataset;
-  content.id = name // required
-  // An optional title and description for the collection;
-  content.title = document.name
-  content.description = document.description
-  content.attribution = global.config.metadata.attribution
+  content.jobID = 'name' // required
+  content.status = 'accepted'
+  content.message = 'process started'
+  content.progress = 12
+  content.created = '2024'
 
   content.links = []
 
@@ -52,13 +52,12 @@ function get(neutralUrl, format, callback) {
 
   content.jobs = [];
 
-  var jobs = getDatabases()
+  var jobs = getJobs()
 
   // get content per :collection
   for (var name in jobs) {
-    var collection = getContent(neutralUrl, format, name, jobs[name])
-  
-    content.jobs.push(collection);
+    var job = getContent(neutralUrl, format, name, jobs[name])
+    content.jobs.push(job);
   }
 
   return callback(undefined, content);
