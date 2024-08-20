@@ -75,7 +75,7 @@ Laten we eens in de spec kijken wat we hier mee aan moeten:
 
 ## Testen
 
-http://localhost/amstelveen/
+http://localhost/amstelveen/v1
 
 > `amstelveen landing page`
 
