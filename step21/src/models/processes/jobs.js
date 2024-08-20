@@ -21,12 +21,7 @@ function getLinks(neutralUrl, format, name, links) {
 
 function getContent(neutralUrl, format, name, document) {
 
-  var content = {}
-  content.jobID = 'name' // required
-  content.status = 'accepted'
-  content.message = 'process started'
-  content.progress = 12
-  content.created = '2024'
+  var content = structuredClone(document)
 
   content.links = []
 

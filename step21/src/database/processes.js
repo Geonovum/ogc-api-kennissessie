@@ -31,7 +31,7 @@ function readJobs() {
 var _processes = {};
 var _jobs = {};
 
-readJobs() // demo
+//readJobs() // demo
 
 export function getProcesses() {
   return _processes;

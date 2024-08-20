@@ -95,7 +95,7 @@ export function create() {
 
   let job = {};
   job.jobID = e7();
-  job.status = "accepted";
+  job.status = "created";
   job.message = "process created";
   job.progress = 0;
   job.created = new Date().toISOString();
@@ -103,8 +103,29 @@ export function create() {
   return job;
 }
 
-export function execute(job) {
-  console.log('ffff')
+export function execute(path, process, body, job, callback) {
+  import(path)
+    .then((module) => {
+      job.status = 'accepted'
+      module.launch(job, process, body, function (err, content) {
+        if (err) {
+          callback(err, undefined);
+          return;
+        }
+
+        callback(undefined, content);
+      });
+    })
+    .catch((error) => {
+      return callback(
+        {
+          httpCode: 500,
+          code: `Server error`,
+          description: `${error.message}`,
+        },
+        undefined
+      );
+    });
 }
 
 function delete_(neutralUrl, format, jobId, callback) {

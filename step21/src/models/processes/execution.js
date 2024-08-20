@@ -55,29 +55,14 @@ function post(neutralUrl, processId, body, callback) {
   var jobs = getJobs();
   var job = create();
   jobs[job.jobID] = job;
-  execute(job)
+  execute(path, process, body, job, function (err, content) {
+    if (err) {
+      callback(err, undefined);
+      return;
+    }
 
-  import(path)
-    .then((module) => {
-      module.launch(process, body, function (err, content) {
-        if (err) {
-          callback(err, undefined);
-          return;
-        }
-
-        callback(undefined, content);
-      });
-    })
-    .catch((error) => {
-      return callback(
-        {
-          httpCode: 500,
-          code: `Server error`,
-          description: `${error}`,
-        },
-        undefined
-      );
-    });
+    callback(undefined, content);
+  });
 }
 
 export default {
