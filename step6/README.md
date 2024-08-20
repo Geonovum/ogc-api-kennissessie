@@ -61,12 +61,12 @@ Start node op:
 node index.js
 ```
 
-`Example app listening at http://localhost:80`
+`Example app listening at http://localhost:80/amstelveen/v1`
 
 In je browser of via PostMan
 
 Landing Page:
-http://localhost/amstelveen
+http://localhost/amstelveen/v1
 
 Resultaat:
 
