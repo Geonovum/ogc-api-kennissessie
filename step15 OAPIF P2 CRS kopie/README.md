@@ -1,13 +1,16 @@
-# OGC API - Features - Part 5: Schemas (DRAFT)
+# OGC API - Features - Part 2: CRS
 
-https://docs.ogc.org/DRAFTS/24-019.html
+- R1: https://docs.ogc.org/is/18-058r1/18-058r1.html#crs-query
 
-## Topics
+## Stap 0:
 
-- ../{collectionId}/items?properties={},{}
 
 ## Testen:
-Run the app
+run the app
+
+- items omzetten van WGS84 naar RD-New
+- items bbox met RD-New
 
 `Example app listening at http://localhost:80`
 
+In je browser of via PostMan

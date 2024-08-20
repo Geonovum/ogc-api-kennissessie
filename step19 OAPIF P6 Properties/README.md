@@ -1,4 +1,4 @@
-# OGC API - Features - Part 5: Schemas (DRAFT)
+# OGC API - Features - Part 6: Properties Selection (DRAFT)
 
 https://docs.ogc.org/DRAFTS/24-019.html
 
