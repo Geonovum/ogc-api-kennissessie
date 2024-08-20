@@ -1,0 +1,73 @@
+---
+id: NAP_Peilmerken
+title: Peilmerken
+description: Het Normaal Amsterdams Peil (afgekort tot NAP) is de referentiehoogte ofwel peil waaraan hoogtemetingen in Nederland worden gerelateerd. Het NAP-net bestaat uit ongeveer 35.000 zichtbare peilmerken, meestal bronzen boutjes met het opschrift NAP, aangebracht in kaden, muren, bouwwerken of op palen en bovendien 400 ondergrondse peilmerken. De onderlinge hoogteverschillen tussen de peilmerken worden nauwkeurig vastgelegd.
+keywords: 
+  - Ruimte en infrastructuur
+  - Peilmerken
+  - NAP
+crs:
+  - "http://www.opengis.net/def/crs/EPSG/0/28992"
+schema:
+  type: Object
+  geometry:
+    sourcePath: geojson
+    type: GEOMETRY
+    role: PRIMARY_GEOMETRY
+    geometryType: POINT
+  properties:
+    fid:
+      name: fid
+      type: number
+      role: ID
+      label: Feature id
+    boutnr:
+      type: string
+    nap_in_m:
+      type: number
+      format: float
+    gvl:
+      type: string
+    muurcoord_x:
+      type: number
+      format: float
+    muurcoord_y:
+      type: number
+      format: float
+    ligging:
+      type: string
+    omschrijving:
+      type: string
+    eigenaar:
+      type: string
+      values:
+        - "Amstelveen"
+        - "Rijkswaterstaat"
+    status:
+      type: string
+      values:
+        - "Aanwezig"
+    x_coord:
+      type: string
+      description: "x-coord in RD-New"
+      format: float
+    y_coord:
+      type: string
+      description: "y-coord in RD-New"
+      format: float
+    id_kv:
+      type: number
+queryables:
+  spatial:
+    - geometry
+  temporal:
+  q:
+    - boutnr
+    - nap_in_m
+    - gvl
+    - ligging
+    - omschrijving
+    - eigenaar
+    - status
+    - id_kv
+  other:

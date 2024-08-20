@@ -1,0 +1,12 @@
+extends layout.pug
+
+block content
+
+  h1 Conformance Declaration
+  span This API implements the conformance classes from standards and community specifications that are listed below. Conformance classes are identified by a URI.
+  br
+  br
+  br
+  ul
+  each ct in conformsTo
+    li #{ct} 

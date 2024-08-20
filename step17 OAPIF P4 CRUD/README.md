@@ -1,22 +1,13 @@
-# OGC API - Features - Part 4: Create, Replace, Update and Delete (DRAFT)
+# OGC API - Features - Part 5: Schemas (DRAFT)
 
-https://docs.ogc.org/DRAFTS/20-002r1.html
+https://docs.ogc.org/DRAFTS/24-019.html
 
-## Topics:
+## Topics
 
-- create
-- update
-- replace
-- delete
-
-- options
-
-Todo: support for [ETag](https://docs.ogc.org/DRAFTS/20-002.html#optimistic_locking_clause) and If-Unmodified-Since
+- ../{collectionId}/items?properties={},{}
 
 ## Testen:
 Run the app
 
 `Example app listening at http://localhost:80`
-
-In je browser of via PostMan
 

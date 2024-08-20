@@ -12,10 +12,8 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/index.js",
-            "env": {
-				"DEBUG": "*",
-			},
+            "program": "${workspaceFolder}/src/index.js",       
+            "envFile": "${workspaceFolder}/.env",
         }
     ]
 }

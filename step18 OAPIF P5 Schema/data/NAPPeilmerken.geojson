@@ -1,7 +1,7 @@
 {
 "type": "FeatureCollection",
 "name": "NAP_Peilmerken",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"crs": { "type": "name", "properties": { "name": "http://www.opengis.net/def/crs/OGC/1.3/CRS84" } },
 "features": [
 { "type": "Feature", "properties": { "fid": 1, "boutnr": "1003", "nap_in_m": -0.576, "gvl": "Z", "muurcoord_x": 255, "muurcoord_y": 66, "ligging": "Amstelslag 9 Oranjebaan", "omschrijving": "Gebouw TPG post / Trafo", "eigenaar": "Amstelveen", "status": "Aanwezig", "x_coord": 121371.497, "y_coord": 478891.112, "id_kv": 1 }, "geometry": { "type": "Point", "coordinates": [ 4.894235056615867, 52.296971570476458 ] } },
 { "type": "Feature", "properties": { "fid": 2, "boutnr": "1004", "nap_in_m": -1.093, "gvl": "NO", "muurcoord_x": 10, "muurcoord_y": -10, "ligging": "Kruising Oranjebaan Bankrasweg", "omschrijving": "Duiker", "eigenaar": "Amstelveen", "status": "Aanwezig", "x_coord": 121169.505, "y_coord": 479088.038, "id_kv": 2 }, "geometry": { "type": "Point", "coordinates": [ 4.891254364520187, 52.298729048021926 ] } },

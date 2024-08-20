@@ -1,0 +1,139 @@
+{
+    "/": {
+        "get": {
+            "tags": [
+                "Common"
+            ],
+            "summary": "landing page",
+            "description": "The landing page provides links to the API definition (link relations `service-desc` and `service-doc`), the Conformance declaration (path `/conformance`, link relation `conformance`), and other resources in the API.",
+            "externalDocs": {
+                "description": "The specification that describes this operation: OGC API - Features - Part 1: Core",
+                "url": "https://docs.ogc.org/is/17-069r4/17-069r4.html"
+            },
+            "operationId": "getLandingPage",
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/fCommon"
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "The operation was executed successfully.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/landingPage"
+                            }
+                        },
+                        "text/html": {
+                            "schema": {
+                                "$ref": "#/components/schemas/htmlSchema"
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad Request"
+                },
+                "405": {
+                    "description": "Method Not Allowed"
+                },
+                "406": {
+                    "description": "Not Acceptable"
+                },
+                "500": {
+                    "description": "Server Error"
+                }
+            }
+        }
+    },
+    "/api": {
+        "get": {
+            "description": "This document",
+            "operationId": "getOpenApi",
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/fCommon"
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "400": {
+                    "description": "Bad Request"
+                },
+                "405": {
+                    "description": "Method Not Allowed"
+                },
+                "406": {
+                    "description": "Not Acceptable"
+                },
+                "500": {
+                    "description": "Server Error"
+                }
+            },
+            "summary": "This document",
+            "tags": [
+                "Common"
+            ]
+        }
+    },
+    "/conformance": {
+        "get": {
+            "tags": [
+                "Common"
+            ],
+            "summary": "conformance declaration",
+            "description": "The URIs of all conformance classes supported by the server. This information is provided to support 'generic' clients that want to access multiple OGC API implementations - and not 'just' a specific API. For clients accessing only a single API, this information is in general not relevant and the OpenAPI definition details the required information about the API.",
+            "externalDocs": {
+                "description": "The specification that describes this operation: OGC API - Features - Part 1: Core",
+                "url": "https://docs.ogc.org/is/17-069r4/17-069r4.html"
+            },
+            "operationId": "getConformanceDeclaration",
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/fCommon"
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "The operation was executed successfully.",
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "conformsTo": [
+                                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core",
+                                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/landingPage",
+                                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/oas30",
+                                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/html",
+                                    "http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/json"
+                                ]
+                            },
+                            "schema": {
+                                "$ref": "#/components/schemas/conformanceClasses"
+                            }
+                        },
+                        "text/html": {
+                            "schema": {
+                                "$ref": "#/components/schemas/htmlSchema"
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad Request"
+                },
+                "405": {
+                    "description": "Method Not Allowed"
+                },
+                "406": {
+                    "description": "Not Acceptable"
+                },
+                "500": {
+                    "description": "Server Error"
+                }
+            }
+        }
+    }
+}

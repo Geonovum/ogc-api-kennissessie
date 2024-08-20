@@ -1,0 +1,26 @@
+extends layout.pug
+
+block content
+
+  h1 Metadata about the feature collections
+  h2 Collections
+
+  h3 #{title}
+  p todo: description
+  h4 Links for the collection
+    each link in links
+      p #{link.rel} = 
+        a(href= link.href)  #{link.title} 
+        | (#{link.type})
+  h2 Links
+  each link in links
+    p #{link.rel} = 
+      a(href= link.href)  #{link.title} 
+      | (#{link.type})
+  h2 JSON output
+  p Get raw 
+    - var href = links.filter(l => l.rel === 'items')[0].href
+    a(href= href) JSON
+  .jsonContainer
+    .renderjson
+      pre !{JSON.stringify(content, null, 1)}

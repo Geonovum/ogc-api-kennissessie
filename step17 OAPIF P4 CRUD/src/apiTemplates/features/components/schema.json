@@ -1,0 +1,84 @@
+{
+    "csv": {
+        "type": "string"
+    },
+
+    "featureCollectionGeoJson_{{:collectionId}}": {
+        "required": [
+            "type",
+            "features"
+        ],
+        "type": "object",
+        "properties": {
+            "type": {
+                "type": "string",
+                "enum": [
+                    "FeatureCollection"
+                ]
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/featureGeoJson_{{:collectionId}}"
+                }
+            },
+            "links": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/link"
+                }
+            },
+            "timeStamp": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/timeStamp"
+            },
+            "numberMatched": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberMatched"
+            },
+            "numberReturned": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberReturned"
+            }
+        }
+    },
+
+    "featureGeoJson_{{:collectionId}}": {
+        "title": "{{:collectionId}}",
+        "required": [
+            "type",
+            "geometry",
+            "properties"
+        ],
+        "type": "object",
+        "properties": {
+            "type": {
+                "type": "string",
+                "enum": [
+                    "Feature"
+                ]
+            },
+            "links": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/link"
+                }
+            },
+            "id": {
+                "type": "integer",
+                "format": "int32"
+            },
+            "geometry": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/multilinestringGeoJSON"
+            },
+            "properties": {
+                "required": [
+                ],
+                "type": "object",
+                "properties": {
+                }
+            }
+        },
+        "description": "description something"
+    }
+
+
+
+}

@@ -1,0 +1,14 @@
+{
+    "{{:propertyId}}_{{:collectionId}}": {
+        "name": "{{:propertyId}}",
+        "in": "query",
+        "description": "Filter the collection by property '{{:propertyId}}'.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+            "title": "{{:propertyId}}",
+            "type": "string"
+        }
+    }
+}

@@ -1,0 +1,51 @@
+---
+id: Inventarisatie_zonnepanelen
+title: Inventarisatie zonnepanelen
+description: Urgis heeft voor de gemeente Amstelveen een inventarisatie zonne-energie uitgevoerd. De inventarisatie zonne-energie omvat een automatische detectie van zonnepanelen op hoge-resolutie luchtfoto’s van de gemeente Amstelveen voor het jaar 2021.
+keywords: 
+  - Natuur en milieu
+  - Wonen
+  - Energie
+  - Energielabels
+  - Solar
+crs:
+  - "http://www.opengis.net/def/crs/EPSG/0/28992"
+schema:
+  type: Object
+  properties:
+    fid:
+      name: fid
+      type: number
+      role: ID
+    identificatie:
+      type: number
+    bouwjaar:
+      type: string
+      format: date-time
+    status:
+      type: string
+    gebruiksdoel:
+      type: string
+    oppervlakte_panelen:
+      type: number
+    aantal_panelen:
+      type: number
+    opbrengst:
+      type: number
+    id_kv:
+      type: string
+queryables:
+  spatial:
+    - geometry
+  temporal:
+  q:
+    - fid
+    - identificatie
+    - bouwjaar
+    - status
+    - gebruiksdoel
+    - oppervlakte_panelen
+    - aantal_panelen
+    - opbrengst
+    - id_kv
+  other:

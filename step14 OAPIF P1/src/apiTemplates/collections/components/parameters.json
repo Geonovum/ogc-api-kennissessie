@@ -1,0 +1,32 @@
+{
+    "fCollections": {
+        "name": "f",
+        "in": "query",
+        "description": "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+            "type": "string",
+            "enum": [
+                "html",
+                "json"
+            ]
+        }
+    },
+    "fCollection": {
+        "name": "f",
+        "in": "query",
+        "description": "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+            "type": "string",
+            "enum": [
+                "html",
+                "json"
+            ]
+        }
+    }
+}
