@@ -1,6 +1,6 @@
 # OGC API - Features - Part 5: Schemas (DRAFT)
 
-https://portal.ogc.org/files/108199#rc_returnables-and-receivables
+https://docs.ogc.org/DRAFTS/23-058r1.html
 
 ## Topics
 

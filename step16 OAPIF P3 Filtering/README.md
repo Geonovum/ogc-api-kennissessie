@@ -1,6 +1,6 @@
 # OGC API - Features - Part 3: Filtering (DRAFT)
 
-https://docs.ogc.org/DRAFTS/19-079r1.html
+https://portal.ogc.org/files/96288
 
 ## Testen:
 Run the app
