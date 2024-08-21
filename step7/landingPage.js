@@ -21,7 +21,7 @@ function link(href, rel, type, title) {
 
 const serviceTitle = "amstelveen OGC API Feature server";
 const serviceDescription = "Access to data in the city of amstelveen via a Web API that conforms to the OGC API Features specification.";
-const serviceUrl = "http://localhost/amstelveen/";
+const serviceUrl = "http://localhost/amstelveen/v1";
 
 function landingPageJSON() {
     var landingPage = header(serviceTitle, serviceDescription);
