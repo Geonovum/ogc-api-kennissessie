@@ -16,7 +16,8 @@ function getLinks(neutralUrl, format, name, links) {
     rel: `self`,
     type: getTypeFromFormat(format),
     title: `Job description`,
-  });
+  }
+);
   utils.getAlternateFormats(format, ["json", "html"]).forEach((altFormat) => {
     links.push({
       href: urlJoin(neutralUrl, `?f=${altFormat}`),

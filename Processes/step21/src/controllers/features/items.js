@@ -1,8 +1,8 @@
 import accepts from "accepts";
-import feature from "../models/feature.js";
-import items from "../models/items.js";
-import geojson2csv from "../utils/csv.js";
-import utils from "../utils/utils.js";
+import feature from "../../models/features/feature.js";
+import items from "../../models/features/items.js";
+import geojson2csv from "../../utils/csv.js";
+import utils from "../../utils/utils.js";
 
 export function get(req, res, next) {
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)

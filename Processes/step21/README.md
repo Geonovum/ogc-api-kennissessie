@@ -1,11 +1,12 @@
-# OGC API - Features - Part 5: Schemas (DRAFT)
+# OGC API - Processes - Part 1: Core
 
-https://portal.ogc.org/files/108199#rc_returnables-and-receivables
+https://docs.ogc.org/is/18-062r2/18-062r2.html
 
 ## Topics
 
-- Schema   ../{collectionId}/schema
-- Sortables ../{collectionId}/sortables
+- Processes, Process
+- Jobs, Job
+- Execute
 
 ## Testen:
 Run the app

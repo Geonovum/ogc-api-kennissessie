@@ -1,5 +1,5 @@
-import { options as itemsOptions } from '../controllers/items.js'
-import { options as featureOptions } from '../controllers/feature.js'
+import { options as itemsOptions } from '../controllers/features/items.js'
+import { options as featureOptions } from '../controllers/features/feature.js'
 
 export var options = function (req, res, next) {
 

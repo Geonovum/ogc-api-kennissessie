@@ -1,8 +1,8 @@
 import urlJoin from "url-join";
 import { join } from "path";
-import { getDatabases } from "../database/database.js";
-import utils from "../utils/utils.js";
-import projgeojson from "../utils/proj4.js";
+import { getDatabases } from "../../database/database.js";
+import utils from "../../utils/utils.js";
+import projgeojson from "../../utils/proj4.js";
 
 function getLinks(neutralUrl, format, links) {
   if (format == "geojson") format = "json";

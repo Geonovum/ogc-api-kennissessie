@@ -1,0 +1,35 @@
+{
+    "name": "asyncShRekenModule",
+    "version": "0.0.1",
+    "jobControlOptions": ["async-execute"],
+    "outputTransmission": ["value"],
+    "inputs": {
+      "number1": {
+        "title": "Number 1 Literal Input Example",
+        "description": "This is an example of a NUMBER literal input.",
+        "schema": {
+          "type": "number",
+          "format": "integer"
+        }
+      },
+      "number2": {
+        "title": "Number 2 Literal Input Example",
+        "description": "This is an example of a NUMBER literal input.",
+        "schema": {
+          "type": "number",
+          "format": "integer"
+        }
+      }
+    },
+    "outputs": {
+      "result": {
+        "title": "Sum of 2 numbers",
+        "description": "This is an example of a NUMBER literal output.",
+        "schema": {
+          "type": "number",
+          "format": "integer"
+        }
+      }
+    }
+  }
+  

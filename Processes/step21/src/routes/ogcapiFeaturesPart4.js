@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { create, options } from '../controllers/items.js'
-import { replacee, deletee, update, options as _options } from '../controllers/feature.js'
+import { create, options } from '../controllers/features/items.js'
+import { replacee, deletee, update, options as _options } from '../controllers/features/feature.js'
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import accepts from "accepts";
-import feature from "../models/feature.js";
-import utils from "../utils/utils.js";
+import feature from "../../models/features/feature.js";
+import utils from "../../utils/utils.js";
 
 export function get(req, res) {
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
