@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { get as getQueryables } from '../controllers/queryables.js'
+import { get as getQueryables } from '../controllers/common/collections/queryables.js'
 
 const router = express.Router();
 

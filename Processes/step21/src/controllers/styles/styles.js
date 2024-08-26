@@ -1,5 +1,5 @@
-import utils from '../utils/utils.js'
-import styles from '../models/styles.js'
+import utils from '../../utils/utils.js'
+import styles from '../../models/styles/styles.js'
 import accepts from 'accepts'
 
 export function get(req, res) {

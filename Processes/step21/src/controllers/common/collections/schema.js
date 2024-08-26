@@ -1,5 +1,5 @@
-import utils from '../utils/utils.js'
-import schema from '../models/schema.js'
+import utils from '../../../utils/utils.js'
+import schema from '../../../models/common/collections/schema.js'
 import accepts from 'accepts'
 
 export function get (req, res) {

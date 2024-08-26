@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { get as getSchema } from '../controllers/schema.js'
-import { get as getSortables } from '../controllers/sortables.js'
+import { get as getSchema } from '../controllers/common/collections/schema.js'
+import { get as getSortables } from '../controllers/common/collections/sortables.js'
 
 const router = express.Router();
 
