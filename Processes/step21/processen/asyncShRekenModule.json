@@ -22,8 +22,8 @@
     }
   },
   "outputs": {
-    "result": {
-      "title": "Division of 2 numbers",
+    "sum": {
+      "title": "Addition of 2 numbers",
       "description": "This is an example of a NUMBER literal output.",
       "schema": {
         "type": "number",

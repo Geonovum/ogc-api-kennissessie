@@ -2,12 +2,11 @@ extends layout.pug
 
 block content
 
-  h2 Process
+  h2 #{title}
+  p #{description}
 
-  h2 Links to the main resources
+  h2 Execution modes  
+  
+  h2 Jobs
 
-  each link in links
-    p #{link.rel} = 
-      a(href= link.href)  #{link.title} 
-      | (#{link.type})
-
+  h2 Links

@@ -9,7 +9,6 @@ import {
   delete_ as deleteJob,
 } from "../controllers/processes/job.js";
 import { get as getResults } from "../controllers/processes/results.js";
-import { get as getResult } from "../controllers/processes/result.js";
 import { post as postCallback } from "../controllers/processes/callback.js";
 
 const router = express.Router();
@@ -22,7 +21,6 @@ router.get("/jobs", getJobs);
 router.get("/jobs/:jobId", getJob);
 router.delete("/jobs/:jobId", deleteJob);
 router.get("/jobs/:jobId/results", getResults);
-router.get("/jobs/:jobId/results/:outputID", getResult);
 
 router.post("/callback/:jobId", postCallback);
 

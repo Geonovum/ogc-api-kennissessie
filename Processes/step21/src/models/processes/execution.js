@@ -1,7 +1,7 @@
 import urlJoin from "url-join";
 import { join } from "path";
 import { existsSync } from "fs";
-import { getProcesses, getJobs } from "../../database/processes.js";
+import { getProcesses, getResults } from "../../database/processes.js";
 import { execute } from "./job.js";
 import { create } from "./jobs.js";
 
@@ -39,7 +39,7 @@ function getContent(neutralUrl, process, body) {
  */
 function post(neutralUrl, processId, parameters, prefer, callback) {
   // serviceUrl sits at the same level as /processes
-  let serviceUrl = neutralUrl.substring(0, neutralUrl.indexOf('/processes') );
+  let serviceUrl = neutralUrl.substring(0, neutralUrl.indexOf("/processes"));
 
   var processes = getProcesses();
   var process = processes[processId];
@@ -86,21 +86,32 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   if (parameters.subscriber) {
     for (var key in parameters.subscriber) {
       if (parameters.subscriber.hasOwnProperty(key)) {
-        parameters.subscriber[key] = parameters.subscriber[key] 
+        parameters.subscriber[key] = parameters.subscriber[key]
           .replaceAll(":serviceUrl", serviceUrl)
           .replaceAll(":jobId", job.jobID);
       }
     }
   }
 
-  execute(pathToLauncher, process, job, prefer.includes("async"), parameters, function (err, content) {
-    if (err) {
-      callback(err, undefined);
-      return;
-    }
+  execute(
+    pathToLauncher,
+    process,
+    job,
+    prefer.includes("async"),
+    parameters,
+    function (err, content) {
+      if (err) {
+        callback(err, undefined);
+        return;
+      }
 
-    callback(undefined, content);
-  });
+      // remember result
+      let results = getResults();
+      results[job.jobID] = content
+
+      callback(undefined, content);
+    }
+  );
 }
 
 export default {

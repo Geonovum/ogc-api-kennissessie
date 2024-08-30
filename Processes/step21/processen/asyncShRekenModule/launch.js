@@ -109,6 +109,10 @@ export function launch(process, job, isAsync, parameters, callback) {
       shell: true,
     });
 
+    job.status = "running"; // accepted, successful, failed, dismissed
+    job.started = new Date().toISOString();
+    job.updated = new Date().toISOString();
+
     let content = {};
 
     for (let [key, output] of Object.entries(process.outputs)) {
