@@ -1,4 +1,5 @@
 import urlJoin from 'url-join'
+import { join } from "path"
 import utils from '../../utils/utils.js'
 import { getProcesses } from '../../database/processes.js'
 
@@ -12,10 +13,15 @@ function getLinks(neutralUrl, format, name, links) {
     return _encodings[i]
   }
 
+  links.push({ href: 'https://example.org/process', rel: `about`, title: `Process description as JSON` })
+
   links.push({ href: urlJoin(neutralUrl,), rel: `self`, type: format, title: `Process description` })
   utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
     links.push({ href: urlJoin(neutralUrl, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `Process description as ${altFormat}` })
   })
+
+  links.push({ href: join(neutralUrl, '../', '../', 'jobs?f=html'), rel: `http://www.opengis.net/def/rel/ogc/1.0/job-list`, title: `Jobs list as HTML` })
+  links.push({ href: join(neutralUrl, '../', '../', 'jobs?f=json'), rel: `http://www.opengis.net/def/rel/ogc/1.0/job-list`, title: `Jobs list as JSON` })
 
   links.push({ href: urlJoin(neutralUrl, 'execution'), rel: `http://www.opengis.net/def/rel/ogc/1.0/execute`, title: `Execute endpoint` })
 }

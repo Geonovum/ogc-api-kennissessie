@@ -2,7 +2,7 @@ import urlJoin from "url-join";
 import utils from "../../utils/utils.js";
 import { getJobs } from "../../database/processes.js";
 
-function getLinks(neutralUrl, format, name, links) {
+function getLinks(neutralUrl, format, jobId, links) {
   function getTypeFromFormat(format) {
     var _formats = ["json", "html"];
     var _encodings = ["application/json", "text/html"];
@@ -16,8 +16,7 @@ function getLinks(neutralUrl, format, name, links) {
     rel: `self`,
     type: getTypeFromFormat(format),
     title: `Job description`,
-  }
-);
+  });
   utils.getAlternateFormats(format, ["json", "html"]).forEach((altFormat) => {
     links.push({
       href: urlJoin(neutralUrl, `?f=${altFormat}`),
@@ -28,21 +27,25 @@ function getLinks(neutralUrl, format, name, links) {
   });
 }
 
-function getContent(neutralUrl, format, name, document) {
-  var content = {};
-  content.jobID = "name";
-  content.status = "accepted";
-  content.message = "process started";
-  content.progress = 12;
-  content.created = "2024";
-  content.links = [];
-
-  getLinks(neutralUrl, format, name, content.links);
+function getContent(neutralUrl, format, jobId, job) {
+  var content = job;
+  content.links = []
+  
+  getLinks(neutralUrl, format, jobId, content.links);
 
   return content;
 }
 
-function get(neutralUrl, format, jobId, callback) {
+/**
+ * Description placeholder
+ *
+ * @param {*} neutralUrl
+ * @param {*} format
+ * @param {*} jobId
+ * @param {*} callback
+ * @returns {*}
+ */
+export function get(neutralUrl, format, jobId, callback) {
   var jobs = getJobs();
   var job = jobs[jobId];
   if (!job)
@@ -60,73 +63,42 @@ function get(neutralUrl, format, jobId, callback) {
   return callback(undefined, content);
 }
 
-export function create() {
-  var lut = [];
-  for (var i = 0; i < 256; i++) {
-    lut[i] = (i < 16 ? "0" : "") + i.toString(16);
-  }
-  function e7() {
-    var d0 = (Math.random() * 0xffffffff) | 0;
-    var d1 = (Math.random() * 0xffffffff) | 0;
-    var d2 = (Math.random() * 0xffffffff) | 0;
-    var d3 = (Math.random() * 0xffffffff) | 0;
-    return (
-      lut[d0 & 0xff] +
-      lut[(d0 >> 8) & 0xff] +
-      lut[(d0 >> 16) & 0xff] +
-      lut[(d0 >> 24) & 0xff] +
-      "-" +
-      lut[d1 & 0xff] +
-      lut[(d1 >> 8) & 0xff] +
-      "-" +
-      lut[((d1 >> 16) & 0x0f) | 0x40] +
-      lut[(d1 >> 24) & 0xff] +
-      "-" +
-      lut[(d2 & 0x3f) | 0x80] +
-      lut[(d2 >> 8) & 0xff] +
-      "-" +
-      lut[(d2 >> 16) & 0xff] +
-      lut[(d2 >> 24) & 0xff] +
-      lut[d3 & 0xff] +
-      lut[(d3 >> 8) & 0xff] +
-      lut[(d3 >> 16) & 0xff] +
-      lut[(d3 >> 24) & 0xff]
-    );
-  }
+/**
+ * Description placeholder
+ *
+ * @export
+ * @param {*} path
+ * @param {*} process
+ * @param {*} parameters
+ * @param {*} job
+ * @param {*} callback
+ */
+export function execute(path, process, job, isAsync, parameters, callback) {
+  try {
+    import(path)
+      .then((module) => {
+        module.launch(process, job, isAsync, parameters, function (err, content) {
+          if (err) {
+            callback(err, undefined);
+            return;
+          }
 
-  let job = {};
-  job.jobID = e7();
-  job.status = "created";
-  job.message = "process created";
-  job.progress = 0;
-  job.created = new Date().toISOString();
-
-  return job;
-}
-
-export function execute(path, process, body, job, callback) {
-  import(path)
-    .then((module) => {
-      job.status = 'accepted'
-      module.launch(job, process, body, function (err, content) {
-        if (err) {
-          callback(err, undefined);
-          return;
-        }
-
-        callback(undefined, content);
+          callback(undefined, content);
+        });
+      })
+      .catch((error) => {
+        return callback(
+          {
+            httpCode: 500,
+            code: `Server error`,
+            description: `${error.message}`,
+          },
+          undefined
+        );
       });
-    })
-    .catch((error) => {
-      return callback(
-        {
-          httpCode: 500,
-          code: `Server error`,
-          description: `${error.message}`,
-        },
-        undefined
-      );
-    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function delete_(neutralUrl, format, jobId, callback) {

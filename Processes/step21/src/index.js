@@ -19,5 +19,5 @@ app.listen(process.env.PORT, function (error) {
     process.exit(10)
   }
 
-  console.log(`OGC API Feature listening on port ${process.env.PORT}`)
+  console.log(`OGC API Feature & Processes listening on port ${process.env.PORT}`)
 })

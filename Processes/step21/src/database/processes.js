@@ -17,17 +17,6 @@ export function readProcesses(dir) {
   });
 }
 
-function readJobs() {
-  var job = {};
-  job.jobID = '81574318-1eb1-4d7c-af61-4b3fbcf33c4f';
-  job.status = "accepted";
-  job.message = "process started";
-  job.progress = 12;
-  job.created = "2021-05-04T10:13:00+05:00";
-
-  _jobs[job.jobID] = job
-}
-
 var _processes = {};
 var _jobs = {};
 

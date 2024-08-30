@@ -8,6 +8,7 @@
   "type": "module",
   "dependencies": {
     "@turf/turf": "^7.0.0",
+    "axios": "^1.7.5",
     "cors": "^2.8.5",
     "debug": "^4.3.5",
     "express": "^4.18.2",
