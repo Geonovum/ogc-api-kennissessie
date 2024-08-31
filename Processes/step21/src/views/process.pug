@@ -45,29 +45,30 @@ block content
                   li=jobControlOption
               h2 Jobs
               - var linkJobs = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
-              a(title='Browse jobs' href=linkJobs) Browse jobs
+              a(href=linkJobs) Browse jobs
+              - var linkAbout = links.find(i => i.rel == 'about').href
+              - var linkSelf = links.find(i => i.rel == 'self').href
+              - var linkAlternate = links.find(i => i.rel == 'alternate').href
+              - var linkJobListHtml = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list' && i.type == 'text/html').href
+              - var linkJobListJson = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list' && i.type == 'application/json').href
+              - var linkExecute = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
               h2 Links
               ul
-                - var linkAbout = links.find(i => i.rel == 'about').href
                 li
-                  a(title='information' type='text/html' rel='about' href=linkAbout)
+                  a(href=linkAbout)
                     | information (text/html)
-                - var linkSelf = links.find(i => i.rel == 'self').href
                 li
-                  a(title='Process' href=linkSelf)
-                    | Process description as JSON (application/json)
-                - var linkAlternate = links.find(i => i.rel == 'alternate').href
-                li
-                  a(title='Process' href=linkAlternate)
+                  a(href=linkSelf)
                     | Process description as HTML (text/html)
-                - var linkJobList = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
                 li
-                  a(title='Jobs' href=linkJobList)
+                  a(href=linkAlternate)
+                    | Process description as JSON (application/json)
+                li
+                  a(href=linkJobListHtml)
                     | Jobs list as HTML (text/html)
                 li
-                  a(title='Jobs' type='application/json' href=linkJobList)
+                  a(href=linkJobListJson)
                     | Jobs list as JSON (application/json)
-                - var linkExecute = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
                 li
-                  a(title='Execution' href=linkExecute)
+                  a(href=linkExecute)
                     | Execution for this process as JSON (application/json)

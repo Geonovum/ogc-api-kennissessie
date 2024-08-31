@@ -20,8 +20,10 @@ function getLinks(neutralUrl, format, name, links) {
     links.push({ href: urlJoin(neutralUrl, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `Process description as ${altFormat}` })
   })
 
-  links.push({ href: join(neutralUrl, '../', '../', 'jobs?f=html'), rel: `http://www.opengis.net/def/rel/ogc/1.0/job-list`, title: `Jobs list as HTML` })
-  links.push({ href: join(neutralUrl, '../', '../', 'jobs?f=json'), rel: `http://www.opengis.net/def/rel/ogc/1.0/job-list`, title: `Jobs list as JSON` })
+  let serviceUrl = neutralUrl.substring(0, neutralUrl.indexOf('processes'));
+
+  links.push({ href: urlJoin(serviceUrl, 'jobs?f=html'), rel: `http://www.opengis.net/def/rel/ogc/1.0/job-list`, type: 'text/html', title: `Jobs list as HTML` })
+  links.push({ href: urlJoin(serviceUrl, 'jobs?f=json'), rel: `http://www.opengis.net/def/rel/ogc/1.0/job-list`, type: 'application/json', title: `Jobs list as JSON` })
 
   links.push({ href: urlJoin(neutralUrl, 'execution'), rel: `http://www.opengis.net/def/rel/ogc/1.0/execute`, title: `Execute endpoint` })
 }
