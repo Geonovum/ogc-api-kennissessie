@@ -1,5 +1,4 @@
 import urlJoin from 'url-join'
-import { join } from "path"
 import utils from '../../utils/utils.js'
 import { getProcesses } from '../../database/processes.js'
 

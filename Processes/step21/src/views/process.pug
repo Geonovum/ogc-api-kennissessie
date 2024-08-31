@@ -47,28 +47,12 @@ block content
               - var linkJobs = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
               a(href=linkJobs) Browse jobs
               - var linkAbout = links.find(i => i.rel == 'about').href
-              - var linkSelf = links.find(i => i.rel == 'self').href
-              - var linkAlternate = links.find(i => i.rel == 'alternate').href
-              - var linkJobListHtml = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list' && i.type == 'text/html').href
-              - var linkJobListJson = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list' && i.type == 'application/json').href
               - var linkExecute = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
               h2 Links
               ul
                 li
                   a(href=linkAbout)
                     | information (text/html)
-                li
-                  a(href=linkSelf)
-                    | Process description as HTML (text/html)
-                li
-                  a(href=linkAlternate)
-                    | Process description as JSON (application/json)
-                li
-                  a(href=linkJobListHtml)
-                    | Jobs list as HTML (text/html)
-                li
-                  a(href=linkJobListJson)
-                    | Jobs list as JSON (application/json)
                 li
                   a(href=linkExecute)
                     | Execution for this process as JSON (application/json)
