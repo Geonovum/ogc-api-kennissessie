@@ -1,6 +1,6 @@
 {
   "id": "asyncShRekenModule",
-  "title": "name is asyncShRekenModule",
+  "title": "title is asyncShRekenModule",
   "description": "description of asyncShRekenModule",
   "version": "0.0.1",
   "jobControlOptions": ["sync-execute", "async-execute"],

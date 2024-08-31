@@ -31,7 +31,7 @@ function getContent(neutralUrl, format, name, process) {
   var content = {}
   content.id = process.id
   content.title = process.title
-  content.description = process.title
+  content.description = process.description
   content.version = process.version
   content.jobControlOptions = process.jobControlOptions
   content.outputTransmission = process.outputTransmission
