@@ -27,7 +27,7 @@ function getLinks(neutralUrl, format, jobId, links) {
   });
 }
 
-function getContent(neutralUrl, format, jobId, job) {
+export function getContent(neutralUrl, format, jobId, job) {
   var content = job;
   content.links = []
   

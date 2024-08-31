@@ -1,8 +1,9 @@
 import urlJoin from "url-join";
 import utils from "../../utils/utils.js";
 import { getJobs } from "../../database/processes.js";
+import { getContent as getJobContent } from "./job.js";
 
-function getLinks(neutralUrl, format, jobId, links) {
+function getLinks(neutralUrl, format, links) {
   function getTypeFromFormat(format) {
     var _formats = ["json", "html"];
     var _encodings = ["application/json", "text/html"];
@@ -12,27 +13,25 @@ function getLinks(neutralUrl, format, jobId, links) {
   }
 
   links.push({
-    href: urlJoin(neutralUrl, jobId, 'results', `?f=${format}`),
+    href: urlJoin(neutralUrl, `?f=${format}`),
     rel: `self`,
-    title: `Results of job as ${format}`,
+    title: `Jobs list as ${format}`,
   });
   utils.getAlternateFormats(format, ["json", "html"]).forEach((altFormat) => {
     links.push({
-      href: urlJoin(neutralUrl, jobId, 'results', `?f=${altFormat}`),
+      href: urlJoin(neutralUrl, `?f=${altFormat}`),
       rel: `alternate`,
       type: getTypeFromFormat(altFormat),
-      title: `Results of job as ${altFormat}`,
+      title: `Jobs list as ${altFormat}`,
     });
   });
 }
 
-function getContent(neutralUrl, format, jobId, job) {
-  var content = job;
+function getContent(neutralUrl, format) {
+  let links = [];
+  getLinks(neutralUrl, format, links);
 
-  content.links = [];
-  getLinks(neutralUrl, format, jobId, content.links);
-
-  return content;
+  return links;
 }
 
 /**
@@ -102,10 +101,8 @@ export function create(processId, isAsync) {
 function get(neutralUrl, format, callback) {
   // (OAPIC P2) Requirement 3A: The content of that response SHALL be based upon the JSON schema collections.yaml.
   var content = {};
-  // An optional title and description for the collection;
-  content.title = global.config.title;
-  content.description = global.config.description;
-  content.links = [];
+
+  content.links = getContent(neutralUrl, format)
 
   content.jobs = [];
 
@@ -114,7 +111,7 @@ function get(neutralUrl, format, callback) {
   // get content per :collection
   for (var key in jobs) {
     if (jobs.hasOwnProperty(key)) {
-      var job = getContent(neutralUrl, format, key, jobs[key]);
+      var job = getJobContent(neutralUrl, format, key, jobs[key]);
       content.jobs.push(job);
     }
   }
