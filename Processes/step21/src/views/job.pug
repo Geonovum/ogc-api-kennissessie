@@ -38,13 +38,15 @@ block content
                     h3 Links
                     ul
                       li
-                        a(title='http://www.opengis.net/def/rel/ogc/1.0/results' href='https://demo.pygeoapi.io/master/jobs/221e8008-66da-11ef-83de-0242ac120002/results?f=html')
+                        - var linkHtml = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'text/html').href
+                        a(title='http://www.opengis.net/def/rel/ogc/1.0/results' href=linkHtml)
                           span Results of job as HTML
                           |  (
                           span text/html
                           | )
                       li
-                        a(title='http://www.opengis.net/def/rel/ogc/1.0/results' href='https://demo.pygeoapi.io/master/jobs/221e8008-66da-11ef-83de-0242ac120002/results?f=json')
+                        - var linkJson = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'application/json').href
+                        a(title='http://www.opengis.net/def/rel/ogc/1.0/results' href=linkJson)
                           span Results of job as JSON
                           |  (
                           span application/json

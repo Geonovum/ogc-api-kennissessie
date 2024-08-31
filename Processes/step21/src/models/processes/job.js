@@ -12,17 +12,17 @@ function getLinks(neutralUrl, format, jobId, links) {
   }
 
   links.push({
-    href: urlJoin(neutralUrl, `?f=${format}`),
-    rel: `self`,
+    href: urlJoin(neutralUrl, 'results', `?f=${format}`),
+    rel: `http://www.opengis.net/def/rel/ogc/1.0/results`,
     type: getTypeFromFormat(format),
-    title: `Job description`,
+    title: `Results of job as ${format}`,
   });
   utils.getAlternateFormats(format, ["json", "html"]).forEach((altFormat) => {
     links.push({
-      href: urlJoin(neutralUrl, `?f=${altFormat}`),
-      rel: `alternate`,
+      href: urlJoin(neutralUrl, 'results', `?f=${altFormat}`),
+      rel: `http://www.opengis.net/def/rel/ogc/1.0/results`,
       type: getTypeFromFormat(altFormat),
-      title: `Job description as ${altFormat}`,
+      title: `Results of job as ${altFormat}`,
     });
   });
 }
