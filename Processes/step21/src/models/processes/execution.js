@@ -42,7 +42,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   let serviceUrl = neutralUrl.substring(0, neutralUrl.indexOf("/processes"));
 
   var processes = getProcesses();
-  var process = processes[processId];
+  var process = structuredClone(processes[processId]);
   if (!process)
     return callback(
       {
@@ -83,10 +83,10 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   let job = create(processId, prefer.includes("async"));
 
   // resolve all :<> with content
-  if (parameters.subscriber) {
-    for (var key in parameters.subscriber) {
-      if (parameters.subscriber.hasOwnProperty(key)) {
-        parameters.subscriber[key] = parameters.subscriber[key]
+  if (process.subscriber) {
+    for (var key in process.subscriber) {
+      if (process.subscriber.hasOwnProperty(key)) {
+        process.subscriber[key] = process.subscriber[key]
           .replaceAll(":serviceUrl", serviceUrl)
           .replaceAll(":jobId", job.jobID);
       }
@@ -109,7 +109,9 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
       let results = getResults();
       results[job.jobID] = content
 
-      callback(undefined, content);
+      let location = `:serviceUrl/jobs/${job.jobID}`
+
+      callback(undefined, content, location);
     }
   );
 }

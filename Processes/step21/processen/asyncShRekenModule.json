@@ -32,5 +32,10 @@
         "format": "float"
       }
     }
+  },
+  "subscriber": {
+    "successUri": ":serviceUrl/callback/:jobId?type=success",
+    "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
+    "failedUri": ":serviceUrl/callback/:jobId?type=failed"
   }
 }

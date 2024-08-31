@@ -63,11 +63,9 @@ export function launch(process, job, isAsync, parameters, callback) {
       job.finished = new Date().toISOString();
       job.updated = new Date().toISOString();
 
-// TODO: where to store results (content)?
-
-      if (parameters.subscriber && parameters.subscriber.successUri) {
+      if (process.subscriber && process.subscriber.successUri) {
         http
-          .post(parameters.subscriber.successUri, content)
+          .post(process.subscriber.successUri, content)
           .then(function (response) {
             console.log(response);
           })
@@ -78,7 +76,7 @@ export function launch(process, job, isAsync, parameters, callback) {
     });
 
     child.stderr.on("data", (d) => {
-      if (parameters.subscriber && parameters.subscriber.failedUri) {
+      if (process.subscriber && process.subscriber.failedUri) {
         console.log(d.toString());
 
         job.status = "failed"; // accepted, successful, failed, dismissed
@@ -88,7 +86,7 @@ export function launch(process, job, isAsync, parameters, callback) {
         job.updated = new Date().toISOString();
 
         http
-          .post(parameters.subscriber.failedUri, d)
+          .post(process.subscriber.failedUri, d)
           .then(function (response) {
             console.log(response);
           })

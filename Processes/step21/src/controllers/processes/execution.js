@@ -33,7 +33,7 @@ export function post(req, res) {
     processId,
     req.body,
     prefer,
-    function (err, content) {
+    function (err, content, location) {
       if (err) {
         res
           .status(err.code)
@@ -41,11 +41,16 @@ export function post(req, res) {
         return;
       }
 
+      // set locations header to url of job
+      // JobID is set earlier, servcieUrl can only be set now
+      let serviceUrl = formatFreeUrl.substring(0, formatFreeUrl.indexOf(req.baseUrl) + req.baseUrl.length);
+      location = location.replaceAll(":serviceUrl", serviceUrl);
+      res.set("Location", location);
+
+      // a prefer in req, needs to set preference-applied in res
       let status = prefer.includes("async") ? 202 : 200;
       if (prefer.includes("async"))
-        res.set("preference-applied", "respond - async");
-
-      //      res.set('location', '') // TODO
+        res.set("Preference-Applied", "respond - async");
 
       switch (format) {
         case "json":
