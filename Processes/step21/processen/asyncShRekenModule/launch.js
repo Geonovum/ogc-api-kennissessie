@@ -27,13 +27,14 @@ export function launch(process, job, isAsync, parameters, callback) {
   let params = [values[0], values[1]];
 
   if (isAsync) {
-    let child = cp.spawn(command, params, {
-      shell: true,
-    });
 
     job.status = "running"; // accepted, successful, failed, dismissed
     job.started = new Date().toISOString();
     job.updated = new Date().toISOString();
+
+    let child = cp.spawn(command, params, {
+      shell: true,
+    });
 
     child.stdout.on("data", (d) => {
       let content = {};
@@ -105,13 +106,14 @@ export function launch(process, job, isAsync, parameters, callback) {
 
     // TODO: return here with 202
   } else {
-    const child = cp.spawnSync(command, params, {
-      shell: true,
-    });
 
     job.status = "running"; // accepted, successful, failed, dismissed
     job.started = new Date().toISOString();
     job.updated = new Date().toISOString();
+
+    const child = cp.spawnSync(command, params, {
+      shell: true,
+    });
 
     let content = {};
 
