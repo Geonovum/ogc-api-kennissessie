@@ -1,35 +1,35 @@
 {
   "id": "asyncShRekenModule",
-  "title": "title is asyncShRekenModule",
-  "description": "description of asyncShRekenModule",
+  "title": "Add 2 integers",
+  "description": "An async and aync RekenModule in bash adding two numbers",
   "version": "0.0.1",
   "jobControlOptions": ["sync-execute", "async-execute"],
   "outputTransmission": ["value", "reference"],
   "inputs": {
     "number1": {
-      "title": "Number 1 Literal Input Example",
-      "description": "This is an example of a NUMBER literal input.",
+      "title": "Number 1 Literal Input",
+      "description": "A number literal input.",
       "schema": {
         "type": "number",
-        "format": "float"
+        "format": "integer"
       }
     },
     "number2": {
-      "title": "Number 2 Literal Input Example",
-      "description": "This is an example of a NUMBER literal input.",
+      "title": "Number 2 Literal Input",
+      "description": "A number literal input.",
       "schema": {
         "type": "number",
-        "format": "float"
+        "format": "integer"
       }
     }
   },
   "outputs": {
     "sum": {
       "title": "Addition of 2 numbers",
-      "description": "This is an example of a NUMBER literal output.",
+      "description": "A number literal output.",
       "schema": {
         "type": "number",
-        "format": "float"
+        "format": "integer"
       }
     }
   },
