@@ -24,11 +24,14 @@ block content
                     - const date1 = new Date(job.started);
                     - const date2 = new Date(job.finished);
                     - const diffTime = Math.abs(date2 - date1);
+                    - var resultsLink = job.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'application/json').href
+                    - var jobUrl = resultsLink.substring(0, resultsLink.indexOf("/jobs") + "/jobs".length) + "/" + job.jobID
+                    - var processUrl = resultsLink.substring(0, resultsLink.indexOf("/jobs")) + "/processes" + "/" + job.processID
                       tr
                         td.small
-                          a(href='https://demo.pygeoapi.io/master/jobs/221e8008-66da-11ef-83de-0242ac120002') #{job.jobID}
+                          a(href=jobUrl) #{job.jobID}
                         td.small
-                          a(href='https://demo.pygeoapi.io/master/processes/hello-world') #{job.processID}
+                          a(href=processUrl) #{job.processID}
                         td
                           abbr(title=job.started) #{job.started}
                         td
