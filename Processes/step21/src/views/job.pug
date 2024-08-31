@@ -19,6 +19,9 @@ block content
                     h3 Message
                     p Job complete
                   .duration
+                    - const date1 = new Date(started);
+                    - const date2 = new Date(finished);
+                    - const diffTime = Math.abs(date2 - date1);
                     h4
                       label(for='progress') Progress
                     progress#progress.inline(value=progress max='100')
@@ -26,7 +29,7 @@ block content
                       label(for='runtime') Duration
                     p
                       span#runtime
-                        | 0:00:00.009730
+                        | #{diffTime}ms
                     h4
                       label(for='starttime') Started processing
                     p
@@ -36,17 +39,17 @@ block content
                     p
                       span#endtime #{finished}
                     h3 Links
+                    - var linkHtml = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'text/html').href
+                    - var linkJson = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'application/json').href
                     ul
                       li
-                        - var linkHtml = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'text/html').href
-                        a(title='http://www.opengis.net/def/rel/ogc/1.0/results' href=linkHtml)
+                        a(href=linkHtml)
                           span Results of job as HTML
                           |  (
                           span text/html
                           | )
                       li
-                        - var linkJson = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'application/json').href
-                        a(title='http://www.opengis.net/def/rel/ogc/1.0/results' href=linkJson)
+                        a(href=linkJson)
                           span Results of job as JSON
                           |  (
                           span application/json
