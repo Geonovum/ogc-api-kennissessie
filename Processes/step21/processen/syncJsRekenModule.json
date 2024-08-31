@@ -1,5 +1,7 @@
 {
-  "name": "syncJsRekenModule",
+  "id": "syncJsRekenModule",
+  "title": "syncJsRekenModule",
+  "description": "syncJsRekenModule",
   "version": "0.0.1",
   "jobControlOptions": ["sync-execute"],
   "outputTransmission": ["value"],

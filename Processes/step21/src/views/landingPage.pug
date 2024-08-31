@@ -8,27 +8,31 @@ block content
 
   h1 #{title}
   p #{description}
-  h3 OGC API Features - Part 1: Core
-  h3 OGC API Features - Part 2: Coordinate Reference Systems by Reference
-  h3 OGC API Features - Part 3: Filtering
-  h3 OGC API Features - Part 4: Create, Replace, Update and Delete
-  h3 OGC API Features - (Part 5: Schemas)
-  h3 OGC API Features - Part 6: Property Selection
-  h3 OGC API Features - Part 7: Geometry Simplification
-  h3 OGC API Features - Part 8: Sorting
-  h3 OGC API Features - (Part 9: Text Search)
-  h3 OGC API Processes - Part 1: Core
 
-  h2 Links to the main resources
+  h2 Collections
+  - var linkCollections = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/data').href
+  a(class='button' href=linkCollections) View the collections in this service
 
-  each link in links
-    p #{link.rel} = 
-      a(href= link.href)  #{link.title} 
-      | (#{link.type})
+  h2 Processes
+  - var linkProcesses = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/processes').href
+  a(class='button' href=linkProcesses) View the processes in this service
 
-  h2 API information
+  h2 Jobs
+  - var linkJobs = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
+  a(class='button' href=linkJobs) View the jobs in this service
 
-  h3 Spatial Extent
+  h2 API Definition
+  - var linkAPIjson = links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
+  p Documentation: 
+
+  - var linkAPIjson = links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
+  a(class='button' href=linkAPIjson) OpenAPI Document
+
+  h2 Conformance
+  - var linkConformance = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/conformance').href
+  a(class='button' href=linkConformance) View the conformance classes of this service
+
+  h2 Spatial Extent
   #map(style='width: 600px; height: 400px; position: relative;')
   script.
     const map = L.map("map").setView([52.300, 4.867], 12);

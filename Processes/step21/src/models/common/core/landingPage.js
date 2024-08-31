@@ -56,11 +56,6 @@ function get(neutralUrl, format, callback) {
 
   content.links.push({
     href: urlJoin(neutralUrl, "conformance"),
-    rel: `conformance`,
-    title: `OGC API conformance classes implemented by this server`,
-  });
-  content.links.push({
-    href: urlJoin(neutralUrl, "conformance"),
     rel: `http://www.opengis.net/def/rel/ogc/1.0/conformance`,
     title: `OGC API conformance classes implemented by this server`,
   });
@@ -86,11 +81,6 @@ function get(neutralUrl, format, callback) {
 
   content.links.push({
     href: urlJoin(neutralUrl, "collections"),
-    rel: `data`,
-    title: `Access the data`,
-  });
-  content.links.push({
-    href: urlJoin(neutralUrl, "collections"),
     rel: `http://www.opengis.net/def/rel/ogc/1.0/data`,
     title: `Access the data`,
   });
@@ -103,6 +93,7 @@ function get(neutralUrl, format, callback) {
   });
   content.links.push({
     href: urlJoin(neutralUrl, "jobs"),
+    type: `application/json`,
     rel: `http://www.opengis.net/def/rel/ogc/1.0/job-list`,
     title: `The endpoint for job monitoring`,
   });

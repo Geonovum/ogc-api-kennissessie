@@ -29,9 +29,9 @@ function getLinks(neutralUrl, format, name, links) {
 function getContent(neutralUrl, format, name, process) {
 
   var content = {}
-  content.id = process.name
-  content.title = process.name
-  content.description = process.name
+  content.id = process.id
+  content.title = process.title
+  content.description = process.description
   content.version = process.version
   content.jobControlOptions = process.jobControlOptions
   content.outputTransmission = process.outputTransmission

@@ -1,17 +1,17 @@
 ---
 id: amstelveen
-title: Geospatial data from Amstelveen in the Netherlands
-description: Amstelveen is een plaats en gemeente in de Nederlandse provincie Noord-Holland. De bebouwde kom grenst in het noorden aan de stad Amsterdam en ligt niet ver van Schiphol. De gemeente telt 95.007 inwoners en heeft een totale oppervlakte van 44,08 km², waarvan 41,13 km² land en 2,95 km² water.
+title: OGC API Demo Service
+description: OGC APIs are constructed as "building blocks" that can be used to assemble novel APIs for web access to geospatial content
 metadata:
   contactName: Jane Doe
-  contactEmail: doe@amstelveen.nl
-  creatorName: Gemeente Amstelveen
-  creatorUrl: https://data.amstelveen.nl/
+  contactEmail: doe@acme.nl
+  creatorName: Then big creator
+  creatorUrl: https://data.somewhere.nl/
   publisherName: Acme Inc.
   publisherUrl: https://www.example.com/
   licenseName: CC0 1.0
   licenseUrl: http://creativecommons.org/publicdomain/zero/1.0/deed.nl
-  attribution: 'data from Amstelveen'
+  attribution: 'data from somewhere'
 api:
 - buildingBlock: CRS
   enabled: true

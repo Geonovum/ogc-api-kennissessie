@@ -1,8 +1,10 @@
 {
-  "name": "asyncShRekenModule",
+  "id": "asyncShRekenModule",
+  "title": "name is asyncShRekenModule",
+  "description": "description of asyncShRekenModule",
   "version": "0.0.1",
   "jobControlOptions": ["sync-execute", "async-execute"],
-  "outputTransmission": ["value"],
+  "outputTransmission": ["value", "reference"],
   "inputs": {
     "number1": {
       "title": "Number 1 Literal Input Example",

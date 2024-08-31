@@ -9,8 +9,9 @@ function getLinks(neutralUrl, format, name, links) {
 function getContent(neutralUrl, format, name, document) {
 
   var content = {}
-  content.id = document.name
-  content.title = document.name
+  content.id = document.id
+  content.title = document.title
+  content.description = document.description
   content.version = document.version
   content.jobControlOptions = document.jobControlOptions
   content.outputTransmission = document.outputTransmission

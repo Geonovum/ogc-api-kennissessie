@@ -2,22 +2,50 @@ extends layout.pug
 
 block content
 
-  h2 Job status
-  p Status: #{status}
-  p Progress: #{progress}%
-
-  h3 Message 
-  p #{message}
-
-  h3 Progress 
-
-  h3 Duration 
-
-  h3 Started processing
-  p #{started}
-
-  h3 Finished processing
-  p #{finished}
-
-  h3 Links
-
+  .container
+    .row
+      .col-sm-12
+        br
+        section#job
+          .row
+            h1 Job status
+          .row
+            .col-md-12
+              #job-status.successful
+                #job-status-header.successful
+                  p Status: #{status}
+                #job-status-body
+                  .message
+                    h3 Message
+                    p Job complete
+                  .duration
+                    h4
+                      label(for='progress') Progress
+                    progress#progress.inline(value=progress max='100')
+                    h4
+                      label(for='runtime') Duration
+                    p
+                      span#runtime
+                        | 0:00:00.009730
+                    h4
+                      label(for='starttime') Started processing
+                    p
+                      span#starttime #{started}
+                    h4
+                      label(for='endtime') Finished processing
+                    p
+                      span#endtime #{finished}
+                    h3 Links
+                    ul
+                      li
+                        a(title='http://www.opengis.net/def/rel/ogc/1.0/results' href='https://demo.pygeoapi.io/master/jobs/221e8008-66da-11ef-83de-0242ac120002/results?f=html')
+                          span Results of job as HTML
+                          |  (
+                          span text/html
+                          | )
+                      li
+                        a(title='http://www.opengis.net/def/rel/ogc/1.0/results' href='https://demo.pygeoapi.io/master/jobs/221e8008-66da-11ef-83de-0242ac120002/results?f=json')
+                          span Results of job as JSON
+                          |  (
+                          span application/json
+                          | )

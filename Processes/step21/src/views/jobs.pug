@@ -2,13 +2,40 @@ extends layout.pug
 
 block content
 
-  h2 Job
-
-  div.container  
-  div.row  
-  div.col-md-12 
-  table 
-  tr
-    th Id
-    th Name
-    th Age
+  .container
+    .row
+      .col-sm-12
+        br
+        section#jobs
+          .row
+            .col-md-12
+              table.job-list.table.table-striped.table-bordered
+                thead
+                  tr
+                    th Job ID
+                    th Process ID
+                    th Start
+                    th Duration
+                    th Progress
+                    th Status
+                    th Message
+                tbody
+                  each job in jobs
+                    - const date1 = new Date(job.started);
+                    - const date2 = new Date(job.finished);
+                    - const diffTime = Math.abs(date2 - date1);
+                      tr
+                        td.small
+                          a(href='https://demo.pygeoapi.io/master/jobs/221e8008-66da-11ef-83de-0242ac120002') #{job.jobID}
+                        td.small
+                          a(href='https://demo.pygeoapi.io/master/processes/hello-world') #{job.processID}
+                        td
+                          abbr(title=job.started) #{job.started}
+                        td
+                          | #{diffTime}
+                        td
+                          progress.inline(value=job.progress max='100')
+                        td
+                          mark.successful #{job.status}
+                        td
+                          | #{job.message}

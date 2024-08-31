@@ -2,11 +2,73 @@ extends layout.pug
 
 block content
 
-  h2 #{title}
-  p #{description}
-
-  h2 Execution modes  
-  
-  h2 Jobs
-
-  h2 Links
+  .container
+    .row
+      .col-sm-12
+        br
+        section#process(itemscope='' itemtype='https://schema.org/WebAPI')
+          h2(itemprop='name') #{title}
+          div(itemprop='description')
+            | #{description}
+          .row
+            .col-sm-12.col-md-12
+              table.table.table-striped.table-bordered
+                thead
+                  tr
+                    th Id
+                    th Title
+                    th Data Type
+                    th Description
+                tbody
+                  each input, key in inputs
+                    tr(itemprop='parameter' itemscope='')
+                      td(itemprop='id' data-label='ID') #{key}
+                      td(itemprop='name' data-label='Title') #{input.title}
+                      td(itemprop='name' data-label='Data Type') #{input.schema.type}
+                      td(itemprop='description' data-label='Description') #{input.description}
+            .col-sm-12.col-md-12
+              table.table.table-striped.table-bordered
+                thead
+                  tr
+                    th Id
+                    th Title
+                    th Description
+                tbody
+                  each output, key in outputs
+                    tr(itemprop='parameter' itemscope='')
+                      td(itemprop='id' data-label='ID') #{key}
+                      td(itemprop='name' data-label='Title') #{output.title}
+                      td(itemprop='description' data-label='Description')
+                        | #{output.description}
+              h2 Execution modes
+              ul
+                each jobControlOption in jobControlOptions
+                  li=jobControlOption
+              h2 Jobs
+              - var linkJobs = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
+              a(title='Browse jobs' href=linkJobs) Browse jobs
+              h2 Links
+              ul
+                - var linkAbout = links.find(i => i.rel == 'about').href
+                li
+                  a(title='information' type='text/html' rel='about' href=linkAbout)
+                    | information (text/html)
+                - var linkSelf = links.find(i => i.rel == 'self').href
+                li
+                  a(title='Process' href=linkSelf)
+                    | Process description as JSON (application/json)
+                - var linkAlternate = links.find(i => i.rel == 'alternate').href
+                li
+                  a(title='Process' href=linkAlternate)
+                    | Process description as HTML (text/html)
+                - var linkJobList = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
+                li
+                  a(title='Jobs' href=linkJobList)
+                    | Jobs list as HTML (text/html)
+                li
+                  a(title='Jobs' type='application/json' href=linkJobList)
+                    | Jobs list as JSON (application/json)
+                - var linkExecute = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
+                li
+                  a(title='Execution' href=linkExecute)
+                    | Execution for this process as JSON (application/json)
