@@ -47,35 +47,13 @@ export function create(processId, isAsync) {
   for (var i = 0; i < 256; i++) {
     lut[i] = (i < 16 ? "0" : "") + i.toString(16);
   }
+
   function e7() {
-    var d0 = (Math.random() * 0xffffffff) | 0;
-    var d1 = (Math.random() * 0xffffffff) | 0;
-    var d2 = (Math.random() * 0xffffffff) | 0;
-    var d3 = (Math.random() * 0xffffffff) | 0;
-    return (
-      lut[d0 & 0xff] +
-      lut[(d0 >> 8) & 0xff] +
-      lut[(d0 >> 16) & 0xff] +
-      lut[(d0 >> 24) & 0xff] +
-      "-" +
-      lut[d1 & 0xff] +
-      lut[(d1 >> 8) & 0xff] +
-      "-" +
-      lut[((d1 >> 16) & 0x0f) | 0x40] +
-      lut[(d1 >> 24) & 0xff] +
-      "-" +
-      lut[(d2 & 0x3f) | 0x80] +
-      lut[(d2 >> 8) & 0xff] +
-      "-" +
-      lut[(d2 >> 16) & 0xff] +
-      lut[(d2 >> 24) & 0xff] +
-      lut[d3 & 0xff] +
-      lut[(d3 >> 8) & 0xff] +
-      lut[(d3 >> 16) & 0xff] +
-      lut[(d3 >> 24) & 0xff]
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+      (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
     );
   }
-
+  
   let job = {};
   job.processID = processId;
   job.jobID = e7();
