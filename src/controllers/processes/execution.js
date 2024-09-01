@@ -48,7 +48,7 @@ export function post(req, res) {
       res.set("Location", location);
 
       // a prefer in req, needs to set preference-applied in res
-      let status = prefer.includes("async") ? 202 : 200;
+      let status = prefer.includes("async") ? 201 : 200;
       if (prefer.includes("async"))
         res.set("Preference-Applied", "respond - async");
 
