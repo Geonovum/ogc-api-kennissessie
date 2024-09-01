@@ -1,7 +1,7 @@
 {
   "id": "Add",
   "title": "Add 2 numbers",
-  "description": "Using a bash script, add the 2 provided number. Either sync or async.",
+  "description": "Using a bash script, add the 2 provided numbers together. Either sync or async.",
   "version": "0.0.1",
   "jobControlOptions": ["sync-execute", "async-execute"],
   "outputTransmission": ["value", "reference"],
@@ -16,7 +16,7 @@
     },
     "number2": {
       "title": "Number 2 Literal Input",
-      "description": "A number literal input.",
+      "description": "A number literal input. This number can't be zero",
       "schema": {
         "type": "number",
         "format": "integer"

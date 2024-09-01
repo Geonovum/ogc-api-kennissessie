@@ -18,7 +18,10 @@ export function launch(process, job, isAsync, parameters, callback) {
   var values = [];
   for (let [key, processInput] of Object.entries(process.inputs)) {
     if (parameters.inputs[key] == undefined)
-      callback({ code: 500, description: `${key} not found` }, undefined);
+      return callback(
+        { code: 400, description: `${key} not found` },
+        undefined
+      );
     values.push(parameters.inputs[key]);
   }
 
@@ -66,7 +69,7 @@ export function launch(process, job, isAsync, parameters, callback) {
       job.message = `Job complete`;
       job.finished = new Date().toISOString();
       job.updated = new Date().toISOString();
-      job.results = content
+      job.results = content;
 
       if (process.subscriber && process.subscriber.successUri) {
         http
@@ -81,16 +84,15 @@ export function launch(process, job, isAsync, parameters, callback) {
     });
 
     child.stderr.on("data", (d) => {
+      job.status = "failed"; // accepted, successful, failed, dismissed
+      job.progress = 100;
+      job.message = d.toString();
+      job.finished = new Date().toISOString();
+      job.updated = new Date().toISOString();
+
       if (process.subscriber && process.subscriber.failedUri) {
-
-        job.status = "failed"; // accepted, successful, failed, dismissed
-        job.progress = 100;
-        job.message = "reason of failure";
-        job.finished = new Date().toISOString();
-        job.updated = new Date().toISOString();
-
         http
-          .post(process.subscriber.failedUri, d)
+          .post(process.subscriber.failedUri, job.message)
           .then(function (response) {
             console.log(response);
           })
@@ -105,7 +107,6 @@ export function launch(process, job, isAsync, parameters, callback) {
     });
 
     return callback(undefined, {});
-
   } else {
     job.status = "running"; // accepted, successful, failed, dismissed
     job.started = new Date().toISOString();
@@ -116,10 +117,35 @@ export function launch(process, job, isAsync, parameters, callback) {
       child = cp.spawnSync(command, params, {
         shell: true,
       });
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
+    console.log(child.status);
+
+    let err = child.stderr.toString();
+    if (err.length !== 0) {
+      job.status = "failed"; // accepted, successful, failed, dismissed
+      job.progress = 100;
+      job.message = err;
+      job.finished = new Date().toISOString();
+      job.updated = new Date().toISOString();
+
+      if (process.subscriber && process.subscriber.failedUri) {
+        http
+          .post(process.subscriber.failedUri, job.message)
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+      return callback({ code: 400, description: job.message }, undefined);
+    }
 
     let content = {};
 
+    // bring result into content
     for (let [key, output] of Object.entries(process.outputs)) {
       let result = {};
       result.id = key;
@@ -142,7 +168,7 @@ export function launch(process, job, isAsync, parameters, callback) {
     job.message = `Job complete`;
     job.finished = new Date().toISOString();
     job.updated = new Date().toISOString();
-    job.results = content
+    job.results = content;
 
     if (process.subscriber && process.subscriber.successUri) {
       http

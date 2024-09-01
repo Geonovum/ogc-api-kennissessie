@@ -10,6 +10,8 @@ block content
           h2(itemprop='name') #{title}
           div(itemprop='description') #{description}
           .row
+            p
+            h3 Inputs
             .col-sm-12.col-md-12
               table.table.table-striped.table-bordered
                 thead
@@ -25,6 +27,8 @@ block content
                       td(itemprop='name' data-label='Title') #{input.title}
                       td(itemprop='name' data-label='Data Type') #{input.schema.type}
                       td(itemprop='description' data-label='Description') #{input.description}
+            p
+            h3 Outputs
             .col-sm-12.col-md-12
               table.table.table-striped.table-bordered
                 thead
@@ -39,15 +43,19 @@ block content
                       td(itemprop='name' data-label='Title') #{output.title}
                       td(itemprop='description' data-label='Description')
                         | #{output.description}
+              p
               h2 Execution modes
               ul
                 each jobControlOption in jobControlOptions
                   li=jobControlOption
+
+              p
               h2 Jobs
               - var linkJobs = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
               a(href=linkJobs) Browse jobs
               - var linkAbout = links.find(i => i.rel == 'about').href
               - var linkExecute = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
+              p
               h2 Links
               ul
                 li
