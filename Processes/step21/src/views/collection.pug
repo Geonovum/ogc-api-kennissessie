@@ -2,3 +2,22 @@ extends layout.pug
 
 block content
 
+  .container
+    .row
+      .col-sm-12
+        br
+        section#collection
+          .row
+            .col-sm
+              h1 #{title}
+              p
+                | #{description}
+    .row
+      .col-sm-12
+        h3 Browse
+        - var linkItems = links.find(l => l.rel == 'items' && l.type == 'text/html').href
+        ul
+          li
+            div
+              a(title='Browse Items' href=linkItems)
+                | Browse through the items of &quot;#{title}&quot;
