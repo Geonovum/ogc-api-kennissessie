@@ -19,7 +19,6 @@ export function readProcesses(dir) {
 
 var _processes = {};
 var _jobs = {};
-var _results = {};
 
 export function getProcesses() {
   return _processes;
@@ -29,8 +28,4 @@ export function getJobs() {
   return _jobs;
 }
 
-export function getResults() {
-  return _results;
-}
-
-export default { getProcesses, getJobs, getResults };
+export default { getProcesses, getJobs };

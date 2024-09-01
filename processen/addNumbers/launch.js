@@ -27,14 +27,18 @@ export function launch(process, job, isAsync, parameters, callback) {
   let params = [values[0], values[1]];
 
   if (isAsync) {
-
     job.status = "running"; // accepted, successful, failed, dismissed
     job.started = new Date().toISOString();
     job.updated = new Date().toISOString();
 
-    let child = cp.spawn(command, params, {
-      shell: true,
-    });
+    let child = undefined;
+    try {
+      child = cp.spawn(command, params, {
+        shell: true,
+      });
+    } catch (err) {
+      console.log(err);
+    }
 
     child.stdout.on("data", (d) => {
       let content = {};
@@ -62,6 +66,7 @@ export function launch(process, job, isAsync, parameters, callback) {
       job.message = `Job complete`;
       job.finished = new Date().toISOString();
       job.updated = new Date().toISOString();
+      job.results = content
 
       if (process.subscriber && process.subscriber.successUri) {
         http
@@ -77,7 +82,6 @@ export function launch(process, job, isAsync, parameters, callback) {
 
     child.stderr.on("data", (d) => {
       if (process.subscriber && process.subscriber.failedUri) {
-        console.log(d.toString());
 
         job.status = "failed"; // accepted, successful, failed, dismissed
         job.progress = 100;
@@ -102,16 +106,17 @@ export function launch(process, job, isAsync, parameters, callback) {
 
     return callback(undefined, {});
 
-    // TODO: return here with 202
   } else {
-
     job.status = "running"; // accepted, successful, failed, dismissed
     job.started = new Date().toISOString();
     job.updated = new Date().toISOString();
 
-    const child = cp.spawnSync(command, params, {
-      shell: true,
-    });
+    let child = undefined;
+    try {
+      child = cp.spawnSync(command, params, {
+        shell: true,
+      });
+    } catch (err) {}
 
     let content = {};
 
@@ -128,8 +133,6 @@ export function launch(process, job, isAsync, parameters, callback) {
         content.outputs.push(result);
       }
 
-      // TODO: where to store results (content)?
-
       // TODO transmissionMode??? (in spec)
       //if (outputParameter.transmissionMode == "value") content = result;
     }
@@ -139,6 +142,18 @@ export function launch(process, job, isAsync, parameters, callback) {
     job.message = `Job complete`;
     job.finished = new Date().toISOString();
     job.updated = new Date().toISOString();
+    job.results = content
+
+    if (process.subscriber && process.subscriber.successUri) {
+      http
+        .post(process.subscriber.successUri, content)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
 
     return callback(undefined, content);
   }

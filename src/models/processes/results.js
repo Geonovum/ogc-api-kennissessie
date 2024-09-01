@@ -1,11 +1,11 @@
 import urlJoin from "url-join";
 import utils from "../../utils/utils.js";
-import { getJobs, getResults } from "../../database/processes.js";
+import { getJobs } from "../../database/processes.js";
 
 function get(neutralUrl, format, jobId, callback) {
-  let results = getResults();
-  let result = results[jobId];
-  if (!result)
+  let jobs = getJobs();
+  let job = jobs[jobId];
+  if (!job)
     return callback(
       {
         httpCode: 404,
@@ -15,7 +15,7 @@ function get(neutralUrl, format, jobId, callback) {
       undefined
     );
 
-  return callback(undefined, result);
+  return callback(undefined, job.results);
 }
 
 export default {

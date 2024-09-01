@@ -28,10 +28,12 @@ function getLinks(neutralUrl, format, jobId, links) {
 }
 
 export function getContent(neutralUrl, format, jobId, job) {
-  var content = job;
+  var content = structuredClone(job);
   content.links = []
   
   getLinks(neutralUrl, format, jobId, content.links);
+
+  delete content.results
 
   return content;
 }
@@ -102,6 +104,21 @@ export function execute(path, process, job, isAsync, parameters, callback) {
 }
 
 function delete_(neutralUrl, format, jobId, callback) {
+
+  var jobs = getJobs();
+  var job = jobs[jobId];
+  if (!job)
+    return callback(
+      {
+        httpCode: 404,
+        code: `Job not found: ${jobId}`,
+        description: "Make sure you use an existing jobId. See /Jobs",
+      },
+      undefined
+    );
+
+  delete jobs[jobId]
+
   return callback(undefined, {});
 }
 

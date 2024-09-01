@@ -30,7 +30,7 @@ export function get (req, res) {
     if (err) {
       res.status(err.httpCode).json({'code': err.code, 'description': err.description})
       return
-    }
+    }    
 
     switch (format) {
       case 'json':

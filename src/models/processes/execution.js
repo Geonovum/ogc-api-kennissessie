@@ -1,7 +1,7 @@
 import urlJoin from "url-join";
 import { join } from "path";
 import { existsSync } from "fs";
-import { getProcesses, getResults } from "../../database/processes.js";
+import { getProcesses } from "../../database/processes.js";
 import { execute } from "./job.js";
 import { create } from "./jobs.js";
 
@@ -52,6 +52,35 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
       undefined
     );
 
+  // check parameters against the process input parameter definition
+  for (let [key, processInput] of Object.entries(process.inputs)) {
+    if (parameters.inputs[key] == undefined) 
+      return callback({ code: 400, description: `${key} not found` }, undefined);
+    switch (processInput.schema.type) {
+      case "number":
+        if (typeof parameters.inputs[key] !== "number") 
+          return callback(
+            {
+              code: 400,
+              description: `${key} (${parameters.inputs[key]}) is not a number`,
+            },
+            undefined
+          );
+        break;
+      case "string":
+        break;
+    }
+  }
+
+  for (let [key, processInput] of Object.entries(parameters.inputs)) {
+    if (process.inputs[key] == undefined) 
+      return callback(
+        { code: 400, description: `${key} not found in process definition` },
+        undefined
+      );
+  }
+
+  // prepare for the launcher (launcher has a fixed name: launcher.js)
   let pathToLauncher = join(
     process.location.replace(/\.[^/.]+$/, ""),
     "launch.js"
@@ -66,6 +95,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
       undefined
     );
 
+  // async/sync is determined by the HTTP header prefer
   if (
     prefer.includes("async") &&
     !process.jobControlOptions.includes("async-execute")
@@ -100,16 +130,12 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
     prefer.includes("async"),
     parameters,
     function (err, content) {
-      if (err) {
-        callback(err, undefined);
-        return;
-      }
+      if (err) 
+        return callback(err, undefined);
 
-      // remember result
-      let results = getResults();
-      results[job.jobID] = content
-
-      let location = `:serviceUrl/jobs/${job.jobID}`
+      // indication in the header of the location of the
+      // newly created job resource
+      let location = `:serviceUrl/jobs/${job.jobID}`;
 
       callback(undefined, content, location);
     }

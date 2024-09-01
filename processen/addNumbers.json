@@ -1,7 +1,7 @@
 {
-  "id": "asyncShRekenModule",
-  "title": "Add 2 integers",
-  "description": "An async and aync RekenModule in bash adding two numbers",
+  "id": "Add",
+  "title": "Add 2 numbers",
+  "description": "Using a bash script, add the 2 provided number. Either sync or async.",
   "version": "0.0.1",
   "jobControlOptions": ["sync-execute", "async-execute"],
   "outputTransmission": ["value", "reference"],

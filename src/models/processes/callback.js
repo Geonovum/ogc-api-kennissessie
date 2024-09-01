@@ -1,9 +1,4 @@
-import urlJoin from "url-join";
-import { join } from "path";
-import { existsSync } from "fs";
 import { getProcesses, getJobs } from "../../database/processes.js";
-import { execute } from "./job.js";
-import { create } from "./jobs.js";
 
 /**
  * Description placeholder
@@ -26,7 +21,10 @@ function post(neutralUrl, jobId, query, callback) {
       undefined
     );
 
-  let t = query.type;
+    /*
+  switch (query.type) {
+  }
+*/
 
   let content = {};
   callback(undefined, content);
