@@ -1,0 +1,33 @@
+{
+  "id": "countFeatures",
+  "title": "Count features",
+  "description": "Count the total number of features, given an API Features endpoint.",
+  "version": "0.0.1",
+  "jobControlOptions": ["sync-execute", "async-execute"],
+  "outputTransmission": ["value", "reference"],
+  "inputs": {
+    "uri": {
+      "title": "Features endpoint",
+      "description": "Uri to dataset.",
+      "schema": {
+        "type": "string",
+        "format": "url"
+      }
+    }
+  },
+  "outputs": {
+    "count": {
+      "title": "Feature count",
+      "description": "Total number of features provided by OGC API Endpoint.",
+      "schema": {
+        "type": "number",
+        "format": "integer"
+      }
+    }
+  },
+  "subscriber": {
+    "successUri": ":serviceUrl/callback/:jobId?type=success",
+    "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
+    "failedUri": ":serviceUrl/callback/:jobId?type=failed"
+  }
+}

@@ -12,14 +12,14 @@ function getLinks(neutralUrl, format, jobId, links) {
   }
 
   links.push({
-    href: urlJoin(neutralUrl, "results", `?f=${format}`),
+    href: urlJoin(neutralUrl, jobId, "results", `?f=${format}`),
     rel: `http://www.opengis.net/def/rel/ogc/1.0/results`,
     type: getTypeFromFormat(format),
     title: `Results of job as ${format}`,
   });
   utils.getAlternateFormats(format, ["json", "html"]).forEach((altFormat) => {
     links.push({
-      href: urlJoin(neutralUrl, "results", `?f=${altFormat}`),
+      href: urlJoin(neutralUrl, jobId, "results", `?f=${altFormat}`),
       rel: `http://www.opengis.net/def/rel/ogc/1.0/results`,
       type: getTypeFromFormat(altFormat),
       title: `Results of job as ${altFormat}`,
