@@ -51,7 +51,7 @@ export function launch(process, job, isAsync, parameters, callback) {
         result.id = key;
 
         if ((output.schema.type = "number"))
-          result.value = Number(child.stdout);
+          result.value = Number(d);
 
         if (parameters.response == "raw") {
           content = result;
