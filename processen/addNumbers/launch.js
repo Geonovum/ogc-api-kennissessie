@@ -14,7 +14,7 @@ if (__dirname === undefined) console.log("need node 20.16 or higher");
  * @param {*} callback
  * @returns {*}
  */
-export function launch(process, job, isAsync, parameters, callback) {
+export async function launch(process, job, isAsync, parameters, callback) {
   var values = [];
   for (let [key, processInput] of Object.entries(process.inputs)) {
     if (parameters.inputs[key] == undefined)
@@ -120,7 +120,6 @@ export function launch(process, job, isAsync, parameters, callback) {
     } catch (err) {
       console.log(err);
     }
-    console.log(child.status);
 
     let err = child.stderr.toString();
     if (err.length !== 0) {

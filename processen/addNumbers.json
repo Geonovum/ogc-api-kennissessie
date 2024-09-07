@@ -1,5 +1,5 @@
 {
-  "id": "Add",
+  "id": "add",
   "title": "Add 2 numbers",
   "description": "Using a bash script, add the 2 provided numbers together. Either sync or async.",
   "version": "0.0.1",

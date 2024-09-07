@@ -1,7 +1,7 @@
 import { join } from "path";
 import { readdirSync, readFileSync } from "fs";
 
-export function readProcesses(dir) {
+export async function readProcesses(dir) {
   var fileNames = readdirSync(dir).filter((fn) => fn.endsWith(".json"));
 
   fileNames.forEach((fileName) => {
@@ -12,8 +12,7 @@ export function readProcesses(dir) {
     var oapip = json;
     oapip.location = path;
 
-    var name = fileName.replace(/\.\w+$/, "");
-    _processes[name] = oapip;
+    _processes[oapip.id] = oapip;
   });
 }
 

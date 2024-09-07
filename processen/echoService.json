@@ -1,0 +1,31 @@
+{
+  "id": "echo",
+  "title": "Echo Service",
+  "description": "HTTP Echo Service running in a Docker container. Async only.",
+  "version": "0.0.1",
+  "jobControlOptions": ["async-execute"],
+  "outputTransmission": ["value", "reference"],
+  "inputs": {
+    "uri": {
+      "title": "Uri to echo service",
+      "description": "Uri to echo service.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  },
+  "outputs": {
+    "echo": {
+      "title": "Echo result",
+      "description": "A string echoing what we send.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  },
+  "subscriber": {
+    "successUri": ":serviceUrl/callback/:jobId?type=success",
+    "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
+    "failedUri": ":serviceUrl/callback/:jobId?type=failed"
+  }
+}

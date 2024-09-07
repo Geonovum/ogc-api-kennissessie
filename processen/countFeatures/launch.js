@@ -25,6 +25,10 @@ export async function launch(process, job, isAsync, parameters, callback) {
   let params = [values[0]];
 
   if (isAsync) {
+    return callback(
+      { code: 400, description: `count does not work async` },
+      undefined
+    );
   } else {
     job.status = "running"; // accepted, successful, failed, dismissed
     job.started = new Date().toISOString();
@@ -69,7 +73,7 @@ export async function launch(process, job, isAsync, parameters, callback) {
           console.log(error);
         });
     }
-    
+
     return callback(undefined, content);
   }
 }
