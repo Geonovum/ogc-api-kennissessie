@@ -1,3 +1,4 @@
+import random from '@types/dockerode'
 import { Docker, Options } from "docker-cli-js";
 import http from "axios";
 

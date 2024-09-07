@@ -1,0 +1,159 @@
+{
+    "/jobs":{
+        "get":{
+            "description":"Retrieve a list of jobs",
+            "operationId":"getJobs",
+            "responses":{
+                "200": {
+                    "description": "The operation was executed successfully.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Jobs"
+                            }
+                        },
+                        "text/html": {
+                            "schema": {
+                                "$ref": "#/components/schemas/htmlSchema"
+                            }
+                        }
+                    }
+                },
+                "404":{
+                    "$ref":"https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+                }
+            },
+            "summary":"Retrieve jobs list",
+            "tags":[
+                "Jobs"
+            ]
+        }
+    },
+    "/jobs/{jobId}":{
+        "delete":{
+            "description":"Cancel / delete job",
+            "operationId":"deleteJob",
+            "parameters":[
+                {
+                    "description":"job identifier",
+                    "in":"path",
+                    "name":"jobId",
+                    "required":true,
+                    "schema":{
+                        "type":"string"
+                    }
+                }
+            ],
+            "responses":{
+                "200": {
+                    "description": "The operation was executed successfully.",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/Process"
+                        }
+                      },
+                      "text/html": {
+                        "schema": {
+                          "$ref": "#/components/schemas/htmlSchema"
+                        }
+                      }
+                    }
+                  },
+                          "404":{
+                    "$ref":"https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+                }
+            },
+            "summary":"Cancel / delete job",
+            "tags":[
+                "Jobs"
+            ]
+        },
+        "get":{
+            "description":"Retrieve job details",
+            "operationId":"getJob",
+            "parameters":[
+                {
+                    "description":"job identifier",
+                    "in":"path",
+                    "name":"jobId",
+                    "required":true,
+                    "schema":{
+                        "type":"string"
+                    }
+                },
+                {
+                    "$ref":"#/components/parameters/fJob"
+                }
+            ],
+            "responses":{
+                "200": {
+                    "description": "The operation was executed successfully.",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/Process"
+                        }
+                      },
+                      "text/html": {
+                        "schema": {
+                          "$ref": "#/components/schemas/htmlSchema"
+                        }
+                      }
+                    }
+                  },
+                          "404":{
+                    "$ref":"https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+                }
+            },
+            "summary":"Retrieve job details",
+            "tags":[
+                "Jobs"
+            ]
+        }
+    },
+    "/jobs/{jobId}/results":{
+        "get":{
+            "description":"Retrieve job results",
+            "operationId":"getJobResults",
+            "parameters":[
+                {
+                    "description":"job identifier",
+                    "in":"path",
+                    "name":"jobId",
+                    "required":true,
+                    "schema":{
+                        "type":"string"
+                    }
+                },
+                {
+                    "$ref":"#/components/parameters/fResults"
+                }
+            ],
+            "responses":{
+                "200": {
+                    "description": "The operation was executed successfully.",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/Process"
+                        }
+                      },
+                      "text/html": {
+                        "schema": {
+                          "$ref": "#/components/schemas/htmlSchema"
+                        }
+                      }
+                    }
+                  },
+                          "404":{
+                    "$ref":"https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+                }
+            },
+            "summary":"Retrieve job results",
+            "tags":[
+                "Jobs"
+            ]
+        }
+    }
+}

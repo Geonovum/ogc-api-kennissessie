@@ -1,0 +1,76 @@
+{
+    "Processes": {
+        "type": "object",
+        "required": [
+            "links",
+            "processes"
+        ],
+        "properties": {
+            "processes": {
+                "type": "array",
+                "items": {
+                    "allOf": [
+                        {
+                            "$ref": "#/components/schemas/Collection"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Collection-link"
+                        }
+                    ]
+                }
+            },
+            "description": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "links": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/link"
+                }
+            }
+        }
+    },
+    "process-link": {
+        "properties": {
+            "links": {
+                "items": {
+                    "$ref": "#/components/schemas/link"
+                },
+                "type": "array"
+            }
+        },
+        "required": [
+            "links"
+        ],
+        "type": "object"
+    },
+    "Process": {
+        "type": "object",
+        "required": [
+            "id", "links"
+        ],
+        "properties": {
+            "itemType": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "links": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/link"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "Jobs": {
+        "type": "object",
+        "required": [
+            "id", "links"
+        ],
+        "properties": {
+            "itemType": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "links": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/link"
+                }
+            }
+        }
+    }
+
+}

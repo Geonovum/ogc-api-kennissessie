@@ -1,0 +1,145 @@
+{
+  "/processes": {
+    "get": {
+      "tags": ["Processes"],
+      "summary": "Processes",
+      "description": "",
+      "externalDocs": {
+        "description": "The specification that describes this operation: OGC API - Processes - Part 1",
+        "url": "https://docs.ogc.org/is/18-062r2/18-062r2.html"
+      },
+      "operationId": "getProcesses",
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/fCollections"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "The operation was executed successfully.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Processes"
+              }
+            },
+            "text/html": {
+              "schema": {
+                "$ref": "#/components/schemas/htmlSchema"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request"
+        },
+        "405": {
+          "description": "Method Not Allowed"
+        },
+        "406": {
+          "description": "Not Acceptable"
+        },
+        "500": {
+          "description": "Server Error"
+        }
+      }
+    }
+  },
+  "/processes/{{:processId}}": {
+    "get": {
+      "tags": ["Processes"],
+      "summary": "process",
+      "description": "",
+      "externalDocs": {
+        "description": "The specification that describes this operation: OGC API - Processes - Part 1",
+        "url": "https://docs.ogc.org/is/18-062r2/18-062r2.html"
+      },
+      "operationId": "{{:processId}}.getProcesses",
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/fCollection"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "The operation was executed successfully.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Process"
+              }
+            },
+            "text/html": {
+              "schema": {
+                "$ref": "#/components/schemas/htmlSchema"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request"
+        },
+        "405": {
+          "description": "Method Not Allowed"
+        },
+        "406": {
+          "description": "Not Acceptable"
+        },
+        "500": {
+          "description": "Server Error"
+        }
+      }
+    }
+  },
+  "/processes/{{:processId}}/execution": {
+    "post": {
+      "tags": ["Processes"],
+      "description": "Process execution.",
+      "operationId": "execute{{:processId}}.getProcesses",
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "example": {
+              "inputs": {
+                "message": "An optional message.",
+                "name": "World"
+              }
+            },
+            "schema": {
+              "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/execute.yaml"
+            }
+          }
+        },
+        "description": "Mandatory execute request JSON",
+        "required": true
+      },
+      "responses": {
+        "200": {
+            "description": "The operation was executed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Process"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/htmlSchema"
+                }
+              }
+            }
+          },
+          "201": {
+          "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml"
+        },
+        "404": {
+          "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+        },
+        "500": {
+          "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml"
+        }
+      },
+      "summary": "Process execution"
+    }
+  }
+}

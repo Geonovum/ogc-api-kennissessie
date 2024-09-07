@@ -1,7 +1,7 @@
 ---
 id: amstelveen
 title: OGC API Demo Service
-description: OGC APIs are constructed as "building blocks" that can be used to assemble novel APIs for web access to geospatial content
+description: OGC APIs are constructed as 'building blocks' that can be used to assemble novel APIs for web access to geospatial content
 metadata:
   contactName: Jane Doe
   contactEmail: doe@acme.nl

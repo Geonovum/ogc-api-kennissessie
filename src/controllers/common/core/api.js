@@ -50,13 +50,13 @@ export function get(req, res) {
 
     switch (format) {
       case "json":
-        var filename = join(__dirname, "..", "public", "api", "openapi.json");
+        var filename = join(__dirname, "..", "..", "..", "public", "api", "openapi.json");
         writeFileSync(filename, JSON.stringify(content));
         res.set("Content-Type", "application/vnd.oai.openapi+json;version=3.0");
         res.sendFile(filename);
         break;
       case "yaml":
-        var filename = join(__dirname, "..", "public", "api", "openapi.yaml");
+        var filename = join(__dirname, "..","..","..", "public", "api", "openapi.yaml");
         writeFileSync(filename, YAML.stringify(content));
         res.set("Content-Type", "application/vnd.oai.openapi;version=3.0");
         res.sendFile(filename);
