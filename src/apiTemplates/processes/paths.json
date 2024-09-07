@@ -2,8 +2,8 @@
   "/processes": {
     "get": {
       "tags": ["Processes"],
-      "summary": "Processes",
-      "description": "",
+      "summary": "Retrieve the list of available processes",
+      "description": "The process description contains information about inputs and outputs and a link to the execution-endpoint for the process. The Core does not mandate the use of a specific process description to specify the interface of a process.",
       "externalDocs": {
         "description": "The specification that describes this operation: OGC API - Processes - Part 1",
         "url": "https://docs.ogc.org/is/18-062r2/18-062r2.html"
@@ -48,8 +48,8 @@
   "/processes/{{:processId}}": {
     "get": {
       "tags": ["Processes"],
-      "summary": "process",
-      "description": "",
+      "summary": "Retrieve a process description",
+      "description": "The process description contains information about inputs and outputs and a link to the execution-endpoint for the process. The Core does not mandate the use of a specific process description to specify the interface of a process. ",
       "externalDocs": {
         "description": "The specification that describes this operation: OGC API - Processes - Part 1",
         "url": "https://docs.ogc.org/is/18-062r2/18-062r2.html"
@@ -57,7 +57,7 @@
       "operationId": "{{:processId}}.getProcesses",
       "parameters": [
         {
-          "$ref": "#/components/parameters/fCollection"
+          "$ref": "#/components/parameters/fProcesses"
         }
       ],
       "responses": {
@@ -94,17 +94,12 @@
   "/processes/{{:processId}}/execution": {
     "post": {
       "tags": ["Processes"],
-      "description": "Process execution.",
-      "operationId": "execute{{:processId}}.getProcesses",
+      "summary": "Process execution",
+      "description": "Create a new job.",
+      "operationId": "execute.{{:processId}}.getProcesses",
       "requestBody": {
         "content": {
           "application/json": {
-            "example": {
-              "inputs": {
-                "message": "An optional message.",
-                "name": "World"
-              }
-            },
             "schema": {
               "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/execute.yaml"
             }
@@ -138,8 +133,7 @@
         "500": {
           "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml"
         }
-      },
-      "summary": "Process execution"
+      }
     }
   }
 }

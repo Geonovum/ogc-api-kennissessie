@@ -60,6 +60,9 @@ export function get(neutralUrl, format, jobId, callback) {
       undefined
     );
 
+  if (!neutralUrl.endsWith("jobs"))
+    neutralUrl = neutralUrl.substr(0, neutralUrl.lastIndexOf("/"));
+
   var content = getContent(neutralUrl, format, jobId, job);
 
   return callback(undefined, content);

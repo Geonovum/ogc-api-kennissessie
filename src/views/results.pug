@@ -2,3 +2,19 @@ extends layout.pug
 
 block content
 
+    .container
+    .row
+        .col-sm-12
+            br
+            section#data-collections
+            h1 Results of job xyz
+            table.table.table-striped.table-bordered
+                thead
+                tr
+                    th Id
+                    th Value
+                tbody
+                each output in outputs
+                    tr
+                        td(data-label='id') #{output.id}
+                        td(data-label='value') #{output.value}
