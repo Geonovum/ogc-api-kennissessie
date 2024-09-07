@@ -22,8 +22,5 @@
     "swagger-ui-express": "^5.0.1",
     "url-join": "^5.0.0",
     "yaml": "^2.5.0"
-  },
-  "devDependencies": {
-    "@types/dockerode": "^3.3.31"
   }
 }
