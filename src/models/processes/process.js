@@ -14,7 +14,7 @@ function getLinks(neutralUrl, format, name, links) {
 
   links.push({ href: 'https://example.org/process', rel: `about`, title: `Process description as JSON` })
 
-  links.push({ href: urlJoin(neutralUrl,), rel: `self`, type: format, title: `Process description as ${format}` })
+  links.push({ href: urlJoin(neutralUrl,), rel: `self`, type: getTypeFromFormat(format), title: `Process description as ${format}` })
   utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
     links.push({ href: urlJoin(neutralUrl, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `Process description as ${altFormat}` })
   })
