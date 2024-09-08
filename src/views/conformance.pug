@@ -1,12 +1,25 @@
 extends layout.pug
 
+block append scripts
+  link(rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css')
+  script(src='https://unpkg.com/leaflet@1.6.0/dist/leaflet.js')
+
 block content
 
-  h1 Conformance Declaration
-  span This API implements the conformance classes from standards and community specifications that are listed below. Conformance classes are identified by a URI.
-  br
-  br
-  br
-  ul
-  each ct in conformsTo
-    li #{ct} 
+  svg.d-none(xmlns='http://www.w3.org/2000/svg')
+    symbol#arrow-right-circle(viewbox='0 0 16 16')
+      path(d='M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z')
+
+  .col-lg-8.mx-auto.p-2.py-md-2
+    main
+
+    h2.text-body-emphasis Conformance Declaration
+    p This API implements the conformance classes from standards and community specifications that are listed below. Conformance classes are identified by a URI.
+    
+    ul.list-unstyled.ps-0
+      each ct in conformsTo
+        li 
+          a.icon-link.mb-1(href=ct rel='noopener' target='_blank')
+            svg.bi(width='16' height='16')
+              use(xlink:href='#arrow-right-circle')
+            |               #{ct} 

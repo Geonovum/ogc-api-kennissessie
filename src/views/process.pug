@@ -7,11 +7,11 @@ block content
       .col-sm-12
         br
         section#process(itemscope='' itemtype='https://schema.org/WebAPI')
-          h2(itemprop='name') #{title}
+          h2.text-body-emphasis(itemprop='name') #{title}
           div(itemprop='description') #{description}
           .row
             p
-            h3 Inputs
+            h3.text-body-emphasis Inputs
             .col-sm-12.col-md-12
               table.table.table-striped.table-bordered
                 thead
@@ -25,7 +25,7 @@ block content
                     tr(itemprop='parameter' itemscope='')
                       td(itemprop='id' data-label='ID') #{key}
                       td(itemprop='name' data-label='Title') #{input.title}
-                      td(itemprop='name' data-label='Data Type') #{input.schema.type}
+                      td(itemprop='type' data-label='Data Type') #{input.schema.type}
                       td(itemprop='description' data-label='Description') #{input.description}
             p
             h3 Outputs
@@ -35,12 +35,14 @@ block content
                   tr
                     th Id
                     th Title
+                    th Data Type
                     th Description
                 tbody
                   each output, key in outputs
                     tr(itemprop='parameter' itemscope='')
                       td(itemprop='id' data-label='ID') #{key}
                       td(itemprop='name' data-label='Title') #{output.title}
+                      td(itemprop='type' data-label='Data Type') #{output.schema.type}
                       td(itemprop='description' data-label='Description')
                         | #{output.description}
               p

@@ -6,39 +6,71 @@ block append scripts
 
 block content
 
-  h1 #{title}
-  p #{description}
+  svg.d-none(xmlns='http://www.w3.org/2000/svg')
+    symbol#arrow-right-circle(viewbox='0 0 16 16')
+      path(d='M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z')
 
-  h2 Collections
-  - var linkCollections = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/data').href
-  a(class='button' href=linkCollections) View the collections in this service
+  .col-lg-8.mx-auto.p-2.py-md-2
+    main
+      .px-8.py-1.my-1.text-center
+        h1.display-6.fw-bold.text-body-emphasis #{title}
+        .col-lg-6.mx-auto
+          p.lead.mb-4
+            | #{description}
+          .d-grid.gap-2.d-sm-flex.justify-content-sm-center
+            a.btn.btn-primary(href='https://github.com/Geonovum/ogc-api-kennissessie' role='button') Code on GitHub
 
-  h2 Processes
-  - var linkProcesses = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/processes').href
-  a(class='button' href=linkProcesses) View the processes in this service
+      .row.g-5.py-4
+        .col-md-6
+          h2.text-body-emphasis Links to the main resources
+          ul.list-unstyled.ps-0
+            li
+              - var linkCollections = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/data').href
+              a.icon-link.mb-1(href=linkCollections rel='noopener' target='_blank')
+                svg.bi(width='16' height='16')
+                  use(xlink:href='#arrow-right-circle')
+                |               Collections
+            li
+              - var linkProcesses = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/processes').href
+              a.icon-link.mb-1(href=linkProcesses rel='noopener' target='_blank')
+                svg.bi(width='16' height='16')
+                  use(xlink:href='#arrow-right-circle')
+                |               Processes
+            li
+              - var linkJobs = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
+              a.icon-link.mb-1(href=linkJobs rel='noopener' target='_blank')
+                svg.bi(width='16' height='16')
+                  use(xlink:href='#arrow-right-circle')
+                |               Jobs
+        .col-md-6
+          h2.text-body-emphasis API information
+          ul.list-unstyled.ps-0
+            li
+              - var linkAPIjson = links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
+              a.icon-link.mb-1(href=linkAPIjson)
+                svg.bi(width='16' height='16')
+                  use(xlink:href='#arrow-right-circle')
+                |               API Definition
+            li
+              - var linkAPIjson = links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
+              a.icon-link.mb-1(href=linkAPIjson)
+                svg.bi(width='16' height='16')
+                  use(xlink:href='#arrow-right-circle')
+                |               OpenAPI Document
+            li
+              - var linkConformance = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/conformance').href
+              a.icon-link.mb-1(href=linkConformance)
+                svg.bi(width='16' height='16')
+                  use(xlink:href='#arrow-right-circle')
+                |                Conformance
 
-  h2 Jobs
-  - var linkJobs = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
-  a(class='button' href=linkJobs) View the jobs in this service
-
-  h2 API Definition
-  - var linkAPIjson = links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
-  p Documentation: 
-
-  - var linkAPIjson = links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
-  a(class='button' href=linkAPIjson) OpenAPI Document
-
-  h2 Conformance
-  - var linkConformance = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/conformance').href
-  a(class='button' href=linkConformance) View the conformance classes of this service
-
-  h2 Spatial Extent
-  #map(style='width: 600px; height: 400px; position: relative;')
-  script.
-    const map = L.map("map").setView([52.300, 4.867], 12);
-    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
-      
-    const coords = !{JSON.stringify(extent.spatial.bbox)}
-    const bounds = [[coords[1], coords[0]], [coords[3], coords[2]]];
-    L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
+    h2.text-body-emphasis Spatial Extent
+    #map(style='width: 100%; height: 400px; position: relative;')
+    script.
+      const map = L.map("map").setView([52.300, 4.867], 11);
+      L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+        
+      const coords = !{JSON.stringify(extent.spatial.bbox)}
+      const bounds = [[coords[1], coords[0]], [coords[3], coords[2]]];
+      L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
 
