@@ -12,9 +12,7 @@ function getLinks(neutralUrl, format, name, links) {
     return _encodings[i]
   }
 
-  links.push({ href: 'https://example.org/process', rel: `about`, title: `Process description as JSON` })
-
-  links.push({ href: urlJoin(neutralUrl, name, ), type: format, rel: `self`, title: `process description as ${format}` })
+  links.push({ href: urlJoin(neutralUrl, name, ), type: getTypeFromFormat(format), rel: `self`, title: `process description as ${format}` })
   utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
     links.push({ href: urlJoin(neutralUrl, name, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `Process description as ${altFormat}` })
   })

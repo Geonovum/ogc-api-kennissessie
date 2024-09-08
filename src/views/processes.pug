@@ -16,7 +16,7 @@ block content
                     th Name
                     th Description
                 tbody
-                  each process in processes
+                  each process in content.processes
                     - var link = process.links.find(i => i.rel == 'self').href
                     tr(itemscope='' itemtype='https://schema.org/WebAPI')
                       td(itemprop='name' data-label='name')

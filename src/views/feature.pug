@@ -9,10 +9,11 @@ block content
   .content
     h1 Data for feature 
     h2 Links
-    each link in links
+    each link in content.links
       p #{link.rel} = 
         a(href= link.href)  #{link.title} 
         | (#{link.type})
+        
     h2 Features
     #map(style='width: 600px; height: 400px; position: relative;')
     script.

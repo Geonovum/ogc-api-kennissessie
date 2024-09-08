@@ -13,10 +13,10 @@ block content
   .col-lg-8.mx-auto.p-2.py-md-2
     main
       .px-8.py-1.my-1.text-center
-        h1.display-6.fw-bold.text-body-emphasis #{title}
+        h1.display-6.fw-bold.text-body-emphasis #{content.title}
         .col-lg-6.mx-auto
           p.lead.mb-4
-            | #{description}
+            | #{content.description}
           .d-grid.gap-2.d-sm-flex.justify-content-sm-center
             a.btn.btn-primary(href='https://github.com/Geonovum/ogc-api-kennissessie' role='button') Code on GitHub
 
@@ -25,19 +25,19 @@ block content
           h2.text-body-emphasis Links to the main resources
           ul.list-unstyled.ps-0
             li
-              - var linkCollections = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/data').href
+              - var linkCollections = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/data').href
               a.icon-link.mb-1(href=linkCollections rel='noopener' target='_blank')
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
                 |               Collections
             li
-              - var linkProcesses = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/processes').href
+              - var linkProcesses = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/processes').href
               a.icon-link.mb-1(href=linkProcesses rel='noopener' target='_blank')
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
                 |               Processes
             li
-              - var linkJobs = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
+              - var linkJobs = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
               a.icon-link.mb-1(href=linkJobs rel='noopener' target='_blank')
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
@@ -46,19 +46,19 @@ block content
           h2.text-body-emphasis API information
           ul.list-unstyled.ps-0
             li
-              - var linkAPIjson = links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
+              - var linkAPIjson = content.links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
               a.icon-link.mb-1(href=linkAPIjson)
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
                 |               API Definition
             li
-              - var linkAPIjson = links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
+              - var linkAPIjson = content.links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
               a.icon-link.mb-1(href=linkAPIjson)
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
                 |               OpenAPI Document
             li
-              - var linkConformance = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/conformance').href
+              - var linkConformance = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/conformance').href
               a.icon-link.mb-1(href=linkConformance)
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
@@ -70,7 +70,7 @@ block content
       const map = L.map("map").setView([52.300, 4.867], 11);
       L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
         
-      const coords = !{JSON.stringify(extent.spatial.bbox)}
+      const coords = !{JSON.stringify(content.extent.spatial.bbox)}
       const bounds = [[coords[1], coords[0]], [coords[3], coords[2]]];
       L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
 

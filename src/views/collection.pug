@@ -9,15 +9,15 @@ block content
         section#collection
           .row
             .col-sm
-              h1 #{title}
+              h1 #{content.title}
               p
-                | #{description}
+                | #{content.description}
     .row
       .col-sm-12
         h3 Browse
-        - var linkItems = links.find(l => l.rel == 'items' && l.type == 'text/html').href
+        - var linkItems = content.links.find(l => l.rel == 'items' && l.type == 'text/html').href
         ul
           li
             div
               a(title='Browse Items' href=linkItems)
-                | Browse through the items of &quot;#{title}&quot;
+                | Browse through the items of &quot;#{content.title}&quot;

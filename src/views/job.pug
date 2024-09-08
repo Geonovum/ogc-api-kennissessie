@@ -13,18 +13,18 @@ block content
             .col-md-12
               #job-status.successful
                 #job-status-header.successful
-                  p Status: #{status}
+                  p Status: #{content.status}
                 #job-status-body
                   .message
                     h3 Message
-                    p #{message}
+                    p #{content.message}
                   .duration
-                    - const date1 = new Date(started);
-                    - const date2 = new Date(finished);
+                    - const date1 = new Date(content.started);
+                    - const date2 = new Date(content.finished);
                     - const diffTime = Math.abs(date2 - date1);
                     h4
                       label(for='progress') Progress
-                    progress#progress.inline(value=progress max='100')
+                    progress#progress.inline(value=content.progress max='100')
                     h4
                       label(for='runtime') Duration
                     p
@@ -33,14 +33,14 @@ block content
                     h4
                       label(for='starttime') Started processing
                     p
-                      span#starttime #{started}
+                      span#starttime #{content.started}
                     h4
                       label(for='endtime') Finished processing
                     p
-                      span#endtime #{finished}
+                      span#endtime #{content.finished}
                     h3 Links
-                    - var linkHtml = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'text/html').href
-                    - var linkJson = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'application/json').href
+                    - var linkHtml = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'text/html').href
+                    - var linkJson = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/results' && i.type == 'application/json').href
                     ul
                       li
                         a(href=linkHtml)

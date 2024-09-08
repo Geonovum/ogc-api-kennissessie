@@ -14,7 +14,7 @@ block content
                 th Name
                 th Description
             tbody
-            each collection in collections
+            each collection in content.collections
               - var linkCollection = collection.links.find(l => l.rel == 'self').href
               tr
                 td(data-label='name')

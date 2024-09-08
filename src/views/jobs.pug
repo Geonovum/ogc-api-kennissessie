@@ -20,7 +20,7 @@ block content
                     th Status
                     th Message
                 tbody
-                  each job in jobs
+                  each job in content.jobs
                     - const date1 = new Date(job.started);
                     - const date2 = new Date(job.finished);
                     - const diffTime = Math.abs(date2 - date1);

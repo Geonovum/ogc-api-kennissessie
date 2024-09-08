@@ -26,6 +26,7 @@ export function get(req, res, next) {
   var format = accept.type(["json", "geojson", "html", "csv"]);
 
   var formatFreeUrl = utils.getFormatFreeUrl(req);
+  var serviceUrl = utils.getServiceUrl(req);
 
   items.get(
     formatFreeUrl,
@@ -52,7 +53,7 @@ export function get(req, res, next) {
           res.status(200).json(content);
           break;
         case `html`:
-          res.status(200).render(`items`, content);
+          res.status(200).render(`items`, { content, serviceUrl });
           break;
         case "csv":
           res.removeHeader("Content-Crs");
@@ -64,12 +65,10 @@ export function get(req, res, next) {
           res.send(geojson2csv(content));
           break;
         default:
-          res
-            .status(400)
-            .json({
-              code: "InvalidParameterValue",
-              description: `${accept} is an invalid format`,
-            });
+          res.status(400).json({
+            code: "InvalidParameterValue",
+            description: `${accept} is an invalid format`,
+          });
       }
     }
   );

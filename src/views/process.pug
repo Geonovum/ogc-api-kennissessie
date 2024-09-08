@@ -7,8 +7,8 @@ block content
       .col-sm-12
         br
         section#process(itemscope='' itemtype='https://schema.org/WebAPI')
-          h2.text-body-emphasis(itemprop='name') #{title}
-          div(itemprop='description') #{description}
+          h2.text-body-emphasis(itemprop='name') #{content.title}
+          div(itemprop='description') #{content.description}
           .row
             p
             h3.text-body-emphasis Inputs
@@ -21,7 +21,7 @@ block content
                     th Data Type
                     th Description
                 tbody
-                  each input, key in inputs
+                  each input, key in content.inputs
                     tr(itemprop='parameter' itemscope='')
                       td(itemprop='id' data-label='ID') #{key}
                       td(itemprop='name' data-label='Title') #{input.title}
@@ -38,7 +38,7 @@ block content
                     th Data Type
                     th Description
                 tbody
-                  each output, key in outputs
+                  each output, key in content.outputs
                     tr(itemprop='parameter' itemscope='')
                       td(itemprop='id' data-label='ID') #{key}
                       td(itemprop='name' data-label='Title') #{output.title}
@@ -48,21 +48,17 @@ block content
               p
               h2 Execution modes
               ul
-                each jobControlOption in jobControlOptions
+                each jobControlOption in content.jobControlOptions
                   li=jobControlOption
 
               p
               h2 Jobs
-              - var linkJobs = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
+              - var linkJobs = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
               a(href=linkJobs) Browse jobs
-              - var linkAbout = links.find(i => i.rel == 'about').href
-              - var linkExecute = links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
+              - var linkExecute = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
               p
               h2 Links
               ul
-                li
-                  a(href=linkAbout)
-                    | information (text/html)
                 li
                   a(href=linkExecute)
                     | Execution for this process as JSON (application/json)
