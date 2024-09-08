@@ -11,9 +11,9 @@ function getLinks(neutralUrl, format, jobId, links) {
     return _encodings[i];
   }
 
-  links.push({ href: urlJoin(neutralUrl,), rel: `self`, type: getTypeFromFormat(format), title: `Job information as ${format}` })
+  links.push({ href: urlJoin(neutralUrl, jobId, `?f=${format}`), rel: `self`, type: getTypeFromFormat(format), title: `Job information as ${format}` })
   utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
-    links.push({ href: urlJoin(neutralUrl, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `Job information as ${altFormat}` })
+    links.push({ href: urlJoin(neutralUrl, jobId, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `Job information as ${altFormat}` })
   })
 
   links.push({

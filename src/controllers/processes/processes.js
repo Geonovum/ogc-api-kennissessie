@@ -12,12 +12,10 @@ export function get(req, res) {
   var queryParams = ["f"];
   var rejected = utils.checkForAllowedQueryParams(req.query, queryParams);
   if (rejected.length > 0) {
-    res
-      .status(400)
-      .json({
-        code: `The following query parameters are rejected: ${rejected}`,
-        description: "Valid parameters for this request are " + queryParams,
-      });
+    res.status(400).json({
+      code: `The following query parameters are rejected: ${rejected}`,
+      description: "Valid parameters for this request are " + queryParams,
+    });
     return;
   }
 
@@ -44,18 +42,22 @@ export function get(req, res) {
         res.status(200).json(content);
         break;
       case `html`:
+        let linkSelf = content.links.find(i => i.rel == 'self').href.split('?')[0]
+        let links = [linkSelf];
+        while (links[0] != serviceUrl) {
+          links.unshift(links[0].substr(0, links[0].lastIndexOf("/")));
+        }
+
         // Recommendations 10, Links included in payload of responses SHOULD also be
         // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
         res.set("link", utils.makeHeaderLinks(content.links));
         res.status(200).render(`processes`, { content, serviceUrl });
         break;
       default:
-        res
-          .status(400)
-          .json({
-            code: "InvalidParameterValue",
-            description: `${accept} is an invalid format`,
-          });
+        res.status(400).json({
+          code: "InvalidParameterValue",
+          description: `${accept} is an invalid format`,
+        });
     }
   });
 }

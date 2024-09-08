@@ -12,7 +12,7 @@ function getLinks(neutralUrl, format, name, links) {
     return _encodings[i]
   }
 
-  links.push({ href: urlJoin(neutralUrl, name, ), type: getTypeFromFormat(format), rel: `self`, title: `process description as ${format}` })
+  links.push({ href: urlJoin(neutralUrl, name ), type: getTypeFromFormat(format), rel: `self`, title: `process description as ${format}` })
   utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
     links.push({ href: urlJoin(neutralUrl, name, `?f=${altFormat}`), rel: `alternate`, type: getTypeFromFormat(altFormat), title: `Process description as ${altFormat}` })
   })
@@ -48,9 +48,9 @@ function get(neutralUrl, format, callback) {
 
   content.links = []
   // (OAPIC P2) Requirement 2B. The API SHALL support the HTTP GET operation on all links to a Collections Resource that have the relation type
-  content.links.push({ href: urlJoin(neutralUrl, `f=${format}`), rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
+  content.links.push({ href: urlJoin(neutralUrl, `?f=${format}`), rel: `self`, type: utils.getTypeFromFormat(format), title: `This document` })
   utils.getAlternateFormats(format, ['json', 'html']).forEach(altFormat => {
-    content.links.push({ href: urlJoin(neutralUrl, `f=${altFormat}`), rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
+    content.links.push({ href: urlJoin(neutralUrl, `?f=${altFormat}`), rel: `alternate`, type: utils.getTypeFromFormat(altFormat), title: `This document as ${altFormat}` })
   })
 
   content.processes = [];
