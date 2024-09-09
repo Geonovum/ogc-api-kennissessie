@@ -43,6 +43,7 @@ block content
                     th Id
                     th Title
                     th Data Type
+                    th Format
                     th Description
                 tbody
                   each input, key in content.inputs
@@ -50,6 +51,7 @@ block content
                       td(itemprop='id' data-label='ID') #{key}
                       td(itemprop='name' data-label='Title') #{input.title}
                       td(itemprop='type' data-label='Data Type') #{input.schema.type}
+                      td(itemprop='type' data-label='Data Type') #{input.schema.format}
                       td(itemprop='description' data-label='Description') #{input.description}
             p
             h3 Outputs
