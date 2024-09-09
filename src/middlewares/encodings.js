@@ -42,21 +42,21 @@ var encodings = function (req, res, next) {
 
   if (mediaType) {
     if (["json", "geojson", "application/json"].includes(mediaType))
-      req.headers["accept"] = "application/json," + req.headers["accept"];
+      req.headers.accept = "application/json," + req.headers.accept;
     else if (
       ["yaml", "application/vnd.oai.openapi;version=3.0"].includes(mediaType)
     )
-      req.headers["accept"] = "text/yaml," + req.headers["accept"];
+      req.headers.accept = "text/yaml," + req.headers.accept;
     else if (
       ["json", "application/vnd.oai.openapi+json;version=3.0"].includes(
         mediaType
       )
     )
-      req.headers["accept"] = "application/json," + req.headers["accept"];
+      req.headers.accept = "application/json," + req.headers.accept;
     else if (["html", "text/html"].includes(mediaType))
-      req.headers["accept"] = "text/html," + req.headers["accept"];
+      req.headers.accept = "text/html," + req.headers.accept;
     else if (["csv", "text/csv"].includes(mediaType))
-      req.headers["accept"] = "text/csv," + req.headers["accept"];
+      req.headers.accept = "text/csv," + req.headers.accept;
     else {
       res
         .status(400)
