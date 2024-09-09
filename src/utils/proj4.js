@@ -112,10 +112,10 @@ const projectFeature = function (
 
   const fromProjection = getProjByCode(codeSridFrom);
   if (fromProjection == undefined) return;
-  const fromProj = fromProjection["proj4"];
+  const fromProj = fromProjection.proj4;
   const toProjection = getProjByCode(codeSridTo);
   if (toProjection == undefined) return;
-  const toProjec = toProjection["proj4"];
+  const toProjec = toProjection.proj4;
   if (!fromProjection || !toProjection) return;
 
   return _projectFeature(feature, fromProj, toProjec, digits);
@@ -131,10 +131,10 @@ const projectFeatureCollection = function (
 
   const fromProjection = getProjByCode(codeSridFrom);
   if (fromProjection == undefined) return;
-  const fromProj = fromProjection["proj4"];
+  const fromProj = fromProjection.proj4;
   const toProjection = getProjByCode(codeSridTo);
   if (toProjection == undefined) return;
-  const toProjec = toProjection["proj4"];
+  const toProjec = toProjection.proj4;
   if (!fromProjection || !toProjection) return;
 
   let features = JSON.parse(JSON.stringify(_features));
@@ -155,10 +155,10 @@ const projectBBox = function (
 ) {
   const fromProjection = getProjByCode(codeSridFrom);
   if (!fromProjection) return undefined;
-  const fromProj = fromProjection["proj4"];
+  const fromProj = fromProjection.proj4;
   const toProjection = getProjByCode(codeSridTo);
   if (!toProjection) return undefined;
-  const toProj = toProjection["proj4"];
+  const toProj = toProjection.proj4;
   if (!fromProj || !toProj) return featureBBox;
 
   var p1 = _point([Number(featureBBox.bbox[0]), Number(featureBBox.bbox[1])]);

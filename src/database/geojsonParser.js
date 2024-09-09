@@ -80,7 +80,7 @@ export function makeOAPIF(geojson, dataDef) {
     var property = dataDef.schema.geometry;
     var item = {};
     // (OAPIF P5) Requirement 9 A property with "x-ogc-role" set to "primary-geometry" SHALL be a spatial property.
-    if (property["role"]) item["x-ogc-role"] = property["role"].toLowerCase();
+    if (property.role) item["x-ogc-role"] = property.role.toLowerCase();
     item.format = `${property.type}-${property.geometryType}`.toLowerCase();
     geojson.schema.geometry = item;
   }
@@ -89,7 +89,7 @@ export function makeOAPIF(geojson, dataDef) {
   if (dataDef.queryables) {
     if (dataDef.queryables.spatial) {
       dataDef.queryables.spatial.forEach((geom) => {
-        geojson.queryables[`geometry`] = geojson.schema[geom];
+        geojson.queryables.geometry = geojson.schema[geom];
       });
     }
     if (dataDef.queryables.temporal) {

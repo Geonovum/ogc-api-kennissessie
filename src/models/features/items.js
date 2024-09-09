@@ -1,5 +1,4 @@
 import * as turf from "@turf/turf";
-import { JSONPath } from "jsonpath-plus";
 import urlJoin from "url-join";
 import { getDatabases } from "../../database/database.js";
 import utils from "../../utils/utils.js";
@@ -430,7 +429,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       // (OAPIF P8) At a sortable resource endpoint, the operation SHALL support a parameter sortby with the following
       //            characteristics (using an OpenAPI Specification 3.0 fragment):
       //            -     pattern: '[+|-]?[A-Za-z_].*'
-      let parts = _query["sortby"].split(",");
+      let parts = _query.sortby.split(",");
 
       function fieldSorter(fields) {
         return function (a, b) {

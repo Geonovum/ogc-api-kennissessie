@@ -267,7 +267,7 @@ function replacee(formatFreeUrl, collectionId, featureId, body, callback) {
     collection.features.push(body);
   }
 
-  var formatFreeUrl = formatFreeUrl.substr(0, formatFreeUrl.lastIndexOf("/"));
+  formatFreeUrl = formatFreeUrl.substr(0, formatFreeUrl.lastIndexOf("/"));
   formatFreeUrl = join(formatFreeUrl, newId.toString());
 
   return callback(undefined, body, formatFreeUrl);
