@@ -9,22 +9,26 @@ block header
   - let linkSelf = content.links.find(i => i.rel == 'self').href.split('?')[0]
   - let links = [ linkSelf ]
   - while (links[0] != serviceUrl) {
-  -  links.unshift(links[0].substr(0, links[0].lastIndexOf("/"))) }
+  -   links.unshift(links[0].substr(0, links[0].lastIndexOf("/"))) }
 
-  nav(aria-label='breadcrumb')
-    ol.breadcrumb.breadcrumb-chevron.p-3.bg-body-tertiary.rounded-3
-      li.breadcrumb-item
-        a.link-body-emphasis(href=serviceUrl)
-          svg.bi(width='16' height='16')
-            use(xlink:href='#house-door-fill')
-          span.visually-hidden serviceUrl
-      li.breadcrumb-item
-        a.link-body-emphasis.fw-semibold.text-decoration-none(href=links[1]) Jobs
-      - let pathElement = links[2].substring(links[2].lastIndexOf("/") + 1);
-      li.breadcrumb-item
-        a.link-body-emphasis.fw-semibold.text-decoration-none(href=links[2]) #{pathElement}
-      li.breadcrumb-item.active(aria-current='page')
-        | Results
+  nav.navbar.navbar-light.bg-light.navbar-expand-sm
+    .container
+      #navbar.navbar-collapse.collapse.d-flex.justify-content-between.align-items-center
+        ol.breadcrumb.breadcrumb-chevron.p-0.bg-light
+          li.breadcrumb-item
+            a.link-body-emphasis(href=serviceUrl)
+              svg.bi(width='16' height='16')
+                use(xlink:href='#house-door-fill')
+              span.visually-hidden serviceUrl
+          li.breadcrumb-item
+            a.link-body-emphasis.fw-semibold.text-decoration-none(href=links[1]) Jobs
+          - let pathElement = links[2].substring(links[2].lastIndexOf("/") + 1);
+          li.breadcrumb-item
+            a.link-body-emphasis.fw-semibold.text-decoration-none(href=links[2]) #{pathElement}
+          li.breadcrumb-item.active(aria-current='page')
+            | Results
+        ul.list-separated.m-0.p-0
+          a(href=linkSelf + '?f=json') JSON
 
 block content
 
