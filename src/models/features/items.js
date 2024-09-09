@@ -147,16 +147,16 @@ function getLinks(neutralUrl, format, links) {
 function getContent(neutralUrl, format, collection) {
   if (format == "geojson") format = "json";
 
-  var items = {}
-  items.type = collection.type
-  items.features = collection.features
-  items.defaultSortOrder = ["+fid"]
-  items.timeStamp = new Date().toISOString()
-  items.links = []
+  var items = {};
+  items.type = collection.type;
+  items.features = collection.features;
+  items.defaultSortOrder = ["+fid"];
+  items.timeStamp = new Date().toISOString();
+  items.links = [];
 
-  getLinks(neutralUrl, format, items.links)
+  getLinks(neutralUrl, format, items.links);
 
-  items.headerContentCrs = collection.crs[0]
+  items.headerContentCrs = collection.crs[0];
 
   return items;
 }
