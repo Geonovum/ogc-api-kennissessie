@@ -364,8 +364,8 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     }
 
     if (_query.filter) {
-      var parts = _query.filter.split(" and "); // only AND supported (not OR)
-      parts.forEach((element) => {
+      var filterParts = _query.filter.split(" and "); // only AND supported (not OR)
+      filterParts.forEach((element) => {
         var ao = element.split(" ", 2);
         var attributeName = ao[0];
         var operator = ao[1];
@@ -415,7 +415,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       // Req 3: For multiple search terms that are white space separated, only resources that contain all the search terms
       //        specified, in the order specified and separated by any number of white spaces in one or more of the
       //        searched text fields SHALL be in the result set.
-      var parts = _query.q.split(",");
+      var queryParts = _query.q.split(",");
 
       delete _query.q;
     }
@@ -429,7 +429,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       // (OAPIF P8) At a sortable resource endpoint, the operation SHALL support a parameter sortby with the following
       //            characteristics (using an OpenAPI Specification 3.0 fragment):
       //            -     pattern: '[+|-]?[A-Za-z_].*'
-      let parts = _query.sortby.split(",");
+      let sortByParts = _query.sortby.split(",");
 
       function fieldSorter(fields) {
         return function (a, b) {
@@ -454,7 +454,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         };
       }
 
-      features.sort(fieldSorter(parts));
+      features.sort(fieldSorter(sortByParts));
 
       delete _query.sortby;
     }
