@@ -49,11 +49,14 @@ export function create(processId, isAsync) {
   }
 
   function e7() {
-    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
-      (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
+      (
+        +c ^
+        (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
+      ).toString(16)
     );
   }
-  
+
   let job = {};
   job.processID = processId;
   job.jobID = e7();
@@ -80,7 +83,7 @@ function get(neutralUrl, format, callback) {
   // (OAPIC P2) Requirement 3A: The content of that response SHALL be based upon the JSON schema collections.yaml.
   var content = {};
 
-  content.links = getContent(neutralUrl, format)
+  content.links = getContent(neutralUrl, format);
 
   content.jobs = [];
 

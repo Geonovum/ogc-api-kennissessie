@@ -54,11 +54,14 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
 
   // check parameters against the process input parameter definition
   for (let [key, processInput] of Object.entries(process.inputs)) {
-    if (parameters.inputs[key] == undefined) 
-      return callback({ code: 400, description: `${key} not found` }, undefined);
+    if (parameters.inputs[key] == undefined)
+      return callback(
+        { code: 400, description: `${key} not found` },
+        undefined
+      );
     switch (processInput.schema.type) {
       case "number":
-        if (typeof parameters.inputs[key] !== "number") 
+        if (typeof parameters.inputs[key] !== "number")
           return callback(
             {
               code: 400,
@@ -73,7 +76,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   }
 
   for (let [key, processInput] of Object.entries(parameters.inputs)) {
-    if (process.inputs[key] == undefined) 
+    if (process.inputs[key] == undefined)
       return callback(
         { code: 400, description: `${key} not found in process definition` },
         undefined
@@ -130,8 +133,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
     prefer.includes("async"),
     parameters,
     function (err, content) {
-      if (err) 
-        return callback(err, undefined);
+      if (err) return callback(err, undefined);
 
       // indication in the header of the location of the
       // newly created job resource

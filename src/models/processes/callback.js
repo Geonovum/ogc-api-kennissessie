@@ -21,7 +21,7 @@ function post(neutralUrl, jobId, query, callback) {
       undefined
     );
 
-    /*
+  /*
   switch (query.type) {
   }
 */
