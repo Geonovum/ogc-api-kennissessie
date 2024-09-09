@@ -58,10 +58,10 @@ export function makeOAPIF(geojson, dataDef) {
       var property = dataDef.schema.properties[propertyName];
 
       var item = {};
-      if (property["label"]) item.title = property["label"];
-      if (property["description"]) item.description = property["description"];
-      if (property["type"]) item.type = property["type"];
-      if (property["format"]) item.format = property["format"];
+      if (property.label) item.title = property.label;
+      if (property.description) item.description = property.description;
+      if (property.type) item.type = property.type;
+      if (property.format) item.format = property.format;
       // (OAPIF P5) Requirement 4 The keyword "x-ogc-role" SHALL be used to declare a specific role of the property
       // (OAPIF P5) Requirement 5 A property with "x-ogc-role" set to "id" SHALL be the identifier of the
       //            item in the collection that contains the item.
@@ -70,7 +70,7 @@ export function makeOAPIF(geojson, dataDef) {
       //  Requirement 14A: A property with "x-ogc-role" set to "type" SHALL be a string property.
       //  Requirement 14B: At most one property in a schema SHALL have "x-ogc-role" with a value "type".
       // else if (item.type == 'string') item['x-ogc-role'] = 'type'
-      if (property["role"]) item["x-ogc-role"] = property["role"].toLowerCase();
+      if (property.role) item["x-ogc-role"] = property.role.toLowerCase();
       if (property.values) item.enum = property.values;
 
       geojson.schema[propertyName] = item;
@@ -81,8 +81,8 @@ export function makeOAPIF(geojson, dataDef) {
     var item = {};
     // (OAPIF P5) Requirement 9 A property with "x-ogc-role" set to "primary-geometry" SHALL be a spatial property.
     if (property["role"]) item["x-ogc-role"] = property["role"].toLowerCase();
-    item["format"] = `${property.type}-${property.geometryType}`.toLowerCase();
-    geojson.schema["geometry"] = item;
+    item.format = `${property.type}-${property.geometryType}`.toLowerCase();
+    geojson.schema.geometry = item;
   }
 
   geojson.queryables = {};

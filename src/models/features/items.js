@@ -408,7 +408,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     // - title
     // - description
     // - keywords
-    if (_query["q"]) {
+    if (_query.q) {
       // Req 1: If a single search term is specified, then only resources that contain that search term in one or
       //        more of the searched text fields SHALL be in the result set.
       // Req 2: For multiple search terms that are comma separated (logical OR), only resources that contain one
@@ -416,12 +416,12 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       // Req 3: For multiple search terms that are white space separated, only resources that contain all the search terms
       //        specified, in the order specified and separated by any number of white spaces in one or more of the
       //        searched text fields SHALL be in the result set.
-      var parts = _query["q"].split(",");
+      var parts = _query.q.split(",");
 
-      delete _query["q"];
+      delete _query.q;
     }
 
-    if (_query["sortby"]) {
+    if (_query.sortby) {
       // (OAPIF P8) Requirement 6A: If the sortby parameter is specified, then the resources in a response SHALL be ordered by
       //            the keys and sort directions (i.e. ascending or descending) specified.
       //            Requirement 6B: The specific set of keys that may be used for sorting SHALL be specified by
@@ -457,7 +457,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
 
       features.sort(fieldSorter(parts));
 
-      delete _query["sortby"];
+      delete _query.sortby;
     }
 
     if (_query.skipGeometry === "true") doSkipGeometry = true;
