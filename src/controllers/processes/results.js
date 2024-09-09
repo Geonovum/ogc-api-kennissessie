@@ -39,12 +39,10 @@ export function get(req, res) {
         res.status(200).render(`results`, { content, serviceUrl });
         break;
       default:
-        res
-          .status(400)
-          .json({
-            code: "InvalidParameterValue",
-            description: `${accept} is an invalid format`,
-          });
+        res.status(400).json({
+          code: "InvalidParameterValue",
+          description: `${accept} is an invalid format`,
+        });
     }
   });
 }

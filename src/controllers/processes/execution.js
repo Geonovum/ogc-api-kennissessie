@@ -43,7 +43,10 @@ export function post(req, res) {
 
       // set locations header to url of job
       // JobID is set earlier, servcieUrl can only be set now
-      let serviceUrl = formatFreeUrl.substring(0, formatFreeUrl.indexOf(req.baseUrl) + req.baseUrl.length);
+      let serviceUrl = formatFreeUrl.substring(
+        0,
+        formatFreeUrl.indexOf(req.baseUrl) + req.baseUrl.length
+      );
       location = location.replaceAll(":serviceUrl", serviceUrl);
       res.set("Location", location);
 

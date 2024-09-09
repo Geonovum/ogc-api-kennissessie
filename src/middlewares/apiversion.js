@@ -1,8 +1,7 @@
 export var apiVersion = function (req, res, next) {
+  res.set("API-Version", process.env.APIVERSION);
 
-    res.set('API-Version', process.env.APIVERSION)
+  next();
+};
 
-    next()
-}
-
-export default apiVersion
+export default apiVersion;

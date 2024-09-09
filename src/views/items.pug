@@ -48,7 +48,7 @@ block content
       var features = !{JSON.stringify(content.features)}
       L.geoJSON(features).addTo(map)
 
-      var links = !{JSON.stringify(links)}
+      var links = !{JSON.stringify(content.links)}
       var link = links.filter((link) => link.rel === 'self' && link.href.includes('bbox'))[0]
       if (typeof link !== 'undefined')
       {
@@ -60,7 +60,7 @@ block content
           {
             var bounds = [[coords[1], coords[0]], [coords[3], coords[2]]];
             L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
-            // map.fitBounds(bounds)
+            map.fitBounds(bounds)
           }
         }
       }

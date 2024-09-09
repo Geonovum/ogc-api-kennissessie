@@ -1,37 +1,45 @@
-import { join } from 'path'
+import { join } from "path";
 
-var _formats = ['json', 'html', 'csv']
-var _encodings = ['application/json', 'text/html', 'text/csv']
-var _encodingsItems = ['application/geo+json', 'text/html', 'text/csv']
+var _formats = ["json", "html", "csv"];
+var _encodings = ["application/json", "text/html", "text/csv"];
+var _encodingsItems = ["application/geo+json", "text/html", "text/csv"];
 
 function getServiceUrl(req) {
   // remove the optional extension from the baseUrl
-  var root = req.baseUrl.replace(/\.[^.]*$/, '')
+  var root = req.baseUrl.replace(/\.[^.]*$/, "");
 
-  const proxyHost = req.headers["x-forwarded-host"]
-  var host = proxyHost || req.headers.host
-  host = join(host, root)
-  var serviceUrl = `${req.protocol}://${host}`
+  const proxyHost = req.headers["x-forwarded-host"];
+  var host = proxyHost || req.headers.host;
+  host = join(host, root);
+  var serviceUrl = `${req.protocol}://${host}`;
 
   return new URL(serviceUrl);
 }
 
 function ISODateString(d) {
   function pad(n) {
-    return n < 10 ? '0' + n : n;
+    return n < 10 ? "0" + n : n;
   }
-  return d.getUTCFullYear() + '-'
-    + pad(d.getUTCMonth() + 1) + '-'
-    + pad(d.getUTCDate()) + 'T'
-    + pad(d.getUTCHours()) + ':'
-    + pad(d.getUTCMinutes()) + ':'
-    + pad(d.getUTCSeconds()) + 'Z';
+  return (
+    d.getUTCFullYear() +
+    "-" +
+    pad(d.getUTCMonth() + 1) +
+    "-" +
+    pad(d.getUTCDate()) +
+    "T" +
+    pad(d.getUTCHours()) +
+    ":" +
+    pad(d.getUTCMinutes()) +
+    ":" +
+    pad(d.getUTCSeconds()) +
+    "Z"
+  );
 }
 
 function makeHeaderLinks(hls) {
-  var link = ""
-  hls.forEach(hl => {
-    link += `<${hl.href}>; rel="${hl.rel}"; title="${hl.title}"; type="${hl.type}",`
+  var link = "";
+  hls.forEach((hl) => {
+    link += `<${hl.href}>; rel="${hl.rel}"; title="${hl.title}"; type="${hl.type}",`;
   });
 
   // remove last ,
@@ -42,33 +50,32 @@ function makeHeaderLinks(hls) {
 
 function getTypeFromFormat(format) {
   var i = _formats.indexOf(format);
-  return _encodings[i]
+  return _encodings[i];
 }
 
 function getTypeItemsFromFormat(format) {
   var i = _formats.indexOf(format);
-  return _encodingsItems[i]
+  return _encodingsItems[i];
 }
 
 function getAlternateFormats(format, formats) {
-  var alternateFormats = formats
-  alternateFormats = alternateFormats.filter(item => {
-    return item !== format
-  })
+  var alternateFormats = formats;
+  alternateFormats = alternateFormats.filter((item) => {
+    return item !== format;
+  });
 
   return alternateFormats;
 }
 
 function UriToEPSG(uri) {
+  if (uri == "http://www.opengis.net/def/crs/OGC/1.3/CRS84")
+    uri = "https://www.opengis.net/def/crs/EPSG/0/4326";
 
-if (uri == 'http://www.opengis.net/def/crs/OGC/1.3/CRS84')
-  uri = 'https://www.opengis.net/def/crs/EPSG/0/4326'
-
-  var parts = uri.split('/');
-  var identifier = parts.pop()
-  parts.pop()
-  var body = parts.pop()
-  return `${body}:${identifier}`
+  var parts = uri.split("/");
+  var identifier = parts.pop();
+  parts.pop();
+  var body = parts.pop();
+  return `${body}:${identifier}`;
 }
 
 function EPSGtoProj4(epsg) {
@@ -76,50 +83,58 @@ function EPSGtoProj4(epsg) {
 }
 
 function ifTrailingSlash(req, res) {
-  if (req.url.endsWith('/')) {
-    res.status(404).json({ 'code': 'Path contains a trailing slash', 'description': 'A URI MUST never contain a trailing slash' })
-    return true
+  if (req.url.endsWith("/")) {
+    res
+      .status(404)
+      .json({
+        code: "Path contains a trailing slash",
+        description: "A URI MUST never contain a trailing slash",
+      });
+    return true;
   }
-  return false
+  return false;
 }
 
 function checkForAllowedQueryParams(query, params) {
-  var rejected = []
+  var rejected = [];
   for (var propName in query) {
     if (query.hasOwnProperty(propName))
-      if (!params.includes(propName))
-        rejected.push(propName)
+      if (!params.includes(propName)) rejected.push(propName);
   }
   return rejected;
 }
 
 function getFormatFreeUrl(req) {
-  var root = req.baseUrl.replace(/\.[^.]*$/, '')
+  var root = req.baseUrl.replace(/\.[^.]*$/, "");
 
-  const proxyHost = req.headers["x-forwarded-host"]
-  var host = proxyHost || req.headers.host
-  host = join(host, root)
+  const proxyHost = req.headers["x-forwarded-host"];
+  var host = proxyHost || req.headers.host;
+  host = join(host, root);
 
-  var url = new URL(`${req.protocol}://${host}${req.path}`)
+  var url = new URL(`${req.protocol}://${host}${req.path}`);
   /*
     for (var propName in req.query) {
       if (req.query.hasOwnProperty(propName))
         url.searchParams.append(propName, req.query[propName])
     }
   */
-  return url.toString()
+  return url.toString();
 }
 
 function checkNumeric(value, name, res) {
-
-  if (value == undefined) return true
+  if (value == undefined) return true;
 
   if (isNaN(value)) {
-    res.status(400).json({ 'code': 'Bad request', 'description': `Parameter value '${value}' is invalid for parameter '${name}': The value is not an integer.` })
-    return false
+    res
+      .status(400)
+      .json({
+        code: "Bad request",
+        description: `Parameter value '${value}' is invalid for parameter '${name}': The value is not an integer.`,
+      });
+    return false;
   }
 
-  return true
+  return true;
 }
 
 export default {
@@ -133,4 +148,5 @@ export default {
   ifTrailingSlash,
   getFormatFreeUrl,
   checkForAllowedQueryParams,
-  checkNumeric}
+  checkNumeric,
+};

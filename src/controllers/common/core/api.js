@@ -17,12 +17,10 @@ export function get(req, res) {
   var queryParams = ["f"];
   var rejected = utils.checkForAllowedQueryParams(req.query, queryParams);
   if (rejected.length > 0) {
-    res
-      .status(400)
-      .json({
-        code: `The following query parameters are rejected: ${rejected}`,
-        description: "Valid parameters for this request are " + queryParams,
-      });
+    res.status(400).json({
+      code: `The following query parameters are rejected: ${rejected}`,
+      description: "Valid parameters for this request are " + queryParams,
+    });
     return;
   }
 
@@ -50,13 +48,29 @@ export function get(req, res) {
 
     switch (format) {
       case "json":
-        var filename = join(__dirname, "..", "..", "..", "public", "api", "openapi.json");
+        var filename = join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "public",
+          "api",
+          "openapi.json"
+        );
         writeFileSync(filename, JSON.stringify(content));
         res.set("Content-Type", "application/vnd.oai.openapi+json;version=3.0");
         res.sendFile(filename);
         break;
       case "yaml":
-        var filename = join(__dirname, "..","..","..", "public", "api", "openapi.yaml");
+        var filename = join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "public",
+          "api",
+          "openapi.yaml"
+        );
         writeFileSync(filename, YAML.stringify(content));
         res.set("Content-Type", "application/vnd.oai.openapi;version=3.0");
         res.sendFile(filename);
@@ -71,12 +85,10 @@ export function get(req, res) {
         break;
       case false:
       default:
-        res
-          .status(400)
-          .json({
-            code: "InvalidParameterValue",
-            description: "Invalid format",
-          });
+        res.status(400).json({
+          code: "InvalidParameterValue",
+          description: "Invalid format",
+        });
     }
   });
 }

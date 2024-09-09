@@ -12,12 +12,10 @@ export function get(req, res) {
   var queryParams = ["f"];
   var rejected = utils.checkForAllowedQueryParams(req.query, queryParams);
   if (rejected.length > 0) {
-    res
-      .status(400)
-      .json({
-        code: `The following query parameters are rejected: ${rejected}`,
-        description: "Valid parameters for this request are " + queryParams,
-      });
+    res.status(400).json({
+      code: `The following query parameters are rejected: ${rejected}`,
+      description: "Valid parameters for this request are " + queryParams,
+    });
     return;
   }
 
@@ -50,12 +48,10 @@ export function get(req, res) {
         res.status(200).render(`collections`, { content, serviceUrl });
         break;
       default:
-        res
-          .status(400)
-          .json({
-            code: "InvalidParameterValue",
-            description: `${accept} is an invalid format`,
-          });
+        res.status(400).json({
+          code: "InvalidParameterValue",
+          description: `${accept} is an invalid format`,
+        });
     }
   });
 }

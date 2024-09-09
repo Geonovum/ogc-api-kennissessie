@@ -10,12 +10,10 @@ export function post(req, res) {
   var queryParams = ["type"];
   var rejected = utils.checkForAllowedQueryParams(req.query, queryParams);
   if (rejected.length > 0) {
-    res
-      .status(400)
-      .json({
-        code: `The following query parameters are rejected: ${rejected}`,
-        description: "Valid parameters for this request are " + queryParams,
-      });
+    res.status(400).json({
+      code: `The following query parameters are rejected: ${rejected}`,
+      description: "Valid parameters for this request are " + queryParams,
+    });
     return;
   }
 
@@ -26,7 +24,9 @@ export function post(req, res) {
   var accept = accepts(req);
   var format = accept.type(["json"]);
 
-  console.log(`call received from jobID: ${jobId}, type is '${req.query.type}'`)
+  console.log(
+    `call received from jobID: ${jobId}, type is '${req.query.type}'`
+  );
 
   callback.post(formatFreeUrl, jobId, req.query, function (err, content) {
     if (err) {
@@ -41,12 +41,10 @@ export function post(req, res) {
         res.status(202).json(content);
         break;
       default:
-        res
-          .status(400)
-          .json({
-            code: "InvalidParameterValue",
-            description: `${accept} is an invalid format`,
-          });
+        res.status(400).json({
+          code: "InvalidParameterValue",
+          description: `${accept} is an invalid format`,
+        });
     }
   });
 }

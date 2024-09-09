@@ -42,7 +42,9 @@ export function get(req, res) {
         res.status(200).json(content);
         break;
       case `html`:
-        let linkSelf = content.links.find(i => i.rel == 'self').href.split('?')[0]
+        let linkSelf = content.links
+          .find((i) => i.rel == "self")
+          .href.split("?")[0];
         let links = [linkSelf];
         while (links[0] != serviceUrl) {
           links.unshift(links[0].substr(0, links[0].lastIndexOf("/")));

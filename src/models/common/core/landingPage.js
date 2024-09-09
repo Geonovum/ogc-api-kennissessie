@@ -35,7 +35,7 @@ function get(neutralUrl, format, callback) {
   }
   const fc = turf.featureCollection(bboxs);
   content.extent.spatial.bbox = turf.bbox(turf.union(fc));
-  content.extent.temporal.interval = ['..', '..']
+  content.extent.temporal.interval = ["..", ".."];
 
   content.links = [];
   content.links.push({

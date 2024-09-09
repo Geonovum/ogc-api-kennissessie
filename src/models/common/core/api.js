@@ -71,7 +71,9 @@ function get(neutralUrl, callback) {
     var jsonStr = readFileSync(
       join(
         __dirname,
-        "..", "..", "..",
+        "..",
+        "..",
+        "..",
         "apiTemplates",
         "core",
         "components",
@@ -81,7 +83,16 @@ function get(neutralUrl, callback) {
     var parameters = JSON.parse(jsonStr);
 
     var jsonStr = readFileSync(
-      join(__dirname, "..", "..", "..", "apiTemplates", "core", "components", "schema.json")
+      join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "apiTemplates",
+        "core",
+        "components",
+        "schema.json"
+      )
     );
     var schemas = JSON.parse(jsonStr);
 
@@ -103,7 +114,15 @@ function get(neutralUrl, callback) {
   {
     // Collections
     var jsonStr = readFileSync(
-      join(__dirname, "..", "..", "..", "apiTemplates", "collections", "paths.json")
+      join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "apiTemplates",
+        "collections",
+        "paths.json"
+      )
     );
     var content = JSON.parse(jsonStr);
 
@@ -112,7 +131,9 @@ function get(neutralUrl, callback) {
     var jsonStr = readFileSync(
       join(
         __dirname,
-        "..", "..", "..",
+        "..",
+        "..",
+        "..",
         "apiTemplates",
         "collections",
         "components",
@@ -124,7 +145,9 @@ function get(neutralUrl, callback) {
     var jsonStr = readFileSync(
       join(
         __dirname,
-        "..", "..", "..",
+        "..",
+        "..",
+        "..",
         "apiTemplates",
         "collections",
         "components",
@@ -144,7 +167,6 @@ function get(neutralUrl, callback) {
     var databases = getDatabases();
 
     for (var name in databases) {
-
       var collectionTemplate = content["/collections/{{:collectionId}}"];
       var ff = JSON.stringify(collectionTemplate);
 
@@ -163,7 +185,15 @@ function get(neutralUrl, callback) {
       var process_ = processes[name];
 
       var jsonStr = readFileSync(
-        join(__dirname, "..", "..", "..", "apiTemplates", "features", "paths.json")
+        join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "apiTemplates",
+          "features",
+          "paths.json"
+        )
       );
       var content = JSON.parse(jsonStr);
 
@@ -174,7 +204,9 @@ function get(neutralUrl, callback) {
       var jsonStr = readFileSync(
         join(
           __dirname,
-          "..", "..", "..",
+          "..",
+          "..",
+          "..",
           "apiTemplates",
           "features",
           "components",
@@ -189,7 +221,9 @@ function get(neutralUrl, callback) {
       var jsonStr = readFileSync(
         join(
           __dirname,
-          "..", "..", "..",
+          "..",
+          "..",
+          "..",
           "apiTemplates",
           "features",
           "components",
@@ -226,7 +260,9 @@ function get(neutralUrl, callback) {
       var jsonStr = readFileSync(
         join(
           __dirname,
-          "..", "..", "..",
+          "..",
+          "..",
+          "..",
           "apiTemplates",
           "features",
           "components",
@@ -277,7 +313,15 @@ function get(neutralUrl, callback) {
   {
     // Processes
     var jsonStr = readFileSync(
-      join(__dirname, "..", "..", "..", "apiTemplates", "processes", "paths.json")
+      join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "apiTemplates",
+        "processes",
+        "paths.json"
+      )
     );
     var content = JSON.parse(jsonStr);
 
@@ -286,7 +330,9 @@ function get(neutralUrl, callback) {
     var jsonStr = readFileSync(
       join(
         __dirname,
-        "..", "..", "..",
+        "..",
+        "..",
+        "..",
         "apiTemplates",
         "processes",
         "components",
@@ -298,7 +344,9 @@ function get(neutralUrl, callback) {
     var jsonStr = readFileSync(
       join(
         __dirname,
-        "..", "..", "..",
+        "..",
+        "..",
+        "..",
         "apiTemplates",
         "processes",
         "components",
@@ -318,7 +366,6 @@ function get(neutralUrl, callback) {
     var processes = getProcesses();
 
     for (var name in processes) {
-
       var processTemplate = content["/processes/{{:processId}}"];
       var ff = JSON.stringify(processTemplate);
 
@@ -328,7 +375,6 @@ function get(neutralUrl, callback) {
     }
 
     for (var name in processes) {
-
       var processTemplate = content["/processes/{{:processId}}/execution"];
       var ff = JSON.stringify(processTemplate);
 
@@ -352,7 +398,9 @@ function get(neutralUrl, callback) {
     var jsonStr = readFileSync(
       join(
         __dirname,
-        "..","..","..",
+        "..",
+        "..",
+        "..",
         "apiTemplates",
         "jobs",
         "components",
@@ -364,7 +412,9 @@ function get(neutralUrl, callback) {
     var jsonStr = readFileSync(
       join(
         __dirname,
-        "..","..","..",
+        "..",
+        "..",
+        "..",
         "apiTemplates",
         "jobs",
         "components",
@@ -380,7 +430,6 @@ function get(neutralUrl, callback) {
     for (var schema in schemas) {
       components.components.schemas[schema] = schemas[schema];
     }
-
   }
 
   var content = {
