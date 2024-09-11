@@ -3,7 +3,7 @@
   "title": "Echo Service",
   "description": "HTTP Echo Service running in a Docker container. Async only.",
   "version": "0.0.1",
-  "jobControlOptions": ["async-execute"],
+  "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
   "outputTransmission": ["value", "reference"],
   "inputs": {
     "uri": {
@@ -16,16 +16,12 @@
   },
   "outputs": {
     "echo": {
+      "id": "Result",
       "title": "Echo result",
       "description": "A string echoing what we send.",
       "schema": {
         "type": "string"
       }
     }
-  },
-  "subscriber": {
-    "successUri": ":serviceUrl/callback/:jobId?type=success",
-    "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
-    "failedUri": ":serviceUrl/callback/:jobId?type=failed"
   }
 }

@@ -65,7 +65,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     let run = await docker.command(command);
   } else {
-    console.log(`Container ${containerName} already running`);
+    console.log(`Container ${containerName} already running. Good.`);
   }
 
   let content = {};
@@ -77,15 +77,22 @@ export async function launch(process_, job, isAsync, parameters, callback) {
         let result = {};
         result.id = key;
 
+        if (parameters.outputs[key] == undefined)
+          return callback(
+            { code: 400, description: `${key} can not be bound` },
+            undefined
+          );
+
+        let parameterOutput = parameters.outputs[key];
+
         if ((output.schema.type = "string"))
           result.value = response.data.http.originalUrl;
 
-        if (parameters.response == "raw") {
-          content = result;
-        } else if (parameters.response == "document") {
-          content.outputs = [];
-          content.outputs.push(result);
-        }
+        // TODO: what to do??
+        //if (parameterOutput.transmissionMode == "value") content = result;
+
+        content.outputs = [];
+        content.outputs.push(result);
 
         // TODO transmissionMode??? (in spec)
         //if (outputParameter.transmissionMode == "value") content = result;
@@ -98,9 +105,9 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       job.updated = new Date().toISOString();
       job.results = content;
 
-      if (process_.subscriber && process_.subscriber.successUri) {
+      if (parameters.subscriber && parameters.subscriber.successUri) {
         http
-          .post(process_.subscriber.successUri, content)
+          .post(parameters.subscriber.successUri, content)
           .then(function (response) {
             console.log(response);
           })
@@ -110,8 +117,9 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       }
     })
     .catch(function (error) {
-      return callback({ code: 400, description: error }, undefined);
+      return callback({ code: 400, description: error }, undefined); // TODO: callback
     });
 
+  // return asap and let the process do the callbacks
   return callback(undefined, {});
 }

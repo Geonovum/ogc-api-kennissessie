@@ -43,15 +43,29 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       let result = {};
       result.id = key;
 
+      if (parameters.outputs[key] == undefined)
+        return callback(
+          { code: 400, description: `${key} can not be bound` },
+          undefined
+        );
+
+      let parameterOutput = parameters.outputs[key];
+
       if ((output.schema.type = "number")) result.value = res;
 
-      if (parameters.response == "raw") {
+      // TODO: what to do??
+      //if (parameterOutput.transmissionMode == "value") content = result;
+
+      content.outputs = [];
+      content.outputs.push(result);
+
+      /*  if (parameters.response == "raw") {
         content = result;
       } else if (parameters.response == "document") {
         content.outputs = [];
         content.outputs.push(result);
       }
-
+*/
       // TODO transmissionMode??? (in spec)
       //if (outputParameter.transmissionMode == "value") content = result;
     }

@@ -3,7 +3,7 @@
   "title": "Count features",
   "description": "Count the total number of features from an API Features endpoint.",
   "version": "0.0.1",
-  "jobControlOptions": ["sync-execute", "async-execute"],
+  "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
   "outputTransmission": ["value", "reference"],
   "inputs": {
     "uri": {
@@ -17,6 +17,7 @@
   },
   "outputs": {
     "count": {
+      "id": "Result",
       "title": "Feature count",
       "description": "Total number of features provided by OGC API Endpoint.",
       "schema": {
@@ -24,10 +25,5 @@
         "format": "integer"
       }
     }
-  },
-  "subscriber": {
-    "successUri": ":serviceUrl/callback/:jobId?type=success",
-    "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
-    "failedUri": ":serviceUrl/callback/:jobId?type=failed"
   }
 }

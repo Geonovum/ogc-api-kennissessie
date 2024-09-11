@@ -3,7 +3,7 @@
   "title": "Add 2 numbers",
   "description": "Using a bash script, add the 2 provided numbers together. Either sync or async.",
   "version": "0.0.1",
-  "jobControlOptions": ["sync-execute", "async-execute"],
+  "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
   "outputTransmission": ["value", "reference"],
   "inputs": {
     "number1": {
@@ -25,6 +25,7 @@
   },
   "outputs": {
     "sum": {
+      "id": "Result",
       "title": "Sum of 2 numbers",
       "description": "A number literal output.",
       "schema": {
@@ -32,10 +33,5 @@
         "format": "integer"
       }
     }
-  },
-  "subscriber": {
-    "successUri": ":serviceUrl/callback/:jobId?type=success",
-    "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
-    "failedUri": ":serviceUrl/callback/:jobId?type=failed"
   }
 }

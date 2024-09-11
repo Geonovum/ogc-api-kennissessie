@@ -50,8 +50,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
         let result = {};
         result.id = key;
 
-        if ((output.schema.type = "number"))
-          result.value = Number(d);
+        if ((output.schema.type = "number")) result.value = Number(d);
 
         if (parameters.response == "raw") {
           content = result;
@@ -146,20 +145,36 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     // bring result into content
     for (let [key, output] of Object.entries(process_.outputs)) {
+      console.log(key);
+      console.log(output);
+
+      if (parameters.outputs[key] == undefined)
+        return callback(
+          { code: 400, description: `${key} can not be bound` },
+          undefined
+        );
+
+      let parameterOutput = parameters.outputs[key];
+
       let result = {};
       result.id = key;
 
       if ((output.schema.type = "number")) result.value = Number(child.stdout);
 
+      // TODO: what to do??
+      //if (parameterOutput.transmissionMode == "value") content = result;
+
+      content.outputs = [];
+      content.outputs.push(result);
+
+      /*
       if (parameters.response == "raw") {
         content = result;
       } else if (parameters.response == "document") {
         content.outputs = [];
         content.outputs.push(result);
       }
-
-      // TODO transmissionMode??? (in spec)
-      //if (outputParameter.transmissionMode == "value") content = result;
+*/
     }
 
     job.status = "successful"; // accepted, successful, failed, dismissed

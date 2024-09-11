@@ -116,10 +116,10 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   let job = create(processId, prefer.includes("async"));
 
   // resolve all :<> with content
-  if (process_.subscriber) {
-    for (var key in process_.subscriber) {
-      if (process_.subscriber.hasOwnProperty(key)) {
-        process_.subscriber[key] = process_.subscriber[key]
+  if (parameters.subscriber) {
+    for (var key in parameters.subscriber) {
+      if (parameters.subscriber.hasOwnProperty(key)) {
+        parameters.subscriber[key] = parameters.subscriber[key]
           .replaceAll(":serviceUrl", serviceUrl)
           .replaceAll(":jobId", job.jobID);
       }
