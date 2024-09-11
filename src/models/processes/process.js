@@ -48,17 +48,17 @@ function getLinks(neutralUrl, format, name, links) {
   });
 }
 
-function getContent(neutralUrl, format, name, process) {
+function getContent(neutralUrl, format, name, process_) {
   var content = {};
-  content.id = process.id;
-  content.title = process.title;
-  content.description = process.description;
-  content.version = process.version;
-  content.jobControlOptions = process.jobControlOptions;
-  content.outputTransmission = process.outputTransmission;
+  content.id = process_.id;
+  content.title = process_.title;
+  content.description = process_.description;
+  content.version = process_.version;
+  content.jobControlOptions = process_.jobControlOptions;
+  content.outputTransmission = process_.outputTransmission;
 
-  content.inputs = process.inputs;
-  content.outputs = process.outputs;
+  content.inputs = process_.inputs;
+  content.outputs = process_.outputs;
 
   content.links = [];
 
@@ -69,8 +69,8 @@ function getContent(neutralUrl, format, name, process) {
 
 function get(neutralUrl, format, processId, callback) {
   var processes = getProcesses();
-  var process = processes[processId];
-  if (!process)
+  var process_ = processes[processId];
+  if (!process_)
     return callback(
       {
         httpCode: 404,
@@ -80,7 +80,7 @@ function get(neutralUrl, format, processId, callback) {
       undefined
     );
 
-  var content = getContent(neutralUrl, format, processId, process);
+  var content = getContent(neutralUrl, format, processId, process_);
 
   return callback(undefined, content);
 }

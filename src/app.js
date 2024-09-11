@@ -30,6 +30,8 @@ app.use(
   })
 );
 
+app.set("json spaces", 2); // TODO: only when running DEBUG
+
 // Deal with 'options' prior to cors,
 app.options("*", mwOptions);
 

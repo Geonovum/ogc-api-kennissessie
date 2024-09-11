@@ -13,9 +13,9 @@ if (__dirname === undefined) console.log("need node 20.16 or higher");
  * @param {*} callback
  * @returns {*}
  */
-export async function launch(process, job, isAsync, parameters, callback) {
+export async function launch(process_, job, isAsync, parameters, callback) {
   var values = [];
-  for (let [key, processInput] of Object.entries(process.inputs)) {
+  for (let [key, processInput] of Object.entries(process_.inputs)) {
     if (parameters.inputs[key] == undefined)
       return callback(
         { code: 400, description: `${key} not found` },
@@ -73,7 +73,7 @@ export async function launch(process, job, isAsync, parameters, callback) {
   http
     .get(values[0])
     .then(function (response) {
-      for (let [key, output] of Object.entries(process.outputs)) {
+      for (let [key, output] of Object.entries(process_.outputs)) {
         let result = {};
         result.id = key;
 
@@ -98,9 +98,9 @@ export async function launch(process, job, isAsync, parameters, callback) {
       job.updated = new Date().toISOString();
       job.results = content;
 
-      if (process.subscriber && process.subscriber.successUri) {
+      if (process_.subscriber && process_.subscriber.successUri) {
         http
-          .post(process.subscriber.successUri, content)
+          .post(process_.subscriber.successUri, content)
           .then(function (response) {
             console.log(response);
           })

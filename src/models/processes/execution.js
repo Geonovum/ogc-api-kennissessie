@@ -14,7 +14,7 @@ function getLinks(neutralUrl, format, name, links) {
   });
 }
 
-function getContent(neutralUrl, process, body) {
+function getContent(neutralUrl, process_, body) {
   var content = {};
   // A local identifier for the collection that is unique for the dataset;
   content.id = name; // required
@@ -42,8 +42,8 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   let serviceUrl = neutralUrl.substring(0, neutralUrl.indexOf("/processes"));
 
   var processes = getProcesses();
-  var process = structuredClone(processes[processId]);
-  if (!process)
+  var process_ = structuredClone(processes[processId]);
+  if (!process_)
     return callback(
       {
         code: 404,
@@ -53,7 +53,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
     );
 
   // check parameters against the process input parameter definition
-  for (let [key, processInput] of Object.entries(process.inputs)) {
+  for (let [key, processInput] of Object.entries(process_.inputs)) {
     if (parameters.inputs[key] == undefined)
       return callback(
         { code: 400, description: `${key} not found` },
@@ -76,7 +76,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   }
 
   for (let [key, processInput] of Object.entries(parameters.inputs)) {
-    if (process.inputs[key] == undefined)
+    if (process_.inputs[key] == undefined)
       return callback(
         { code: 400, description: `${key} not found in process definition` },
         undefined
@@ -85,7 +85,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
 
   // prepare for the launcher (launcher has a fixed name: launcher.js)
   let pathToLauncher = join(
-    process.location.replace(/\.[^/.]+$/, ""),
+    process_.location.replace(/\.[^/.]+$/, ""),
     "launch.js"
   );
   const fileExists = existsSync(pathToLauncher);
@@ -101,7 +101,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   // async/sync is determined by the HTTP header prefer
   if (
     prefer.includes("async") &&
-    !process.jobControlOptions.includes("async-execute")
+    !process_.jobControlOptions.includes("async-execute")
   )
     return callback(
       {
@@ -116,10 +116,10 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   let job = create(processId, prefer.includes("async"));
 
   // resolve all :<> with content
-  if (process.subscriber) {
-    for (var key in process.subscriber) {
-      if (process.subscriber.hasOwnProperty(key)) {
-        process.subscriber[key] = process.subscriber[key]
+  if (process_.subscriber) {
+    for (var key in process_.subscriber) {
+      if (process_.subscriber.hasOwnProperty(key)) {
+        process_.subscriber[key] = process_.subscriber[key]
           .replaceAll(":serviceUrl", serviceUrl)
           .replaceAll(":jobId", job.jobID);
       }
@@ -128,7 +128,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
 
   execute(
     pathToLauncher,
-    process,
+    process_,
     job,
     prefer.includes("async"),
     parameters,

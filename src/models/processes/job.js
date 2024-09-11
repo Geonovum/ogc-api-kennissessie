@@ -88,17 +88,17 @@ export function get(neutralUrl, format, jobId, callback) {
  *
  * @export
  * @param {*} path
- * @param {*} process
+ * @param {*} process_
  * @param {*} parameters
  * @param {*} job
  * @param {*} callback
  */
-export function execute(path, process, job, isAsync, parameters, callback) {
+export function execute(path, process_, job, isAsync, parameters, callback) {
   try {
     import(path)
       .then((module) => {
         module.launch(
-          process,
+          process_,
           job,
           isAsync,
           parameters,

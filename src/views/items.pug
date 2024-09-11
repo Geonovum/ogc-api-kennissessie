@@ -36,35 +36,81 @@ block header
 
 block content
 
-  .content
-    h1 Data from collection 
-    h2 Links
-    each link in content.links
-      p #{link.rel} = 
-        a(href= link.href)  #{link.title} 
-        | (#{link.type})
-    h2 Features
-    #map(style='width: 100%; height: 400px; position: relative;')
-    script.
-      var map = L.map("map").setView([52.300, 4.867], 12);
-      L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
-      
-      var features = !{JSON.stringify(content.features)}
-      L.geoJSON(features).addTo(map)
+  .container.py-4
+    .row
+      .col-sm-12
+        br
+        section#collection
+          .row
+            .col-sm
+              h1 sdf
+              p
+                | dfg
+                
+        if (content.numberMatched > content.numberReturned)
+          - let nextLink = content.links.find(i => i.rel == 'next').href
+          - var offset = 0
+          - var limit = 10
+          - var pageCount = content.numberMatched / limit;
+          - var pageActive = Math.trunc(offset / limit); 
+          - var pageFirst = pageActive - 2; 
+          - if (pageFirst < 0) pageFirst = 0;
+          - var pageLast  = pageFirst + 5; 
 
-      var links = !{JSON.stringify(content.links)}
-      var link = links.filter((link) => link.rel === 'self' && link.href.includes('bbox'))[0]
-      if (typeof link !== 'undefined')
-      {
-        const bbox = new URL(link.href).searchParams.get('bbox')
-        if (typeof bbox !== 'bbox')
-        {
-          var coords = bbox.split(',')
-          if (coords.length == 4)
-          {
-            var bounds = [[coords[1], coords[0]], [coords[3], coords[2]]];
-            L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
-            map.fitBounds(bounds)
-          }
-        }
-      }
+          p #{nextLink}
+          p #{pageCount}
+          p #{pageActive}
+          p #{pageFirst}
+          p #{pageLast}
+
+          nav(aria-label='...')
+            ul.pagination
+
+              if pageActive == 0
+                li.page-item.disable
+                  a.page-link(href='#') «
+              else
+                li.page-item
+                  a.page-link(href='#') «
+
+              li.page-item
+                a.page-link(href='#') ‹
+
+              - var p = pageFirst;
+              while p < pageLast
+                - p++
+                li.page-item
+                  a.page-link(href='#') #{p}
+
+
+              li.page-item
+                a.page-link(href='#') ›
+              li.page-item
+                a.page-link(href='#') »
+
+
+    .row
+      .col-md-6
+        ul.list-unstyled
+          - var n = 0;
+          while n < content.numberReturned
+            - var feature = content.features[n]
+            li
+              - n++
+              div
+                h4.mt-3.mb-1
+                  a(href=linkSelf + '/' + n)
+                    span #{feature.properties.fid}
+                span.d-none linkSelf + '/' + n
+                .row.my-1
+                  .col-md-6.font-weight-bold.text-truncate(data-property='id')
+                    span(style='vertical-align: middle;') #{feature.type}
+                  .col-md-6
+                    ul.list-unstyled
+                      li #{n}  
+
+      .col-md-6
+        #map(style='width: 540px; height: 480px; position: relative;')
+        script.
+          const map = L.map("map").setView([52.300, 4.867], 11);
+          L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);

@@ -25,7 +25,7 @@
   },
   "outputs": {
     "sum": {
-      "title": "Addition of 2 numbers",
+      "title": "Sum of 2 numbers",
       "description": "A number literal output.",
       "schema": {
         "type": "number",
