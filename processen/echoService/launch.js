@@ -1,5 +1,7 @@
 import { Docker, Options } from "docker-cli-js";
+// import { v2 as compose } from "docker-compose";
 import http from "axios";
+import path from "path";
 
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 20.16 or higher");
@@ -49,9 +51,20 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     stdin: null, // stdin used for the command (useful for passing passwords, etc)
   };
 
+  const port = 3000;
   const docker = new Docker(options);
+  const containerName = `ealen/echo-server`; // localhost
 
   // CHECK: login first???
+
+  /*
+  // based on the docker-compose.yml file in your current directory
+  const result = await compose.ps({ cwd: path.join(__dirname) }).catch(err => console.log(err));
+  result.data.services.forEach((service) => {
+    console.log(service.name, service.command, service.state, service.ports);
+    // state is e.g. 'Up 2 hours'
+  });
+*/
 
   // get running containers
   let data = await docker.command("ps");
@@ -60,8 +73,6 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     data.containerList.findIndex((element) => element.image == containerName) <
     0;
 
-  const port = 3000;
-  const containerName = `ealen/echo-server`; // localhost
 
   if (notFound) {
     const command = `run -d -p ${port}:80 ${containerName}`;

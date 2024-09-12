@@ -38,7 +38,7 @@ export function post(req, res) {
 
     switch (format) {
       case "json":
-        res.status(202).json(content);
+        res.status(200).json(content);
         break;
       default:
         res.status(400).json({

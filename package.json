@@ -12,6 +12,7 @@
     "cors": "^2.8.5",
     "debug": "^4.3.5",
     "docker-cli-js": "^2.10.0",
+    "docker-compose": "^0.24.8",
     "express": "^4.20.0",
     "jsonpath-plus": "^9.0.0",
     "morgan": "^1.10.0",
