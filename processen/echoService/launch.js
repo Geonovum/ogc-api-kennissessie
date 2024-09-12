@@ -73,12 +73,13 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     data.containerList.findIndex((element) => element.image == containerName) <
     0;
 
-
   if (notFound) {
     const command = `run -d -p ${port}:80 ${containerName}`;
 
     let result = await docker.command(command);
     console.log(result);
+    // give container time to settle
+    await new Promise((r) => setTimeout(r, 1000));
   } else {
     console.log(`Container ${containerName} already running. Good.`);
   }
@@ -132,6 +133,15 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       }
     })
     .catch(function (error) {
-      return callback({ code: 400, description: error }, undefined); // TODO: callback
+      if (parameters.subscriber && parameters.subscriber.failedUri) {
+        http
+          .post(parameters.subscriber.failedUri, error)
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
     });
 }
