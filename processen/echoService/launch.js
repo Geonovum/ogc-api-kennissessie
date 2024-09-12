@@ -36,9 +36,9 @@ export async function launch(process_, job, isAsync, parameters, callback) {
   job.started = new Date().toISOString();
   job.updated = new Date().toISOString();
 
-  const port = 3000;
+  callback(undefined, {});
+
   const machineName = null; // localhost
-  const containerName = `ealen/echo-server`; // localhost
 
   // default options
   const options = {
@@ -60,10 +60,14 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     data.containerList.findIndex((element) => element.image == containerName) <
     0;
 
+  const port = 3000;
+  const containerName = `ealen/echo-server`; // localhost
+
   if (notFound) {
     const command = `run -d -p ${port}:80 ${containerName}`;
 
-    let run = await docker.command(command);
+    let result = await docker.command(command);
+    console.log(result);
   } else {
     console.log(`Container ${containerName} already running. Good.`);
   }
@@ -119,7 +123,4 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     .catch(function (error) {
       return callback({ code: 400, description: error }, undefined); // TODO: callback
     });
-
-  // return asap and let the process do the callbacks
-  return callback(undefined, {});
 }
