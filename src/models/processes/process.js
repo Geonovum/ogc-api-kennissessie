@@ -48,7 +48,7 @@ function getLinks(neutralUrl, format, name, links) {
   });
 }
 
-function getContent(neutralUrl, format, name, process_) {
+export function getContent(neutralUrl, format, name, process_) {
   var content = {};
   content.id = process_.id;
   content.title = process_.title;
@@ -67,7 +67,7 @@ function getContent(neutralUrl, format, name, process_) {
   return content;
 }
 
-function get(neutralUrl, format, processId, callback) {
+export function get(neutralUrl, format, processId, callback) {
   var processes = getProcesses();
   var process_ = processes[processId];
   if (!process_)
@@ -86,5 +86,5 @@ function get(neutralUrl, format, processId, callback) {
 }
 
 export default {
-  get,
+  get, getContent
 };
