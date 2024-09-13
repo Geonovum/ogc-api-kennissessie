@@ -32,7 +32,7 @@ function get(neutralUrl, format, callback) {
   var processes = getProcesses();
 
   for (var name in processes) {
-    var process = getProcessContent(neutralUrl, format, name, processes[name]);
+    var process = getProcessContent(urlJoin(neutralUrl, name), format, name, processes[name]);
     content.processes.push(process);
   }
 

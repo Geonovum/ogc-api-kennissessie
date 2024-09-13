@@ -2,7 +2,7 @@ import urlJoin from "url-join";
 import utils from "../../utils/utils.js";
 import { getProcesses } from "../../database/processes.js";
 
-function getLinks(neutralUrl, format, name, links) {
+function getLinks(neutralUrl, format, links) {
   function getTypeFromFormat(format) {
     var _formats = ["json", "html"];
     var _encodings = ["application/json", "text/html"];
@@ -48,7 +48,7 @@ function getLinks(neutralUrl, format, name, links) {
   });
 }
 
-export function getContent(neutralUrl, format, name, process_) {
+export function getContent(neutralUrl, format, processId, process_) {
   var content = {};
   content.id = process_.id;
   content.title = process_.title;
@@ -62,7 +62,7 @@ export function getContent(neutralUrl, format, name, process_) {
 
   content.links = [];
 
-  getLinks(neutralUrl, format, name, content.links);
+  getLinks(neutralUrl, format, content.links);
 
   return content;
 }
@@ -86,5 +86,6 @@ export function get(neutralUrl, format, processId, callback) {
 }
 
 export default {
-  get, getContent
+  get,
+  getContent,
 };
