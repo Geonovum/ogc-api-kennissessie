@@ -20,7 +20,7 @@ export const app = express();
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 20.16 or higher");
 
-const configPath = process.env.DATA_PATH || join(__dirname, "../config");
+const configPath = join(process.env.DATA_PATH || __dirname, "../config");
 const yamlStr = readFileSync(join(configPath, `${process.env.ID}.yml`));
 global.config = YAML.parse(yamlStr.toString());
 
