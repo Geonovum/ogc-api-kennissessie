@@ -1,8 +1,7 @@
 # This is our runtime container that will end up
 # running on the device.
-# Note: M1 uses it own directive
-FROM --platform=linux/amd64 node:alpine 
-# FROM node:alpine
+FROM --platform=linux/amd64 node:alpine AS build_amd64
+FROM --platform=linux/arm64 node:alpine AS build_arm64
 
 # Create app directory, our data will be in /usr/src/data
 WORKDIR /usr/src/app
