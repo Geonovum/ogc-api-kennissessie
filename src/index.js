@@ -8,9 +8,9 @@ if (__dirname === undefined) console.log("need node 20.16 or higher");
 
 // Load data (TODO: async)
 try {
-  var dataPath = process.env.DATA_PATH || join(__dirname, "../data");
+  var dataPath = join(process.env.DATA_PATH || __dirname, "../data");
   readData(dataPath);
-  var processenPath = process.env.DATA_PATH || join(__dirname, "../processen");
+  var processenPath = join(process.env.DATA_PATH || __dirname, "../processen");
   readProcesses(processenPath);
 } catch (err) {
   console.log(err);
