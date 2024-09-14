@@ -60,6 +60,12 @@ function get(neutralUrl, format, callback) {
   });
 
   content.links.push({
+    href: urlJoin(neutralUrl, "conformance"),
+    rel: `conformance`,
+    title: `OGC API conformance classes implemented by this server`,
+  });
+
+  content.links.push({
     href: urlJoin(neutralUrl, "api?f=json"),
     rel: `service-desc`,
     type: `application/vnd.oai.openapi+json;version=3.0`,
@@ -81,6 +87,12 @@ function get(neutralUrl, format, callback) {
   content.links.push({
     href: urlJoin(neutralUrl, "collections"),
     rel: `http://www.opengis.net/def/rel/ogc/1.0/data`,
+    title: `Access the data`,
+  });
+
+  content.links.push({
+    href: urlJoin(neutralUrl, "collections"),
+    rel: `data`,
     title: `Access the data`,
   });
 
