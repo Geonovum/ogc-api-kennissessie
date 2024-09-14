@@ -30,7 +30,8 @@ app.use(
   })
 );
 
-app.set("json spaces", 2); // TODO: only when running DEBUG
+if (global.config.server && global.config.server.prettyPrint)
+  app.set("json spaces", 2); // TODO: only when running DEBUG
 
 // Deal with 'options' prior to cors,
 app.options("*", mwOptions);
@@ -40,10 +41,10 @@ app.options("*", mwOptions);
 //         cross-origin requests SHOULD be supported.
 //         Note that support can also be added in a proxy layer on top of the server.
 // (OAPIC P1) 8.5 Support for Cross-Origin Requests
-app.use(cors()); // Enable All CORS Requests
+if (global.config.server && global.config.server.cors) app.use(cors()); // Enable All CORS Requests
 
 // For HTML rendering
-app.set("view engine", "pug");
+app.set("view engine", global.config.server.viewEngine || "pug");
 app.set("views", join(__dirname, "views"));
 
 app.use(favicon(join(__dirname, "public", "images", "favicon.ico")));
@@ -54,7 +55,9 @@ app.use(json());
 
 // No need to tell the world what tools we are using, it only gives
 // out information to not-so-nice people
-app.disable("x-powered-by");
+if (global.config.server && global.config.server["x-powered-by"])
+  app.enable("x-powered-by");
+else app.disable("x-powered-by");
 
 // setup middleware to decode the content-type
 // see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_encodings
