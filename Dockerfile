@@ -6,7 +6,7 @@ FROM --platform=linux/arm64 node:alpine AS build_arm64
 LABEL maintainer="Bart De Lathouwer <b.delathouwer@geonovum.nl>"
 
 # Create app directory, our data will be in /usr/local/bin
-WORKDIR /usr/local/bin/ocapi
+WORKDIR /usr/local/bin/okapi
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
@@ -20,13 +20,11 @@ RUN npm install
 # Bundle app source
 COPY src/ src/
 COPY local*.yml ./
-COPY data/ /home/node/ocapi/data
+COPY data/ /home/node/okapi/data
 
-ENV DATA_PATH=/home/node/ocapi/data
+ENV DATA_PATH=/home/node/okapi/data
 ENV PORT=8080
 
 EXPOSE ${PORT}
 
 CMD [ "node", "src/index.js" ]
-
-/home/node/ocapi/data/datasets/gemeenteGrens.yml
