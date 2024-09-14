@@ -76,6 +76,8 @@ app.use(apiVersion);
 // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/uri-version
 const serviceRoot = `/${process.env.ID}/v${major(process.env.APIVERSION)}`;
 
+console.log(`serviceRoot ${serviceRoot}`)
+
 app.use(serviceRoot, oapifp1);
 app.use(serviceRoot, oapifp3);
 app.use(serviceRoot, oapifp4);
