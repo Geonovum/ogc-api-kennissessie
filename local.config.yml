@@ -1,0 +1,32 @@
+---
+metadata:
+  identification:
+    title: Geonovum OGC API Demo Service
+    description: This OGC API Service is provided by Geonovum from instructional purposes only. The code onGitHub is written with readability in mind, not performance.
+    keywords:
+        - geospatial
+        - data
+        - api
+  contact:
+    contactName: Jane Doe
+    contactEmail: doe@acme.nl
+    creatorName: Then big creator
+    creatorUrl: https://data.somewhere.nl/
+    publisherName: Acme Inc.
+    publisherUrl: https://www.example.com/
+  license:
+    name: CC0 1.0
+    url: http://creativecommons.org/publicdomain/zero/1.0/deed.nl
+api:
+  version: 1.2.3
+  buildingBlock: CRS
+  enabled: true
+  additionalCrs:
+  - code: 25832
+    forceAxisOrder: NONE
+  - code: 4258
+    forceAxisOrder: NONE
+  - code: 4326
+    forceAxisOrder: NONE
+  - code: 3857
+    forceAxisOrder: NONE

@@ -31,10 +31,10 @@ function get(neutralUrl, callback) {
 
     var ff = JSON.stringify(content);
 
-    ff = ff.replace(new RegExp("{{:title}}", "g"), global.config.title);
+    ff = ff.replace(new RegExp("{{:title}}", "g"), global.config.metadata.identification.title);
     ff = ff.replace(
       new RegExp("{{:description}}", "g"),
-      global.config.description
+      global.config.metadata.identification.description
     );
     ff = ff.replace(new RegExp("{{:version}}", "g"), process.env.APIVERSION);
 

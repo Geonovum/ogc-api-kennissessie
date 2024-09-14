@@ -48,7 +48,6 @@ function getContent(neutralUrl, format, name, document) {
   // An optional title and description for the collection;
   content.title = document.name;
   content.description = document.description;
-  content.attribution = global.config.metadata.attribution;
 
   content.links = [];
 
@@ -75,8 +74,8 @@ function get(neutralUrl, format, callback) {
   // (OAPIC P2) Requirement 3A: The content of that response SHALL be based upon the JSON schema collections.yaml.
   var content = {};
   // An optional title and description for the collection;
-  content.title = global.config.title;
-  content.description = global.config.description;
+  content.title = global.config.metadata.identification.title;
+  content.description = global.config.metadata.identification.description;
   content.links = [];
   // (OAPIC P2) Requirement 2B. The API SHALL support the HTTP GET operation on all links to a Collections Resource that have the relation type
   content.links.push({

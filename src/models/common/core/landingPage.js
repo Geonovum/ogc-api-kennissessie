@@ -12,9 +12,8 @@ function get(neutralUrl, format, callback) {
   // - /conformance (relation type `conformance`)
   // - /collections (relation type `data`)
   var content = {};
-  content.title = global.config.title; // Requirement 2 B
-  content.description = global.config.description;
-  content.attribution = global.config.metadata.attribution;
+  content.title = global.config.metadata.identification.title; // Requirement 2 B
+  content.description = global.config.metadata.identification.description;
 
   content.extent = {};
   content.extent.spatial = {};

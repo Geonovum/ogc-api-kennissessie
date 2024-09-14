@@ -3,20 +3,21 @@
 FROM --platform=linux/amd64 node:alpine AS build_amd64
 FROM --platform=linux/arm64 node:alpine AS build_arm64
 
-# Create app directory, our data will be in /usr/src/data
-WORKDIR /usr/src/app
+# Create app directory, our data will be in /usr/local/bin
+WORKDIR /usr/local/bin/ocapi
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
 COPY package*.json ./
-
 RUN npm install
+
 # If you are building your code for production
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY . .
+COPY src/ src/
+COPY local*.yml ./
 
 EXPOSE 8080
 

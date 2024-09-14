@@ -1,19 +1,23 @@
 import { join } from "path";
-import { readdirSync, readFileSync } from "fs";
+import fs from "fs";
 
 export async function readProcesses(dir) {
-  var fileNames = readdirSync(dir).filter((fn) => fn.endsWith(".json"));
+  if (fs.existsSync(dir)) {
+    var fileNames = fs.readdirSync(dir).filter((fn) => fn.endsWith(".json"));
 
-  fileNames.forEach((fileName) => {
-    var path = join(dir, fileName);
-    var rawData = readFileSync(path);
-    var json = JSON.parse(rawData);
+    fileNames.forEach((fileName) => {
+      var path = join(dir, fileName);
+      var rawData = fs.readFileSync(path);
+      var json = JSON.parse(rawData);
 
-    var oapip = json;
-    oapip.location = path;
+      var oapip = json;
+      oapip.location = path;
 
-    _processes[oapip.id] = oapip;
-  });
+      _processes[oapip.id] = oapip;
+    });
+  }
+
+  console.log(`Found ${Object.keys(_processes).length} processes`);
 }
 
 var _processes = {};

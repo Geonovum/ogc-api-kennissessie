@@ -66,8 +66,6 @@ function getMetaData(neutralUrl, format, name, document) {
   // An optional title and description for the collection;
   content.title = document.name;
   content.description = document.description;
-  content.attribution =
-    "this dataset is attributed to the municipality of amstelveen";
   content.links = [];
 
   getLinks(neutralUrl, format, name, content.links);
