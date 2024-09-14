@@ -20,6 +20,11 @@ export const app = express();
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 20.16 or higher");
 
+process.env.ID = process.env.ID || "demoservice";
+process.env.APIVERSION = process.env.APIVERSION || "1.2.3";
+process.env.PORT = process.env.PORT || 8080;
+process.env.LIMIT = process.env.LIMIT || 10;
+
 const configPath = join(__dirname, "..");
 const yamlStr = readFileSync(join(configPath, `local.config.yml`));
 global.config = YAML.parse(yamlStr.toString());
@@ -67,10 +72,9 @@ app.use(encodings);
 app.use(apiVersion);
 
 // Mount API on this path
-const mountPath = process.env.ID; // from config
 // (ADR) /core/uri-version: Include the major version number in the URI
 // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/uri-version
-const serviceRoot = `/${mountPath}/v${major(process.env.APIVERSION)}`;
+const serviceRoot = `/${process.env.ID}/v${major(process.env.APIVERSION)}`;
 
 app.use(serviceRoot, oapifp1);
 app.use(serviceRoot, oapifp3);

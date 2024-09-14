@@ -3,6 +3,8 @@
 FROM --platform=linux/amd64 node:alpine AS build_amd64
 FROM --platform=linux/arm64 node:alpine AS build_arm64
 
+LABEL maintainer="Bart De Lathouwer <b.delathouwer@geonovum.nl>"
+
 # Create app directory, our data will be in /usr/local/bin
 WORKDIR /usr/local/bin/ocapi
 
