@@ -20,7 +20,13 @@ RUN npm install
 # Bundle app source
 COPY src/ src/
 COPY local*.yml ./
+COPY data/ /home/node/ocapi/data
 
-EXPOSE 8080
+ENV DATA_PATH=/home/node/ocapi/data
+ENV PORT=8080
+
+EXPOSE ${PORT}
 
 CMD [ "node", "src/index.js" ]
+
+/home/node/ocapi/data/datasets/gemeenteGrens.yml
