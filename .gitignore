@@ -1,6 +1,5 @@
-.DS_Store
+**/.DS_Store
 .bin/
 node_modules/
 package-lock.json
 Presentatie/
-.DS_Store
