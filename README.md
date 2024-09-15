@@ -16,3 +16,6 @@ Dit is geen operationele service.
 
 4. Open in een webbrower de service op `http://localhost/{ID}/v{APIVERSION}`.
    1. Bijv. als het poortnummer is verhoogd: http://localhost:8085/demoservice/v1/
+
+## Start the service from Docker Desktop
+On the [wiki](https://github.com/Geonovum/ogc-api-kennissessie/wiki/Starting-the-service-on-Docker-Desktop)
