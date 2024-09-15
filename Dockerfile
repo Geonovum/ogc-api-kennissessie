@@ -5,7 +5,8 @@ FROM --platform=linux/arm64 node:alpine AS build_arm64
 
 LABEL maintainer="Bart De Lathouwer <b.delathouwer@geonovum.nl>"
 
-# Create app directory, our data will be in /usr/local/bin
+# Create app directory, all program files will be here
+# (data (content) files will be mounted later)
 WORKDIR /usr/local/bin/okapi
 
 # Install app dependencies
@@ -20,9 +21,7 @@ RUN npm install
 # Bundle app source
 COPY src/ src/
 COPY local*.yml ./
-COPY data/ /home/node/okapi/data
 
-ENV DATA_PATH=/home/node/okapi/data
 ENV PORT=8080
 
 EXPOSE ${PORT}
