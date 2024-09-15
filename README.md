@@ -16,15 +16,3 @@ Dit is geen operationele service.
 
 4. Open in een webbrower de service op `http://localhost/{ID}/v{APIVERSION}`.
    1. Bijv. als het poortnummer is verhoogd: http://localhost:8085/demoservice/v1/
-
-## Start the server on Docker
-
-1. Ports:
-   1. Use a free `port` on your host computer. If you don't know if a port ia availble try:  `8085` - this is good choice for a test webservice (and are probably free)
-
-2. Volumes
-   1. Point to the data files (datasets and processes) on your host computer (eg `/Users/willibrordus/Documents/GitHub/ogc-api-kennissessie/data`)
-   2. Specify the `Container path`: an **existing path** in the container that will be used as a mounting point. Eg `/homes/node`
-      
-3. Environment variables
-   1. Let the server know where we mounted the data in the container: so set `DATA_PATH` to `/homes/node`
