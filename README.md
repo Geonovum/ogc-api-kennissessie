@@ -14,8 +14,8 @@ Dit is geen operationele service.
 3. De server start, maar mogelijk is poort 8080 niet beschikbaar.
    1. Wijzig dan in het bestand [`.env`](.env) de regel `PORT=8080` naar een niet-gepriviligeerd, hoger poortnummer, bijv. `PORT=8085`.
 
-4. Open in een webbrower de service op `http://localhost/{ID}/v{APIVERSION}`.
-   1. Bijv. als het poortnummer is verhoogd: http://localhost:8080/demoservice/v1/
+4. Open in een webbrower de service op `http://localhost:8080/{ID}/v{APIVERSION}`.
+   1. Bijv. als het poortnummer is verhoogd: http://localhost:8085/demoservice/v1/
 
 ## Start the service from Docker Desktop
 On the [wiki](https://github.com/Geonovum/ogc-api-kennissessie/wiki/Starting-the-service-on-Docker-Desktop)
