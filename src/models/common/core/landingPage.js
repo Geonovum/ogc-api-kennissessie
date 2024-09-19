@@ -33,7 +33,7 @@ function get(neutralUrl, format, callback) {
     content.extent.spatial.crs = collection.crs[0]; // default crs
   }
   const fc = turf.featureCollection(bboxs);
-  content.extent.spatial.bbox = turf.bbox(turf.union(fc));
+  content.extent.spatial.bbox = (fc.features.length > 0) ? turf.bbox(turf.union(fc)) : null;
   content.extent.temporal.interval = ["..", ".."];
 
   content.links = [];
