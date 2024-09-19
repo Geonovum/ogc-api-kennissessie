@@ -11,11 +11,11 @@ Dit is geen operationele service.
    1. Vanaf de commandline: `node --env-file=.env src/index.js`
    2. In Visual Studio Code: er is een [.vscode/launch.json](.vscode/launch.json) bestand meegeleverd, waarmee met een **druk op F5** de server start.
      
-3. De server start, maar mogelijk is poort 80 niet beschikbaar.
-   1. Wijzig dan in het bestand [`.env`](.env) de regel `PORT=80` naar een niet-gepriviligeerd, hoger poortnummer, bijv. `PORT=8085`.
+3. De server start, maar mogelijk is poort 8080 niet beschikbaar.
+   1. Wijzig dan in het bestand [`.env`](.env) de regel `PORT=8080` naar een niet-gepriviligeerd, hoger poortnummer, bijv. `PORT=8085`.
 
 4. Open in een webbrower de service op `http://localhost/{ID}/v{APIVERSION}`.
-   1. Bijv. als het poortnummer is verhoogd: http://localhost:8085/demoservice/v1/
+   1. Bijv. als het poortnummer is verhoogd: http://localhost:8080/demoservice/v1/
 
 ## Start the service from Docker Desktop
 On the [wiki](https://github.com/Geonovum/ogc-api-kennissessie/wiki/Starting-the-service-on-Docker-Desktop)
