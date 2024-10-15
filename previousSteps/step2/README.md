@@ -33,7 +33,7 @@ Code:
 ```
 const express = require('express')
 const app = express()
-const port = 80
+const port = 8080
 
 app.get('/', (req, res) => res.send('Hello World, step 2!'))
 
@@ -44,13 +44,13 @@ Starten doe je op dezelfde maniet als in `step 1` , Driehoek met bug, dan groene
 
 Op je scherm:
 ```
-Example app listening at http://localhost:80
+Example app listening at http://localhost:8080
 ```
 
 Voor de geeks: [hoe werken callbacks](https://www.freecodecamp.org/news/nodejs-callbacks/)
 
 ## Testen in een browser:
-http://localhost
+http://localhost:8080
 
 > `Hello World!`
 
