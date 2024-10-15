@@ -1,0 +1,81 @@
+<dcat:CatalogRecord rdf:about="https://digilab.geocat.live/catalogue/api/collections/main/items/a17ea8b8-39c2-48eb-a14f-2173ff8adn78" xmlns:adms="http://www.w3.org/ns/adms#" xmlns:dcatap="http://data.europa.eu/r5r/" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:vcard="http://www.w3.org/2006/vcard/ns#" xmlns:dct="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ns14="http://spdx.org/rdf/terms#" xmlns:locn="http://www.w3.org/ns/locn#" xmlns:dcat="http://www.w3.org/ns/dcat#" xmlns:prov="http://www.w3.org/ns/prov#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dct:identifier>a17ea8b8-39c2-48eb-a14f-2173ff8adn78</dct:identifier>
+    <dct:created>2024-09-29T22:00:00Z</dct:created>
+    <dct:modified>2024-10-09T22:00:00Z</dct:modified>
+    <dct:language>
+        <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/language/DUT">
+            <skos:prefLabel>dut</skos:prefLabel>
+            <rdf:type rdf:resource="http://purl.org/dc/terms/LinguisticSystem"/>
+        </skos:Concept>
+    </dct:language>
+    <foaf:primaryTopic>
+        <dcat:Dataset rdf:about="https://digilab.geocat.live/catalogue/api/collections/main/items/a17ea8b8-39c2-48eb-a14f-2173ff8adn78#resource">
+            <dct:title>Bathymetrie Nederland - binnenwateren 1 mtr. RWS Zee en Delta zeetoegangsgeul Rotterdam</dct:title>
+            <dct:description>Dit bodemhoogtebestand bevat een grid van de laatst gemeten bodemhoogten van de Rijkswateren in opdracht van Rijkswaterstaat. De bodemhoogten zijn uitgedrukt in meters t.o.v. NAP.</dct:description>
+            <dct:identifier>a17ea8b8-39c2-48eb-a14f-2173ff8adn78</dct:identifier>
+            <dct:created>2024-10-09T22:00:00Z</dct:created>
+            <dct:modified>2024-10-09T22:00:00Z</dct:modified>
+            <dct:language>
+                <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/language/DUT">
+                    <skos:prefLabel>dut</skos:prefLabel>
+                    <rdf:type rdf:resource="http://purl.org/dc/terms/LinguisticSystem"/>
+                </skos:Concept>
+            </dct:language>
+            <dcat:contactPoint>
+                <vcard:Kind>
+                    <vcard:title>Rijkswaterstaat</vcard:title>
+                    <vcard:role>None</vcard:role>
+                    <vcard:hasEmail>https://www.rijkswaterstaat.nl/formulieren/contactformulier-servicedesk-data</vcard:hasEmail>
+                </vcard:Kind>
+            </dcat:contactPoint>
+            <dcat:theme>
+                <skos:Concept>
+                    <skos:prefLabel>Nederland</skos:prefLabel>
+                </skos:Concept>
+            </dcat:theme>
+            <dct:type>
+                <skos:Concept>
+                    <skos:prefLabel>Dataset</skos:prefLabel>
+                </skos:Concept>
+            </dct:type>
+            <dcat:landingPage>
+                <foaf:Document rdf:about="https://digilab.geocat.live/catalogue/api/collections/main/items/a17ea8b8-39c2-48eb-a14f-2173ff8adn78">
+                    <dct:title>Bathymetrie Nederland - binnenwateren 1 mtr. RWS Zee en Delta zeetoegangsgeul Rotterdam</dct:title>
+                </foaf:Document>
+            </dcat:landingPage>
+            <dct:spatial>
+                <dct:Location>
+                    <locn:geometry>{"type":"Polygon","coordinates":[[[3.119,50.67],[7.253,50.67],[7.253,53.612],[3.119,53.612],[3.119,50.67]]]}</locn:geometry>
+                </dct:Location>
+            </dct:spatial>
+            <dct:temporal>
+                <dct:PeriodOfTime>
+                    <dcat:startDate>2015-05-06T22:00:00Z</dcat:startDate>
+                    <dcat:endDate>2040-05-13T22:00:00Z</dcat:endDate>
+                </dct:PeriodOfTime>
+            </dct:temporal>
+            <dcat:distribution>
+                <dcat:Distribution>
+                    <dcat:accessURL rdf:resource="https://geoweb.rijkswaterstaat.nl/ModuleViewer/?app=d22bec5b3e3244b19cdd20b308442683"/>
+                    <dct:title>bodemhoogte_1mtr</dct:title>
+                    <dct:description>endPoint</dct:description>
+                    <adms:representationTechnique>
+                        <skos:Concept>
+                            <skos:prefLabel>Website</skos:prefLabel>
+                        </skos:Concept>
+                    </adms:representationTechnique>
+                </dcat:Distribution>
+            </dcat:distribution>
+            <dct:accrualPeriodicity>
+                <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/frequency/notPlanned">
+                    <rdf:type rdf:resource="http://purl.org/dc/terms/Frequency"/>
+                </skos:Concept>
+            </dct:accrualPeriodicity>
+            <dct:provenance>
+                <dct:ProvenanceStatement>
+                    <rdfs:label>Het bestand is een aggregatie van beschikbare bodemhoogtemetingen in Landelijk Opslagsysteem Lodingen van Rijkswaterstaat. De hoogtewaarde is voor elke vierkante meter gebaseerd op het gemiddelde van alle punten die binnen die vierkante meter zijn gemeten.</rdfs:label>
+                </dct:ProvenanceStatement>
+            </dct:provenance>
+        </dcat:Dataset>
+    </foaf:primaryTopic>
+</dcat:CatalogRecord>

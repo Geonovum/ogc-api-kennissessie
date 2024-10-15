@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    image: okapi
+    build: .
+    networks:
+      - backend
+    ports:
+      - "80:5454"
+    volumes:
+      - ./:/home/node/okapi/data
+      

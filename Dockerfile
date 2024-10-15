@@ -29,7 +29,7 @@ RUN npm install
 COPY src/ src/
 COPY local*.yml ./
 
-ENV VERSION=1.2.3
+ENV VERSION=1.2.4
 ENV DATA_PATH=/home/node/okapi/data
 
 EXPOSE 8080

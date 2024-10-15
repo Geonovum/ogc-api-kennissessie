@@ -6,11 +6,11 @@ var make = require('./landingPage');
 router.get('/', function (req, res) {
 
   var landingPage = make.header("amstelveen", "Access to data about buildings in the city of amstelveen via a Web API that conforms to the OGC API Features specification.");
-  landingPage.links.push(make.item("http://localhost/amstelveen/",            "self",         "application/json", "this document"));
-  landingPage.links.push(make.item("http://localhost/amstelveen/api",         "service-desc", "application/vnd.oai.openapi+json;version=3.0", "the API definition"));
-  landingPage.links.push(make.item("http://localhost/amstelveen/api.html",    "service-doc",  "text/html",        "the API documentation"));
-  landingPage.links.push(make.item("http://localhost/amstelveen/conformance", "conformance",  "application/json", "OGC API conformance classes implemented by this server"));
-  landingPage.links.push(make.item("http://localhost/amstelveen/collections", "data",         "application/json", "Information about the feature collections"));
+  landingPage.links.push(make.item("http://localhost/demoservice/v1",             "self",         "application/json", "this document"));
+  landingPage.links.push(make.item("http://localhost/demoservice/v1/api",         "service-desc", "application/vnd.oai.openapi+json;version=3.0", "the API definition"));
+  landingPage.links.push(make.item("http://localhost/demoservice/v1/api.html",    "service-doc",  "text/html",        "the API documentation"));
+  landingPage.links.push(make.item("http://localhost/demoservice/v1/conformance", "conformance",  "application/json", "OGC API conformance classes implemented by this server"));
+  landingPage.links.push(make.item("http://localhost/demoservice/v1/collections", "data",         "application/json", "Information about the feature collections"));
 
   res.json(landingPage)
 })

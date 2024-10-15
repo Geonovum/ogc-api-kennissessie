@@ -14,7 +14,7 @@ info:
     url: https://creativecommons.org/licenses/by/4.0
   version: 1.2.3
 servers:
-  - url: http://192.168.0.231/amstelveen/v1
+  - url: http://localhost:8080/demoservice/v1
 tags: []
 paths:
   /:

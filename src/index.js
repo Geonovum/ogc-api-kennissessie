@@ -2,6 +2,7 @@ import { join } from "path";
 import { app } from "./app.js";
 import { readData } from "./database/database.js";
 import { readProcesses } from "./database/processes.js";
+import { readMetadata } from "./database/metadata.js";
 
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 20.16 or higher");
@@ -19,6 +20,13 @@ try {
     "processes"
   );
   readProcesses(processenPath);
+
+  var metadataPath = join(
+    process.env.DATA_PATH || join(__dirname, "../data"),
+    "metadata"
+  );
+  readMetadata(metadataPath);
+
 } catch (err) {
   console.log(err);
 }

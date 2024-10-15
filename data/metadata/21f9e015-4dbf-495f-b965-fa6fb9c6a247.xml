@@ -1,0 +1,82 @@
+<dcat:CatalogRecord rdf:about="https://digilab.geocat.live/catalogue/api/collections/main/items/21f9e015-4dbf-495f-b965-fa6fb9c6a247" xmlns:adms="http://www.w3.org/ns/adms#" xmlns:dcatap="http://data.europa.eu/r5r/" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:vcard="http://www.w3.org/2006/vcard/ns#" xmlns:dct="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ns14="http://spdx.org/rdf/terms#" xmlns:locn="http://www.w3.org/ns/locn#" xmlns:dcat="http://www.w3.org/ns/dcat#" xmlns:prov="http://www.w3.org/ns/prov#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dct:identifier>21f9e015-4dbf-495f-b965-fa6fb9c6a247</dct:identifier>
+    <dct:created>2024-01-24T23:00:00Z</dct:created>
+    <dct:modified>2024-01-24T23:00:00Z</dct:modified>
+    <dct:language>
+        <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/language/DUT">
+            <skos:prefLabel>dut</skos:prefLabel>
+            <rdf:type rdf:resource="http://purl.org/dc/terms/LinguisticSystem"/>
+        </skos:Concept>
+    </dct:language>
+    <foaf:primaryTopic>
+        <dcat:Dataset rdf:about="https://digilab.geocat.live/catalogue/api/collections/main/items/21f9e015-4dbf-495f-b965-fa6fb9c6a247#resource">
+            <dct:title>Rotterdam 3D</dct:title>
+            <dct:description>De panden in Rotterdam zijn op basis van de BAG en Laseraltimetrie gemodelleerd inclusief texturen op basis van een luchtfoto</dct:description>
+            <dct:identifier>7D752836-1117-42A9-96D1-D7D168458A01</dct:identifier>
+            <dct:created>2008-12-31T23:00:00Z</dct:created>
+            <dct:modified>2024-01-24T23:00:00Z</dct:modified>
+            <dct:language>
+                <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/language/DUT">
+                    <skos:prefLabel>dut</skos:prefLabel>
+                    <rdf:type rdf:resource="http://purl.org/dc/terms/LinguisticSystem"/>
+                </skos:Concept>
+            </dct:language>
+            <dcat:contactPoint>
+                <vcard:Kind>
+                    <vcard:title>Gemeente Rotterdam</vcard:title>
+                    <vcard:role>pointOfContact</vcard:role>
+                    <vcard:hasEmail>3d@rotterdam.nl</vcard:hasEmail>
+                </vcard:Kind>
+            </dcat:contactPoint>
+            <dcat:theme>
+                <skos:Concept>
+                    <skos:prefLabel>3D, Rotterdam, Citygml</skos:prefLabel>
+                </skos:Concept>
+            </dcat:theme>
+            <dct:type>
+                <skos:Concept>
+                    <skos:prefLabel>Dataset</skos:prefLabel>
+                </skos:Concept>
+            </dct:type>
+            <dcat:landingPage>
+                <foaf:Document rdf:about="https://digilab.geocat.live/catalogue/api/collections/main/items/21f9e015-4dbf-495f-b965-fa6fb9c6a247">
+                    <dct:title>Rotterdam 3D</dct:title>
+                </foaf:Document>
+            </dcat:landingPage>
+            <dcat:spatialResolutionInMeters>5000</dcat:spatialResolutionInMeters>
+            <dct:spatial>
+                <dct:Location>
+                    <locn:geometry>{"type":"Polygon","coordinates":[[[3.90915,51.77734],[4.67265,51.77734],[4.67265,52.06313],[3.90915,52.06313],[3.90915,51.77734]]]}</locn:geometry>
+                </dct:Location>
+            </dct:spatial>
+            <dct:temporal>
+                <dct:PeriodOfTime>
+                    <dcat:startDate>2008-12-31T23:00:00Z</dcat:startDate>
+                    <dcat:endDate>2011-12-31T23:00:00Z</dcat:endDate>
+                </dct:PeriodOfTime>
+            </dct:temporal>
+            <dcat:distribution>
+                <dcat:Distribution>
+                    <dcat:accessURL rdf:resource="https://www.rotterdam.nl/werken-leren/3d/"/>
+                    <dct:title>Rotterdam 3D</dct:title>
+                    <adms:representationTechnique>
+                        <skos:Concept>
+                            <skos:prefLabel>dataset</skos:prefLabel>
+                        </skos:Concept>
+                    </adms:representationTechnique>
+                </dcat:Distribution>
+            </dcat:distribution>
+            <dct:accrualPeriodicity>
+                <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/frequency/CONT">
+                    <skos:prefLabel>CONT</skos:prefLabel>
+                    <rdf:type rdf:resource="http://purl.org/dc/terms/Frequency"/>
+                </skos:Concept>
+            </dct:accrualPeriodicity>
+            <dct:provenance>
+                <dct:ProvenanceStatement>
+                    <rdfs:label>BAG, Lidar, luchtfoto</rdfs:label>
+                </dct:ProvenanceStatement>
+            </dct:provenance>
+        </dcat:Dataset>
+    </foaf:primaryTopic>
+</dcat:CatalogRecord>
