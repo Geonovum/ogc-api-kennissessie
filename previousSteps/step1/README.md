@@ -38,7 +38,7 @@ And we are 🏃! (Zie kleine toolbar bovenaan)
 <img width="1281" alt="Scherm­afbeelding 2024-07-21 om 12 52 24" src="https://github.com/user-attachments/assets/645d65d6-73ec-44c8-8286-85a0138093bc">
 
 ## 3: Open een browser om te testen of alles werkt:
-http://localhost
+http://localhost:8080
 
 Het browser window toont nu: 
 
