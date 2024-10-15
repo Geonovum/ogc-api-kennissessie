@@ -12,7 +12,7 @@ npm update
 ```javascript
 const express = require('express')
 const app = express()
-const port = 80
+const port = 8080
 
 app.get('/', function (req, res) {
     res.send('Hello World!')
@@ -45,12 +45,12 @@ Example app listening at http://localhost:80
 
 ## 2: Routes testen (HTTP commando GET)
 
-In je browser: http://localhost
+In je browser: http://localhost:8080
 
 Op het scherm komt:
 >`Hello World!`
 
-In je browser: http://localhost/about
+In je browser: http://localhost:8080/about
 
 Op het scherm komt: 
 > `about!`
@@ -66,7 +66,7 @@ In Insomnia: Maak een nieuw Request en kies dan het POST commando, in het url va
 In het resultaten window komnt nu: 
 > `Got a POST request`
 
-Test ook `PUT` en `DELETE` voor `http://localhost/user`
+Test ook `PUT` en `DELETE` voor `http://localhost:8080/user`
 
 Onze focus gaat vooral naar `GET` in de eerste 10 lessen
 
