@@ -2,7 +2,7 @@
 
 We leren hoe node te starten met een basic javascript script.
 
-Het basic script zet een `webserver` op, die luistert naar `port 80` en antwoord met "Hello World!"
+Het basic script zet een `webserver` op, die luistert naar `port 8080` en antwoord met "Hello World!"
 
 LET OP: WE BOUWEN PROTOTYPE CODE, GEEN PRODUCTIE CODE
 
