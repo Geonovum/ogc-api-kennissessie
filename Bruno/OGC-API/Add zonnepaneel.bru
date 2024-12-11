@@ -1,0 +1,118 @@
+meta {
+  name: Add zonnepaneel
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8089/demoservice/v1/collections/zonnepanelen/items
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type": "Feature",
+    "properties": {
+      "identificatie": "0362100001075350",
+      "bouwjaar": 1965,
+      "status": "Pand in gebruik",
+      "gebruiksdoel": "woonfunctie",
+      "oppervlakte_panelen": 57,
+      "aantal_panelen": 35,
+      "opbrengst": 8764
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            4.854281827593749,
+            52.244902234366975
+          ],
+          [
+            4.854274587374396,
+            52.24481840701631
+          ],
+          [
+            4.854330904546343,
+            52.24481693531471
+          ],
+          [
+            4.854327782226825,
+            52.24477196348706
+          ],
+          [
+            4.854232158039582,
+            52.24477403985068
+          ],
+          [
+            4.85421657359528,
+            52.244774463893236
+          ],
+          [
+            4.854214616421236,
+            52.24475203910705
+          ],
+          [
+            4.85416002325468,
+            52.24475383310859
+          ],
+          [
+            4.854161980293693,
+            52.24477626688319
+          ],
+          [
+            4.854174403881908,
+            52.2449187820011
+          ],
+          [
+            4.854221160594382,
+            52.24491724026003
+          ],
+          [
+            4.854282946817742,
+            52.24491515510474
+          ],
+          [
+            4.854281827593749,
+            52.244902234366975
+          ]
+        ]
+      ]
+    },
+    "id": 2,
+    "links": [
+      {
+        "href": "http://localhost:8089/demoservice/v1/collections/zonnepanelen/items/2?f=json",
+        "rel": "self",
+        "type": "application/geo+json",
+        "title": "Access the features in the collection as json"
+      },
+      {
+        "href": "http://localhost:8089/demoservice/v1/collections/zonnepanelen/items/2?f=html",
+        "rel": "alternate",
+        "type": "text/html",
+        "title": "Access the features in the collection as html"
+      },
+      {
+        "href": "http://localhost:8089/demoservice/v1/collections/zonnepanelen/items/2?f=csv",
+        "rel": "alternate",
+        "type": "text/csv",
+        "title": "Access the features in the collection as csv"
+      },
+      {
+        "href": "http://localhost:8089/demoservice/v1/collections/zonnepanelen?f=json",
+        "rel": "collection",
+        "type": "application/json",
+        "title": "The collection the feature belongs to as json"
+      },
+      {
+        "href": "http://localhost:8089/demoservice/v1/collections/zonnepanelen?f=html",
+        "rel": "alternate",
+        "type": "text/html",
+        "title": "The collection the feature belongs to as html"
+      }
+    ]
+  }
+}
