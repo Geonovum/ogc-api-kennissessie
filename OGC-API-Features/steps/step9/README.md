@@ -102,5 +102,5 @@ JSON output
 Get raw [JSON](http://localhost/amstelveen/collections?f=json)
 
 ## Klaar voor de volgende stap
-https://github.com/geonovum/ogc-api-kennissessie/blob/master/step10/README.md
+Klaar voor [Stap10](./../step10/README.md)!
 

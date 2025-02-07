@@ -76,5 +76,4 @@ JSON Output
 
 
 ## Klaar voor de volgende stap
-https://github.com/geonovum/ogc-api-kennissessie/blob/master/step11/README.md
 

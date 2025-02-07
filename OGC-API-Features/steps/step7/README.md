@@ -49,7 +49,7 @@ router.get('/', function (req, res) {
 })
 ```
 
-De javascript module [landingPage](https://github.com/geonovum/ogc-api-kennissessie/tree/master/step7/landingPage.js) maakt het JSON of HTML antwoord.
+De javascript module [landingPage](./landingPage.js) maakt het JSON of HTML antwoord.
 
 
 ## Testen:
@@ -71,4 +71,4 @@ Landing Page:
 http://localhost/amstelveen?f=html
 
 ## Klaar voor de volgende stap
-https://github.com/geonovum/ogc-api-kennissessie/blob/master/step8/README.md
+Klaar voor [Stap8](./../step8/README.md)!
