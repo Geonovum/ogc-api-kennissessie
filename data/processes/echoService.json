@@ -3,7 +3,7 @@
   "title": "Echo Service",
   "description": "HTTP Echo Service running in a Docker container. Async only.",
   "version": "0.0.1",
-  "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
+  "jobControlOptions": ["async-execute", "dismiss"],
   "outputTransmission": ["value", "reference"],
   "inputs": {
     "uri": {

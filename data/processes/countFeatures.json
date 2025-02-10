@@ -3,7 +3,7 @@
   "title": "Count features",
   "description": "Count the total number of features from an API Features endpoint.",
   "version": "0.0.1",
-  "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
+  "jobControlOptions": ["async-execute", "dismiss"],
   "outputTransmission": ["value", "reference"],
   "inputs": {
     "uri": {
