@@ -1,4 +1,4 @@
-# Stap 2
+# Stap 3
 
 Installatie van Express, het gaat ons leven makkelijker maken om om te gaan met paden in http
 Op de website van [Express](https://expressjs.com) vind je alle information over paden in http. Je hoeft niet naar de Express website te gaan om het te installeren, we installeren Express via de node package manager `npm`
@@ -63,4 +63,4 @@ geeft:
 en dat is prima (voor het moment)
 
 ## Klaar voor de volgende stap
-https://github.com/geonovum/ogc-api-kennissessie/blob/master/step3/README.md
+Klaar voor [Stap4](./../step4/README.md)!

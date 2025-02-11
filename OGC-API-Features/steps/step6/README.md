@@ -87,4 +87,4 @@ In les 7 gaan we de Landing Page responses ook voor de mens leesbaar maken!
 /api en /api.html zijn toegevoegd, maar hoeft niet volgens de spec. Beide documenten kunnen ook elders 'leven'
 
 ## Klaar voor de volgende stap
-https://github.com/geonovum/ogc-api-kennissessie/blob/master/step7/README.md
+Klaar voor [Stap7](./../step7/README.md)!

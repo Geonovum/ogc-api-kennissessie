@@ -1,4 +1,4 @@
-# Stap 3
+# Stap 4
 
 Express routes
 
@@ -71,4 +71,4 @@ Test ook `PUT` en `DELETE` voor `http://localhost:8080/user`
 Onze focus gaat vooral naar `GET` in de eerste 10 lessen
 
 # Klaar voor de volgende stap
-https://github.com/geonovum/ogc-api-kennissessie/blob/master/step4/README.md
+Klaar voor [Stap5](./../step5/README.md)!

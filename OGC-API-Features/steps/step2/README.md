@@ -1,4 +1,4 @@
-# Stap 1, een kind kan de was doen
+# Stap 2, een kind kan de was doen
 
 We leren hoe node te starten met een basic javascript script.
 
@@ -6,7 +6,7 @@ Het basic script zet een `webserver` op, die luistert naar `port 8080` en antwoo
 
 LET OP: WE BOUWEN PROTOTYPE CODE, GEEN PRODUCTIE CODE
 
-## 1: Open folder 'step1'
+## 1: Open folder 'step2'
 
 En selecteer "Index.js"
 
@@ -47,4 +47,4 @@ Het browser window toont nu:
 
 Feestje! 🎉🧆
 ## Klaar voor de volgende stap
-https://github.com/geonovum/ogc-api-kennissessie/blob/master/step2/README.md
+Klaar voor [Stap3](./../step3/README.md)!
