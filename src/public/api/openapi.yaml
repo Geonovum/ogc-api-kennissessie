@@ -1,10 +1,9 @@
 openapi: 3.0.2
 info:
-  title: Geospatial data from Amstelveen in the Netherlands
-  description: Amstelveen is een plaats en gemeente in de Nederlandse provincie
-    Noord-Holland. De bebouwde kom grenst in het noorden aan de stad Amsterdam
-    en ligt niet ver van Schiphol. De gemeente telt 95.007 inwoners en heeft een
-    totale oppervlakte van 44,08 km², waarvan 41,13 km² land en 2,95 km² water.
+  title: Geonovum OGC API Demo Service
+  description: This OGC API Service is provided by Geonovum from instructional
+    purposes only. The code onGitHub is written with readability in mind, not
+    performance.
   contact:
     name: Geonovum
     url: https://geonovum.nl
@@ -14,7 +13,7 @@ info:
     url: https://creativecommons.org/licenses/by/4.0
   version: 1.2.3
 servers:
-  - url: http://192.168.0.231/amstelveen/v1
+  - url: http://localhost:8080/demoservice/v1
 tags: []
 paths:
   /:
@@ -1366,6 +1365,330 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
+  /processes:
+    get:
+      tags:
+        - Processes
+      summary: Retrieve the list of available processes
+      description: The process description contains information about inputs and
+        outputs and a link to the execution-endpoint for the process. The Core
+        does not mandate the use of a specific process description to specify
+        the interface of a process.
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Processes - Part 1"
+        url: https://docs.ogc.org/is/18-062r2/18-062r2.html
+      operationId: getProcesses
+      parameters:
+        - $ref: "#/components/parameters/fCollections"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Processes"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
+  /processes/add:
+    get:
+      tags:
+        - Processes
+      summary: Retrieve a process description
+      description: "The process description contains information about inputs and
+        outputs and a link to the execution-endpoint for the process. The Core
+        does not mandate the use of a specific process description to specify
+        the interface of a process. "
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Processes - Part 1"
+        url: https://docs.ogc.org/is/18-062r2/18-062r2.html
+      operationId: add.getProcesses
+      parameters:
+        - $ref: "#/components/parameters/fProcesses"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
+  /processes/countFeatures:
+    get:
+      tags:
+        - Processes
+      summary: Retrieve a process description
+      description: "The process description contains information about inputs and
+        outputs and a link to the execution-endpoint for the process. The Core
+        does not mandate the use of a specific process description to specify
+        the interface of a process. "
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Processes - Part 1"
+        url: https://docs.ogc.org/is/18-062r2/18-062r2.html
+      operationId: countFeatures.getProcesses
+      parameters:
+        - $ref: "#/components/parameters/fProcesses"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
+  /processes/echo:
+    get:
+      tags:
+        - Processes
+      summary: Retrieve a process description
+      description: "The process description contains information about inputs and
+        outputs and a link to the execution-endpoint for the process. The Core
+        does not mandate the use of a specific process description to specify
+        the interface of a process. "
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Processes - Part 1"
+        url: https://docs.ogc.org/is/18-062r2/18-062r2.html
+      operationId: echo.getProcesses
+      parameters:
+        - $ref: "#/components/parameters/fProcesses"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
+  /processes/add/execution:
+    post:
+      tags:
+        - Processes
+      summary: Process execution
+      description: Create a new job.
+      operationId: execute.add.getProcesses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/execute.yaml
+        description: Mandatory execute request JSON
+        required: true
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "201":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "500":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+  /processes/countFeatures/execution:
+    post:
+      tags:
+        - Processes
+      summary: Process execution
+      description: Create a new job.
+      operationId: execute.countFeatures.getProcesses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/execute.yaml
+        description: Mandatory execute request JSON
+        required: true
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "201":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "500":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+  /processes/echo/execution:
+    post:
+      tags:
+        - Processes
+      summary: Process execution
+      description: Create a new job.
+      operationId: execute.echo.getProcesses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/execute.yaml
+        description: Mandatory execute request JSON
+        required: true
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "201":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "500":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+  /jobs:
+    get:
+      description: Retrieve a list of jobs
+      operationId: getJobs
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Jobs"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+      summary: Retrieve jobs list
+      tags:
+        - Jobs
+  /jobs/{jobId}:
+    delete:
+      description: Cancel / delete job
+      operationId: deleteJob
+      parameters:
+        - description: job identifier
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+      summary: Cancel / delete job
+      tags:
+        - Jobs
+    get:
+      description: Retrieve job details
+      operationId: getJob
+      parameters:
+        - description: job identifier
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/fJob"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+      summary: Retrieve job details
+      tags:
+        - Jobs
+  /jobs{jobId}/results:
+    get:
+      description: Retrieve job results
+      operationId: getJobResults
+      parameters:
+        - description: job identifier
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/fResults"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+      summary: Retrieve job results
+      tags:
+        - Jobs
 components:
   schemas:
     link:
@@ -2050,6 +2373,71 @@ components:
             id_kv:
               type: string
       description: description something
+    Processes:
+      type: object
+      required:
+        - links
+        - processes
+      properties:
+        processes:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/Collection"
+              - $ref: "#/components/schemas/Collection-link"
+        description:
+          type: string
+        title:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/link"
+    process-link:
+      properties:
+        links:
+          items:
+            $ref: "#/components/schemas/link"
+          type: array
+      required:
+        - links
+      type: object
+    Process:
+      type: object
+      required:
+        - id
+        - links
+      properties:
+        itemType:
+          type: string
+        id:
+          type: string
+        description:
+          type: string
+        title:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/link"
+    Jobs:
+      type: object
+      required:
+        - id
+        - links
+      properties:
+        itemType:
+          type: string
+        id:
+          type: string
+        description:
+          type: string
+        title:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/link"
   parameters:
     fCommon:
       name: f
@@ -3315,3 +3703,59 @@ components:
       schema:
         title: id_kv
         type: string
+    fProcesses:
+      name: f
+      in: query
+      description: Select the output format of the response. If no value is provided,
+        the standard HTTP rules apply, i.e., the accept header will be used to
+        determine the format.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        enum:
+          - html
+          - json
+    fProcess:
+      name: f
+      in: query
+      description: Select the output format of the response. If no value is provided,
+        the standard HTTP rules apply, i.e., the accept header will be used to
+        determine the format.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        enum:
+          - html
+          - json
+    fJob:
+      name: f
+      in: query
+      description: Select the output format of the response. If no value is provided,
+        the standard HTTP rules apply, i.e., the accept header will be used to
+        determine the format.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        enum:
+          - html
+          - json
+    fResults:
+      name: f
+      in: query
+      description: Select the output format of the response. If no value is provided,
+        the standard HTTP rules apply, i.e., the accept header will be used to
+        determine the format.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        enum:
+          - html
+          - json

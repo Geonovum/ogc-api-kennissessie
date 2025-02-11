@@ -1,7 +1,8 @@
 # docker file voor ogc wps (pygeopapi) 
 # 
 
-FROM geopython/pygeoapi:latest
+# FROM geopython/pygeoapi:latest
+FROM geopython/pygeoapi:0.19.0
 
 WORKDIR /pygeoapi
 
