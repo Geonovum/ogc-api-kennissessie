@@ -57,7 +57,13 @@ PROCESS_METADATA = {
                 }
             },
     },
-    'example': {}
+    'example': {"inputs": 
+    {
+        "dataset": "http://localhost/collections/bomen/items?f=json&limit=1000", 
+        "object_id": 2069296, 
+        "subject_id": "Meneer van Eik"
+    }
+}
 }
 
 class AanvraagProcessor(BaseProcessor):
@@ -87,8 +93,9 @@ class AanvraagProcessor(BaseProcessor):
 
             
             gdf['kap_aanvraag'] = np.where(gdf['id'].astype(int) == obj_id, subj_name, '0')
+            gdf_out = gdf[gdf['kap_aanvraag'] != '0']
             
-            gdf_out = gdf[['id','leaf_type','geometry','species:nl','kap_aanvraag']]
+            gdf_out = gdf_out[['id','leaf_type','geometry','species:nl','kap_aanvraag']]
             mimetype = 'application/geo+json'
             outputs = {
                         'id': 'output_dataset',
