@@ -25,9 +25,28 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     values.push(parameters.inputs[key]);
   }
 
-  let shellScript = "add.sh";
-  let command = join(__dirname, shellScript);
-  let params = [values[0], values[1]];
+  var command = ''
+  var params = ''
+
+  switch (process.platform) {
+    case "darwin":
+    case "aix":
+    case "freebsd":
+    case "linux":
+    case "openbsd":
+    case "sunos":
+    case "android":
+      let shellScript = "add.sh";
+      command = join(__dirname, shellScript);
+      params = [values[0], values[1]];
+      break;
+    case "win32":
+      let batScript = "add.bat";
+      command = join("cmd.exe");
+      params = ["/c", join(__dirname, batScript), values[0], values[1]];
+      break;
+    default:
+  }
 
   if (isAsync) {
     job.status = "running"; // accepted, successful, failed, dismissed
