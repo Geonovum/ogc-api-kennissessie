@@ -178,7 +178,8 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       let result = {};
       result.id = key;
 
-      if ((output.schema.type = "number")) result.value = Number(child.stdout);
+      if ((output.schema.type = "number")) 
+        result.value = Number(child.stdout);
 
       // TODO: what to do??
       //if (parameterOutput.transmissionMode == "value") content = result;

@@ -35,9 +35,8 @@ export function post(req, res) {
     prefer,
     function (err, content, location) {
       if (err) {
-        res
-          .status(err.code)
-          .json({ code: err.code, description: err.description });
+        res.status(err.code)
+           .json({ code: err.code, description: err.description });
         return;
       }
 

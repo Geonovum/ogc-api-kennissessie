@@ -31,7 +31,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     return callback(
       { code: 400, description: `addNumbersInContainer run only async` },
       undefined
-    );
+    )
   }
 
   job.status = "running"; // accepted, successful, failed, dismissed
@@ -66,22 +66,25 @@ export async function launch(process_, job, isAsync, parameters, callback) {
   });
 */
 
-  // get running containers
-  let data = await docker.command("ps");
-  // is our container already running?
-  const notFound =
-    data.containerList.findIndex((element) => element.image == containerName) <
-    0;
+  try {
+    // get running containers
+    let data = await docker.command("ps")
+    
+    // is our container already running?
+    const notFound = data.containerList.findIndex((element) => element.image == containerName) < 0;
+    if (notFound) {
+      const command = `run -d -p ${port}:80 ${containerName}`;
 
-  if (notFound) {
-    const command = `run -d -p ${port}:80 ${containerName}`;
-
-    let result = await docker.command(command);
-    console.log(result);
-    // give container time to settle
-    await new Promise((r) => setTimeout(r, 1000));
-  } else {
-    console.log(`Container ${containerName} already running. Good.`);
+      let result = await docker.command(command);
+      console.log(result);
+      // give container time to settle
+      await new Promise((r) => setTimeout(r, 1000));
+    } else {
+      console.log(`Container ${containerName} already running. Good.`);
+    }
+  }
+  catch (err) {
+    return callback({ code: 400, description: err.message }, undefined)
   }
 
   let content = {};
