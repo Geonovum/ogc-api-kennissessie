@@ -52,7 +52,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
         if ((output.schema.type = "number")) result.value = Number(d);
 
-        if (parameters.response == "raw") {
+        if (parameters.outputs.sum.transmissionMode == "value") {
           content = result;
         } else if (parameters.response == "document") {
           content.outputs = [];
@@ -70,9 +70,9 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       job.updated = new Date().toISOString();
       job.results = content;
 
-      if (process_.subscriber && process_.subscriber.successUri) {
+      if (parameters.subscriber && parameters.subscriber.successUri) {
         http
-          .post(process_.subscriber.successUri, content)
+          .post(parameters.subscriber.successUri, content)
           .then(function (response) {
             console.log(response);
           })
