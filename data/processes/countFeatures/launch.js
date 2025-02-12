@@ -77,9 +77,9 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     job.updated = new Date().toISOString();
     job.results = content;
 
-    if (process_.subscriber && process_.subscriber.successUri) {
+    if (parameters.subscriber && parameters.subscriber.successUri) {
       http
-        .post(process_.subscriber.successUri, content)
+        .post(parameters.subscriber.successUri, content)
         .then(function (response) {
           console.log(response);
         })
