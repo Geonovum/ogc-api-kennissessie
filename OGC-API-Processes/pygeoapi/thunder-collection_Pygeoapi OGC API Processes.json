@@ -1,0 +1,55 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "Pygeoapi OGC API Processes",
+    "collectionId": "ad1e5fb7-d435-4b90-85eb-2b5c84c17c91",
+    "dateExported": "2025-02-11T16:19:39.262Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "56b5c5eb-39a6-494b-8947-ac47083357d9",
+            "colId": "ad1e5fb7-d435-4b90-85eb-2b5c84c17c91",
+            "containerId": "",
+            "name": "squared",
+            "url": "http://localhost:5000/processes/squared/execution",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2025-02-11T16:15:58.435Z",
+            "modified": "2025-02-11T16:15:58.435Z",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "{\"inputs\": \r\n    {\r\n        \"number-or-integer\": 3\r\n    }\r\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "595db5bf-737f-4235-9edd-99175ac6aaee",
+            "colId": "ad1e5fb7-d435-4b90-85eb-2b5c84c17c91",
+            "containerId": "",
+            "name": "Aanvraag",
+            "url": "http://localhost:5000/processes/aanvraag/execution",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2025-02-11T16:16:10.066Z",
+            "modified": "2025-02-11T16:17:12.938Z",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "{\"inputs\": \r\n    {\r\n        \"dataset\": \"http://localhost/collections/bomen/items?f=json&limit=1000\", \r\n        \"object_id\": 2069296, \r\n        \"subject_id\": \"Meneer van Eik\"\r\n    }\r\n}",
+                "form": []
+            }
+        }
+    ],
+    "ref": "gTJHud8AvWuAcZqXWIjTEv24HQZARKZQUuJXToZDw8NejeMT1COfBTcHbM-Fj9Jo4odMdOf9DK1rlfgydxxSTQ"
+}

@@ -156,5 +156,4 @@ Name | Description
 [Groendienst](http://localhost/amstelveen/collections/Groendienst/items)|Groendienst uit de Informatie Vlaanderen API voor de gemeente amstelveen
 
 ## Klaar voor de volgende stap
-https://github.com/geonovum/ogc-api-kennissessie/blob/master/step9/README.md
-
+Klaar voor [Stap9](./../step9/README.md)!

@@ -4,6 +4,14 @@ Repository ten behoeve van kennisdeling voor het bouwen van een OGC API Features
 
 Dit is geen operationele service.
 
+## OGC API Features stap voor stap
+
+in de map [OGC-API-Features](./OGC-API-Features/)
+
+## OGC API Processes
+
+in de map [OGC-API-Processes](./OGC-API-Processes/)
+
 ## Start de server lokaal
 
 1. Installeer de dependencies van de server met Node en `node install`.
@@ -21,6 +29,9 @@ Dit is geen operationele service.
 ## Start the service from Docker Desktop
 
 1. zorg dat docker desktop en docker compose geinstalleerd zijn.
-2. vanaf de commandline: `docker compose up`
+2. vanaf de commandline: in de map `docker compose up`
+
+ga naar http://localhost:8080/demoservice/v1/
+
 
 On the [wiki](https://github.com/Geonovum/ogc-api-kennissessie/wiki/Starting-the-service-on-Docker-Desktop)

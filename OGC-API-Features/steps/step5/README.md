@@ -80,4 +80,4 @@ http://localhost/amstelveen/v1
 > `amstelveen landing page`
 
 ## Klaar voor de volgende stap
-https://github.com/geonovum/ogc-api-kennissessie/blob/master/step6/README.md
+Klaar voor [Stap6](./../step6/README.md)!
