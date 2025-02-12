@@ -1,0 +1,36 @@
+meta {
+  name: Execute Add async
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/demoservice/v1/processes/add/execution
+  body: json
+  auth: none
+}
+
+headers {
+  Prefer: respond-async
+}
+
+body:json {
+  {
+    "inputs": {
+      "number1": 19,
+      "number2": 7
+    },
+    "outputs": {
+      "sum": {
+        "transmissionMode": [
+          "value"
+        ]
+      }
+    },
+    "subscriber": {
+      "successUri": ":serviceUrl/callback/:jobId?type=success",
+      "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
+      "failedUri": ":serviceUrl/callback/:jobId?type=failed"
+    }
+  }
+}

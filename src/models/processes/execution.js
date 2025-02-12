@@ -88,6 +88,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
     process_.location.replace(/\.[^/.]+$/, ""),
     "launch.js"
   );
+
   const fileExists = existsSync(pathToLauncher);
   if (!fileExists)
     return callback(

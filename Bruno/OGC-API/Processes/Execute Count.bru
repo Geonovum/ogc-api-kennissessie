@@ -1,0 +1,31 @@
+meta {
+  name: Execute Count
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/demoservice/v1/processes/countFeatures/execution
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "inputs": {
+      "uri": "http://localhost:8080/demoservice/v1/collections/NAPPeilmerken/items"
+    },
+    "outputs": {
+      "count": {
+        "transmissionMode": [
+          "value"
+        ]
+      }
+    },
+    "subscriber": {
+      "successUri": ":serviceUrl/callback/:jobId?type=success",
+      "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
+      "failedUri": ":serviceUrl/callback/:jobId?type=failed"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+meta {
+  name: Execute Add
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/demoservice/v1/processes/add/execution
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "inputs": {
+      "number1": 19,
+      "number2": 7
+    },
+    "outputs": {
+      "sum": {
+        "transmissionMode": [
+          "value"
+        ]
+      }
+    },
+    "subscriber": {
+      "successUri": ":serviceUrl/callback/:jobId?type=success",
+      "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
+      "failedUri": ":serviceUrl/callback/:jobId?type=failed"
+    }
+  }
+}

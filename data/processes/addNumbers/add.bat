@@ -1,9 +1,7 @@
 @ECHO OFF
 
-echo %1 %2
+@set a=%1%
+@set b=%2
+@set /a "sum=%a%+%b%"
 
-set /a v = %1
-set /a v2 = %1 + 1
-set /a v3 = %1 * 2
-
-echo %v% %v2% %v3%
+echo %sum%

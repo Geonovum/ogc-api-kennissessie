@@ -94,6 +94,10 @@ export function get(neutralUrl, format, jobId, callback) {
  * @param {*} callback
  */
 export function execute(path, process_, job, isAsync, parameters, callback) {
+
+  if (process.platform == 'win32')
+    path = 'file://' + path;
+
   try {
     import(path)
       .then((module) => {

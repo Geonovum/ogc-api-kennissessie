@@ -1,0 +1,35 @@
+meta {
+  name: Execute echo async
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8080/demoservice/v1/processes/echo/execution
+  body: json
+  auth: none
+}
+
+headers {
+  Prefer: respond-async
+}
+
+body:json {
+  {
+    "inputs": {
+      "uri": "http://localhost:8080/demoservice/v1/collections/NAPPeilmerken/items?f=json"
+    },
+    "outputs": {
+      "echo": {
+        "transmissionMode": [
+          "value"
+        ]
+      }
+    },
+    "subscriber": {
+      "successUri": ":serviceUrl/callback/:jobId?type=success",
+      "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
+      "failedUri": ":serviceUrl/callback/:jobId?type=failed"
+    }
+  }
+}
