@@ -26,7 +26,7 @@ function post(neutralUrl, jobId, query, callback) {
   }
 */
 
-  let content = {};
+  let content = job.results;
   callback(undefined, content);
 }
 

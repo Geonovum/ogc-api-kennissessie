@@ -18,6 +18,7 @@ export function post(req, res) {
   }
 
   var jobId = req.params.jobId;
+  var typeResult = req.query.type
 
   var formatFreeUrl = utils.getFormatFreeUrl(req);
 
@@ -25,7 +26,7 @@ export function post(req, res) {
   var format = accept.type(["json"]);
 
   console.log(
-    `call received from jobID: ${jobId}, type is '${req.query.type}'`
+    `call received from jobID: ${jobId}, type is '${typeResult}'`
   );
 
   callback.post(formatFreeUrl, jobId, req.query, function (err, content) {
@@ -36,6 +37,10 @@ export function post(req, res) {
       return;
     }
 
+    console.log(
+      `result '${JSON.stringify(content)}'`
+    );
+  
     switch (format) {
       case "json":
         res.status(200).json(content);
