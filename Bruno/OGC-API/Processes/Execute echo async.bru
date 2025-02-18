@@ -17,7 +17,7 @@ headers {
 body:json {
   {
     "inputs": {
-      "uri": "http://localhost:8080/demoservice/v1/collections/NAPPeilmerken/items?f=json"
+      "uri": "http://localhost:3000/param?query=demo"
     },
     "outputs": {
       "echo": {
@@ -26,6 +26,9 @@ body:json {
         ]
       }
     },
+    "response": [
+      "raw"
+    ],
     "subscriber": {
       "successUri": ":serviceUrl/callback/:jobId?type=success",
       "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
