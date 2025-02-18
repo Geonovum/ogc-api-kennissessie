@@ -100,7 +100,6 @@ class SquaredProcessor(BaseProcessor):
 
     def execute(self, data):
 
-        sc = None
         value = None
         mimetype = 'application/json'
         number_or_integer = data.get('number-or-integer')
