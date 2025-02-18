@@ -1,0 +1,19 @@
+meta {
+  name: execute localOutlier
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:5000/processes/localoutlier/execution
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "inputs": {
+      "dataset": "http://localhost/collections/knmi_meetstations/items?f=json&limit=1000"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+meta {
+  name: execute aanvraag
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5000/processes/aanvraag/execution
+  body: json
+  auth: none
+}
+
+body:json {
+  {"inputs": 
+      {
+          "dataset": "http://localhost/collections/bomen/items?f=json&limit=1000", 
+          "object_id": 2069296, 
+          "subject_id": "Meneer van Eik"
+      }
+  }
+}
