@@ -14,7 +14,7 @@ in de map [OGC-API-Processes](./OGC-API-Processes/)
 
 ## Start de server lokaal
 
-1. Installeer de dependencies van de server met Node en `node install`.
+1. Installeer de dependencies van de server met Node en `npm install`.
 2. Start de server op één van de volgende manieren:
 
    1. Vanaf de commandline: `node --env-file=.env src/index.js`
