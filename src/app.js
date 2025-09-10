@@ -39,7 +39,7 @@ if (global.config.server && global.config.server.prettyPrint)
   app.set("json spaces", 2); // TODO: only when running DEBUG
 
 // Deal with 'options' prior to cors,
-//app.options("/*", mwOptions);
+//app.options("*", mwOptions);
 
 // (OAPIF P1) 7.5 Servers implementing CORS will implement the method OPTIONS, too.
 // (OAPIF P1) 7.8 Recommendation 5 If the server is intended to be accessed from the browser,

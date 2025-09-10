@@ -97,9 +97,11 @@ function ifTrailingSlash(req, res) {
 
 function checkForAllowedQueryParams(query, params) {
   var rejected = [];
-  for (var propName in query) {
-    if (query.hasOwnProperty(propName))
-      if (!params.includes(propName)) rejected.push(propName);
+  if (query && typeof query === 'object') {
+    for (var propName in query) {
+      if (Object.prototype.hasOwnProperty.call(query, propName))
+        if (!params.includes(propName)) rejected.push(propName);
+    }
   }
   return rejected;
 }
