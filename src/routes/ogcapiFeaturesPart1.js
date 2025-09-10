@@ -35,7 +35,8 @@ router.get("/conformance", getConformance);
 // server and which can be used by developers to understand the API, by software clients to connect
 // to the server, or by development tools to support the implementation of servers and clients.
 // Requirement 3 and Permission 1
-router.get("/api.:ext?", getAPI);
+router.get("/api", getAPI);
+router.get("/api.:ext", getAPI);
 
 // OGC API Common Part 2 - Collections
 

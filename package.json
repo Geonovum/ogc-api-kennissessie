@@ -1,19 +1,25 @@
 {
+  "name": "ogc-api-kennissessie",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Repository ten behoeve van kennisdeling voor het bouwen van een OGC API Features & Processes node app.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@turf/turf": "^7.0.0",
-    "axios": "^1.7.5",
+    "@turf/turf": "^7.2.0",
     "cors": "^2.8.5",
-    "debug": "^4.3.5",
-    "docker-cli-js": "^2.10.0",
-    "express": "^4.21.0",
-    "morgan": "^1.10.0",
-    "proj4": "^2.11.0",
+    "express": "^5.1.0",
+    "morgan": "^1.10.1",
+    "proj4": "^2.19.10",
     "pug": "^3.0.3",
-    "semver": "^7.6.3",
-    "serve-favicon": "^2.5.0",
+    "semver": "^7.7.2",
+    "serve-favicon": "^2.5.1",
     "url-join": "^5.0.0",
     "xml2js": "^0.6.2",
-    "yaml": "^2.5.0"
+    "yaml": "^2.8.1"
   }
 }

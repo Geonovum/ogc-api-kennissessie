@@ -39,7 +39,7 @@ if (global.config.server && global.config.server.prettyPrint)
   app.set("json spaces", 2); // TODO: only when running DEBUG
 
 // Deal with 'options' prior to cors,
-app.options("*", mwOptions);
+//app.options("/*", mwOptions);
 
 // (OAPIF P1) 7.5 Servers implementing CORS will implement the method OPTIONS, too.
 // (OAPIF P1) 7.8 Recommendation 5 If the server is intended to be accessed from the browser,
@@ -74,20 +74,20 @@ app.use(apiVersion);
 // Mount API on this path
 // (ADR) /core/uri-version: Include the major version number in the URI
 // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/uri-version
-const serviceRoot = `/${process.env.ID}/v${major(process.env.APIVERSION)}`;
+app.serviceRoot = `/${process.env.ID}/v${major(process.env.APIVERSION)}`;
 
-console.log(`serviceRoot ${serviceRoot}`)
+//console.log(`serviceRoot ${serviceRoot}`)
 
-app.use(serviceRoot, oapifp1);
-app.use(serviceRoot, oapifp3);
-app.use(serviceRoot, oapifp4);
-app.use(serviceRoot, oapifp5);
-app.use(serviceRoot, oapipp1);
+app.use(app.serviceRoot, oapifp1);
+app.use(app.serviceRoot, oapifp3);
+app.use(app.serviceRoot, oapifp4);
+app.use(app.serviceRoot, oapifp5);
+app.use(app.serviceRoot, oapipp1);
 
 // (ADR) /core/http-methods: Only apply standard HTTP methods
 // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/http-methods
-app.all("*", function (req, res, next) {
+app.use((req, res) => {
   res
     .status(405)
-    .json({ code: `Method Not Allowed`, description: `Not allowed` });
+    .json({ code: "Method Not Allowed", description: "Not allowed" });
 });

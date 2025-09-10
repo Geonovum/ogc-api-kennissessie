@@ -5,7 +5,7 @@ import { readProcesses } from "./database/processes.js";
 import { readMetadata } from "./database/metadata.js";
 
 const __dirname = import.meta.dirname;
-if (__dirname === undefined) console.log("need node 20.16 or higher");
+if (__dirname === undefined) console.log("need node 22 or higher (and Express 5 or higher)");
 
 // Load data (TODO: async)
 try {
@@ -38,6 +38,6 @@ app.listen(process.env.PORT, function (error) {
   }
 
   console.log(
-    `OGC API Feature & Processes listening on port ${process.env.PORT}`
+    `OGC API Feature & Processes listening on port :${process.env.PORT}${app.serviceRoot}`
   );
 });
