@@ -1,7 +1,6 @@
 # version: '3'
 services:
-  web:
-    image: okapi
+  ogc-api:
     build: .
     # networks:
     #   - backend

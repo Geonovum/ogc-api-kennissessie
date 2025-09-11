@@ -1,4 +1,5 @@
 import { join } from "path";
+import { networkInterfaces } from "os";
 
 var _formats = ["json", "html", "csv"];
 var _encodings = ["application/json", "text/html", "text/csv"];
@@ -139,6 +140,27 @@ function checkNumeric(value, name, res) {
   return true;
 }
 
+// Function to get all bindable IPv4 addresses
+function getBindableAddresses() {
+  const interfaces = networkInterfaces();
+  const addresses = [];
+  
+  for (const [name, nets] of Object.entries(interfaces)) {
+    for (const net of nets) {
+      // Skip internal (i.e. 127.0.0.1) and non-IPv4 addresses
+      if (!net.internal && net.family === 'IPv4') {
+        addresses.push({
+          interface: name,
+          address: net.address,
+          family: net.family
+        });
+      }
+    }
+  }
+  
+  return addresses;
+}
+
 export default {
   getServiceUrl,
   ISODateString,
@@ -151,4 +173,5 @@ export default {
   getFormatFreeUrl,
   checkForAllowedQueryParams,
   checkNumeric,
+  getBindableAddresses,
 };
