@@ -1,4 +1,5 @@
 import * as turf from "@turf/turf";
+import RBush from "rbush";
 
 function getId(dataDef) {
   if (dataDef.schema == undefined || dataDef.schema.properties == undefined)
@@ -26,6 +27,26 @@ function getDateTimeFromSchema(schema) {
   }
 
   return;
+}
+
+// Create spatial index for efficient bbox queries
+function createSpatialIndex(features) {
+  const tree = new RBush();
+  
+  // Add each feature to the spatial index
+  const items = features.map((feature, index) => {
+    const bbox = turf.bbox(feature);
+    return {
+      minX: bbox[0],
+      minY: bbox[1], 
+      maxX: bbox[2],
+      maxY: bbox[3],
+      featureIndex: index // Store reference to original feature
+    };
+  });
+  
+  tree.load(items);
+  return tree;
 }
 
 export function makeOAPIF(geojson, dataDef) {
@@ -137,6 +158,9 @@ export function makeOAPIF(geojson, dataDef) {
     geojson.extent.temporal.interval[0] = minDate;
     geojson.extent.temporal.interval[1] = maxDate;
   }
+
+  // Create spatial index for efficient bbox queries
+  geojson.spatialIndex = createSpatialIndex(geojson.features);
 
   return geojson;
 }

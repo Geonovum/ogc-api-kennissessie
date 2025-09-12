@@ -79,6 +79,15 @@ var dates = {
   },
 };
 
+// Helper function to ensure we have a copy of features when modifications are needed
+function ensureFeaturesCopy(features, featuresModified) {
+  if (!featuresModified) {
+    // Create shallow copy only when first modification is needed
+    return features.map(feature => ({ ...feature }));
+  }
+  return features;
+}
+
 function getPaginationLinks(links, options) {
   // Use the self link as the basis for 'first', 'next' and 'previous'
   var paginationBase = links.filter((l) => l.rel === "self")[0];
@@ -211,16 +220,18 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
 
   var content = getContent(neutralUrl, format, collection);
 
-  // make local copy to do subtraction (limit, offset, bbox,...) on
-  //var features = content.features
-  var features = structuredClone(content.features); // deep copy for skipGeometry (i don't understand for the moment)
+  // Use original features array - we'll create copies only when needed for modifications
+  var features = content.features;
+  var featuresModified = false; // Track if we need to create copies
 
   var doSkipGeometry = false;
   var doProperties = [];
 
   var _query = query;
   if (_query) {
-    // simple queries that limit the features go on top. Its better to have the complex (geo) queries on smaller features collections
+    // PHASE 1: Fast filters that reduce dataset size early
+    // Apply these filters first to minimize expensive operations on smaller datasets
+    
     if (_query.datetime) {
       var datetimes = _query.datetime.split("/");
       if (datetimes.length <= 0 || datetimes.length > 2)
@@ -327,34 +338,33 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         delete _query["bbox-crs"];
       }
 
-      //      features.forEach((feature) => {if (!booleanWithin(feature, bbox))   console.log(feature)})
-
-      features = features.filter((feature) =>
-        turf.booleanWithin(feature, bbox)
-      );
+      // Use spatial index for efficient bbox queries
+      if (collection.spatialIndex) {
+        // Get bbox coordinates for spatial index query
+        const bboxCoords = turf.bbox(bbox);
+        const candidates = collection.spatialIndex.search({
+          minX: bboxCoords[0],
+          minY: bboxCoords[1],
+          maxX: bboxCoords[2],
+          maxY: bboxCoords[3]
+        });
+        
+        // Get the actual features from the candidate indices
+        features = candidates.map(item => features[item.featureIndex]);
+        
+        // Still need to do precise intersection check for complex geometries
+        // (spatial index only does bounding box intersection)
+        features = features.filter((feature) =>
+          turf.booleanWithin(feature, bbox)
+        );
+      } else {
+        // Fallback to linear scan if no spatial index available
+        features = features.filter((feature) =>
+          turf.booleanWithin(feature, bbox)
+        );
+      }
 
       delete _query.bbox;
-    }
-
-    if (_query.crs) {
-      var toEpsg = utils.UriToEPSG(query.crs);
-      features = projgeojson.projectFeatureCollection(
-        features,
-        "EPSG:4326",
-        toEpsg
-      );
-      if (features == undefined)
-        return callback(
-          {
-            httpCode: 400,
-            code: `Bad Request`,
-            description: `Invalid operator: ${query.crs}`,
-          },
-          undefined
-        );
-
-      content.headerContentCrs = query.crs;
-      delete _query.crs;
     }
 
     var filterLang = "filter";
@@ -390,9 +400,38 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       delete _query.filter;
     }
 
+    // Attribute-based filtering - fast filter, run early
+    for (var attributeName in _query) {
+      // is attribute part of the queryables?
+      const hasAttribute = attributeName in collection.queryables;
+      if (hasAttribute) {
+        var targetValue = _query[attributeName];
+        features = features.filter(
+          (element) => element.properties[attributeName] == targetValue
+        );
+      } else
+        return callback(
+          {
+            httpCode: 400,
+            code: `The following query parameters are rejected: ${attributeName}`,
+            description:
+              "Valid parameters for this request are " + collection.queryables,
+          },
+          undefined
+        );
+    }
+
+    // PHASE 2: Expensive operations on filtered dataset
+    // These operations are computationally expensive and should run on smaller datasets
+    
     if (_query["zoom-level"]) {
       let zoomLevel = Number(_query["zoom-level"]);
       let tolerance = zoomLevel;
+      
+      // Create copies only when we need to modify geometry
+      features = ensureFeaturesCopy(features, featuresModified);
+      featuresModified = true;
+      
       features.forEach((feature) => {
         var options = {};
         options.tolerance = tolerance;
@@ -401,6 +440,28 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         feature = turf.simplify(feature, options);
       });
       delete _query["zoom-level"];
+    }
+
+    // CRS transformation - expensive operation, run after filtering
+    if (_query.crs) {
+      var toEpsg = utils.UriToEPSG(query.crs);
+      features = projgeojson.projectFeatureCollection(
+        features,
+        "EPSG:4326",
+        toEpsg
+      );
+      if (features == undefined)
+        return callback(
+          {
+            httpCode: 400,
+            code: `Bad Request`,
+            description: `Invalid operator: ${query.crs}`,
+          },
+          undefined
+        );
+
+      content.headerContentCrs = query.crs;
+      delete _query.crs;
     }
 
     // (OAPIF P8) Recommendation 1 The q operator SHOULD, at least, be applied to the following resource properties if present:
@@ -420,6 +481,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       delete _query.q;
     }
 
+    // Sorting - expensive operation, run after filtering
     if (_query.sortby) {
       // (OAPIF P8) Requirement 6A: If the sortby parameter is specified, then the resources in a response SHALL be ordered by
       //            the keys and sort directions (i.e. ascending or descending) specified.
@@ -459,32 +521,14 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       delete _query.sortby;
     }
 
+    // PHASE 3: Final modifications (skipGeometry, properties)
+    // These modify the features and should be done last
+    
     if (_query.skipGeometry === "true") doSkipGeometry = true;
     delete _query.skipGeometry;
 
     if (_query.properties) doProperties = _query.properties.split(",");
     delete _query.properties;
-
-    // Filter parameters as query (TODO: using JSONPath Plus, https://github.com/JSONPath-Plus/JSONPath)
-    for (var attributeName in _query) {
-      // is attribute part of the queryables?
-      const hasAttribute = attributeName in collection.queryables;
-      if (hasAttribute) {
-        var targetValue = _query[attributeName];
-        features = features.filter(
-          (element) => element.properties[attributeName] == targetValue
-        );
-      } else
-        return callback(
-          {
-            httpCode: 400,
-            code: `The following query parameters are rejected: ${attributeName}`,
-            description:
-              "Valid parameters for this request are " + collection.queryables,
-          },
-          undefined
-        );
-    }
   }
 
   content.numberMatched = features.length;
@@ -496,12 +540,21 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     );
   else content.features = features;
 
-  if (doSkipGeometry)
+  if (doSkipGeometry) {
+    // Create copies only when we need to modify geometry
+    features = ensureFeaturesCopy(features, featuresModified);
+    featuresModified = true;
+    
     features.forEach(function (feature) {
       delete feature.geometry;
     });
+  }
 
   if (doProperties.length > 0) {
+    // Create copies only when we need to modify properties
+    features = ensureFeaturesCopy(features, featuresModified);
+    featuresModified = true;
+    
     features.forEach(function (feature) {
       for (var propertyName in feature.properties)
         if (!doProperties.includes(propertyName))
