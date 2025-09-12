@@ -1,37 +1,37 @@
-# OGC API kennissessie
+# OGC API Knowledge Session
 
-Repository ten behoeve van kennisdeling voor het bouwen van een OGC API Features & Processes node app.
+Repository for knowledge sharing on building an OGC API Features & Processes node app.
 
-Dit is geen operationele service.
+This is not an operational service.
 
-## OGC API Features stap voor stap
+## OGC API Features step by step
 
-in de map [OGC-API-Features](./OGC-API-Features/)
+in the folder [OGC-API-Features](./OGC-API-Features/)
 
 ## OGC API Processes
 
-in de map [OGC-API-Processes](./OGC-API-Processes/)
+in the folder [OGC-API-Processes](./OGC-API-Processes/)
 
-## Start de server lokaal
+## Start the server locally
 
-1. Installeer de dependencies van de server met Node en `npm install`.
-2. Start de server op één van de volgende manieren:
+1. Install the server dependencies with Node and `npm install`.
+2. Start the server in one of the following ways:
 
-   1. Vanaf de commandline: `node --env-file=.env src/index.js`
-   2. In Visual Studio Code: er is een [.vscode/launch.json](.vscode/launch.json) bestand meegeleverd, waarmee met een **druk op F5** de server start.
+   1. From the command line: `node --env-file=.env src/index.js`
+   2. In Visual Studio Code: a [.vscode/launch.json](.vscode/launch.json) file is included, with which the server starts with a **press of F5**.
 
-3. De server start, maar mogelijk is poort 8080 niet beschikbaar.
-   1. Wijzig dan in het bestand [`.env`](.env) de regel `PORT=8080` naar een niet-gepriviligeerd, hoger poortnummer, bijv. `PORT=8085`.
+3. The server starts, but port 8080 may not be available.
+   1. Then change in the [`.env`](.env) file the line `PORT=8080` to a non-privileged, higher port number, e.g. `PORT=8085`.
 
-4. Open in een webbrower de service op `http://localhost:8080/{ID}/v{APIVERSION}`.
-   1. Bijv. als het poortnummer is verhoogd: [http://localhost:8085/demoservice/v1/](http://localhost:8085/demoservice/v1/)
+4. Open the service in a web browser at `http://localhost:8080/{ID}/v{APIVERSION}`.
+   1. E.g. if the port number has been increased: [http://localhost:8080/{ID}/v1/](http://localhost:8080/{ID}/v1/)
 
 ## Start the service from Docker Desktop
 
-1. zorg dat docker desktop en docker compose geinstalleerd zijn.
-2. vanaf de commandline: in de map `docker compose up`
+1. Make sure Docker Desktop and Docker Compose are installed.
+2. From the command line: in the folder `docker compose up`
 
-ga naar http://localhost:8080/demoservice/v1/
+go to http://localhost:8080/{ID}/v1/
 
 
 On the [wiki](https://github.com/Geonovum/ogc-api-kennissessie/wiki/Starting-the-service-on-Docker-Desktop)
