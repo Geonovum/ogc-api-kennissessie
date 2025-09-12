@@ -1,0 +1,24 @@
+meta {
+  name: items with filter-lang
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?filter-lang='cql'&filter=aantal_panelen eq 11
+  body: none
+  auth: inherit
+}
+
+params:query {
+  filter-lang: 'cql'
+  filter: aantal_panelen eq 11
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

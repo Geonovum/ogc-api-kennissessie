@@ -1,0 +1,24 @@
+meta {
+  name: items with filter2
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?filter=bouwjaar eq 1995 and aantal_panelen eq 11&f=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  filter: bouwjaar eq 1995 and aantal_panelen eq 11
+  f: json
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

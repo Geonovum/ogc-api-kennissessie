@@ -1,0 +1,23 @@
+meta {
+  name: items properties
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?properties=fid,bouwjaar
+  body: none
+  auth: inherit
+}
+
+params:query {
+  properties: fid,bouwjaar
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

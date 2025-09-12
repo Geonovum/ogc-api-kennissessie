@@ -1,0 +1,24 @@
+meta {
+  name: items sort
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?sortby=+bouwjaar
+  body: none
+  auth: inherit
+}
+
+params:query {
+  sortby: +bouwjaar
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+  Accept: application/geo+json
+}
+
+settings {
+  encodeUrl: true
+}

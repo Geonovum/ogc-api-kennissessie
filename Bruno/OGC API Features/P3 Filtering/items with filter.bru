@@ -1,0 +1,24 @@
+meta {
+  name: items with filter
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?bouwjaar=1972&f=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  bouwjaar: 1972
+  f: json
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,23 @@
+meta {
+  name: item get crs
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?crs=http://www.opengis.net/def/crs/EPSG/0/28992
+  body: none
+  auth: inherit
+}
+
+params:query {
+  crs: http://www.opengis.net/def/crs/EPSG/0/28992
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

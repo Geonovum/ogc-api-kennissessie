@@ -1,0 +1,19 @@
+meta {
+  name: Conformance
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{serviceHost}}/conformance
+  body: none
+  auth: inherit
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

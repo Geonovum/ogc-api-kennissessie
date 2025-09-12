@@ -1,0 +1,19 @@
+meta {
+  name: feature delete
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{serviceHost}}/collections/{{dataset}}/items/2
+  body: none
+  auth: inherit
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

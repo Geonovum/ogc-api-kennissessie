@@ -1,0 +1,19 @@
+meta {
+  name: API.json
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{serviceHost}}/api.yaml
+  body: none
+  auth: inherit
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

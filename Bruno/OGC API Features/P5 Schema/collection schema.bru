@@ -1,0 +1,23 @@
+meta {
+  name: collection schema
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/schema?f=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  f: json
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

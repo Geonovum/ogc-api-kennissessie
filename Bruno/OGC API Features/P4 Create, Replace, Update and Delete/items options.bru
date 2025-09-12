@@ -1,0 +1,19 @@
+meta {
+  name: items options
+  type: http
+  seq: 2
+}
+
+options {
+  url: {{serviceHost}}/collections/{{dataset}}/items
+  body: none
+  auth: inherit
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

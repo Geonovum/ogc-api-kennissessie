@@ -1,0 +1,23 @@
+meta {
+  name: item get
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items/1?f=html
+  body: none
+  auth: inherit
+}
+
+params:query {
+  f: html
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

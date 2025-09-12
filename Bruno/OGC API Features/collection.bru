@@ -1,0 +1,24 @@
+meta {
+  name: collection
+  type: http
+  seq: 23
+}
+
+get {
+  url: {{serviceHost}}/collections/zonnepanelen/items/4793?f=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  f: json
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+  Accept: application/json,application/javascript,text/javascript,text/json
+}
+
+settings {
+  encodeUrl: true
+}

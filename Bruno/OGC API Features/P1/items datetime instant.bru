@@ -1,0 +1,23 @@
+meta {
+  name: items datetime instant
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?datetime=1980
+  body: none
+  auth: inherit
+}
+
+params:query {
+  datetime: 1980
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

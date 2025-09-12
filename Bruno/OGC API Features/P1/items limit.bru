@@ -1,0 +1,23 @@
+meta {
+  name: items limit
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?boupjaar=1980
+  body: none
+  auth: inherit
+}
+
+params:query {
+  boupjaar: 1980
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

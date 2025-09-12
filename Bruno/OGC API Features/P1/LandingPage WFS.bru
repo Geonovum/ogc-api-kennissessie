@@ -1,0 +1,24 @@
+meta {
+  name: LandingPage WFS
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{serviceHost}}?SERVICE=WFS&REQUEST=GetCapabilities/
+  body: none
+  auth: inherit
+}
+
+params:query {
+  SERVICE: WFS
+  REQUEST: GetCapabilities/
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

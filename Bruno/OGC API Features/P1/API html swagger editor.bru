@@ -1,0 +1,23 @@
+meta {
+  name: API html swagger editor
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{serviceHost}}/api?f=html
+  body: none
+  auth: inherit
+}
+
+params:query {
+  f: html
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,24 @@
+meta {
+  name: items bbox with another crs
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?bbox=115665.4836,475920.0115,117732.2248,478060.0394&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/28992
+  body: none
+  auth: inherit
+}
+
+params:query {
+  bbox: 115665.4836,475920.0115,117732.2248,478060.0394
+  bbox-crs: http://www.opengis.net/def/crs/EPSG/0/28992
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

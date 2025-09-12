@@ -1,0 +1,24 @@
+meta {
+  name: items skipGeometry
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?f=json&skipGeometry=true
+  body: none
+  auth: inherit
+}
+
+params:query {
+  f: json
+  skipGeometry: true
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}

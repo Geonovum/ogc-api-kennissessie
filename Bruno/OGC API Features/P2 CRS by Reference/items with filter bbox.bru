@@ -1,0 +1,28 @@
+meta {
+  name: items with filter bbox
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?bbox=4.8,52.2,4.81,52.3&f=json
+  body: none
+  auth: inherit
+}
+
+params:query {
+  bbox: 4.8,52.2,4.81,52.3
+  f: json
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  westwijk bbox 4.810939,52.269891,4.840980,52.289268
+}

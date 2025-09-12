@@ -1,0 +1,19 @@
+meta {
+  name: collection sortables
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/sortables
+  body: none
+  auth: inherit
+}
+
+headers {
+  User-Agent: insomnia/9.3.2
+}
+
+settings {
+  encodeUrl: true
+}
