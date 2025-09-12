@@ -4,80 +4,6 @@ import { getDatabases } from "../../database/database.js";
 import utils from "../../utils/utils.js";
 import projgeojson from "../../utils/proj4.js";
 
-var dates = {
-  convert: function (d) {
-    // Converts the date in d to a date-object. The input can be:
-    //   a date object: returned without modification
-    //  an array      : Interpreted as [year,month,day]. NOTE: month is 0-11.
-    //   a number     : Interpreted as number of milliseconds
-    //                  since 1 Jan 1970 (a timestamp)
-    //   a string     : Any format supported by the javascript engine, like
-    //                  "YYYY/MM/DD", "MM/DD/YYYY", "Jan 31 2009" etc.
-    //  an object     : Interpreted as an object with year, month and date
-    //                  attributes.  **NOTE** month is 0-11.
-    return d.constructor === Date
-      ? d
-      : d.constructor === Array
-      ? new Date(d[0], d[1], d[2])
-      : d.constructor === Number
-      ? new Date(d)
-      : d.constructor === String
-      ? new Date(d)
-      : typeof d === "object"
-      ? new Date(d.year, d.month, d.date)
-      : NaN;
-  },
-  compare: function (a, b) {
-    // Compare two dates (could be of any type supported by the convert
-    // function above) and returns:
-    //  -1 : if a < b
-    //   0 : if a = b
-    //   1 : if a > b
-    // NaN : if a or b is an illegal date
-    // NOTE: The code inside isFinite does an assignment (=).
-    return isFinite((a = this.convert(a).valueOf())) &&
-      isFinite((b = this.convert(b).valueOf()))
-      ? (a > b) - (a < b)
-      : NaN;
-  },
-  inRange: function (d, start, end) {
-    // Checks if date in d is between dates in start and end.
-    // Returns a boolean or NaN:
-    //    true  : if d is between start and end (inclusive)
-    //    false : if d is before start or after end
-    //    NaN   : if one or more of the dates is illegal.
-    // NOTE: The code inside isFinite does an assignment (=).
-    return isFinite((d = this.convert(d).valueOf())) &&
-      isFinite((start = this.convert(start).valueOf())) &&
-      isFinite((end = this.convert(end).valueOf()))
-      ? start <= d && d <= end
-      : NaN;
-  },
-  until: function (d, end) {
-    // Checks if date in d is between dates in start and end.
-    // Returns a boolean or NaN:
-    //    true  : if d is between start and end (inclusive)
-    //    false : if d is before start or after end
-    //    NaN   : if one or more of the dates is illegal.
-    // NOTE: The code inside isFinite does an assignment (=).
-    return isFinite((d = this.convert(d).valueOf())) &&
-      isFinite((end = this.convert(end).valueOf()))
-      ? d <= end
-      : NaN;
-  },
-  from: function (d, start) {
-    // Checks if date in d is between dates in start and end.
-    // Returns a boolean or NaN:
-    //    true  : if d is between start and end (inclusive)
-    //    false : if d is before start or after end
-    //    NaN   : if one or more of the dates is illegal.
-    // NOTE: The code inside isFinite does an assignment (=).
-    return isFinite((d = this.convert(d).valueOf())) &&
-      isFinite((start = this.convert(start).valueOf()))
-      ? start <= d
-      : NaN;
-  },
-};
 
 function getPaginationLinks(links, options) {
   // Use the self link as the basis for 'first', 'next' and 'previous'
@@ -263,7 +189,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       if (datetimes.length == 1) {
         features = features.filter(
           (element) =>
-            dates.compare(
+            utils.dates.compare(
               element.properties[datetimeAttribName].toString(),
               datetimes[0]
             ) == 0
@@ -274,7 +200,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         if (beginDate != ".." && endDate != "..") {
           // bounded
           features = features.filter((element) =>
-            dates.inRange(
+            utils.dates.inRange(
               element.properties[datetimeAttribName].toString(),
               datetimes[0],
               datetimes[1]
@@ -283,7 +209,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         } else if (beginDate == ".." && endDate != "..") {
           // half-bounded [.., date]
           features = features.filter((element) =>
-            dates.until(
+            utils.dates.until(
               element.properties[datetimeAttribName].toString(),
               datetimes[1]
             )
@@ -291,7 +217,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         } else if (beginDate != ".." && endDate == "..") {
           // half-bounded [date, ..]
           features = features.filter((element) =>
-            dates.from(
+            utils.dates.from(
               element.properties[datetimeAttribName].toString(),
               datetimes[0]
             )
