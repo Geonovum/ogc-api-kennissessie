@@ -1,13 +1,5 @@
-# This is our runtime container that will end up
-# running on the device.
-FROM --platform=linux/amd64 node:alpine AS build_amd64
-#FROM --platform=linux/arm64 node:alpine AS build_arm64
-#FROM --platform=$BUILDPLATFORM node:alpine AS builder
-# TARGETPLATFORM
-
-ARG TARGETPLATFORM
-ARG BUILDPLATFORM
-RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM" > /log
+# This is our runtime container optimized for Synology DS923+ (AMD64)
+FROM node:22-alpine
 
 # Mounting point for data 
 RUN mkdir -p /home/node/okapi/data
