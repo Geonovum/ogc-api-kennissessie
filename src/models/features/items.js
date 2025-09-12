@@ -421,7 +421,20 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         );
     }
 
-    // PHASE 2: Expensive operations on filtered dataset
+    // EARLY PAGINATION: Apply pagination after fast filters but before expensive operations
+    // This ensures we only process features that will actually be returned
+    var totalMatched = features.length;
+    var paginatedFeatures = features;
+    
+    if (options) {
+      // Apply pagination to reduce dataset for expensive operations
+      paginatedFeatures = features.slice(
+        options.offset,
+        options.offset + options.limit
+      );
+    }
+
+    // PHASE 2: Expensive operations on paginated dataset
     // These operations are computationally expensive and should run on smaller datasets
     
     if (_query["zoom-level"]) {
@@ -429,10 +442,10 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       let tolerance = zoomLevel;
       
       // Create copies only when we need to modify geometry
-      features = ensureFeaturesCopy(features, featuresModified);
+      paginatedFeatures = ensureFeaturesCopy(paginatedFeatures, featuresModified);
       featuresModified = true;
       
-      features.forEach((feature) => {
+      paginatedFeatures.forEach((feature) => {
         var options = {};
         options.tolerance = tolerance;
         options.highQuality = false;
@@ -445,12 +458,12 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     // CRS transformation - expensive operation, run after filtering
     if (_query.crs) {
       var toEpsg = utils.UriToEPSG(query.crs);
-      features = projgeojson.projectFeatureCollection(
-        features,
+      paginatedFeatures = projgeojson.projectFeatureCollection(
+        paginatedFeatures,
         "EPSG:4326",
         toEpsg
       );
-      if (features == undefined)
+      if (paginatedFeatures == undefined)
         return callback(
           {
             httpCode: 400,
@@ -516,7 +529,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         };
       }
 
-      features.sort(fieldSorter(sortByParts));
+      paginatedFeatures.sort(fieldSorter(sortByParts));
 
       delete _query.sortby;
     }
@@ -531,31 +544,28 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     delete _query.properties;
   }
 
-  content.numberMatched = features.length;
-
-  if (options)
-    content.features = features.slice(
-      options.offset,
-      options.offset + options.limit
-    );
-  else content.features = features;
+  // Set the total number of matched features (before pagination)
+  content.numberMatched = totalMatched;
+  
+  // Use paginated features as the result
+  content.features = paginatedFeatures;
 
   if (doSkipGeometry) {
     // Create copies only when we need to modify geometry
-    features = ensureFeaturesCopy(features, featuresModified);
+    paginatedFeatures = ensureFeaturesCopy(paginatedFeatures, featuresModified);
     featuresModified = true;
     
-    features.forEach(function (feature) {
+    paginatedFeatures.forEach(function (feature) {
       delete feature.geometry;
     });
   }
 
   if (doProperties.length > 0) {
     // Create copies only when we need to modify properties
-    features = ensureFeaturesCopy(features, featuresModified);
+    paginatedFeatures = ensureFeaturesCopy(paginatedFeatures, featuresModified);
     featuresModified = true;
     
-    features.forEach(function (feature) {
+    paginatedFeatures.forEach(function (feature) {
       for (var propertyName in feature.properties)
         if (!doProperties.includes(propertyName))
           delete feature.properties[propertyName];
@@ -564,8 +574,8 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
 
   content.numberReturned = content.features.length;
 
-  // Pagination
-  if (options.offset + options.limit < content.numberMatched)
+  // Pagination links
+  if (options && options.offset + options.limit < content.numberMatched)
     getPaginationLinks(content.links, options);
 
   return callback(undefined, content);
