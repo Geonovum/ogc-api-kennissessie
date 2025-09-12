@@ -1,4 +1,3 @@
-# This is our runtime container optimized for Synology DS923+ (AMD64)
 FROM node:22-alpine
 
 # Mounting point for data 
@@ -24,6 +23,6 @@ COPY local*.yml ./
 ENV VERSION=1.2.4
 ENV DATA_PATH=/home/node/okapi/data
 
-EXPOSE 8080
+EXPOSE 8081
 
 CMD [ "node", "src/index.js" ]

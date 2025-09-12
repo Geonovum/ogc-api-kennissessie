@@ -11,19 +11,19 @@ if (__dirname === undefined) console.log("need node 22 or higher (and Express 5 
 // Load data (TODO: async)
 try {
   var dataPath = join(
-    process.env.DATA_PATH || join(__dirname, "../data"),
+    global.config.DATA_PATH || join(__dirname, "../data"),
     "datasets"
   );
   readData(dataPath);
 
   var processenPath = join(
-    process.env.DATA_PATH || join(__dirname, "../data"),
+    global.config.DATA_PATH || join(__dirname, "../data"),
     "processes"
   );
   readProcesses(processenPath);
 
   var metadataPath = join(
-    process.env.DATA_PATH || join(__dirname, "../data"),
+    global.config.DATA_PATH || join(__dirname, "../data"),
     "metadata"
   );
   readMetadata(metadataPath);
@@ -33,8 +33,8 @@ try {
 }
 
 // Listen on all IPv4 interfaces
-const host = process.env.HOST || '0.0.0.0';
-const port = process.env.PORT || 3000;
+const host = global.config.server.host;
+const port = global.config.server.port;
 
 app.listen(port, host, function (error) {
   if (error) {

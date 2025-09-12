@@ -1,12 +1,15 @@
 ---
 server:
+  id: OSGeoBE
+  port: 8081
+  limit: 10
   viewEngine: pug
   encoding: utf-8
   language: en-US
   cors: true
   x-powered-by: false
   prettyPrint: true
-  limit: 10
+
   map:
     url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
     attribution: 'Map data &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'

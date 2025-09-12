@@ -36,7 +36,7 @@ function get(neutralUrl, callback) {
       new RegExp("{{:description}}", "g"),
       global.config.metadata.identification.description
     );
-    ff = ff.replace(new RegExp("{{:version}}", "g"), process.env.APIVERSION);
+    ff = ff.replace(new RegExp("{{:version}}", "g"), global.config.APIVERSION);
 
     var info = JSON.parse(ff);
   }

@@ -38,7 +38,7 @@ function getPaginationLinks(links, options) {
   links.push({
     href:
       `${paginationBase.href}&offset=${options.offset + options.limit}` +
-      (options.limit == process.env.LIMIT ? "" : `&limit=${options.limit}`),
+      (options.limit == global.config.server.limit ? "" : `&limit=${options.limit}`),
     rel: `next`,
     type: paginationBase.type,
     title: `Next page`,
@@ -51,7 +51,7 @@ function getPaginationLinks(links, options) {
     links.push({
       href:
         `${paginationBase.href}&offset=${offset}` +
-        (options.limit == process.env.LIMIT ? "" : `&limit=${options.limit}`),
+        (options.limit == global.config.server.limit ? "" : `&limit=${options.limit}`),
       rel: `prev`,
       type: paginationBase.type,
       title: `Previous page`,
