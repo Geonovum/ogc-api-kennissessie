@@ -28,6 +28,7 @@ function get(neutralUrl, format, callback) {
   const collections = getDatabases();
   for (var name in collections) {
     const collection = collections[name];
+    if (collection == undefined) continue
     bboxs.push(turf.bboxPolygon(collection.extent.spatial.bbox));
     intervals.push(collection.extent.temporal.interval);
     content.extent.spatial.crs = collection.crs[0]; // default crs

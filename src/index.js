@@ -8,24 +8,21 @@ import utils from "./utils/utils.js";
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 22 or higher (and Express 5 or higher)");
 
-// Load data (TODO: async)
+// /Users/bart/Documents/GitHub/ogc-api-kennissessie/data
+// /usr/local/bin/okapi/data
+// /home/node/okapi/data
+
 try {
-  var dataPath = join(
-    global.config.DATA_PATH || join(__dirname, "../data"),
-    "datasets"
-  );
+  var dataPath = join(global.config.server.data, "datasets");
+  console.log("Getting files from " + dataPath);
   readData(dataPath);
 
-  var processenPath = join(
-    global.config.DATA_PATH || join(__dirname, "../data"),
-    "processes"
-  );
-  readProcesses(processenPath);
+  var processPath = join(global.config.server.data, "processes");
+  console.log("Getting processes from " + processPath);
+  readProcesses(processPath);
 
-  var metadataPath = join(
-    global.config.DATA_PATH || join(__dirname, "../data"),
-    "metadata"
-  );
+  var metadataPath = join(global.config.server.data, "metadata");
+  console.log("Getting metadata from " + metadataPath);
   readMetadata(metadataPath);
 
 } catch (err) {

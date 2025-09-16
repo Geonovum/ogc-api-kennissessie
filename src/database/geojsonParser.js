@@ -38,7 +38,11 @@ export function makeOAPIF(geojson, dataDef) {
   geojson.storageCrs = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
 
   var idName = getId(dataDef);
-  if (idName == undefined) return;
+  if (idName == undefined) 
+  {
+    console.log("No unique identifier found in dataset " + "");
+    return;
+  }
 
   // TODO: where does it say we have to do this??
   // each Feature resource has id member

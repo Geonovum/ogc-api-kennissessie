@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM node:alpine
 
 # Mounting point for data 
 RUN mkdir -p /home/node/okapi/data
@@ -20,7 +20,6 @@ RUN npm install
 COPY src/ src/
 COPY local*.yml ./
 
-ENV VERSION=1.2.4
 ENV DATA_PATH=/home/node/okapi/data
 
 EXPOSE 8081

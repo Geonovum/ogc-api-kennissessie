@@ -1,0 +1,51 @@
+---
+id: buurten
+title: Buurten Amstelveen
+description: De buurtgrenzen van Amstelveen.
+keywords: 
+  - Gebiedsindeling
+  - Gebieden
+  - Indeling
+  - Ruimte en infrastructuur
+crs:
+  - "http://www.opengis.net/def/crs/EPSG/0/28992"
+schema:
+  type: Object
+  properties:
+    fid:
+      name: fid
+      type: number
+      label: Feature id
+      role: ID
+    buurtcode:
+      type: string
+    buurtnaam:
+      type: string
+    wijkcode:
+      type: string
+    gemeentecode:
+      type: string
+      values:
+        - "GM0362"
+    gemeentenaam:
+      type: string
+      values:
+        - "Amstelveen"
+    wijknaam:
+      type: string
+    id_kv:
+      type: number
+queryables:
+  spatial:
+    - geometry
+  temporal:
+  q:
+    - fid
+    - buurtcode
+    - buurtnaam
+    - wijkcode
+    - gemeentecode
+    - gemeentenaam
+    - wijknaam
+    - id_kv
+  other:

@@ -63,11 +63,12 @@ global.config = YAML.parse(yamlStr.toString());
  * Environment Configuration
  * Sets default values for environment variables if not provided
  */
-global.config.server.id    = global.config.server.id || "demoservice";   // Service identifier for URL path
-global.config.server.host  = global.config.server.host || "0.0.0.0";
-global.config.server.port  = global.config.server.port || 8080;          // Server port
-global.config.server.limit = global.config.server.limit || 10;           // Default limit for pagination
-global.config.api.version  = global.config.api.version || "1.2.3";       // API version number
+global.config.server.id    = global.config.server.id    || process.env.ID        || "demoservice"   // Service identifier for URL path
+global.config.server.host  = global.config.server.host  || process.env.PORT      || "0.0.0.0"
+global.config.server.port  = global.config.server.port  || process.env.PORT      || 8080          // Server port
+global.config.server.limit = global.config.server.limit || process.env.LIMIT     || 10           // Default limit for pagination
+global.config.api.version  = global.config.api.version  || "1.2.3";                             // API version number
+global.config.server.data  = global.config.server.data  || process.env.DATA_PATH || join(__dirname, "../data")
 
 /**
  * Middleware Configuration

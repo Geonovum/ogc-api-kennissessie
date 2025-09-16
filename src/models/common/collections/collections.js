@@ -1,4 +1,5 @@
 import urlJoin from "url-join";
+import * as turf from "@turf/turf";
 import { getDatabases } from "../../../database/database.js";
 import utils from "../../../utils/utils.js";
 
@@ -95,7 +96,22 @@ function get(neutralUrl, format, callback) {
 
   content.collections = [];
 
+  content.extent = {};
+  content.extent.spatial = {};
+  content.extent.spatial.bbox = [];
+
+  let bboxs = [];
+
   var collections = getDatabases();
+
+  for (var name in collections) {
+    const collection = collections[name];
+    if (collection == undefined) continue
+    bboxs.push(turf.bboxPolygon(collection.extent.spatial.bbox));
+    content.extent.spatial.crs = collection.crs[0]; // default crs
+  }
+  const fc = turf.featureCollection(bboxs);
+  content.extent.spatial.bbox = (fc.features.length > 0) ? turf.bbox(turf.union(fc)) : null;
 
   // get content per :collection
   for (var name in collections) {
