@@ -43,9 +43,9 @@ block content
         section#collection
           .row
             .col-sm
-              h1 sdf
+              h1 Items
               p
-                | dfg
+                | content.description
                 
         if (content.numberMatched > content.numberReturned)
           - let nextLink = content.links.find(i => i.rel == 'next').href
@@ -112,5 +112,62 @@ block content
       .col-md-6
         #map(style='width: 540px; height: 480px; position: relative;')
         script.
-          const map = L.map("map").setView([52.300, 4.867], 11);
+          const coords = !{JSON.stringify(content.extent.spatial.bbox)}
+          const bounds = [[coords[1], coords[0]], [coords[3], coords[2]]];
+
+          const centerx = (parseFloat(coords[2]) + parseFloat(coords[0])) / 2
+          const centery = (parseFloat(coords[3]) + parseFloat(coords[1])) / 2
+
+          const map = L.map("map").setView([centery, centerx], 10);
+
           L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+
+          // Add features to the map
+          const features = !{JSON.stringify(content.features)};
+          
+          // Create a GeoJSON layer for the features
+          const featureLayer = L.geoJSON(features, {
+            pointToLayer: function (feature, latlng) {
+              // Style points
+              return L.circleMarker(latlng, {
+                radius: 6,
+                fillColor: "#ff7800",
+                color: "#000",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+              });
+            },
+            style: function (feature) {
+              // Style lines and polygons
+              return {
+                color: "#ff7800",
+                weight: 2,
+                opacity: 0.8,
+                fillOpacity: 0.3
+              };
+            },
+            onEachFeature: function (feature, layer) {
+              // Add popup with feature properties
+              let popupContent = '<div class="feature-popup">';
+              popupContent += '<h6>Feature Properties:</h6>';
+              popupContent += '<ul class="list-unstyled">';
+              
+              // Display all properties
+              for (let prop in feature.properties) {
+                if (feature.properties.hasOwnProperty(prop)) {
+                  popupContent += `<li><strong>${prop}:</strong> ${feature.properties[prop]}</li>`;
+                }
+              }
+              
+              popupContent += '</ul>';
+              popupContent += '</div>';
+              
+              layer.bindPopup(popupContent);
+            }
+          }).addTo(map);
+
+          // Fit map to show all features
+          if (features.length > 0) {
+            map.fitBounds(featureLayer.getBounds(), {padding: [10, 10]});
+          }

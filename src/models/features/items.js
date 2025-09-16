@@ -542,6 +542,23 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   else 
     content.features = features;
 
+  content.extent = {};
+  content.extent.spatial = {};
+  
+  // Calculate bounding box from features
+  if (content.features.length > 0) {
+    // Extract geometries from features and create a collection
+    const geometries = content.features.map(feature => feature.geometry).filter(geom => geom);
+    if (geometries.length > 0) {
+      const featureCollection = turf.featureCollection(content.features);
+      content.extent.spatial.bbox = turf.bbox(featureCollection);
+    } else {
+      content.extent.spatial.bbox = null;
+    }
+  } else {
+    content.extent.spatial.bbox = null;
+  }
+
   // ===== POST-PROCESSING =====
   
   // Remove geometry from features if requested (for lightweight responses)
