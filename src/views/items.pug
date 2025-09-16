@@ -45,48 +45,87 @@ block content
             .col-sm
               h1 Items
               p
-                | content.description
+                | #{content.description}
                 
         if (content.numberMatched > content.numberReturned)
-          - let nextLink = content.links.find(i => i.rel == 'next').href
-          - var offset = 0
-          - var limit = 10
-          - var pageCount = content.numberMatched / limit;
-          - var pageActive = Math.trunc(offset / limit); 
-          - var pageFirst = pageActive - 2; 
-          - if (pageFirst < 0) pageFirst = 0;
-          - var pageLast  = pageFirst + 5; 
+          //- Use pagination parameters passed from the controller
+          - let selfLink = content.links.find(i => i.rel == 'self').href
+          - var offset = options.offset || 0
+          - var limit = options.limit || 10
+          - var pageCount = Math.ceil(content.numberMatched / limit);
+          - var pageActive = Math.trunc(offset / limit) + 1; // Convert to 1-based page numbering
+          - var pageFirst = Math.max(1, pageActive - 2); 
+          - var pageLast  = Math.min(pageCount, pageFirst + 4); 
 
-          p #{nextLink}
-          p #{pageCount}
-          p #{pageActive}
-          p #{pageFirst}
-          p #{pageLast}
+          //- Build base URL for pagination links
+          - let baseUrl = selfLink.split('?')[0]
+          //- Extract existing query parameters (like format)
+          - let queryString = selfLink.includes('?') ? selfLink.split('?')[1] : ''
+          - let queryParams = new URLSearchParams(queryString)
+
+          //- Debug info (can be removed in production)
+          //- p Debug: offset=#{offset}, limit=#{limit}, pageCount=#{pageCount}, pageActive=#{pageActive}
+          //- p Debug: pageFirst=#{pageFirst}, pageLast=#{pageLast}
 
           nav(aria-label='...')
             ul.pagination
 
-              if pageActive == 0
-                li.page-item.disable
+              //- First page link
+              if pageActive == 1
+                li.page-item.disabled
                   a.page-link(href='#') «
               else
+                - queryParams.set('offset', '0')
+                - let firstUrl = baseUrl + '?' + queryParams.toString()
                 li.page-item
-                  a.page-link(href='#') «
+                  a.page-link(href=firstUrl) «
 
-              li.page-item
-                a.page-link(href='#') ‹
+              //- Previous page link
+              if pageActive == 1
+                li.page-item.disabled
+                  a.page-link(href='#') ‹
+              else
+                - let prevOffset = Math.max(0, offset - limit)
+                - queryParams.set('offset', prevOffset.toString())
+                - let prevUrl = baseUrl + '?' + queryParams.toString()
+                li.page-item
+                  a.page-link(href=prevUrl) ‹
 
+              //- Numbered page links
               - var p = pageFirst;
-              while p < pageLast
+              while p <= pageLast
+                if p == pageActive
+                  li.page-item.active
+                    a.page-link(href='#') #{p}
+                else
+                  - let pageOffset = (p - 1) * limit
+                  - queryParams.set('offset', pageOffset.toString())
+                  - let pageUrl = baseUrl + '?' + queryParams.toString()
+                  li.page-item
+                    a.page-link(href=pageUrl) #{p}
                 - p++
+
+              //- Next page link
+              if pageActive >= pageCount
+                li.page-item.disabled
+                  a.page-link(href='#') ›
+              else
+                - let nextOffset = offset + limit
+                - queryParams.set('offset', nextOffset.toString())
+                - let nextUrl = baseUrl + '?' + queryParams.toString()
                 li.page-item
-                  a.page-link(href='#') #{p}
+                  a.page-link(href=nextUrl) ›
 
-
-              li.page-item
-                a.page-link(href='#') ›
-              li.page-item
-                a.page-link(href='#') »
+              //- Last page link
+              if pageActive >= pageCount
+                li.page-item.disabled
+                  a.page-link(href='#') »
+              else
+                - let lastOffset = (pageCount - 1) * limit
+                - queryParams.set('offset', lastOffset.toString())
+                - let lastUrl = baseUrl + '?' + queryParams.toString()
+                li.page-item
+                  a.page-link(href=lastUrl) »
 
 
     .row
@@ -101,7 +140,7 @@ block content
                 h4.mt-3.mb-1
                   a(href=linkSelf + '/' + n)
                     span #{feature.properties.fid}
-                span.d-none linkSelf + '/' + n
+                span.d-none #{linkSelf + '/' + n}
                 .row.my-1
                   .col-md-6.font-weight-bold.text-truncate(data-property='id')
                     span(style='vertical-align: middle;') #{feature.type}

@@ -53,7 +53,7 @@ export function get(req, res, next) {
           res.status(200).json(content);
           break;
         case `html`:
-          res.status(200).render(`items`, { content, serviceUrl });
+          res.status(200).render(`items`, { content, serviceUrl, options });
           break;
         case "csv":
           res.removeHeader("Content-Crs");
