@@ -12,7 +12,7 @@ crs:
 schema:
   type: Object
   properties:
-    wegsegid:
+    fid:
       name: wegsegid
       type: number
       label: Feature id
