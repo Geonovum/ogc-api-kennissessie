@@ -1,7 +1,7 @@
 ---
-id: buurten
-title: Buurten Amstelveen
-description: De buurtgrenzen van Amstelveen.
+id: gewijzigde-rijrichtingen-circulatieplan-gent
+title: Gewijzigde rijrichtingen Circulatieplan Gent
+description: De gewijzigde rijrichtingen in het Circulatieplan Gent.
 keywords: 
   - Gebiedsindeling
   - Gebieden
@@ -12,7 +12,7 @@ crs:
 schema:
   type: Object
   properties:
-    wegsegid:
+    fid:
       name: wegsegid
       type: number
       label: Feature id

@@ -138,15 +138,17 @@ block content
               - n++
               div
                 h4.mt-3.mb-1
-                  a(href=linkSelf + '/' + n)
-                    span #{feature.properties.fid}
-                span.d-none #{linkSelf + '/' + n}
-                .row.my-1
-                  .col-md-6.font-weight-bold.text-truncate(data-property='id')
-                    span(style='vertical-align: middle;') #{feature.type}
-                  .col-md-6
-                    ul.list-unstyled
-                      li #{n}  
+                  a(href=linkSelf + '/' + feature.id)
+                    span #{feature.id}
+                
+                // Display all properties
+                .properties-container.mt-2
+                  ul.list-unstyled
+                    each value, key in feature.properties
+                      if (key != 'links')
+                        li.property-item.mb-1
+                          strong #{key}: 
+                          span #{value}  
 
       .col-md-6
         #map(style='width: 540px; height: 480px; position: relative;')

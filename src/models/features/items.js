@@ -215,6 +215,40 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   // and we need to preserve the original for potential geometry operations
   var features = structuredClone(content.features);
 
+  // ===== SCHEMA-BASED PROPERTY FILTERING =====
+  // Filter feature properties to only include attributes defined in the collection schema
+  // This ensures that only valid schema attributes are present in the response
+  features.forEach(function(feature) {
+    if (feature.properties) {
+      // Create a new properties object with only schema-defined attributes
+      var filteredProperties = {};
+      
+      for (var attributeName in collection.schema) {
+        // Skip primary geometry attribute as it's handled separately
+        if (collection.schema[attributeName]["x-ogc-role"] !== "primary-geometry") {
+
+
+          if (collection.schema[attributeName]["x-ogc-role"] == "id") {
+            let fid = collection.schema[attributeName]["name"]
+            if (feature.properties.hasOwnProperty(fid)) {
+              filteredProperties[fid] = feature.properties[fid];
+            }
+          }
+          else
+          {
+            // Only include the property if it exists in the feature and is defined in schema
+            if (feature.properties.hasOwnProperty(attributeName)) {
+              filteredProperties[attributeName] = feature.properties[attributeName];
+            }
+          }
+        }
+      }
+      
+      // Replace the feature properties with the filtered version
+      feature.properties = filteredProperties;
+    }
+  });
+
   // Initialize flags for post-processing
   var doSkipGeometry = false;  // Whether to remove geometry from response
   var doProperties = [];       // Properties to include in response

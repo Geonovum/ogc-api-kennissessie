@@ -64,6 +64,7 @@ export function makeOAPIF(geojson, dataDef) {
       var item = {};
       if (property.label) item.title = property.label;
       if (property.description) item.description = property.description;
+      if (property.name) item.name = property.name;
       if (property.type) item.type = property.type;
       if (property.format) item.format = property.format;
       // (OAPIF P5) Requirement 4 The keyword "x-ogc-role" SHALL be used to declare a specific role of the property

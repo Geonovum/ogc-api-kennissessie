@@ -12,7 +12,7 @@ crs:
 schema:
   type: Object
   properties:
-    entiteitnummer:
+    fid:
       name: entiteitnummer
       type: number
       label: Feature id

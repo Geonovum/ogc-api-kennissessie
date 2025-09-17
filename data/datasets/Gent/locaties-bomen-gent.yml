@@ -1,7 +1,7 @@
 ---
-id: gewijzigderijrichtingen
-title: Gewijzigderijrichtingen
-description: De gewijzigder ijrichtingen circulatieplan.
+id: locaties-bomen-gent
+title: Locaties bomen Gent
+description: De locaties van de bomen in Gent.
 keywords: 
   - Gebiedsindeling
   - Gebieden
@@ -12,6 +12,11 @@ crs:
 schema:
   type: Object
   properties:
+    fid:
+      name: gis_id
+      type: number
+      label: Feature id
+      role: ID
     straatnaam:
       type: string
     onderhoudg:
