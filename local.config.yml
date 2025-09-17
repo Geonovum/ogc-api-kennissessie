@@ -1,8 +1,8 @@
 ---
 server:
-  id: OSGeoBE
+  id: FOSS4GBE
   port: 8081
-  limit: 10
+  limit: 100
   viewEngine: pug
   encoding: utf-8
   language: en-US

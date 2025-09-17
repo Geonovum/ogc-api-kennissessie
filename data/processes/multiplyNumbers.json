@@ -1,0 +1,37 @@
+{
+  "id": "multiply",
+  "title": "Multiply 2 numbers",
+  "description": "Using a bash script, multiply 2 provided numbers together. Either sync or async.",
+  "version": "0.0.1",
+  "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
+  "outputTransmission": ["value", "reference"],
+  "inputs": {
+    "number1": {
+      "title": "Number 1 Literal Input",
+      "description": "A number literal input.",
+      "schema": {
+        "type": "number",
+        "format": "integer"
+      }
+    },
+    "number2": {
+      "title": "Number 2 Literal Input",
+      "description": "A number literal input. This number can't be zero",
+      "schema": {
+        "type": "number",
+        "format": "integer"
+      }
+    }
+  },
+  "outputs": {
+    "product": {
+      "id": "Result",
+      "title": "Product of 2 numbers",
+      "description": "A number literal output.",
+      "schema": {
+        "type": "number",
+        "format": "integer"
+      }
+    }
+  }
+}

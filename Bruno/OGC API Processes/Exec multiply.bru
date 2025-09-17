@@ -1,17 +1,13 @@
 meta {
-  name: Exec add async
+  name: Exec multiply
   type: http
-  seq: 6
+  seq: 7
 }
 
 post {
-  url: {{serviceHost}}/processes/add/execution
+  url: {{serviceHost}}/processes/multiply/execution
   body: json
   auth: inherit
-}
-
-headers {
-  Prefer: respond-async
 }
 
 body:json {
@@ -21,7 +17,7 @@ body:json {
         "number2": 7
       },
       "outputs": {
-        "sum": {
+        "product": {
           "transmissionMode": [
             "value"
           ]
