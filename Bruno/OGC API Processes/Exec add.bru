@@ -1,0 +1,37 @@
+meta {
+  name: Exec add
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{serviceHost}}/processes/add/execution
+  body: json
+  auth: inherit
+}
+
+body:json {
+    {
+      "inputs": {
+        "number1": 19,
+        "number2": 7
+      },
+      "outputs": {
+        "sum": {
+          "transmissionMode": [
+            "value"
+          ]
+        }
+      },
+      "subscriber": {
+        "successUri": ":serviceUrl/callback/:jobId?type=success",
+        "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
+        "failedUri": ":serviceUrl/callback/:jobId?type=failed"
+      }
+    }
+  
+}
+
+settings {
+  encodeUrl: true
+}

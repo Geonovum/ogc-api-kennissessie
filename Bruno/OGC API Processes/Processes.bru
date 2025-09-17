@@ -1,0 +1,15 @@
+meta {
+  name: Processes
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{serviceHost}}/processes
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

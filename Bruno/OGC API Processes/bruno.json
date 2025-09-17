@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "OGC API Processes",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
