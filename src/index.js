@@ -8,7 +8,9 @@ import utils from "./utils/utils.js";
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 20 or higher (and Express 5 or higher)");
 
-var dataPath = global.config.DATA_PATH || join(__dirname, "../data")
+var dataPath = global.config.data.path || join(__dirname, "../data")
+
+console.log("global.config.data.path is ", global.config.data.path);
 console.log("BasePath for data is ", dataPath);
 
 // Load data (TODO: async)

@@ -1,7 +1,7 @@
 ---
 server:
   id: FOSS4GBE
-  port: 8081
+  port: 8080
   limit: 100
   viewEngine: pug
   encoding: utf-8
@@ -13,6 +13,9 @@ server:
   map:
     url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
     attribution: 'Map data &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+
+data:
+  path: /home/node/okapi/data
 
 metadata:
   identification:

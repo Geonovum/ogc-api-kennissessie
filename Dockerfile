@@ -23,6 +23,6 @@ COPY local*.yml ./
 ENV VERSION=1.2.4
 ENV DATA_PATH=/home/node/okapi/data
 
-EXPOSE 8081
+EXPOSE 8080
 
 CMD [ "node", "src/index.js" ]
