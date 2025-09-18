@@ -16,22 +16,26 @@ echo "🏷️  Image: $IMAGE_NAME"
 echo "📋 Version: $VERSION"
 echo ""
 
-# Build the image
-echo "🔨 Building Docker image..."
-docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$VERSION .
-docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:latest .
-
-echo "✅ Build completed successfully!"
-echo ""
+# Check if buildx is available and create a builder if needed
+echo "🔧 Setting up Docker Buildx..."
+if ! docker buildx ls | grep -q "multiarch"; then
+    echo "📦 Creating multiarch builder..."
+    docker buildx create --name multiarch --use
+else
+    echo "📦 Using existing multiarch builder..."
+    docker buildx use multiarch
+fi
 
 # Login to Docker Hub (you'll be prompted for credentials)
 echo "🔐 Logging into Docker Hub..."
 docker login
 
-# Push the images
-echo "📤 Pushing images to Docker Hub..."
-docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$VERSION
-docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
+# Build the image for multiple platforms
+echo "🔨 Building Docker image for multiple platforms (linux/amd64, linux/arm64)..."
+docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$VERSION --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKERHUB_USERNAME/$IMAGE_NAME:latest --push .
+
+echo "✅ Build completed successfully!"
 
 echo ""
 echo "🎉 Successfully pushed to Docker Hub!"
@@ -39,6 +43,8 @@ echo "📋 Image URLs:"
 echo "   - $DOCKERHUB_USERNAME/$IMAGE_NAME:$VERSION"
 echo "   - $DOCKERHUB_USERNAME/$IMAGE_NAME:latest"
 echo ""
-echo "🚀 You can now pull and run this image on any Docker host:"
+echo "🚀 You can now pull and run this image on any Docker host (AMD64/ARM64):"
 echo "   docker pull $DOCKERHUB_USERNAME/$IMAGE_NAME:latest"
 echo "   docker run -p 8081:8081 -v ./data:/home/node/okapi/data $DOCKERHUB_USERNAME/$IMAGE_NAME:latest"
+echo ""
+echo "💡 This image now supports both AMD64 (Intel/AMD) and ARM64 (Apple Silicon) architectures!"
