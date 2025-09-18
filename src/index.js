@@ -6,26 +6,20 @@ import { readMetadata } from "./database/metadata.js";
 import utils from "./utils/utils.js";
 
 const __dirname = import.meta.dirname;
-if (__dirname === undefined) console.log("need node 22 or higher (and Express 5 or higher)");
+if (__dirname === undefined) console.log("need node 20 or higher (and Express 5 or higher)");
+
+var dataPath = global.config.DATA_PATH || join(__dirname, "../data")
+console.log("BasePath for data is ", dataPath);
 
 // Load data (TODO: async)
 try {
-  var dataPath = join(
-    global.config.DATA_PATH || join(__dirname, "../data"),
-    "datasets"
-  );
-  readData(dataPath);
+  var dataSetPath = join(dataPath, "datasets");
+  readData(dataSetPath);
 
-  var processenPath = join(
-    global.config.DATA_PATH || join(__dirname, "../data"),
-    "processes"
-  );
+  var processenPath = join(dataPath, "processes");
   readProcesses(processenPath);
 
-  var metadataPath = join(
-    global.config.DATA_PATH || join(__dirname, "../data"),
-    "metadata"
-  );
+  var metadataPath = join(dataPath, "metadata");
   readMetadata(metadataPath);
 
 } catch (err) {
