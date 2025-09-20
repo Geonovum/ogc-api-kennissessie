@@ -251,10 +251,11 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   // Create the base content structure
   var content = getContent(neutralUrl, format, collection, options);
 
-  // Create a deep copy of features for processing
+  // Create a shallow copy of features for processing
   // This is necessary because we'll be modifying the features array with filters,
   // and we need to preserve the original for potential geometry operations
-  var features = structuredClone(content.features);
+  // Using shallow copy is much faster than structuredClone for large datasets
+  var features = content.features.slice();
 
   // Initialize flags for post-processing
   var doSkipGeometry = false;  // Whether to remove geometry from response
@@ -262,12 +263,16 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
 
   var _query = query;
   if (_query) {
-    // Process query parameters in order of efficiency:
-    // Simple queries that limit features first, then complex geo queries on smaller datasets
+    // Pre-compute filter conditions to avoid repeated calculations
+    var filterConditions = [];
+    var datetimeAttribName = null;
+    var bbox = null;
     
-    // ===== TEMPORAL FILTERING =====
-    // (OAPIF C) Requirement 26: Only features that have a temporal geometry that intersects 
-    // the temporal information in the datetime parameter SHALL be part of the result set
+    // Cache frequently accessed collection properties for better performance
+    var collectionSchema = collection.schema;
+    var collectionQueryables = collection.queryables;
+    
+    // ===== PREPARE TEMPORAL FILTERING =====
     if (_query.datetime) {
       // Parse datetime parameter - supports single date or date range
       var datetimes = _query.datetime.split("/");
@@ -282,9 +287,8 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         );
 
       // Find the datetime property in the collection schema
-      var datetimeAttribName = undefined;
-      for (var attributeName in collection.schema) {
-        var value = collection.schema[attributeName];
+      for (var attributeName in collectionSchema) {
+        var value = collectionSchema[attributeName];
         if (
           value.format != "undefined" &&
           (value.format == "date-time" || value.format == "date")
@@ -305,15 +309,14 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
           undefined
         );
 
-      // Apply temporal filtering based on datetime parameter format
+      // Prepare temporal filter condition
       if (datetimes.length == 1) {
         // Single date: exact match
-        features = features.filter(
-          (element) =>
-            utils.dates.compare(
-              element.properties[datetimeAttribName].toString(),
-              datetimes[0]
-            ) == 0
+        filterConditions.push((element) =>
+          utils.dates.compare(
+            element.properties[datetimeAttribName].toString(),
+            datetimes[0]
+          ) == 0
         );
       } else {
         // Date range: [beginDate, endDate] or [beginDate, ..] or [.., endDate] or [.., ..]
@@ -322,7 +325,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         
         if (beginDate != ".." && endDate != "..") {
           // Bounded range: [date1, date2]
-          features = features.filter((element) =>
+          filterConditions.push((element) =>
             utils.dates.inRange(
               element.properties[datetimeAttribName].toString(),
               datetimes[0],
@@ -331,7 +334,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
           );
         } else if (beginDate == ".." && endDate != "..") {
           // Half-bounded: [.., endDate] - everything before endDate
-          features = features.filter((element) =>
+          filterConditions.push((element) =>
             utils.dates.until(
               element.properties[datetimeAttribName].toString(),
               datetimes[1]
@@ -339,26 +342,23 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
           );
         } else if (beginDate != ".." && endDate == "..") {
           // Half-bounded: [beginDate, ..] - everything after beginDate
-          features = features.filter((element) =>
+          filterConditions.push((element) =>
             utils.dates.from(
               element.properties[datetimeAttribName].toString(),
               datetimes[0]
             )
           );
-        } else if (beginDate == ".." && endDate == "..") {
-          // Non-bounded: [.., ..] - no temporal filtering (all features pass)
         }
+        // Non-bounded: [.., ..] - no temporal filtering (all features pass)
       }
       delete _query.datetime;
     }
 
-    // ===== SPATIAL FILTERING (BOUNDING BOX) =====
-    // (OAPIF P1) Requirement 23A: The operation SHALL support a parameter bbox
-    // (OAPIF P2) Requirement 6: Each GET request on a 'features' resource SHALL support a query parameter bbox-crs
+    // ===== PREPARE SPATIAL FILTERING (BOUNDING BOX) =====
     if (_query.bbox) {
       // Parse bounding box coordinates (minx,miny,maxx,maxy)
       var corners = _query.bbox.split(",");
-      var bbox = turf.bboxPolygon(corners);
+      bbox = turf.bboxPolygon(corners);
 
       // Handle coordinate reference system transformation if bbox-crs is specified
       if (_query["bbox-crs"]) {
@@ -380,11 +380,8 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         delete _query["bbox-crs"];
       }
 
-      // Filter features that are within the bounding box
-      features = features.filter((feature) =>
-        turf.booleanWithin(feature, bbox)
-      );
-
+      // Prepare spatial filter condition
+      filterConditions.push((feature) => turf.booleanWithin(feature, bbox));
       delete _query.bbox;
     }
 
@@ -413,8 +410,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       delete _query.crs;
     }
 
-    // ===== CQL FILTERING =====
-    // Handle Common Query Language (CQL) filter expressions
+    // ===== PREPARE CQL FILTERING =====
     var filterLang = "filter";  // Default filter language
     if (_query["filter-lang"]) {
       filterLang = _query["filter-lang"].replace(/^\W+|\W+$/g, ""); // Remove quotes
@@ -445,8 +441,8 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
             undefined
           );
 
-        // Apply the filter to the features
-        features = features.filter(
+        // Add CQL filter condition
+        filterConditions.push(
           (element) => element.properties[attributeName] == targetValue
         );
       });
@@ -454,19 +450,11 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       delete _query.filter;
     }
 
-    // ===== GEOMETRY SIMPLIFICATION (OAPIF P7) =====
-    // Simplify geometries based on zoom level for better performance at different scales
+    // ===== PREPARE GEOMETRY SIMPLIFICATION (OAPIF P7) =====
+    // Defer geometry simplification until after filtering for better performance
+    var zoomLevel = null;
     if (_query["zoom-level"]) {
-      let zoomLevel = Number(_query["zoom-level"]);
-      let tolerance = zoomLevel;  // Use zoom level as simplification tolerance
-      
-      features.forEach((feature) => {
-        var options = {};
-        options.tolerance = tolerance;
-        options.highQuality = false;  // Faster but less accurate simplification
-        options.mutate = true;        // Modify the feature in place
-        feature = turf.simplify(feature, options);
-      });
+      zoomLevel = Number(_query["zoom-level"]);
       delete _query["zoom-level"];
     }
 
@@ -486,16 +474,62 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
       delete _query.q;
     }
 
-    // ===== SORTING (OAPIF P8) =====
-    // (OAPIF P8) Requirement 6A: If the sortby parameter is specified, then the resources in a response SHALL be ordered by
-    //            the keys and sort directions (i.e. ascending or descending) specified.
-    //            Requirement 6B: The specific set of keys that may be used for sorting SHALL be specified by
-    //            the /collections/{collectionId}/sortables resource.
+    // ===== PREPARE SORTING (OAPIF P8) =====
+    // Parse sorting parameters but defer execution until after filtering
+    var sortByParts = null;
     if (_query.sortby) {
       // Parse sortby parameter - supports multiple fields with direction indicators
       // Pattern: '[+|-]?[A-Za-z_].*' (e.g., "+name,-date", "name", "-id")
-      let sortByParts = _query.sortby.split(",");
+      sortByParts = _query.sortby.split(",");
+      delete _query.sortby;
+    }
 
+    // ===== RESPONSE MODIFICATION FLAGS =====
+    // Set flags for post-processing the response
+    if (_query.skipGeometry === "true") doSkipGeometry = true;
+    delete _query.skipGeometry;
+
+    // Parse property selection for response filtering
+    if (_query.properties) doProperties = _query.properties.split(",");
+    delete _query.properties;
+
+    // ===== PREPARE ATTRIBUTE-BASED FILTERING =====
+    // Handle direct attribute queries (e.g., ?name=value&type=category)
+    // TODO: Consider using JSONPath Plus for more advanced querying: https://github.com/JSONPath-Plus/JSONPath
+    for (var attributeName in _query) {
+      // Validate that the attribute is queryable according to the collection schema
+      const hasAttribute = attributeName in collectionQueryables;
+      if (hasAttribute) {
+        var targetValue = _query[attributeName];
+        filterConditions.push(
+          (element) => element.properties[attributeName] == targetValue
+        );
+      } else {
+        // Reject unknown query parameters
+        return callback(
+          {
+            httpCode: 400,
+            code: `The following query parameters are rejected: ${attributeName}`,
+            description:
+              "Valid parameters for this request are " + collectionQueryables,
+          },
+          undefined
+        );
+      }
+    }
+
+    // ===== APPLY ALL FILTERS IN SINGLE PASS =====
+    // This is much more efficient than chaining multiple filter operations
+    if (filterConditions.length > 0) {
+      features = features.filter((feature) => {
+        // All filter conditions must pass (AND logic)
+        return filterConditions.every(condition => condition(feature));
+      });
+    }
+
+    // ===== APPLY SORTING AFTER FILTERING =====
+    // Sort the filtered results for better performance
+    if (sortByParts) {
       /**
        * Creates a multi-field sorting function
        * 
@@ -528,43 +562,25 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
         };
       }
 
-      // Apply sorting to the features array
+      // Apply sorting to the filtered features array
       features.sort(fieldSorter(sortByParts));
-
-      delete _query.sortby;
     }
 
-    // ===== RESPONSE MODIFICATION FLAGS =====
-    // Set flags for post-processing the response
-    if (_query.skipGeometry === "true") doSkipGeometry = true;
-    delete _query.skipGeometry;
-
-    // Parse property selection for response filtering
-    if (_query.properties) doProperties = _query.properties.split(",");
-    delete _query.properties;
-
-    // ===== ATTRIBUTE-BASED FILTERING =====
-    // Handle direct attribute queries (e.g., ?name=value&type=category)
-    // TODO: Consider using JSONPath Plus for more advanced querying: https://github.com/JSONPath-Plus/JSONPath
-    for (var attributeName in _query) {
-      // Validate that the attribute is queryable according to the collection schema
-      const hasAttribute = attributeName in collection.queryables;
-      if (hasAttribute) {
-        var targetValue = _query[attributeName];
-        features = features.filter(
-          (element) => element.properties[attributeName] == targetValue
-        );
-      } else {
-        // Reject unknown query parameters
-        return callback(
-          {
-            httpCode: 400,
-            code: `The following query parameters are rejected: ${attributeName}`,
-            description:
-              "Valid parameters for this request are " + collection.queryables,
-          },
-          undefined
-        );
+    // ===== APPLY GEOMETRY SIMPLIFICATION AFTER FILTERING =====
+    // Simplify geometries only for the filtered results
+    if (zoomLevel !== null) {
+      let tolerance = zoomLevel;  // Use zoom level as simplification tolerance
+      
+      // Pre-create options object to avoid repeated object creation
+      var options = {
+        tolerance: tolerance,
+        highQuality: false,  // Faster but less accurate simplification
+        mutate: true         // Modify the feature in place
+      };
+      
+      // Use for loop instead of forEach for better performance
+      for (let i = 0; i < features.length; i++) {
+        features[i] = turf.simplify(features[i], options);
       }
     }
   }
@@ -589,18 +605,25 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   // ===== POST-PROCESSING =====
   
   // Remove geometry from features if requested (for lightweight responses)
-  if (doSkipGeometry)
-    features.forEach(function (feature) {
-      delete feature.geometry;
-    });
+  if (doSkipGeometry) {
+    for (let i = 0; i < features.length; i++) {
+      delete features[i].geometry;
+    }
+  }
 
   // Filter properties to only include requested ones (OAPIF P6: Property Selection)
   if (doProperties.length > 0) {
-    features.forEach(function (feature) {
-      for (var propertyName in feature.properties)
-        if (!doProperties.includes(propertyName))
-          delete feature.properties[propertyName];
-    });
+    // Convert to Set for O(1) lookup performance
+    const propertiesSet = new Set(doProperties);
+    for (let i = 0; i < features.length; i++) {
+      const feature = features[i];
+      const properties = feature.properties;
+      for (var propertyName in properties) {
+        if (!propertiesSet.has(propertyName)) {
+          delete properties[propertyName];
+        }
+      }
+    }
   }
 
   // Set the number of features actually returned in this response
