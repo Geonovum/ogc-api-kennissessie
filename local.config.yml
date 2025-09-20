@@ -1,8 +1,8 @@
 ---
 server:
-  id: FOSS4GBE
+  id: foss4gbe
   port: 8080
-  limit: 100
+  limit: 10
   viewEngine: pug
   encoding: utf-8
   language: en-US
@@ -15,7 +15,7 @@ server:
     attribution: 'Map data &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
 
 data:
-  path: /home/node/okapi/data
+  path: 
 
 metadata:
   identification:

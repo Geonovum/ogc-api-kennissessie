@@ -20,42 +20,65 @@ import projgeojson from "../../utils/proj4.js";
  * 
  * @param {Array} links - Array of existing links to append pagination links to
  * @param {Object} options - Pagination options containing offset and limit
+ * @param {number} totalMatched - Total number of features that matched the query
  */
-function getPaginationLinks(links, options) {
+function getPaginationLinks(links, options, totalMatched) {
   // Use the self link as the basis for 'first', 'next' and 'previous'
   var paginationBase = links.filter((l) => l.rel === "self")[0];
+  
+  if (!paginationBase) return;
+
+  // Helper function to build URL with pagination parameters
+  function buildPaginationUrl(offset, limit) {
+    var url = new URL(paginationBase.href);
+    url.searchParams.set('offset', offset);
+    if (limit !== global.config.server.limit) {
+      url.searchParams.set('limit', limit);
+    }
+    return url.toString();
+  }
 
   // Add 'first' link if not on the first page
-  if (options.offset > 0)
+  if (options.offset > 0) {
     links.push({
-      href: paginationBase.href,
+      href: buildPaginationUrl(0, options.limit),
       rel: `first`,
       type: paginationBase.type,
       title: `First page`,
     });
-
-  // Always add 'next' link (assuming there might be more results)
-  links.push({
-    href:
-      `${paginationBase.href}&offset=${options.offset + options.limit}` +
-      (options.limit == global.config.server.limit ? "" : `&limit=${options.limit}`),
-    rel: `next`,
-    type: paginationBase.type,
-    title: `Next page`,
-  });
+  }
 
   // Add 'previous' link if not on the first page
-  var offset = options.offset - options.limit;
-  if (offset < 0) offset = 0;
-  if (options.offset != 0)
+  if (options.offset > 0) {
+    var prevOffset = Math.max(0, options.offset - options.limit);
     links.push({
-      href:
-        `${paginationBase.href}&offset=${offset}` +
-        (options.limit == global.config.server.limit ? "" : `&limit=${options.limit}`),
+      href: buildPaginationUrl(prevOffset, options.limit),
       rel: `prev`,
       type: paginationBase.type,
       title: `Previous page`,
     });
+  }
+
+  // Add 'next' link if there are more results
+  if (options.offset + options.limit < totalMatched) {
+    links.push({
+      href: buildPaginationUrl(options.offset + options.limit, options.limit),
+      rel: `next`,
+      type: paginationBase.type,
+      title: `Next page`,
+    });
+  }
+
+  // Add 'last' link if we're not on the last page
+  if (options.offset + options.limit < totalMatched) {
+    var lastOffset = Math.floor((totalMatched - 1) / options.limit) * options.limit;
+    links.push({
+      href: buildPaginationUrl(lastOffset, options.limit),
+      rel: `last`,
+      type: paginationBase.type,
+      title: `Last page`,
+    });
+  }
 }
 
 /**
@@ -67,8 +90,9 @@ function getPaginationLinks(links, options) {
  * @param {string} neutralUrl - Base URL without format parameter
  * @param {string} format - Current requested format
  * @param {Array} links - Array to append the generated links to
+ * @param {Object} options - Pagination options to include in self link
  */
-function getLinks(neutralUrl, format, links) {
+function getLinks(neutralUrl, format, links, options) {
   /**
    * Maps format names to their corresponding MIME types
    * 
@@ -83,9 +107,18 @@ function getLinks(neutralUrl, format, links) {
     return _encodings[i];
   }
 
+  // Build self link with current pagination parameters
+  let selfUrl = neutralUrl + `?f=${format}`;
+  if (options && (options.offset > 0 || options.limit !== global.config.server.limit)) {
+    selfUrl += `&offset=${options.offset}`;
+    if (options.limit !== global.config.server.limit) {
+      selfUrl += `&limit=${options.limit}`;
+    }
+  }
+
   // Add self link for the current format
   links.push({
-    href: urlJoin(neutralUrl, `?f=${format}`),
+    href: selfUrl,
     rel: `self`,
     type: getTypeFromFormat(format),
     title: `Access the features in the collection as ${format}`,
@@ -95,8 +128,16 @@ function getLinks(neutralUrl, format, links) {
   utils
     .getAlternateFormats(format, ["json", "html", "csv"])
     .forEach((altFormat) => {
+      let altUrl = neutralUrl + `?f=${altFormat}`;
+      if (options && (options.offset > 0 || options.limit !== global.config.server.limit)) {
+        altUrl += `&offset=${options.offset}`;
+        if (options.limit !== global.config.server.limit) {
+          altUrl += `&limit=${options.limit}`;
+        }
+      }
+      
       links.push({
-        href: urlJoin(neutralUrl, `?f=${altFormat}`),
+        href: altUrl,
         rel: `alternate`,
         type: getTypeFromFormat(altFormat),
         title: `Access the features in the collection as ${altFormat}`,
@@ -115,7 +156,7 @@ function getLinks(neutralUrl, format, links) {
  * @param {Object} collection - Collection data from database
  * @returns {Object} Base items object with GeoJSON structure
  */
-function getContent(neutralUrl, format, collection) {
+function getContent(neutralUrl, format, collection, options) {
   // Normalize geojson format to json for internal processing
   if (format == "geojson") format = "json";
 
@@ -128,7 +169,7 @@ function getContent(neutralUrl, format, collection) {
   items.links = [];                               // HATEOAS links array
 
   // Generate self and alternate format links
-  getLinks(neutralUrl, format, items.links);
+  getLinks(neutralUrl, format, items.links, options);
 
   // Set the coordinate reference system for the response
   items.headerContentCrs = collection.crs[0];
@@ -208,7 +249,7 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
     );
 
   // Create the base content structure
-  var content = getContent(neutralUrl, format, collection);
+  var content = getContent(neutralUrl, format, collection, options);
 
   // Create a deep copy of features for processing
   // This is necessary because we'll be modifying the features array with filters,
@@ -542,6 +583,9 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   else 
     content.features = features;
 
+  // ===== SPATIAL EXTENT =====
+  // Note: Spatial extent calculation moved to items.pug view for better separation of concerns
+  
   // ===== POST-PROCESSING =====
   
   // Remove geometry from features if requested (for lightweight responses)
@@ -563,8 +607,8 @@ function get(neutralUrl, format, collectionId, query, options, callback) {
   content.numberReturned = content.features.length;
 
   // Add pagination links if there are more results available
-  if (options.offset + options.limit < content.numberMatched)
-    getPaginationLinks(content.links, options);
+  if (options && content.numberMatched > options.limit)
+    getPaginationLinks(content.links, options, content.numberMatched);
 
   // Return the processed response
   return callback(undefined, content);

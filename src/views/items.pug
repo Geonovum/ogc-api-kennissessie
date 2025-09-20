@@ -43,50 +43,75 @@ block content
         section#collection
           .row
             .col-sm
-              h1 sdf
-              p
-                | dfg
+              h1 Items
                 
         if (content.numberMatched > content.numberReturned)
-          - let nextLink = content.links.find(i => i.rel == 'next').href
-          - var offset = 0
-          - var limit = 10
-          - var pageCount = content.numberMatched / limit;
-          - var pageActive = Math.trunc(offset / limit); 
-          - var pageFirst = pageActive - 2; 
-          - if (pageFirst < 0) pageFirst = 0;
-          - var pageLast  = pageFirst + 5; 
+          - let firstLink = content.links.find(i => i.rel == 'first')
+          - let prevLink  = content.links.find(i => i.rel == 'prev')
+          - let nextLink  = content.links.find(i => i.rel == 'next')
+          - let lastLink  = content.links.find(i => i.rel == 'last')
+          - let selfLink  = content.links.find(i => i.rel == 'self')
+          
+          // Extract offset and limit from the self link URL
+          - let selfUrl = new URL(selfLink.href)
+          - let currentOffset = parseInt(selfUrl.searchParams.get('offset')) || 0
+          - let currentLimit = parseInt(selfUrl.searchParams.get('limit')) || 10
+          
+          // Calculate current page (1-based)
+          - let currentPage = Math.floor(currentOffset / currentLimit) + 1
+          - let totalPages = Math.ceil(content.numberMatched / currentLimit)
+          - let startPage = Math.max(1, currentPage - 2)
+          - let endPage = Math.min(totalPages, currentPage + 2)
+          
 
-          p #{nextLink}
-          p #{pageCount}
-          p #{pageActive}
-          p #{pageFirst}
-          p #{pageLast}
+          .d-flex.justify-content-between.align-items-center.mb-3
+            .pagination-controls
+              nav(aria-label='Pagination')
+                ul.pagination.mb-0
+                  // First page
+                  if firstLink
+                    li.page-item
+                      a.page-link(href=firstLink.href title=firstLink.title) «
+                  else
+                    li.page-item.disabled
+                      span.page-link ‹
 
-          nav(aria-label='...')
-            ul.pagination
+                  // Previous page
+                  if prevLink
+                    li.page-item
+                      a.page-link(href=prevLink.href title=prevLink.title) ‹
+                  else
+                    li.page-item.disabled
+                      span.page-link ‹
 
-              if pageActive == 0
-                li.page-item.disable
-                  a.page-link(href='#') «
-              else
-                li.page-item
-                  a.page-link(href='#') «
+                  // Page numbers
+                  - var p = startPage;
+                  while p <= endPage
+                    if p == currentPage
+                      li.page-item.active
+                        span.page-link #{p}
+                    else
+                      - let pageUrl = new URL(selfUrl.toString())
+                      - pageUrl.searchParams.set('offset', (p - 1) * currentLimit)
+                      li.page-item
+                        a.page-link(href=pageUrl.toString()) #{p}
+                    - p++
 
-              li.page-item
-                a.page-link(href='#') ‹
+                  // Next page
+                  if nextLink
+                    li.page-item
+                      a.page-link(href=nextLink.href title=nextLink.title) ›
+                  else
+                    li.page-item.disabled
+                      span.page-link ›
 
-              - var p = pageFirst;
-              while p < pageLast
-                - p++
-                li.page-item
-                  a.page-link(href='#') #{p}
-
-
-              li.page-item
-                a.page-link(href='#') ›
-              li.page-item
-                a.page-link(href='#') »
+                  // Last page
+                  if lastLink
+                    li.page-item
+                      a.page-link(href=lastLink.href title=lastLink.title) »
+                  else
+                    li.page-item.disabled
+                      span.page-link »
 
 
     .row
@@ -112,5 +137,126 @@ block content
       .col-md-6
         #map(style='width: 540px; height: 480px; position: relative;')
         script.
-          const map = L.map("map").setView([52.300, 4.867], 11);
+          // Calculate spatial extent (bounding box) from features
+          const features = !{JSON.stringify(content.features)};
+          let coords = null;
+          
+          if (features.length > 0) {
+            // Calculate bounding box from features
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            let hasGeometry = false;
+            
+            features.forEach(feature => {
+              if (feature.geometry && feature.geometry.coordinates) {
+                hasGeometry = true;
+                const coords = feature.geometry.coordinates;
+                
+                if (feature.geometry.type === 'Point') {
+                  const [x, y] = coords;
+                  minX = Math.min(minX, x);
+                  minY = Math.min(minY, y);
+                  maxX = Math.max(maxX, x);
+                  maxY = Math.max(maxY, y);
+                } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiPoint') {
+                  coords.forEach(coord => {
+                    const [x, y] = coord;
+                    minX = Math.min(minX, x);
+                    minY = Math.min(minY, y);
+                    maxX = Math.max(maxX, x);
+                    maxY = Math.max(maxY, y);
+                  });
+                } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiLineString') {
+                  coords.forEach(ring => {
+                    ring.forEach(coord => {
+                      const [x, y] = coord;
+                      minX = Math.min(minX, x);
+                      minY = Math.min(minY, y);
+                      maxX = Math.max(maxX, x);
+                      maxY = Math.max(maxY, y);
+                    });
+                  });
+                } else if (feature.geometry.type === 'MultiPolygon') {
+                  coords.forEach(polygon => {
+                    polygon.forEach(ring => {
+                      ring.forEach(coord => {
+                        const [x, y] = coord;
+                        minX = Math.min(minX, x);
+                        minY = Math.min(minY, y);
+                        maxX = Math.max(maxX, x);
+                        maxY = Math.max(maxY, y);
+                      });
+                    });
+                  });
+                }
+              }
+            });
+            
+            if (hasGeometry) {
+              coords = [minX, minY, maxX, maxY];
+            }
+          }
+          
+          let bounds, centerx, centery;
+          if (coords) {
+            bounds = [[coords[1], coords[0]], [coords[3], coords[2]]];
+            centerx = (parseFloat(coords[2]) + parseFloat(coords[0])) / 2;
+            centery = (parseFloat(coords[3]) + parseFloat(coords[1])) / 2;
+          } else {
+            // Default bounds if no features or no geometry
+            bounds = [[0, 0], [0, 0]];
+            centerx = 0;
+            centery = 0;
+          }
+
+          const map = L.map("map").setView([centery, centerx], 10);
+
           L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+
+          // Add features to the map (features already declared above)
+          
+          // Create a GeoJSON layer for the features
+          const featureLayer = L.geoJSON(features, {
+            pointToLayer: function (feature, latlng) {
+              // Style points
+              return L.circleMarker(latlng, {
+                radius: 6,
+                fillColor: "#ff7800",
+                color: "#000",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+              });
+            },
+            style: function (feature) {
+              // Style lines and polygons
+              return {
+                color: "#ff7800",
+                weight: 2,
+                opacity: 0.8,
+                fillOpacity: 0.3
+              };
+            },
+            onEachFeature: function (feature, layer) {
+              // Add popup with feature properties
+              let popupContent = '<div class="feature-popup">';
+              popupContent += '<h6>Feature Properties:</h6>';
+              popupContent += '<ul class="list-unstyled">';
+              
+              // Display all properties
+              for (let prop in feature.properties) {
+                if (feature.properties.hasOwnProperty(prop)) {
+                  popupContent += `<li><strong>${prop}:</strong> ${feature.properties[prop]}</li>`;
+                }
+              }
+              
+              popupContent += '</ul>';
+              popupContent += '</div>';
+              
+              layer.bindPopup(popupContent);
+            }
+          }).addTo(map);
+
+          // Fit map to show all features
+          if (features.length > 0) {
+            map.fitBounds(featureLayer.getBounds(), {padding: [10, 10]});
+          }
