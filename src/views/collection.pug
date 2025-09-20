@@ -48,13 +48,16 @@ block content
       .col-sm-12
         h3 Links to the main resources
         - var linkItems = content.links.find(l => l.rel == 'items' && l.type == 'text/html').href
-        ul
-          li
-            div
-              a(title='Browse Items' href=linkItems)
-                | Access the features in the collection &quot;#{content.title}&quot in HTML
-
+        div.row-my-1
+          div.col-md-12
+            a(title='Access the features' href=linkItems)
+              | Access the features in the collection &quot;#{content.title}&quot in HTML
+    p
     h3.text-body-emphasis Information about the collection
+
+    p Number of features #{content.numberMatched}
+
+    p Spatial Extent
     #map(style='width: 540px; height: 480px; position: relative;')
     script.
       const coords = !{JSON.stringify(content.extent.spatial.bbox)}
@@ -68,4 +71,17 @@ block content
         
       L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
 
+    p
+    p Temporal Extent #{content.extent.temporal.interval[0]} - #{content.extent.temporal.interval[0]}
+
+    p
     h3.text-body-emphasis Expert information
+
+    p Reference Systems
+    ul
+      each crs in content.crs
+        li #{crs}
+    p
+    p Storage CRS #{content.storageCrs}
+    p
+    p Type of Data #{content.itemType}
