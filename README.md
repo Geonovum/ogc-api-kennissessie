@@ -1,8 +1,26 @@
 # OGC API Knowledge Session
 
-Repository for knowledge sharing on building an OGC API Features & Processes node app.
+🐳 **Docker Image**: `lathoub/okapi:latest`
 
-This is not an operational service.
+A comprehensive OGC API Features & Processes implementation in Node.js for educational purposes and knowledge sharing. This Docker image provides a complete OGC API server with support for both Features and Processes standards.
+
+## 🚀 Quick Start with Docker
+
+```bash
+# Pull and run the image
+docker pull lathoub/okapi:latest
+docker run -p 8080:8080 -v ./data:/home/node/okapi/data lathoub/okapi:latest
+```
+
+Then visit: `http://localhost:8080/{ID}/v1/`
+
+## 📋 What's Included
+
+- **OGC API Features** (Part 1-9): Complete implementation with filtering, CRS support, property selection, and more
+- **OGC API Processes**: Process execution capabilities with async support
+- **Multi-platform support**: Runs on both AMD64 and ARM64 architectures
+
+> **Note**: This is an educational repository for knowledge sharing, not intended for production use.
 
 ## OGC API Features step by step
 
@@ -26,12 +44,34 @@ in the folder [OGC-API-Processes](./OGC-API-Processes/)
 4. Open the service in a web browser at `http://localhost:8080/{ID}/v{APIVERSION}`.
    1. E.g. if the port number has been increased: [http://localhost:8080/{ID}/v1/](http://localhost:8080/{ID}/v1/)
 
-## Start the service from Docker Desktop
+## 🐳 Docker Usage
 
-1. Make sure Docker Desktop and Docker Compose are installed.
-2. From the command line: in the folder `docker compose up`
+### Using Docker Compose
+```bash
+# Clone the repository and run with Docker Compose
+git clone <repository-url>
+cd ogc-api-kennissessie
+docker compose up
+```
 
-go to http://localhost:8080/{ID}/v1/
+### Using the Docker Image Directly
+```bash
+# Run with custom data volume
+docker run -p 8080:8080 -v /path/to/your/data:/home/node/okapi/data lathoub/okapi:latest
+
+# Run with default sample data
+docker run -p 8080:8080 lathoub/okapi:latest
+```
+
+### Environment Variables
+- `PORT`: Server port (default: 8080)
+- `NODE_ENV`: Environment mode (development/production)
+
+### Supported Platforms
+- `linux/amd64` (Intel/AMD processors)
+- `linux/arm64` (Apple Silicon, ARM processors)
+
+## 📚 Documentation
 
 
 On the [wiki](https://github.com/Geonovum/ogc-api-kennissessie/wiki/Starting-the-service-on-Docker-Desktop)
