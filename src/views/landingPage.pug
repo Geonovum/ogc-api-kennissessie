@@ -42,19 +42,19 @@ block content
           ul.list-unstyled.ps-0
             li
               - var linkCollections = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/data').href
-              a.icon-link.mb-1(href=linkCollections rel='noopener' target='_blank')
+              a.icon-link.mb-1(href=linkCollections rel='noopener')
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
                 |               Collections
             li
               - var linkProcesses = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/processes').href
-              a.icon-link.mb-1(href=linkProcesses rel='noopener' target='_blank')
+              a.icon-link.mb-1(href=linkProcesses rel='noopener' )
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
                 |               Processes
             li
               - var linkJobs = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
-              a.icon-link.mb-1(href=linkJobs rel='noopener' target='_blank')
+              a.icon-link.mb-1(href=linkJobs rel='noopener' )
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
                 |               Jobs
