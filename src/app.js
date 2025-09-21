@@ -34,11 +34,13 @@ import encodings from "./middlewares/encodings.js";
 import apiVersion from "./middlewares/apiversion.js";
 
 // Route imports for different OGC API parts
-import oapifp1 from "./routes/ogcapiFeaturesPart1.js";  // OGC API Features Part 1 - Core
-import oapifp3 from "./routes/ogcapiFeaturesPart3.js";  // OGC API Features Part 3 - Filtering
-import oapifp4 from "./routes/ogcapiFeaturesPart4.js";  // OGC API Features Part 4 - CRUD
-import oapifp5 from "./routes/ogcapiFeaturesPart5.js";  // OGC API Features Part 5 - Schema
-import oapipp1 from "./routes/ogcapiProcessesPart1Core.js"; // OGC API Processes Part 1 - Core
+import oapicp1c from "./routes/ogcapiCommonCommonPart1Core.js";  // OGC API Common
+import oapicp2c from "./routes/ogcapiCommonCommonPart2Collections.js";  // OGC API Common
+import oapifp1  from "./routes/ogcapiFeaturesPart1.js";  // OGC API Features Part 1 - Core
+import oapifp3  from "./routes/ogcapiFeaturesPart3.js";  // OGC API Features Part 3 - Filtering
+import oapifp4  from "./routes/ogcapiFeaturesPart4.js";  // OGC API Features Part 4 - CRUD
+import oapifp5  from "./routes/ogcapiFeaturesPart5.js";  // OGC API Features Part 5 - Schema
+import oapipp1  from "./routes/ogcapiProcessesPart1Core.js"; // OGC API Processes Part 1 - Core
 
 /**
  * Express application instance
@@ -146,6 +148,8 @@ app.serviceRoot = `/${global.config.server.id}/v${major(global.config.api.versio
  * Mount OGC API Route Handlers
  * Each route handler implements a specific part of the OGC API standards
  */
+app.use(app.serviceRoot, oapicp1c); // OGC API Common Part 1 - Core
+app.use(app.serviceRoot, oapicp2c); // OGC API Common Part 2 - Collections
 app.use(app.serviceRoot, oapifp1);  // OGC API Features Part 1 - Core endpoints
 app.use(app.serviceRoot, oapifp3);  // OGC API Features Part 3 - Filtering capabilities
 app.use(app.serviceRoot, oapifp4);  // OGC API Features Part 4 - CRUD operations

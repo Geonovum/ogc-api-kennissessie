@@ -2,8 +2,7 @@ import express from "express";
 
 import { get as getLandingPage } from "../controllers/common/core/landingPage.js";
 import { get as getConformance } from "../controllers/common/core/conformance.js";
-
-import { get as getAPI } from "../controllers/common/core/api.js";
+import { get as getAPI }         from "../controllers/common/core/api.js";
 
 const router = express.Router();
 
@@ -31,6 +30,9 @@ router.get("/conformance", getConformance);
 // server and which can be used by developers to understand the API, by software clients to connect
 // to the server, or by development tools to support the implementation of servers and clients.
 // Requirement 3 and Permission 1
-router.get("/api.:ext?", getAPI);
+router.get("/api", getAPI);
+router.get("/api.:ext", getAPI);
 
 export default router;
+
+
