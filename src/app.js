@@ -36,10 +36,13 @@ import apiVersion from "./middlewares/apiversion.js";
 // Route imports for different OGC API parts
 import oapicp1c from "./routes/ogcapiCommonCommonPart1Core.js";  // OGC API Common
 import oapicp2c from "./routes/ogcapiCommonCommonPart2Collections.js";  // OGC API Common
+
 import oapifp1  from "./routes/ogcapiFeaturesPart1.js";  // OGC API Features Part 1 - Core
+import oapifp2  from "./routes/ogcapiFeaturesPart2.js";  // OGC API Features Part 2 - CRS (no code , just here for completeness)
 import oapifp3  from "./routes/ogcapiFeaturesPart3.js";  // OGC API Features Part 3 - Filtering
 import oapifp4  from "./routes/ogcapiFeaturesPart4.js";  // OGC API Features Part 4 - CRUD
 import oapifp5  from "./routes/ogcapiFeaturesPart5.js";  // OGC API Features Part 5 - Schema
+
 import oapipp1  from "./routes/ogcapiProcessesPart1Core.js"; // OGC API Processes Part 1 - Core
 
 /**
