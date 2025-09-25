@@ -11,9 +11,9 @@ info:
   license:
     name: CC-BY 4.0 license
     url: https://creativecommons.org/licenses/by/4.0
-  version: 1.2.3
+  version: undefined
 servers:
-  - url: http://localhost:8080/demoservice/v1
+  - url: http://172.20.10.10:8080/foss4gbe/v1
 tags: []
 paths:
   /:
@@ -173,13 +173,13 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/NAPPeilmerken:
+  /collections/Benchmarks:
     get:
       tags:
         - Collections
       summary: feature collection
       description: >-
-        Information about the feature collection with id 'NAPPeilmerken'. The
+        Information about the feature collection with id 'Benchmarks'. The
         response contains a link to the items in the collection (path
         `/collections/{collectionId}/items`,link relation `items`) as well as
         key information about the collection. This information includes:
@@ -207,7 +207,7 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: NAPPeilmerken.getCollection
+      operationId: Benchmarks.getCollection
       parameters:
         - $ref: "#/components/parameters/fCollection"
       responses:
@@ -228,13 +228,13 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/buurten:
+  /collections/Border:
     get:
       tags:
         - Collections
       summary: feature collection
       description: >-
-        Information about the feature collection with id 'buurten'. The response
+        Information about the feature collection with id 'Border'. The response
         contains a link to the items in the collection (path
         `/collections/{collectionId}/items`,link relation `items`) as well as
         key information about the collection. This information includes:
@@ -262,7 +262,7 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: buurten.getCollection
+      operationId: Border.getCollection
       parameters:
         - $ref: "#/components/parameters/fCollection"
       responses:
@@ -283,13 +283,13 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/energielabels:
+  /collections/EnergyLabels:
     get:
       tags:
         - Collections
       summary: feature collection
       description: >-
-        Information about the feature collection with id 'energielabels'. The
+        Information about the feature collection with id 'EnergyLabels'. The
         response contains a link to the items in the collection (path
         `/collections/{collectionId}/items`,link relation `items`) as well as
         key information about the collection. This information includes:
@@ -317,7 +317,7 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: energielabels.getCollection
+      operationId: EnergyLabels.getCollection
       parameters:
         - $ref: "#/components/parameters/fCollection"
       responses:
@@ -338,13 +338,13 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/gemeenteGrens:
+  /collections/Neighborhoods:
     get:
       tags:
         - Collections
       summary: feature collection
       description: >-
-        Information about the feature collection with id 'gemeenteGrens'. The
+        Information about the feature collection with id 'Neighborhoods'. The
         response contains a link to the items in the collection (path
         `/collections/{collectionId}/items`,link relation `items`) as well as
         key information about the collection. This information includes:
@@ -372,7 +372,7 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: gemeenteGrens.getCollection
+      operationId: Neighborhoods.getCollection
       parameters:
         - $ref: "#/components/parameters/fCollection"
       responses:
@@ -393,68 +393,13 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/kamersgewijzeVerhuur:
+  /collections/RoomByRoomRental:
     get:
       tags:
         - Collections
       summary: feature collection
       description: >-
-        Information about the feature collection with id 'kamersgewijzeVerhuur'.
-        The response contains a link to the items in the collection (path
-        `/collections/{collectionId}/items`,link relation `items`) as well as
-        key information about the collection. This information includes:
-
-
-        * A local identifier for the collection that is unique for the dataset;
-
-        * A title and description for the collection;
-
-        * An indication of the spatial and temporal extent of the data in the
-        collection;
-
-        * A list of coordinate reference systems (CRS) in which geometries may
-        be returned by the server. The first CRS is the default coordinate
-        reference system (the default is always WGS 84 with axis order
-        longitude/latitude);
-
-        * The CRS in which the spatial geometries are stored in the data source
-        (if data is requested in this CRS, the geometries are returned without
-        any coordinate conversion);
-
-        * An indicator about the type of the items in the collection (the
-        default value is 'feature').
-      externalDocs:
-        description: "The specification that describes this operation: OGC API -
-          Features - Part 1: Core"
-        url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: kamersgewijzeVerhuur.getCollection
-      parameters:
-        - $ref: "#/components/parameters/fCollection"
-      responses:
-        "200":
-          description: The operation was executed successfully.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Collection"
-            text/html:
-              schema:
-                $ref: "#/components/schemas/htmlSchema"
-        "400":
-          description: Bad Request
-        "405":
-          description: Method Not Allowed
-        "406":
-          description: Not Acceptable
-        "500":
-          description: Server Error
-  /collections/zonnepanelen:
-    get:
-      tags:
-        - Collections
-      summary: feature collection
-      description: >-
-        Information about the feature collection with id 'zonnepanelen'. The
+        Information about the feature collection with id 'RoomByRoomRental'. The
         response contains a link to the items in the collection (path
         `/collections/{collectionId}/items`,link relation `items`) as well as
         key information about the collection. This information includes:
@@ -482,7 +427,7 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: zonnepanelen.getCollection
+      operationId: RoomByRoomRental.getCollection
       parameters:
         - $ref: "#/components/parameters/fCollection"
       responses:
@@ -503,11 +448,66 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/NAPPeilmerken/items:
+  /collections/SolarPanels:
+    get:
+      tags:
+        - Collections
+      summary: feature collection
+      description: >-
+        Information about the feature collection with id 'SolarPanels'. The
+        response contains a link to the items in the collection (path
+        `/collections/{collectionId}/items`,link relation `items`) as well as
+        key information about the collection. This information includes:
+
+
+        * A local identifier for the collection that is unique for the dataset;
+
+        * A title and description for the collection;
+
+        * An indication of the spatial and temporal extent of the data in the
+        collection;
+
+        * A list of coordinate reference systems (CRS) in which geometries may
+        be returned by the server. The first CRS is the default coordinate
+        reference system (the default is always WGS 84 with axis order
+        longitude/latitude);
+
+        * The CRS in which the spatial geometries are stored in the data source
+        (if data is requested in this CRS, the geometries are returned without
+        any coordinate conversion);
+
+        * An indicator about the type of the items in the collection (the
+        default value is 'feature').
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Features - Part 1: Core"
+        url: https://docs.ogc.org/is/17-069r4/17-069r4.html
+      operationId: SolarPanels.getCollection
+      parameters:
+        - $ref: "#/components/parameters/fCollection"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collection"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
+  /collections/Benchmarks/items:
     get:
       tags:
         - Features
-      summary: retrieve features in the feature collection 'NAPPeilmerken'
+      summary: retrieve features in the feature collection 'Benchmarks'
       description: >-
         The response is a document consisting of features in the collection. The
         features included in the response are determined by the server based on
@@ -538,11 +538,11 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: NAPPeilmerken.getItems
+      operationId: Benchmarks.getItems
       parameters:
         - $ref: "#/components/parameters/bbox"
-        - $ref: "#/components/parameters/bbox-crsFeatures_NAPPeilmerken"
-        - $ref: "#/components/parameters/crsFeatures_NAPPeilmerken"
+        - $ref: "#/components/parameters/bbox-crsFeatures_Benchmarks"
+        - $ref: "#/components/parameters/crsFeatures_Benchmarks"
         - $ref: "#/components/parameters/datetime"
         - $ref: "#/components/parameters/fFeatures"
         - $ref: "#/components/parameters/filter"
@@ -550,24 +550,24 @@ paths:
         - $ref: "#/components/parameters/filter-lang"
         - $ref: "#/components/parameters/limitFeatures"
         - $ref: "#/components/parameters/offsetFeatures"
-        - $ref: "#/components/parameters/properties_NAPPeilmerken"
+        - $ref: "#/components/parameters/properties_Benchmarks"
         - $ref: "#/components/parameters/resultTypeFeatures"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
-        - $ref: "#/components/parameters/fid_NAPPeilmerken"
-        - $ref: "#/components/parameters/boutnr_NAPPeilmerken"
-        - $ref: "#/components/parameters/nap_in_m_NAPPeilmerken"
-        - $ref: "#/components/parameters/gvl_NAPPeilmerken"
-        - $ref: "#/components/parameters/muurcoord_x_NAPPeilmerken"
-        - $ref: "#/components/parameters/muurcoord_y_NAPPeilmerken"
-        - $ref: "#/components/parameters/ligging_NAPPeilmerken"
-        - $ref: "#/components/parameters/omschrijving_NAPPeilmerken"
-        - $ref: "#/components/parameters/eigenaar_NAPPeilmerken"
-        - $ref: "#/components/parameters/status_NAPPeilmerken"
-        - $ref: "#/components/parameters/x_coord_NAPPeilmerken"
-        - $ref: "#/components/parameters/y_coord_NAPPeilmerken"
-        - $ref: "#/components/parameters/id_kv_NAPPeilmerken"
-        - $ref: "#/components/parameters/geometry_NAPPeilmerken"
+        - $ref: "#/components/parameters/fid_Benchmarks"
+        - $ref: "#/components/parameters/boutnr_Benchmarks"
+        - $ref: "#/components/parameters/nap_in_m_Benchmarks"
+        - $ref: "#/components/parameters/gvl_Benchmarks"
+        - $ref: "#/components/parameters/muurcoord_x_Benchmarks"
+        - $ref: "#/components/parameters/muurcoord_y_Benchmarks"
+        - $ref: "#/components/parameters/ligging_Benchmarks"
+        - $ref: "#/components/parameters/omschrijving_Benchmarks"
+        - $ref: "#/components/parameters/eigenaar_Benchmarks"
+        - $ref: "#/components/parameters/status_Benchmarks"
+        - $ref: "#/components/parameters/x_coord_Benchmarks"
+        - $ref: "#/components/parameters/y_coord_Benchmarks"
+        - $ref: "#/components/parameters/id_kv_Benchmarks"
+        - $ref: "#/components/parameters/geometry_Benchmarks"
       responses:
         "200":
           description: The operation was executed successfully.
@@ -586,7 +586,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureCollectionGeoJson_NAPPeilmerken"
+                $ref: "#/components/schemas/featureCollectionGeoJson_Benchmarks"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -600,22 +600,22 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/NAPPeilmerken/items/{featureId}:
+  /collections/Benchmarks/items/{featureId}:
     get:
       tags:
         - Features
-      summary: retrieve a feature in the feature collection 'NAPPeilmerken'
+      summary: retrieve a feature in the feature collection 'Benchmarks'
       description: Fetch the feature with id `{featureId}`.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: NAPPeilmerken.getItem
+      operationId: Benchmarks.getItem
       parameters:
         - $ref: "#/components/parameters/featureId"
-        - $ref: "#/components/parameters/crsFeatures_NAPPeilmerken"
+        - $ref: "#/components/parameters/crsFeatures_Benchmarks"
         - $ref: "#/components/parameters/fFeatures"
-        - $ref: "#/components/parameters/properties_NAPPeilmerken"
+        - $ref: "#/components/parameters/properties_Benchmarks"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
       responses:
@@ -636,7 +636,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureGeoJson_NAPPeilmerken"
+                $ref: "#/components/schemas/featureGeoJson_Benchmarks"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -650,11 +650,11 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/buurten/items:
+  /collections/Border/items:
     get:
       tags:
         - Features
-      summary: retrieve features in the feature collection 'buurten'
+      summary: retrieve features in the feature collection 'Border'
       description: >-
         The response is a document consisting of features in the collection. The
         features included in the response are determined by the server based on
@@ -685,11 +685,11 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: buurten.getItems
+      operationId: Border.getItems
       parameters:
         - $ref: "#/components/parameters/bbox"
-        - $ref: "#/components/parameters/bbox-crsFeatures_buurten"
-        - $ref: "#/components/parameters/crsFeatures_buurten"
+        - $ref: "#/components/parameters/bbox-crsFeatures_Border"
+        - $ref: "#/components/parameters/crsFeatures_Border"
         - $ref: "#/components/parameters/datetime"
         - $ref: "#/components/parameters/fFeatures"
         - $ref: "#/components/parameters/filter"
@@ -697,18 +697,13 @@ paths:
         - $ref: "#/components/parameters/filter-lang"
         - $ref: "#/components/parameters/limitFeatures"
         - $ref: "#/components/parameters/offsetFeatures"
-        - $ref: "#/components/parameters/properties_buurten"
+        - $ref: "#/components/parameters/properties_Border"
         - $ref: "#/components/parameters/resultTypeFeatures"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
-        - $ref: "#/components/parameters/fid_buurten"
-        - $ref: "#/components/parameters/buurtcode_buurten"
-        - $ref: "#/components/parameters/buurtnaam_buurten"
-        - $ref: "#/components/parameters/wijkcode_buurten"
-        - $ref: "#/components/parameters/gemeentecode_buurten"
-        - $ref: "#/components/parameters/gemeentenaam_buurten"
-        - $ref: "#/components/parameters/wijknaam_buurten"
-        - $ref: "#/components/parameters/id_kv_buurten"
+        - $ref: "#/components/parameters/fid_Border"
+        - $ref: "#/components/parameters/gemeentenaam_Border"
+        - $ref: "#/components/parameters/id_kv_Border"
       responses:
         "200":
           description: The operation was executed successfully.
@@ -727,7 +722,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureCollectionGeoJson_buurten"
+                $ref: "#/components/schemas/featureCollectionGeoJson_Border"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -741,22 +736,22 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/buurten/items/{featureId}:
+  /collections/Border/items/{featureId}:
     get:
       tags:
         - Features
-      summary: retrieve a feature in the feature collection 'buurten'
+      summary: retrieve a feature in the feature collection 'Border'
       description: Fetch the feature with id `{featureId}`.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: buurten.getItem
+      operationId: Border.getItem
       parameters:
         - $ref: "#/components/parameters/featureId"
-        - $ref: "#/components/parameters/crsFeatures_buurten"
+        - $ref: "#/components/parameters/crsFeatures_Border"
         - $ref: "#/components/parameters/fFeatures"
-        - $ref: "#/components/parameters/properties_buurten"
+        - $ref: "#/components/parameters/properties_Border"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
       responses:
@@ -777,7 +772,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureGeoJson_buurten"
+                $ref: "#/components/schemas/featureGeoJson_Border"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -791,11 +786,11 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/energielabels/items:
+  /collections/EnergyLabels/items:
     get:
       tags:
         - Features
-      summary: retrieve features in the feature collection 'energielabels'
+      summary: retrieve features in the feature collection 'EnergyLabels'
       description: >-
         The response is a document consisting of features in the collection. The
         features included in the response are determined by the server based on
@@ -826,11 +821,11 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: energielabels.getItems
+      operationId: EnergyLabels.getItems
       parameters:
         - $ref: "#/components/parameters/bbox"
-        - $ref: "#/components/parameters/bbox-crsFeatures_energielabels"
-        - $ref: "#/components/parameters/crsFeatures_energielabels"
+        - $ref: "#/components/parameters/bbox-crsFeatures_EnergyLabels"
+        - $ref: "#/components/parameters/crsFeatures_EnergyLabels"
         - $ref: "#/components/parameters/datetime"
         - $ref: "#/components/parameters/fFeatures"
         - $ref: "#/components/parameters/filter"
@@ -838,27 +833,27 @@ paths:
         - $ref: "#/components/parameters/filter-lang"
         - $ref: "#/components/parameters/limitFeatures"
         - $ref: "#/components/parameters/offsetFeatures"
-        - $ref: "#/components/parameters/properties_energielabels"
+        - $ref: "#/components/parameters/properties_EnergyLabels"
         - $ref: "#/components/parameters/resultTypeFeatures"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
-        - $ref: "#/components/parameters/fid_energielabels"
-        - $ref: "#/components/parameters/identificatie_bag_vbo_energielabels"
-        - $ref: "#/components/parameters/energielabel_energielabels"
-        - $ref: "#/components/parameters/definitief_energielabels"
-        - $ref: "#/components/parameters/pand_gebouwtype_energielabels"
-        - $ref: "#/components/parameters/pand_gebouwsubtype_energielabels"
-        - $ref: "#/components/parameters/status_energielabels"
-        - $ref: "#/components/parameters/gebruiksdoel_energielabels"
-        - $ref: "#/components/parameters/openbare_ruimte_energielabels"
-        - $ref: "#/components/parameters/huisnummer_energielabels"
-        - $ref: "#/components/parameters/huisletter_energielabels"
-        - $ref: "#/components/parameters/toevoeging_energielabels"
-        - $ref: "#/components/parameters/postcode_energielabels"
-        - $ref: "#/components/parameters/woonplaats_energielabels"
-        - $ref: "#/components/parameters/buurtnaam_energielabels"
-        - $ref: "#/components/parameters/wijknaam_energielabels"
-        - $ref: "#/components/parameters/id_kv_energielabels"
+        - $ref: "#/components/parameters/fid_EnergyLabels"
+        - $ref: "#/components/parameters/identificatie_bag_vbo_EnergyLabels"
+        - $ref: "#/components/parameters/energielabel_EnergyLabels"
+        - $ref: "#/components/parameters/definitief_EnergyLabels"
+        - $ref: "#/components/parameters/pand_gebouwtype_EnergyLabels"
+        - $ref: "#/components/parameters/pand_gebouwsubtype_EnergyLabels"
+        - $ref: "#/components/parameters/status_EnergyLabels"
+        - $ref: "#/components/parameters/gebruiksdoel_EnergyLabels"
+        - $ref: "#/components/parameters/openbare_ruimte_EnergyLabels"
+        - $ref: "#/components/parameters/huisnummer_EnergyLabels"
+        - $ref: "#/components/parameters/huisletter_EnergyLabels"
+        - $ref: "#/components/parameters/toevoeging_EnergyLabels"
+        - $ref: "#/components/parameters/postcode_EnergyLabels"
+        - $ref: "#/components/parameters/woonplaats_EnergyLabels"
+        - $ref: "#/components/parameters/buurtnaam_EnergyLabels"
+        - $ref: "#/components/parameters/wijknaam_EnergyLabels"
+        - $ref: "#/components/parameters/id_kv_EnergyLabels"
       responses:
         "200":
           description: The operation was executed successfully.
@@ -877,7 +872,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureCollectionGeoJson_energielabels"
+                $ref: "#/components/schemas/featureCollectionGeoJson_EnergyLabels"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -891,22 +886,22 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/energielabels/items/{featureId}:
+  /collections/EnergyLabels/items/{featureId}:
     get:
       tags:
         - Features
-      summary: retrieve a feature in the feature collection 'energielabels'
+      summary: retrieve a feature in the feature collection 'EnergyLabels'
       description: Fetch the feature with id `{featureId}`.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: energielabels.getItem
+      operationId: EnergyLabels.getItem
       parameters:
         - $ref: "#/components/parameters/featureId"
-        - $ref: "#/components/parameters/crsFeatures_energielabels"
+        - $ref: "#/components/parameters/crsFeatures_EnergyLabels"
         - $ref: "#/components/parameters/fFeatures"
-        - $ref: "#/components/parameters/properties_energielabels"
+        - $ref: "#/components/parameters/properties_EnergyLabels"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
       responses:
@@ -927,7 +922,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureGeoJson_energielabels"
+                $ref: "#/components/schemas/featureGeoJson_EnergyLabels"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -941,11 +936,11 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/gemeenteGrens/items:
+  /collections/Neighborhoods/items:
     get:
       tags:
         - Features
-      summary: retrieve features in the feature collection 'gemeenteGrens'
+      summary: retrieve features in the feature collection 'Neighborhoods'
       description: >-
         The response is a document consisting of features in the collection. The
         features included in the response are determined by the server based on
@@ -976,11 +971,11 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: gemeenteGrens.getItems
+      operationId: Neighborhoods.getItems
       parameters:
         - $ref: "#/components/parameters/bbox"
-        - $ref: "#/components/parameters/bbox-crsFeatures_gemeenteGrens"
-        - $ref: "#/components/parameters/crsFeatures_gemeenteGrens"
+        - $ref: "#/components/parameters/bbox-crsFeatures_Neighborhoods"
+        - $ref: "#/components/parameters/crsFeatures_Neighborhoods"
         - $ref: "#/components/parameters/datetime"
         - $ref: "#/components/parameters/fFeatures"
         - $ref: "#/components/parameters/filter"
@@ -988,13 +983,18 @@ paths:
         - $ref: "#/components/parameters/filter-lang"
         - $ref: "#/components/parameters/limitFeatures"
         - $ref: "#/components/parameters/offsetFeatures"
-        - $ref: "#/components/parameters/properties_gemeenteGrens"
+        - $ref: "#/components/parameters/properties_Neighborhoods"
         - $ref: "#/components/parameters/resultTypeFeatures"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
-        - $ref: "#/components/parameters/fid_gemeenteGrens"
-        - $ref: "#/components/parameters/gemeentenaam_gemeenteGrens"
-        - $ref: "#/components/parameters/id_kv_gemeenteGrens"
+        - $ref: "#/components/parameters/fid_Neighborhoods"
+        - $ref: "#/components/parameters/buurtcode_Neighborhoods"
+        - $ref: "#/components/parameters/buurtnaam_Neighborhoods"
+        - $ref: "#/components/parameters/wijkcode_Neighborhoods"
+        - $ref: "#/components/parameters/gemeentecode_Neighborhoods"
+        - $ref: "#/components/parameters/gemeentenaam_Neighborhoods"
+        - $ref: "#/components/parameters/wijknaam_Neighborhoods"
+        - $ref: "#/components/parameters/id_kv_Neighborhoods"
       responses:
         "200":
           description: The operation was executed successfully.
@@ -1013,7 +1013,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureCollectionGeoJson_gemeenteGrens"
+                $ref: "#/components/schemas/featureCollectionGeoJson_Neighborhoods"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -1027,22 +1027,22 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/gemeenteGrens/items/{featureId}:
+  /collections/Neighborhoods/items/{featureId}:
     get:
       tags:
         - Features
-      summary: retrieve a feature in the feature collection 'gemeenteGrens'
+      summary: retrieve a feature in the feature collection 'Neighborhoods'
       description: Fetch the feature with id `{featureId}`.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: gemeenteGrens.getItem
+      operationId: Neighborhoods.getItem
       parameters:
         - $ref: "#/components/parameters/featureId"
-        - $ref: "#/components/parameters/crsFeatures_gemeenteGrens"
+        - $ref: "#/components/parameters/crsFeatures_Neighborhoods"
         - $ref: "#/components/parameters/fFeatures"
-        - $ref: "#/components/parameters/properties_gemeenteGrens"
+        - $ref: "#/components/parameters/properties_Neighborhoods"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
       responses:
@@ -1063,7 +1063,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureGeoJson_gemeenteGrens"
+                $ref: "#/components/schemas/featureGeoJson_Neighborhoods"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -1077,11 +1077,11 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/kamersgewijzeVerhuur/items:
+  /collections/RoomByRoomRental/items:
     get:
       tags:
         - Features
-      summary: retrieve features in the feature collection 'kamersgewijzeVerhuur'
+      summary: retrieve features in the feature collection 'RoomByRoomRental'
       description: >-
         The response is a document consisting of features in the collection. The
         features included in the response are determined by the server based on
@@ -1112,11 +1112,11 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: kamersgewijzeVerhuur.getItems
+      operationId: RoomByRoomRental.getItems
       parameters:
         - $ref: "#/components/parameters/bbox"
-        - $ref: "#/components/parameters/bbox-crsFeatures_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/crsFeatures_kamersgewijzeVerhuur"
+        - $ref: "#/components/parameters/bbox-crsFeatures_RoomByRoomRental"
+        - $ref: "#/components/parameters/crsFeatures_RoomByRoomRental"
         - $ref: "#/components/parameters/datetime"
         - $ref: "#/components/parameters/fFeatures"
         - $ref: "#/components/parameters/filter"
@@ -1124,23 +1124,23 @@ paths:
         - $ref: "#/components/parameters/filter-lang"
         - $ref: "#/components/parameters/limitFeatures"
         - $ref: "#/components/parameters/offsetFeatures"
-        - $ref: "#/components/parameters/properties_kamersgewijzeVerhuur"
+        - $ref: "#/components/parameters/properties_RoomByRoomRental"
         - $ref: "#/components/parameters/resultTypeFeatures"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
-        - $ref: "#/components/parameters/fid_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/volgnummer_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/zaaknummer_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/globale_locatie_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/bagid_vbo_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/type_woning_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/status_aanvraag_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/aantal_complex_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/maximaal_complex_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/buurtnaam_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/wijknaam_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/id_kv_kamersgewijzeVerhuur"
-        - $ref: "#/components/parameters/dr_kv_kamersgewijzeVerhuur"
+        - $ref: "#/components/parameters/fid_RoomByRoomRental"
+        - $ref: "#/components/parameters/volgnummer_RoomByRoomRental"
+        - $ref: "#/components/parameters/zaaknummer_RoomByRoomRental"
+        - $ref: "#/components/parameters/globale_locatie_RoomByRoomRental"
+        - $ref: "#/components/parameters/bagid_vbo_RoomByRoomRental"
+        - $ref: "#/components/parameters/type_woning_RoomByRoomRental"
+        - $ref: "#/components/parameters/status_aanvraag_RoomByRoomRental"
+        - $ref: "#/components/parameters/aantal_complex_RoomByRoomRental"
+        - $ref: "#/components/parameters/maximaal_complex_RoomByRoomRental"
+        - $ref: "#/components/parameters/buurtnaam_RoomByRoomRental"
+        - $ref: "#/components/parameters/wijknaam_RoomByRoomRental"
+        - $ref: "#/components/parameters/id_kv_RoomByRoomRental"
+        - $ref: "#/components/parameters/dr_kv_RoomByRoomRental"
       responses:
         "200":
           description: The operation was executed successfully.
@@ -1159,7 +1159,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureCollectionGeoJson_kamersgewijzeVerhuur"
+                $ref: "#/components/schemas/featureCollectionGeoJson_RoomByRoomRental"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -1173,22 +1173,22 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/kamersgewijzeVerhuur/items/{featureId}:
+  /collections/RoomByRoomRental/items/{featureId}:
     get:
       tags:
         - Features
-      summary: retrieve a feature in the feature collection 'kamersgewijzeVerhuur'
+      summary: retrieve a feature in the feature collection 'RoomByRoomRental'
       description: Fetch the feature with id `{featureId}`.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: kamersgewijzeVerhuur.getItem
+      operationId: RoomByRoomRental.getItem
       parameters:
         - $ref: "#/components/parameters/featureId"
-        - $ref: "#/components/parameters/crsFeatures_kamersgewijzeVerhuur"
+        - $ref: "#/components/parameters/crsFeatures_RoomByRoomRental"
         - $ref: "#/components/parameters/fFeatures"
-        - $ref: "#/components/parameters/properties_kamersgewijzeVerhuur"
+        - $ref: "#/components/parameters/properties_RoomByRoomRental"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
       responses:
@@ -1209,7 +1209,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureGeoJson_kamersgewijzeVerhuur"
+                $ref: "#/components/schemas/featureGeoJson_RoomByRoomRental"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -1223,11 +1223,11 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/zonnepanelen/items:
+  /collections/SolarPanels/items:
     get:
       tags:
         - Features
-      summary: retrieve features in the feature collection 'zonnepanelen'
+      summary: retrieve features in the feature collection 'SolarPanels'
       description: >-
         The response is a document consisting of features in the collection. The
         features included in the response are determined by the server based on
@@ -1258,11 +1258,11 @@ paths:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: zonnepanelen.getItems
+      operationId: SolarPanels.getItems
       parameters:
         - $ref: "#/components/parameters/bbox"
-        - $ref: "#/components/parameters/bbox-crsFeatures_zonnepanelen"
-        - $ref: "#/components/parameters/crsFeatures_zonnepanelen"
+        - $ref: "#/components/parameters/bbox-crsFeatures_SolarPanels"
+        - $ref: "#/components/parameters/crsFeatures_SolarPanels"
         - $ref: "#/components/parameters/datetime"
         - $ref: "#/components/parameters/fFeatures"
         - $ref: "#/components/parameters/filter"
@@ -1270,19 +1270,19 @@ paths:
         - $ref: "#/components/parameters/filter-lang"
         - $ref: "#/components/parameters/limitFeatures"
         - $ref: "#/components/parameters/offsetFeatures"
-        - $ref: "#/components/parameters/properties_zonnepanelen"
+        - $ref: "#/components/parameters/properties_SolarPanels"
         - $ref: "#/components/parameters/resultTypeFeatures"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
-        - $ref: "#/components/parameters/fid_zonnepanelen"
-        - $ref: "#/components/parameters/identificatie_zonnepanelen"
-        - $ref: "#/components/parameters/bouwjaar_zonnepanelen"
-        - $ref: "#/components/parameters/status_zonnepanelen"
-        - $ref: "#/components/parameters/gebruiksdoel_zonnepanelen"
-        - $ref: "#/components/parameters/oppervlakte_panelen_zonnepanelen"
-        - $ref: "#/components/parameters/aantal_panelen_zonnepanelen"
-        - $ref: "#/components/parameters/opbrengst_zonnepanelen"
-        - $ref: "#/components/parameters/id_kv_zonnepanelen"
+        - $ref: "#/components/parameters/fid_SolarPanels"
+        - $ref: "#/components/parameters/identificatie_SolarPanels"
+        - $ref: "#/components/parameters/bouwjaar_SolarPanels"
+        - $ref: "#/components/parameters/status_SolarPanels"
+        - $ref: "#/components/parameters/gebruiksdoel_SolarPanels"
+        - $ref: "#/components/parameters/oppervlakte_panelen_SolarPanels"
+        - $ref: "#/components/parameters/aantal_panelen_SolarPanels"
+        - $ref: "#/components/parameters/opbrengst_SolarPanels"
+        - $ref: "#/components/parameters/id_kv_SolarPanels"
       responses:
         "200":
           description: The operation was executed successfully.
@@ -1301,7 +1301,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureCollectionGeoJson_zonnepanelen"
+                $ref: "#/components/schemas/featureCollectionGeoJson_SolarPanels"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -1315,22 +1315,22 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /collections/zonnepanelen/items/{featureId}:
+  /collections/SolarPanels/items/{featureId}:
     get:
       tags:
         - Features
-      summary: retrieve a feature in the feature collection 'zonnepanelen'
+      summary: retrieve a feature in the feature collection 'SolarPanels'
       description: Fetch the feature with id `{featureId}`.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
-      operationId: zonnepanelen.getItem
+      operationId: SolarPanels.getItem
       parameters:
         - $ref: "#/components/parameters/featureId"
-        - $ref: "#/components/parameters/crsFeatures_zonnepanelen"
+        - $ref: "#/components/parameters/crsFeatures_SolarPanels"
         - $ref: "#/components/parameters/fFeatures"
-        - $ref: "#/components/parameters/properties_zonnepanelen"
+        - $ref: "#/components/parameters/properties_SolarPanels"
         - $ref: "#/components/parameters/schema"
         - $ref: "#/components/parameters/skipGeometry"
       responses:
@@ -1351,7 +1351,7 @@ paths:
                 $ref: "#/components/schemas/csv"
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/featureGeoJson_zonnepanelen"
+                $ref: "#/components/schemas/featureGeoJson_SolarPanels"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -1501,6 +1501,40 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
+  /processes/multiply:
+    get:
+      tags:
+        - Processes
+      summary: Retrieve a process description
+      description: "The process description contains information about inputs and
+        outputs and a link to the execution-endpoint for the process. The Core
+        does not mandate the use of a specific process description to specify
+        the interface of a process. "
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Processes - Part 1"
+        url: https://docs.ogc.org/is/18-062r2/18-062r2.html
+      operationId: multiply.getProcesses
+      parameters:
+        - $ref: "#/components/parameters/fProcesses"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
   /processes/add/execution:
     post:
       tags:
@@ -1568,6 +1602,36 @@ paths:
       summary: Process execution
       description: Create a new job.
       operationId: execute.echo.getProcesses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/execute.yaml
+        description: Mandatory execute request JSON
+        required: true
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "201":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "500":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+  /processes/multiply/execution:
+    post:
+      tags:
+        - Processes
+      summary: Process execution
+      description: Create a new job.
+      operationId: execute.multiply.getProcesses
       requestBody:
         content:
           application/json:
@@ -1920,7 +1984,7 @@ components:
             $ref: "#/components/schemas/link"
     csv:
       type: string
-    featureCollectionGeoJson_NAPPeilmerken:
+    featureCollectionGeoJson_Benchmarks:
       required:
         - type
         - features
@@ -1933,7 +1997,7 @@ components:
         features:
           type: array
           items:
-            $ref: "#/components/schemas/featureGeoJson_NAPPeilmerken"
+            $ref: "#/components/schemas/featureGeoJson_Benchmarks"
         links:
           type: array
           items:
@@ -1944,8 +2008,8 @@ components:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberMatched
         numberReturned:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberReturned
-    featureGeoJson_NAPPeilmerken:
-      title: NAPPeilmerken
+    featureGeoJson_Benchmarks:
+      title: Benchmarks
       required:
         - type
         - geometry
@@ -2010,7 +2074,7 @@ components:
             id_kv:
               type: number
       description: description something
-    featureCollectionGeoJson_buurten:
+    featureCollectionGeoJson_Border:
       required:
         - type
         - features
@@ -2023,7 +2087,7 @@ components:
         features:
           type: array
           items:
-            $ref: "#/components/schemas/featureGeoJson_buurten"
+            $ref: "#/components/schemas/featureGeoJson_Border"
         links:
           type: array
           items:
@@ -2034,8 +2098,8 @@ components:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberMatched
         numberReturned:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberReturned
-    featureGeoJson_buurten:
-      title: buurten
+    featureGeoJson_Border:
+      title: Border
       required:
         - type
         - geometry
@@ -2061,28 +2125,13 @@ components:
           type: object
           properties:
             fid:
-              title: Feature id
               type: number
-            buurtcode:
-              type: string
-            buurtnaam:
-              type: string
-            wijkcode:
-              type: string
-            gemeentecode:
-              type: string
-              enum:
-                - GM0362
             gemeentenaam:
-              type: string
-              enum:
-                - Amstelveen
-            wijknaam:
               type: string
             id_kv:
               type: number
       description: description something
-    featureCollectionGeoJson_energielabels:
+    featureCollectionGeoJson_EnergyLabels:
       required:
         - type
         - features
@@ -2095,7 +2144,7 @@ components:
         features:
           type: array
           items:
-            $ref: "#/components/schemas/featureGeoJson_energielabels"
+            $ref: "#/components/schemas/featureGeoJson_EnergyLabels"
         links:
           type: array
           items:
@@ -2106,8 +2155,8 @@ components:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberMatched
         numberReturned:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberReturned
-    featureGeoJson_energielabels:
-      title: energielabels
+    featureGeoJson_EnergyLabels:
+      title: EnergyLabels
       required:
         - type
         - geometry
@@ -2167,7 +2216,7 @@ components:
             id_kv:
               type: number
       description: description something
-    featureCollectionGeoJson_gemeenteGrens:
+    featureCollectionGeoJson_Neighborhoods:
       required:
         - type
         - features
@@ -2180,7 +2229,7 @@ components:
         features:
           type: array
           items:
-            $ref: "#/components/schemas/featureGeoJson_gemeenteGrens"
+            $ref: "#/components/schemas/featureGeoJson_Neighborhoods"
         links:
           type: array
           items:
@@ -2191,8 +2240,8 @@ components:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberMatched
         numberReturned:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberReturned
-    featureGeoJson_gemeenteGrens:
-      title: gemeenteGrens
+    featureGeoJson_Neighborhoods:
+      title: Neighborhoods
       required:
         - type
         - geometry
@@ -2218,13 +2267,28 @@ components:
           type: object
           properties:
             fid:
+              title: Feature id
               type: number
+            buurtcode:
+              type: string
+            buurtnaam:
+              type: string
+            wijkcode:
+              type: string
+            gemeentecode:
+              type: string
+              enum:
+                - GM0362
             gemeentenaam:
+              type: string
+              enum:
+                - Amstelveen
+            wijknaam:
               type: string
             id_kv:
               type: number
       description: description something
-    featureCollectionGeoJson_kamersgewijzeVerhuur:
+    featureCollectionGeoJson_RoomByRoomRental:
       required:
         - type
         - features
@@ -2237,7 +2301,7 @@ components:
         features:
           type: array
           items:
-            $ref: "#/components/schemas/featureGeoJson_kamersgewijzeVerhuur"
+            $ref: "#/components/schemas/featureGeoJson_RoomByRoomRental"
         links:
           type: array
           items:
@@ -2248,8 +2312,8 @@ components:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberMatched
         numberReturned:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberReturned
-    featureGeoJson_kamersgewijzeVerhuur:
-      title: kamersgewijzeVerhuur
+    featureGeoJson_RoomByRoomRental:
+      title: RoomByRoomRental
       required:
         - type
         - geometry
@@ -2303,7 +2367,7 @@ components:
               type: string
               format: date-time
       description: description something
-    featureCollectionGeoJson_zonnepanelen:
+    featureCollectionGeoJson_SolarPanels:
       required:
         - type
         - features
@@ -2316,7 +2380,7 @@ components:
         features:
           type: array
           items:
-            $ref: "#/components/schemas/featureGeoJson_zonnepanelen"
+            $ref: "#/components/schemas/featureGeoJson_SolarPanels"
         links:
           type: array
           items:
@@ -2327,8 +2391,8 @@ components:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberMatched
         numberReturned:
           $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberReturned
-    featureGeoJson_zonnepanelen:
-      title: zonnepanelen
+    featureGeoJson_SolarPanels:
+      title: SolarPanels
       required:
         - type
         - geometry
@@ -2544,7 +2608,7 @@ components:
         items:
           type: number
           format: double
-    bbox-crsFeatures_NAPPeilmerken:
+    bbox-crsFeatures_Benchmarks:
       name: bbox-crs
       in: query
       description: The coordinate reference system of the `bbox` parameter. Default is
@@ -2558,7 +2622,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    crsFeatures_NAPPeilmerken:
+    crsFeatures_Benchmarks:
       name: crs
       in: query
       description: The coordinate reference system of the response geometries. Default
@@ -2734,7 +2798,7 @@ components:
         type: integer
         format: int32
         default: 0
-    properties_NAPPeilmerken:
+    properties_Benchmarks:
       name: properties
       in: query
       description: The properties that should be included for each feature. The
@@ -2803,7 +2867,7 @@ components:
       schema:
         pattern: "[^/ ]+"
         type: string
-    fid_NAPPeilmerken:
+    fid_Benchmarks:
       name: fid
       in: query
       description: Filter the collection by property 'fid'.
@@ -2813,7 +2877,7 @@ components:
       schema:
         title: fid
         type: string
-    boutnr_NAPPeilmerken:
+    boutnr_Benchmarks:
       name: boutnr
       in: query
       description: Filter the collection by property 'boutnr'.
@@ -2823,7 +2887,7 @@ components:
       schema:
         title: boutnr
         type: string
-    nap_in_m_NAPPeilmerken:
+    nap_in_m_Benchmarks:
       name: nap_in_m
       in: query
       description: Filter the collection by property 'nap_in_m'.
@@ -2833,7 +2897,7 @@ components:
       schema:
         title: nap_in_m
         type: string
-    gvl_NAPPeilmerken:
+    gvl_Benchmarks:
       name: gvl
       in: query
       description: Filter the collection by property 'gvl'.
@@ -2843,7 +2907,7 @@ components:
       schema:
         title: gvl
         type: string
-    muurcoord_x_NAPPeilmerken:
+    muurcoord_x_Benchmarks:
       name: muurcoord_x
       in: query
       description: Filter the collection by property 'muurcoord_x'.
@@ -2853,7 +2917,7 @@ components:
       schema:
         title: muurcoord_x
         type: string
-    muurcoord_y_NAPPeilmerken:
+    muurcoord_y_Benchmarks:
       name: muurcoord_y
       in: query
       description: Filter the collection by property 'muurcoord_y'.
@@ -2863,7 +2927,7 @@ components:
       schema:
         title: muurcoord_y
         type: string
-    ligging_NAPPeilmerken:
+    ligging_Benchmarks:
       name: ligging
       in: query
       description: Filter the collection by property 'ligging'.
@@ -2873,7 +2937,7 @@ components:
       schema:
         title: ligging
         type: string
-    omschrijving_NAPPeilmerken:
+    omschrijving_Benchmarks:
       name: omschrijving
       in: query
       description: Filter the collection by property 'omschrijving'.
@@ -2883,7 +2947,7 @@ components:
       schema:
         title: omschrijving
         type: string
-    eigenaar_NAPPeilmerken:
+    eigenaar_Benchmarks:
       name: eigenaar
       in: query
       description: Filter the collection by property 'eigenaar'.
@@ -2893,7 +2957,7 @@ components:
       schema:
         title: eigenaar
         type: string
-    status_NAPPeilmerken:
+    status_Benchmarks:
       name: status
       in: query
       description: Filter the collection by property 'status'.
@@ -2903,7 +2967,7 @@ components:
       schema:
         title: status
         type: string
-    x_coord_NAPPeilmerken:
+    x_coord_Benchmarks:
       name: x_coord
       in: query
       description: Filter the collection by property 'x_coord'.
@@ -2913,7 +2977,7 @@ components:
       schema:
         title: x_coord
         type: string
-    y_coord_NAPPeilmerken:
+    y_coord_Benchmarks:
       name: y_coord
       in: query
       description: Filter the collection by property 'y_coord'.
@@ -2923,7 +2987,7 @@ components:
       schema:
         title: y_coord
         type: string
-    id_kv_NAPPeilmerken:
+    id_kv_Benchmarks:
       name: id_kv
       in: query
       description: Filter the collection by property 'id_kv'.
@@ -2933,7 +2997,7 @@ components:
       schema:
         title: id_kv
         type: string
-    geometry_NAPPeilmerken:
+    geometry_Benchmarks:
       name: geometry
       in: query
       description: Filter the collection by property 'geometry'.
@@ -2943,7 +3007,7 @@ components:
       schema:
         title: geometry
         type: string
-    bbox-crsFeatures_buurten:
+    bbox-crsFeatures_Border:
       name: bbox-crs
       in: query
       description: The coordinate reference system of the `bbox` parameter. Default is
@@ -2957,7 +3021,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    crsFeatures_buurten:
+    crsFeatures_Border:
       name: crs
       in: query
       description: The coordinate reference system of the response geometries. Default
@@ -2971,7 +3035,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    properties_buurten:
+    properties_Border:
       name: properties
       in: query
       description: The properties that should be included for each feature. The
@@ -2986,14 +3050,9 @@ components:
           type: string
           enum:
             - fid
-            - buurtcode
-            - buurtnaam
-            - wijkcode
-            - gemeentecode
             - gemeentenaam
-            - wijknaam
             - id_kv
-    fid_buurten:
+    fid_Border:
       name: fid
       in: query
       description: Filter the collection by property 'fid'.
@@ -3003,47 +3062,7 @@ components:
       schema:
         title: fid
         type: string
-    buurtcode_buurten:
-      name: buurtcode
-      in: query
-      description: Filter the collection by property 'buurtcode'.
-      required: false
-      style: form
-      explode: false
-      schema:
-        title: buurtcode
-        type: string
-    buurtnaam_buurten:
-      name: buurtnaam
-      in: query
-      description: Filter the collection by property 'buurtnaam'.
-      required: false
-      style: form
-      explode: false
-      schema:
-        title: buurtnaam
-        type: string
-    wijkcode_buurten:
-      name: wijkcode
-      in: query
-      description: Filter the collection by property 'wijkcode'.
-      required: false
-      style: form
-      explode: false
-      schema:
-        title: wijkcode
-        type: string
-    gemeentecode_buurten:
-      name: gemeentecode
-      in: query
-      description: Filter the collection by property 'gemeentecode'.
-      required: false
-      style: form
-      explode: false
-      schema:
-        title: gemeentecode
-        type: string
-    gemeentenaam_buurten:
+    gemeentenaam_Border:
       name: gemeentenaam
       in: query
       description: Filter the collection by property 'gemeentenaam'.
@@ -3053,17 +3072,7 @@ components:
       schema:
         title: gemeentenaam
         type: string
-    wijknaam_buurten:
-      name: wijknaam
-      in: query
-      description: Filter the collection by property 'wijknaam'.
-      required: false
-      style: form
-      explode: false
-      schema:
-        title: wijknaam
-        type: string
-    id_kv_buurten:
+    id_kv_Border:
       name: id_kv
       in: query
       description: Filter the collection by property 'id_kv'.
@@ -3073,7 +3082,7 @@ components:
       schema:
         title: id_kv
         type: string
-    bbox-crsFeatures_energielabels:
+    bbox-crsFeatures_EnergyLabels:
       name: bbox-crs
       in: query
       description: The coordinate reference system of the `bbox` parameter. Default is
@@ -3087,7 +3096,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    crsFeatures_energielabels:
+    crsFeatures_EnergyLabels:
       name: crs
       in: query
       description: The coordinate reference system of the response geometries. Default
@@ -3101,7 +3110,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    properties_energielabels:
+    properties_EnergyLabels:
       name: properties
       in: query
       description: The properties that should be included for each feature. The
@@ -3132,7 +3141,7 @@ components:
             - buurtnaam
             - wijknaam
             - id_kv
-    fid_energielabels:
+    fid_EnergyLabels:
       name: fid
       in: query
       description: Filter the collection by property 'fid'.
@@ -3142,7 +3151,7 @@ components:
       schema:
         title: fid
         type: string
-    identificatie_bag_vbo_energielabels:
+    identificatie_bag_vbo_EnergyLabels:
       name: identificatie_bag_vbo
       in: query
       description: Filter the collection by property 'identificatie_bag_vbo'.
@@ -3152,7 +3161,7 @@ components:
       schema:
         title: identificatie_bag_vbo
         type: string
-    energielabel_energielabels:
+    energielabel_EnergyLabels:
       name: energielabel
       in: query
       description: Filter the collection by property 'energielabel'.
@@ -3162,7 +3171,7 @@ components:
       schema:
         title: energielabel
         type: string
-    definitief_energielabels:
+    definitief_EnergyLabels:
       name: definitief
       in: query
       description: Filter the collection by property 'definitief'.
@@ -3172,7 +3181,7 @@ components:
       schema:
         title: definitief
         type: string
-    pand_gebouwtype_energielabels:
+    pand_gebouwtype_EnergyLabels:
       name: pand_gebouwtype
       in: query
       description: Filter the collection by property 'pand_gebouwtype'.
@@ -3182,7 +3191,7 @@ components:
       schema:
         title: pand_gebouwtype
         type: string
-    pand_gebouwsubtype_energielabels:
+    pand_gebouwsubtype_EnergyLabels:
       name: pand_gebouwsubtype
       in: query
       description: Filter the collection by property 'pand_gebouwsubtype'.
@@ -3192,7 +3201,7 @@ components:
       schema:
         title: pand_gebouwsubtype
         type: string
-    status_energielabels:
+    status_EnergyLabels:
       name: status
       in: query
       description: Filter the collection by property 'status'.
@@ -3202,7 +3211,7 @@ components:
       schema:
         title: status
         type: string
-    gebruiksdoel_energielabels:
+    gebruiksdoel_EnergyLabels:
       name: gebruiksdoel
       in: query
       description: Filter the collection by property 'gebruiksdoel'.
@@ -3212,7 +3221,7 @@ components:
       schema:
         title: gebruiksdoel
         type: string
-    openbare_ruimte_energielabels:
+    openbare_ruimte_EnergyLabels:
       name: openbare_ruimte
       in: query
       description: Filter the collection by property 'openbare_ruimte'.
@@ -3222,7 +3231,7 @@ components:
       schema:
         title: openbare_ruimte
         type: string
-    huisnummer_energielabels:
+    huisnummer_EnergyLabels:
       name: huisnummer
       in: query
       description: Filter the collection by property 'huisnummer'.
@@ -3232,7 +3241,7 @@ components:
       schema:
         title: huisnummer
         type: string
-    huisletter_energielabels:
+    huisletter_EnergyLabels:
       name: huisletter
       in: query
       description: Filter the collection by property 'huisletter'.
@@ -3242,7 +3251,7 @@ components:
       schema:
         title: huisletter
         type: string
-    toevoeging_energielabels:
+    toevoeging_EnergyLabels:
       name: toevoeging
       in: query
       description: Filter the collection by property 'toevoeging'.
@@ -3252,7 +3261,7 @@ components:
       schema:
         title: toevoeging
         type: string
-    postcode_energielabels:
+    postcode_EnergyLabels:
       name: postcode
       in: query
       description: Filter the collection by property 'postcode'.
@@ -3262,7 +3271,7 @@ components:
       schema:
         title: postcode
         type: string
-    woonplaats_energielabels:
+    woonplaats_EnergyLabels:
       name: woonplaats
       in: query
       description: Filter the collection by property 'woonplaats'.
@@ -3272,7 +3281,7 @@ components:
       schema:
         title: woonplaats
         type: string
-    buurtnaam_energielabels:
+    buurtnaam_EnergyLabels:
       name: buurtnaam
       in: query
       description: Filter the collection by property 'buurtnaam'.
@@ -3282,7 +3291,7 @@ components:
       schema:
         title: buurtnaam
         type: string
-    wijknaam_energielabels:
+    wijknaam_EnergyLabels:
       name: wijknaam
       in: query
       description: Filter the collection by property 'wijknaam'.
@@ -3292,7 +3301,7 @@ components:
       schema:
         title: wijknaam
         type: string
-    id_kv_energielabels:
+    id_kv_EnergyLabels:
       name: id_kv
       in: query
       description: Filter the collection by property 'id_kv'.
@@ -3302,7 +3311,7 @@ components:
       schema:
         title: id_kv
         type: string
-    bbox-crsFeatures_gemeenteGrens:
+    bbox-crsFeatures_Neighborhoods:
       name: bbox-crs
       in: query
       description: The coordinate reference system of the `bbox` parameter. Default is
@@ -3316,7 +3325,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    crsFeatures_gemeenteGrens:
+    crsFeatures_Neighborhoods:
       name: crs
       in: query
       description: The coordinate reference system of the response geometries. Default
@@ -3330,7 +3339,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    properties_gemeenteGrens:
+    properties_Neighborhoods:
       name: properties
       in: query
       description: The properties that should be included for each feature. The
@@ -3345,9 +3354,14 @@ components:
           type: string
           enum:
             - fid
+            - buurtcode
+            - buurtnaam
+            - wijkcode
+            - gemeentecode
             - gemeentenaam
+            - wijknaam
             - id_kv
-    fid_gemeenteGrens:
+    fid_Neighborhoods:
       name: fid
       in: query
       description: Filter the collection by property 'fid'.
@@ -3357,7 +3371,47 @@ components:
       schema:
         title: fid
         type: string
-    gemeentenaam_gemeenteGrens:
+    buurtcode_Neighborhoods:
+      name: buurtcode
+      in: query
+      description: Filter the collection by property 'buurtcode'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: buurtcode
+        type: string
+    buurtnaam_Neighborhoods:
+      name: buurtnaam
+      in: query
+      description: Filter the collection by property 'buurtnaam'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: buurtnaam
+        type: string
+    wijkcode_Neighborhoods:
+      name: wijkcode
+      in: query
+      description: Filter the collection by property 'wijkcode'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: wijkcode
+        type: string
+    gemeentecode_Neighborhoods:
+      name: gemeentecode
+      in: query
+      description: Filter the collection by property 'gemeentecode'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: gemeentecode
+        type: string
+    gemeentenaam_Neighborhoods:
       name: gemeentenaam
       in: query
       description: Filter the collection by property 'gemeentenaam'.
@@ -3367,7 +3421,17 @@ components:
       schema:
         title: gemeentenaam
         type: string
-    id_kv_gemeenteGrens:
+    wijknaam_Neighborhoods:
+      name: wijknaam
+      in: query
+      description: Filter the collection by property 'wijknaam'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: wijknaam
+        type: string
+    id_kv_Neighborhoods:
       name: id_kv
       in: query
       description: Filter the collection by property 'id_kv'.
@@ -3377,7 +3441,7 @@ components:
       schema:
         title: id_kv
         type: string
-    bbox-crsFeatures_kamersgewijzeVerhuur:
+    bbox-crsFeatures_RoomByRoomRental:
       name: bbox-crs
       in: query
       description: The coordinate reference system of the `bbox` parameter. Default is
@@ -3391,7 +3455,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    crsFeatures_kamersgewijzeVerhuur:
+    crsFeatures_RoomByRoomRental:
       name: crs
       in: query
       description: The coordinate reference system of the response geometries. Default
@@ -3405,7 +3469,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    properties_kamersgewijzeVerhuur:
+    properties_RoomByRoomRental:
       name: properties
       in: query
       description: The properties that should be included for each feature. The
@@ -3432,7 +3496,7 @@ components:
             - wijknaam
             - id_kv
             - dr_kv
-    fid_kamersgewijzeVerhuur:
+    fid_RoomByRoomRental:
       name: fid
       in: query
       description: Filter the collection by property 'fid'.
@@ -3442,7 +3506,7 @@ components:
       schema:
         title: fid
         type: string
-    volgnummer_kamersgewijzeVerhuur:
+    volgnummer_RoomByRoomRental:
       name: volgnummer
       in: query
       description: Filter the collection by property 'volgnummer'.
@@ -3452,7 +3516,7 @@ components:
       schema:
         title: volgnummer
         type: string
-    zaaknummer_kamersgewijzeVerhuur:
+    zaaknummer_RoomByRoomRental:
       name: zaaknummer
       in: query
       description: Filter the collection by property 'zaaknummer'.
@@ -3462,7 +3526,7 @@ components:
       schema:
         title: zaaknummer
         type: string
-    globale_locatie_kamersgewijzeVerhuur:
+    globale_locatie_RoomByRoomRental:
       name: globale_locatie
       in: query
       description: Filter the collection by property 'globale_locatie'.
@@ -3472,7 +3536,7 @@ components:
       schema:
         title: globale_locatie
         type: string
-    bagid_vbo_kamersgewijzeVerhuur:
+    bagid_vbo_RoomByRoomRental:
       name: bagid_vbo
       in: query
       description: Filter the collection by property 'bagid_vbo'.
@@ -3482,7 +3546,7 @@ components:
       schema:
         title: bagid_vbo
         type: string
-    type_woning_kamersgewijzeVerhuur:
+    type_woning_RoomByRoomRental:
       name: type_woning
       in: query
       description: Filter the collection by property 'type_woning'.
@@ -3492,7 +3556,7 @@ components:
       schema:
         title: type_woning
         type: string
-    status_aanvraag_kamersgewijzeVerhuur:
+    status_aanvraag_RoomByRoomRental:
       name: status_aanvraag
       in: query
       description: Filter the collection by property 'status_aanvraag'.
@@ -3502,7 +3566,7 @@ components:
       schema:
         title: status_aanvraag
         type: string
-    aantal_complex_kamersgewijzeVerhuur:
+    aantal_complex_RoomByRoomRental:
       name: aantal_complex
       in: query
       description: Filter the collection by property 'aantal_complex'.
@@ -3512,7 +3576,7 @@ components:
       schema:
         title: aantal_complex
         type: string
-    maximaal_complex_kamersgewijzeVerhuur:
+    maximaal_complex_RoomByRoomRental:
       name: maximaal_complex
       in: query
       description: Filter the collection by property 'maximaal_complex'.
@@ -3522,7 +3586,7 @@ components:
       schema:
         title: maximaal_complex
         type: string
-    buurtnaam_kamersgewijzeVerhuur:
+    buurtnaam_RoomByRoomRental:
       name: buurtnaam
       in: query
       description: Filter the collection by property 'buurtnaam'.
@@ -3532,7 +3596,7 @@ components:
       schema:
         title: buurtnaam
         type: string
-    wijknaam_kamersgewijzeVerhuur:
+    wijknaam_RoomByRoomRental:
       name: wijknaam
       in: query
       description: Filter the collection by property 'wijknaam'.
@@ -3542,7 +3606,7 @@ components:
       schema:
         title: wijknaam
         type: string
-    id_kv_kamersgewijzeVerhuur:
+    id_kv_RoomByRoomRental:
       name: id_kv
       in: query
       description: Filter the collection by property 'id_kv'.
@@ -3552,7 +3616,7 @@ components:
       schema:
         title: id_kv
         type: string
-    dr_kv_kamersgewijzeVerhuur:
+    dr_kv_RoomByRoomRental:
       name: dr_kv
       in: query
       description: Filter the collection by property 'dr_kv'.
@@ -3562,7 +3626,7 @@ components:
       schema:
         title: dr_kv
         type: string
-    bbox-crsFeatures_zonnepanelen:
+    bbox-crsFeatures_SolarPanels:
       name: bbox-crs
       in: query
       description: The coordinate reference system of the `bbox` parameter. Default is
@@ -3576,7 +3640,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    crsFeatures_zonnepanelen:
+    crsFeatures_SolarPanels:
       name: crs
       in: query
       description: The coordinate reference system of the response geometries. Default
@@ -3590,7 +3654,7 @@ components:
         enum:
           - http://www.opengis.net/def/crs/OGC/1.3/CRS84
           - http://www.opengis.net/def/crs/EPSG/0/4326
-    properties_zonnepanelen:
+    properties_SolarPanels:
       name: properties
       in: query
       description: The properties that should be included for each feature. The
@@ -3613,7 +3677,7 @@ components:
             - aantal_panelen
             - opbrengst
             - id_kv
-    fid_zonnepanelen:
+    fid_SolarPanels:
       name: fid
       in: query
       description: Filter the collection by property 'fid'.
@@ -3623,7 +3687,7 @@ components:
       schema:
         title: fid
         type: string
-    identificatie_zonnepanelen:
+    identificatie_SolarPanels:
       name: identificatie
       in: query
       description: Filter the collection by property 'identificatie'.
@@ -3633,7 +3697,7 @@ components:
       schema:
         title: identificatie
         type: string
-    bouwjaar_zonnepanelen:
+    bouwjaar_SolarPanels:
       name: bouwjaar
       in: query
       description: Filter the collection by property 'bouwjaar'.
@@ -3643,7 +3707,7 @@ components:
       schema:
         title: bouwjaar
         type: string
-    status_zonnepanelen:
+    status_SolarPanels:
       name: status
       in: query
       description: Filter the collection by property 'status'.
@@ -3653,7 +3717,7 @@ components:
       schema:
         title: status
         type: string
-    gebruiksdoel_zonnepanelen:
+    gebruiksdoel_SolarPanels:
       name: gebruiksdoel
       in: query
       description: Filter the collection by property 'gebruiksdoel'.
@@ -3663,7 +3727,7 @@ components:
       schema:
         title: gebruiksdoel
         type: string
-    oppervlakte_panelen_zonnepanelen:
+    oppervlakte_panelen_SolarPanels:
       name: oppervlakte_panelen
       in: query
       description: Filter the collection by property 'oppervlakte_panelen'.
@@ -3673,7 +3737,7 @@ components:
       schema:
         title: oppervlakte_panelen
         type: string
-    aantal_panelen_zonnepanelen:
+    aantal_panelen_SolarPanels:
       name: aantal_panelen
       in: query
       description: Filter the collection by property 'aantal_panelen'.
@@ -3683,7 +3747,7 @@ components:
       schema:
         title: aantal_panelen
         type: string
-    opbrengst_zonnepanelen:
+    opbrengst_SolarPanels:
       name: opbrengst
       in: query
       description: Filter the collection by property 'opbrengst'.
@@ -3693,7 +3757,7 @@ components:
       schema:
         title: opbrengst
         type: string
-    id_kv_zonnepanelen:
+    id_kv_SolarPanels:
       name: id_kv
       in: query
       description: Filter the collection by property 'id_kv'.
