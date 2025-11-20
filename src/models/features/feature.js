@@ -206,6 +206,9 @@ function create(formatFreeUrl, collection, body, callback) {
 
   formatFreeUrl = join(formatFreeUrl, newId.toString());
 
+  collection.lastModified = new Date();
+  collection.etag++;
+  
   return callback(undefined, body, formatFreeUrl);
 }
 
@@ -264,6 +267,9 @@ function replacee(formatFreeUrl, collection, featureId, body, callback) {
   formatFreeUrl = formatFreeUrl.substr(0, formatFreeUrl.lastIndexOf("/"));
   formatFreeUrl = join(formatFreeUrl, newId.toString());
 
+  collection.lastModified = new Date();
+  collection.etag++;
+
   return callback(undefined, body, formatFreeUrl);
 }
 
@@ -295,6 +301,9 @@ function deletee(collection, featureId, callback) {
     );
 
   collection.features.splice(oldId, 1);
+
+  collection.lastModified = new Date();
+  collection.etag++;
 
   return callback(undefined, {});
 }
@@ -353,6 +362,8 @@ function update(collection, featureId, body, callback) {
     feature.geometry = body.geometry;
   }
 
+  var resourceModified = false;
+
   if (body.properties) {
     // Replace Property, if they exist in the schema
     for (let propertyName in body.properties) {
@@ -362,21 +373,17 @@ function update(collection, featureId, body, callback) {
 
         var schemaProperty = collection.schema[propertyName];
         if (schemaProperty == undefined)
-          return callback(
-            {
-              httpCode: 400,
-              code: `Property not found`,
-              description: `${propertyName} in body not found in schema`,
-            },
-            undefined
-          );
+          resourceModified = true;
 
         feature.properties[propertyName] = value;
       }
     }
   }
 
-  return callback(undefined, feature);
+  collection.lastModified = new Date();
+  collection.etag++;
+
+  return callback(undefined, feature, resourceModified);
 }
 
 export default {

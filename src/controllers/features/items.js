@@ -3,7 +3,6 @@ import feature from "../../models/features/feature.js";
 import items from "../../models/features/items.js";
 import geojson2csv from "../../utils/csv.js";
 import utils from "../../utils/utils.js";
-import etag from "etag";
 import { getDatabases } from "../../database/database.js";
 
 export function get(req, res, next) {
@@ -63,7 +62,7 @@ export function get(req, res, next) {
 
       res.set("content-language", "nl");
 
-      res.set('ETag',          etag(JSON.stringify(content.features)))
+      res.set('ETag',          collection.etag)
       res.set('Last-Modified', collection.lastModified.toISOString())
 
       switch (format) {
@@ -122,6 +121,10 @@ export function create(req, res) {
       // (OAPIF P4) Requirememt 6B: A response with HTTP status code 201 SHALL include a Location header
       //           with the URI of the newly added resource (i.e. path of the resource endpoint).
       res.set("location", locationUri);
+
+      res.set('ETag',          collection.etag)
+      res.set('Last-Modified', collection.lastModified.toISOString())
+
       // (OAPIF P4) Requirememt 6A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 201.
       res.status(201).end();
     }

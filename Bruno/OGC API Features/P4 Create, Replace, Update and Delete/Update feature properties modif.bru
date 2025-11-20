@@ -1,0 +1,31 @@
+meta {
+  name: Update feature properties modif
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{serviceHost}}/collections/{{dataset}}/items/4793
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  User-Agent: insomnia/9.3.2
+}
+
+body:json {
+  {
+    "type": "Feature",
+    "properties": {
+      "qqq": 2025,
+      "bouwjaar": 2025
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

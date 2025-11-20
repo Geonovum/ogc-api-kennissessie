@@ -1,7 +1,6 @@
 import accepts from "accepts";
 import feature from "../../models/features/feature.js";
 import utils from "../../utils/utils.js";
-import etag from "etag";
 import { getDatabases } from "../../database/database.js";
 
 export function get(req, res) {
@@ -40,7 +39,8 @@ export function get(req, res) {
         res.set("Content-Crs", `<${content.headerContentCrs}>`);
       delete content.headerContentCrs;
 
-      res.setHeader('ETag', etag(JSON.stringify(content)))
+      res.set('ETag', collection.etag)
+      res.set('Last-Modified', collection.lastModified.toISOString())
       
       switch (format) {
         case "json":
@@ -94,6 +94,9 @@ export function replacee(req, res) {
         return;
       }
 
+      res.set('ETag', collection.etag)
+      res.set('Last-Modified', collection.lastModified.toISOString())
+
       res.set("location", resourceUrl);
       res.status(204).end();
     }
@@ -119,6 +122,9 @@ export function deletee(req, res) {
       return;
     }
 
+    res.set('ETag', collection.etag)
+    res.set('Last-Modified', collection.lastModified.toISOString())
+
     // (OAPI P4) Requirement 14A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 or 204.
     res.status(204).end();
   });
@@ -135,7 +141,7 @@ export function update(req, res) {
   var collections = getDatabases();
   var collection = collections[collectionId];
   
-  feature.update(collection, featureId, req.body, function (err, content) {
+  feature.update(collection, featureId, req.body, function (err, content, modified) {
     if (err) {
       res
         .status(err.httpCode)
@@ -143,7 +149,10 @@ export function update(req, res) {
       return;
     }
 
-    res.status(204).json(content);
+    res.set('ETag', collection.etag)
+    res.set('Last-Modified', collection.lastModified.toISOString())
+
+    res.status(modified ? 200 : 204).json(content);
   });
 }
 

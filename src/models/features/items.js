@@ -9,7 +9,6 @@
 import * as turf from "@turf/turf";
 import utils from "../../utils/utils.js";
 import projgeojson from "../../utils/proj4.js";
-import etag from "etag";
 
 /**
  * Generates pagination links for the response

@@ -50,8 +50,6 @@ export function makeOAPIF(geojson, dataDef) {
   geojson.name = dataDef.title;
   geojson.description = dataDef.description;
 
-  geojson.lastModified = new Date();
-
   geojson.schema = {};
   for (let propertyName in dataDef.schema.properties) {
     if (dataDef.schema.properties.hasOwnProperty(propertyName)) {
@@ -137,6 +135,9 @@ export function makeOAPIF(geojson, dataDef) {
     geojson.extent.temporal.interval[0] = minDate;
     geojson.extent.temporal.interval[1] = maxDate;
   }
+
+  geojson.lastModified = new Date();
+  geojson.etag = 123456;
 
   return geojson;
 }

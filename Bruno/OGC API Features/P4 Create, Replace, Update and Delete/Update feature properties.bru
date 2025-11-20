@@ -1,7 +1,7 @@
 meta {
-  name: feature update properties
+  name: Update feature properties
   type: http
-  seq: 4
+  seq: 6
 }
 
 patch {
@@ -17,13 +17,14 @@ headers {
 
 body:json {
   {
-  	"type": "Feature",
-  	"properties": {
-  		"bouwjaar": 2025
-  	}
+    "type": "Feature",
+    "properties": {
+      "bouwjaar": 2025
+    }
   }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

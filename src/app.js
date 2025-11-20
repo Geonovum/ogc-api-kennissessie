@@ -15,7 +15,7 @@
  * 
  * @author Geonovum
  * @version 1.2.3
- * @since 2024
+ * @since 2024 2025
  */
 
 // Core Express.js imports
@@ -29,7 +29,7 @@ import YAML from "yaml";
 import { readFileSync } from "fs";
 
 // Custom middleware imports
-import { options as mwOptions } from "./middlewares/options.js";
+import { options } from "./middlewares/options.js";
 import encodings from "./middlewares/encodings.js";
 import apiVersion from "./middlewares/apiversion.js";
 
