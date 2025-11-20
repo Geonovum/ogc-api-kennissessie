@@ -1,6 +1,6 @@
 ---
 server:
-  id: foss4gbe
+  id: geonovum
   port: 8080
   limit: 10
   viewEngine: pug
