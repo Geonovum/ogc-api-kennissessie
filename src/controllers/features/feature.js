@@ -1,6 +1,8 @@
 import accepts from "accepts";
 import feature from "../../models/features/feature.js";
 import utils from "../../utils/utils.js";
+import etag from "etag";
+import { getDatabases } from "../../database/database.js";
 
 export function get(req, res) {
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
@@ -16,10 +18,13 @@ export function get(req, res) {
   var accept = accepts(req);
   var format = accept.type(["geojson", "json", "html", "csv"]);
 
+  var collections = getDatabases();
+  var collection = collections[collectionId];
+  
   feature.get(
     formatFreeUrl,
     format,
-    collectionId,
+    collection,
     featureId,
     req.query,
     function (err, content) {
@@ -35,6 +40,8 @@ export function get(req, res) {
         res.set("Content-Crs", `<${content.headerContentCrs}>`);
       delete content.headerContentCrs;
 
+      res.setHeader('ETag', etag(JSON.stringify(content)))
+      
       switch (format) {
         case "json":
         case "geojson":
@@ -71,9 +78,12 @@ export function replacee(req, res) {
   var accept = accepts(req);
   var format = accept.type(["geojson", "json", "html"]);
 
+  var collections = getDatabases();
+  var collection = collections[collectionId];
+  
   feature.replacee(
     formatFreeUrl,
-    collectionId,
+    collection,
     featureId,
     req.body,
     function (err, content, resourceUrl) {
@@ -98,7 +108,10 @@ export function deletee(req, res) {
   var collectionId = req.params.collectionId;
   var featureId = req.params.featureId;
 
-  feature.deletee(collectionId, featureId, function (err, content) {
+  var collections = getDatabases();
+  var collection = collections[collectionId];
+  
+  feature.deletee(collection, featureId, function (err, content) {
     if (err) {
       res
         .status(err.httpCode)
@@ -119,7 +132,10 @@ export function update(req, res) {
   var collectionId = req.params.collectionId;
   var featureId = req.params.featureId;
 
-  feature.update(collectionId, featureId, req.body, function (err, content) {
+  var collections = getDatabases();
+  var collection = collections[collectionId];
+  
+  feature.update(collection, featureId, req.body, function (err, content) {
     if (err) {
       res
         .status(err.httpCode)

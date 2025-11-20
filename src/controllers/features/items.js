@@ -3,6 +3,8 @@ import feature from "../../models/features/feature.js";
 import items from "../../models/features/items.js";
 import geojson2csv from "../../utils/csv.js";
 import utils from "../../utils/utils.js";
+import etag from "etag";
+import { getDatabases } from "../../database/database.js";
 
 export function get(req, res, next) {
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
@@ -28,10 +30,14 @@ export function get(req, res, next) {
   var formatFreeUrl = utils.getFormatFreeUrl(req);
   var serviceUrl = utils.getServiceUrl(req);
 
+  // Get all available collections from the database
+  var collections = getDatabases();
+  var collection = collections[collectionId];
+  
   items.get(
     formatFreeUrl,
     format,
-    collectionId,
+    collection,
     req.query,
     options,
     function (err, content) {
@@ -46,6 +52,19 @@ export function get(req, res, next) {
       if (content.headerContentCrs)
         res.set("Content-Crs", `<${content.headerContentCrs}>`);
       delete content.headerContentCrs;
+
+      // Requirement 41 OAPIF (Core Corrigendum)
+      if (content.numberMatched)
+        res.set("OGC-NumberMatched", content.numberMatched);
+      if (content.numberReturned)
+        res.set("OGC-NumberReturned", content.numberReturned);
+      if (content.timeStamp)
+        res.set("Date", content.timeStamp);
+
+      res.set("content-language", "nl");
+
+      res.set('ETag',          etag(JSON.stringify(content.features)))
+      res.set('Last-Modified', collection.lastModified.toISOString())
 
       switch (format) {
         case "json":
@@ -84,9 +103,13 @@ export function create(req, res) {
   var accept = accepts(req);
   var format = accept.type(["geojson", "json", "html"]);
 
+    // Get all available collections from the database
+  var collections = getDatabases();
+  var collection = collections[collectionId];
+
   feature.create(
     formatFreeUrl,
-    collectionId,
+    collection,
     req.body,
     function (err, content, locationUri) {
       if (err) {

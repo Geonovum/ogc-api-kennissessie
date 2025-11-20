@@ -1,6 +1,5 @@
 import urlJoin from "url-join";
 import { join } from "path";
-import { getDatabases } from "../../database/database.js";
 import utils from "../../utils/utils.js";
 import projgeojson from "../../utils/proj4.js";
 
@@ -71,14 +70,13 @@ function getParentLink(neutralUrl, format, links) {
   });
 }
 
-function get(neutralUrl, format, collectionId, featureId, query, callback) {
-  const collections = getDatabases();
-  const collection = collections[collectionId];
+function get(neutralUrl, format, collection, featureId, query, callback) {
+
   if (!collection)
     return callback(
       {
         httpCode: 404,
-        code: `Collection not found: ${collectionId}`,
+        code: `Collection not found: ${collection.id}`,
         description:
           "Make sure you use an existing collectionId. See /Collections",
       },
@@ -167,7 +165,7 @@ function get(neutralUrl, format, collectionId, featureId, query, callback) {
   return callback(undefined, feature);
 }
 
-function create(formatFreeUrl, collectionId, body, callback) {
+function create(formatFreeUrl, collection, body, callback) {
   if (body.type.toLowerCase() != "feature")
     return callback({
       httpCode: 400,
@@ -175,13 +173,11 @@ function create(formatFreeUrl, collectionId, body, callback) {
       description: 'Type must be "feature"',
     });
 
-  var collections = getDatabases();
-  var collection = collections[collectionId];
   if (!collection)
     return callback(
       {
         httpCode: 404,
-        code: `Collection not found: ${collectionId}`,
+        code: `Collection not found: ${collection.id}`,
         description:
           "Make sure you use an existing collectionId. See /Collections",
       },
@@ -213,7 +209,7 @@ function create(formatFreeUrl, collectionId, body, callback) {
   return callback(undefined, body, formatFreeUrl);
 }
 
-function replacee(formatFreeUrl, collectionId, featureId, body, callback) {
+function replacee(formatFreeUrl, collection, featureId, body, callback) {
   if (body.type.toLowerCase() != "feature")
     return callback({
       httpCode: 400,
@@ -221,13 +217,11 @@ function replacee(formatFreeUrl, collectionId, featureId, body, callback) {
       description: 'Type must be "feature"',
     });
 
-  var collections = getDatabases();
-  var collection = collections[collectionId];
   if (!collection)
     return callback(
       {
         httpCode: 404,
-        code: `Collection not found: ${collectionId}`,
+        code: `Collection not found: ${collection.id}`,
         description:
           "Make sure you use an existing collectionId. See /Collections",
       },
@@ -273,14 +267,13 @@ function replacee(formatFreeUrl, collectionId, featureId, body, callback) {
   return callback(undefined, body, formatFreeUrl);
 }
 
-function deletee(collectionId, featureId, callback) {
-  var collections = getDatabases();
-  var collection = collections[collectionId];
+function deletee(collection, featureId, callback) {
+
   if (!collection)
     return callback(
       {
         httpCode: 404,
-        code: `Collection not found: ${collectionId}`,
+        code: `Collection not found: ${collection.id}`,
         description:
           "Make sure you use an existing collectionId. See /Collections",
       },
@@ -306,7 +299,7 @@ function deletee(collectionId, featureId, callback) {
   return callback(undefined, {});
 }
 
-function update(collectionId, featureId, body, callback) {
+function update(collection, featureId, body, callback) {
   if (body.type.toLowerCase() != "feature")
     return callback(
       {
@@ -317,13 +310,11 @@ function update(collectionId, featureId, body, callback) {
       undefined
     );
 
-  var collections = getDatabases();
-  var collection = collections[collectionId];
   if (!collection)
     return callback(
       {
         httpCode: 404,
-        code: `Collection not found: ${collectionId}`,
+        code: `Collection not found: ${collection.id}`,
         description:
           "Make sure you use an existing collectionId. See /Collections",
       },

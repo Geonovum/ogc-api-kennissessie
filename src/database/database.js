@@ -16,8 +16,10 @@ function readGeoJSONfiles(dir) {
 
     var oapif = makeOAPIF(geojson, dataDef);
 
-    var name = fileName.replace(/\.\w+$/, "");
-    dataDict[name] = oapif;
+    var id = fileName.replace(/\.\w+$/, "");
+    oapif.id = id;
+
+    dataDict[oapif.id] = oapif;
   });
 }
 

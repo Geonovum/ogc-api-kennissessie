@@ -7,10 +7,9 @@
  */
 
 import * as turf from "@turf/turf";
-import urlJoin from "url-join";
-import { getDatabases } from "../../database/database.js";
 import utils from "../../utils/utils.js";
 import projgeojson from "../../utils/proj4.js";
+import etag from "etag";
 
 /**
  * Generates pagination links for the response
@@ -191,19 +190,16 @@ function getContent(neutralUrl, format, collection, options) {
  * @param {Object} options - Pagination options (offset, limit)
  * @param {Function} callback - Callback function for async response
  */
-function get(neutralUrl, format, collectionId, query, options, callback) {
-  // Get all available collections from the database
-  var collections = getDatabases();
-  var collection = collections[collectionId];
+function get(neutralUrl, format, collection, query, options, callback) {
   
   // Validate that the requested collection exists
   if (!collection)
     return callback(
       {
         httpCode: 404,
-        code: `Collection not found: ${collectionId}`,
+        code: `Collection not found: ${collection.id}`,
         description:
-          "Make sure you use an existing collectionId. See /Collections",
+          "Make sure you use an existing collectionId. See /collections",
       },
       undefined
     );
