@@ -178,7 +178,9 @@ export function options(req, res) {
 }
 
 function doOptimisticLocking(req, res, collection) {
-  // 8.2 Optimistic locking using timestamps
+  if (!global.config.server.locking.required) return true;
+
+  // 8.2 Optimistic locking using timestamps ------------------------
   if (global.config.server.locking.optimistic == "timestamps") {
     // 8.2.3 Conditional processing
     var ius = req.headers["if-unmodified-since"];
@@ -199,9 +201,8 @@ function doOptimisticLocking(req, res, collection) {
       }
     }
   }
-
-  // 8.3 Optimistic locking with ETags
-  if (global.config.server.locking.optimistic == "etag") {
+  // 8.3 Optimistic locking with ETags ------------------------------
+  else if (global.config.server.locking.optimistic == "etag") {
     var im = req.headers["if-match"];
     if (im) {
       if (im != collection.etag) {
@@ -216,6 +217,10 @@ function doOptimisticLocking(req, res, collection) {
         return false;
       }
     }
+  } else {
+    res.status(428).end();
+    //res.status(409).end();
+    return false;
   }
 
   return true;
