@@ -11,7 +11,7 @@ server:
   prettyPrint: true
 
   locking:
-    required: true # permission 9, condition A (required: true) or B (required: false)
+    required: false # permission 9, condition A (required: true) or B (required: false)
     optimistic: timestamps #alternative timestamps or etag
 
   map:
