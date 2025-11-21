@@ -10,6 +10,11 @@ server:
   x-powered-by: false
   prettyPrint: true
 
+  locking:
+    required: true
+    optimistic: etag
+    #optimistic: timestamps
+
   map:
     url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
     attribution: 'Map data &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'

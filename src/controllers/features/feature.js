@@ -81,11 +81,8 @@ export function replacee(req, res) {
   var collections = getDatabases();
   var collection = collections[collectionId];
 
-  var ius = req.headers["if-unmodified-since"];
-  if (ius > collection.lastModified) {
-    res.status(412);
+  if (!doOptimisticLocking(req,res, collection))
     return;
-  }
 
   feature.replacee(
     formatFreeUrl,
@@ -147,11 +144,8 @@ export function update(req, res) {
   var collections = getDatabases();
   var collection = collections[collectionId];
 
-  var ius = req.headers["if-unmodified-since"];
-  if (ius > collection.lastModified) {
-    res.status(412);
+  if (!doOptimisticLocking(req,res, collection))
     return;
-  }
 
   feature.update(
     collection,
@@ -175,4 +169,51 @@ export function update(req, res) {
 
 export function options(req, res) {
   res.set("allow", "GET, HEAD, PUT, PATCH, DELETE");
+}
+
+
+
+function doOptimisticLocking(req, res, collection)
+{
+  // 8.2 Optimistic locking using timestamps
+  if (global.config.server.locking.optimistic == "timestamps") {
+    // 8.2.3 Conditional processing
+    var ius = req.headers["if-unmodified-since"];
+    // Requirement 25
+    if (ius) {
+      // Requirement 28
+      if (new Date(ius) < collection.lastModified) {
+        // Permission 9
+        res.status(412).end(); // Precondition Failed
+        return false;
+      }
+    } else {
+      if (global.config.server.locking.required) {
+        // Permission 9, condition A
+        res.status(428).end();
+        //res.status(409).end();
+        return false;
+      }
+    }
+  }
+
+  // 8.3 Optimistic locking with ETags
+  if (global.config.server.locking.optimistic == "etag") {
+    var im = req.headers["if-match"];
+    if (im) {
+      if (im != collection.etag) {
+        res.status(412).end(); // Precondition Failed
+        return false;
+      }
+    } else {
+      if (global.config.server.locking.required) {
+        // Permission 10
+        res.status(428).end();
+        //res.status(409).end();
+        return false;
+      }
+    }
+  }
+
+  return true
 }
