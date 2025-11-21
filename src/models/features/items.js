@@ -160,11 +160,11 @@ function getContent(neutralUrl, format, collection, options) {
 
   // Initialize the base GeoJSON FeatureCollection structure
   var items = {};
-  items.type = collection.type;                    // "FeatureCollection"
-  items.features = collection.features;            // Array of GeoJSON features
-  items.defaultSortOrder = ["+fid"];              // Default sorting by feature ID
-  items.timeStamp = new Date().toISOString();     // Response timestamp
-  items.links = [];                               // HATEOAS links array
+  items.type = collection.type;           // "FeatureCollection"
+  items.features = collection.features;   // Array of GeoJSON features
+  items.defaultSortOrder = ["+fid"];      // Default sorting by feature ID
+  items.timeStamp = new Date();           // Response timestamp
+  items.links = [];                       // HATEOAS links array
 
   // Generate self and alternate format links
   getLinks(neutralUrl, format, items.links, options);

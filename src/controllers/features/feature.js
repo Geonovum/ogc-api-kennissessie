@@ -19,7 +19,7 @@ export function get(req, res) {
 
   var collections = getDatabases();
   var collection = collections[collectionId];
-  
+
   feature.get(
     formatFreeUrl,
     format,
@@ -39,9 +39,9 @@ export function get(req, res) {
         res.set("Content-Crs", `<${content.headerContentCrs}>`);
       delete content.headerContentCrs;
 
-      res.set('ETag', collection.etag)
-      res.set('Last-Modified', collection.lastModified.toISOString())
-      
+      res.set("ETag", collection.etag);
+      res.set("Last-Modified", collection.lastModified.toUTCString());
+
       switch (format) {
         case "json":
         case "geojson":
@@ -80,7 +80,13 @@ export function replacee(req, res) {
 
   var collections = getDatabases();
   var collection = collections[collectionId];
-  
+
+  var ius = req.headers["if-unmodified-since"];
+  if (ius > collection.lastModified) {
+    res.status(412);
+    return;
+  }
+
   feature.replacee(
     formatFreeUrl,
     collection,
@@ -94,8 +100,8 @@ export function replacee(req, res) {
         return;
       }
 
-      res.set('ETag', collection.etag)
-      res.set('Last-Modified', collection.lastModified.toISOString())
+      res.set("ETag", collection.etag);
+      res.set("Last-Modified", collection.lastModified.toUTCString());
 
       res.set("location", resourceUrl);
       res.status(204).end();
@@ -113,7 +119,7 @@ export function deletee(req, res) {
 
   var collections = getDatabases();
   var collection = collections[collectionId];
-  
+
   feature.deletee(collection, featureId, function (err, content) {
     if (err) {
       res
@@ -122,8 +128,8 @@ export function deletee(req, res) {
       return;
     }
 
-    res.set('ETag', collection.etag)
-    res.set('Last-Modified', collection.lastModified.toISOString())
+    res.set("ETag", collection.etag);
+    res.set("Last-Modified", collection.lastModified.toUTCString());
 
     // (OAPI P4) Requirement 14A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 or 204.
     res.status(204).end();
@@ -140,20 +146,31 @@ export function update(req, res) {
 
   var collections = getDatabases();
   var collection = collections[collectionId];
-  
-  feature.update(collection, featureId, req.body, function (err, content, modified) {
-    if (err) {
-      res
-        .status(err.httpCode)
-        .json({ code: err.code, description: err.description });
-      return;
+
+  var ius = req.headers["if-unmodified-since"];
+  if (ius > collection.lastModified) {
+    res.status(412);
+    return;
+  }
+
+  feature.update(
+    collection,
+    featureId,
+    req.body,
+    function (err, content, modified) {
+      if (err) {
+        res
+          .status(err.httpCode)
+          .json({ code: err.code, description: err.description });
+        return;
+      }
+
+      res.set("ETag", collection.etag);
+      res.set("Last-Modified", collection.lastModified.toUTCString());
+
+      res.status(modified ? 200 : 204).json(content);
     }
-
-    res.set('ETag', collection.etag)
-    res.set('Last-Modified', collection.lastModified.toISOString())
-
-    res.status(modified ? 200 : 204).json(content);
-  });
+  );
 }
 
 export function options(req, res) {

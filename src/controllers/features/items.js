@@ -63,7 +63,7 @@ export function get(req, res, next) {
       res.set("content-language", "nl");
 
       res.set('ETag',          collection.etag)
-      res.set('Last-Modified', collection.lastModified.toISOString())
+      res.set('Last-Modified', collection.lastModified.toUTCString())
 
       switch (format) {
         case "json":
@@ -123,7 +123,7 @@ export function create(req, res) {
       res.set("location", locationUri);
 
       res.set('ETag',          collection.etag)
-      res.set('Last-Modified', collection.lastModified.toISOString())
+      res.set('Last-Modified', collection.lastModified.toUTCString())
 
       // (OAPIF P4) Requirememt 6A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 201.
       res.status(201).end();
