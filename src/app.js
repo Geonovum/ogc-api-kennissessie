@@ -1,6 +1,6 @@
 /**
  * OGC API Features & Processes Express Application
- * 
+ *
  * This module sets up and configures the Express.js application for serving
  * OGC API Features and OGC API Processes endpoints. It implements multiple
  * OGC API standards including:
@@ -9,10 +9,10 @@
  * - OGC API Features Part 4 (Create, Replace, Update and Delete)
  * - OGC API Features Part 5 (Schema)
  * - OGC API Processes Part 1 (Core)
- * 
+ *
  * The application follows OGC API Common standards and implements
  * cross-origin resource sharing (CORS) for browser compatibility.
- * 
+ *
  * @author Geonovum
  * @version 1.2.3
  * @since 2024 2025
@@ -34,15 +34,15 @@ import encodings from "./middlewares/encodings.js";
 import apiVersion from "./middlewares/apiversion.js";
 
 // Route imports for different OGC API parts
-import oapicp1c from "./routes/ogcapiCommonCommonPart1Core.js";  // OGC API Common
-import oapicp2c from "./routes/ogcapiCommonCommonPart2Collections.js";  // OGC API Common
+import oapicp1c from "./routes/ogcapiCommonCommonPart1Core.js"; // OGC API Common
+import oapicp2c from "./routes/ogcapiCommonCommonPart2Collections.js"; // OGC API Common
 
-import oapifp1  from "./routes/ogcapiFeaturesPart1.js";  // OGC API Features Part 1 - Core
-import oapifp3  from "./routes/ogcapiFeaturesPart3.js";  // OGC API Features Part 3 - Filtering
-import oapifp4  from "./routes/ogcapiFeaturesPart4.js";  // OGC API Features Part 4 - CRUD
-import oapifp5  from "./routes/ogcapiFeaturesPart5.js";  // OGC API Features Part 5 - Schema
+import oapifp1 from "./routes/ogcapiFeaturesPart1.js"; // OGC API Features Part 1 - Core
+import oapifp3 from "./routes/ogcapiFeaturesPart3.js"; // OGC API Features Part 3 - Filtering
+import oapifp4 from "./routes/ogcapiFeaturesPart4.js"; // OGC API Features Part 4 - CRUD
+import oapifp5 from "./routes/ogcapiFeaturesPart5.js"; // OGC API Features Part 5 - Schema
 
-import oapipp1  from "./routes/ogcapiProcessesPart1Core.js"; // OGC API Processes Part 1 - Core
+import oapipp1 from "./routes/ogcapiProcessesPart1Core.js"; // OGC API Processes Part 1 - Core
 
 /**
  * Express application instance
@@ -67,12 +67,17 @@ global.config = YAML.parse(yamlStr.toString());
  * Environment Configuration
  * Sets default values for environment variables if not provided
  */
-global.config.server.id    = process.env.ID        || global.config.server.id    ||  "demoservice"; // Service identifier for URL path
-global.config.server.host  = process.env.HOST      || global.config.server.host  || "0.0.0.0";
-global.config.server.port  = process.env.PORT      || global.config.server.port  || 8080;           // Server port
-global.config.server.limit = process.env.LIMIT     || global.config.server.limit || 10;             // Default limit for pagination
-global.config.api.version  = process.env.VERSION   || global.config.api.version  || "1.2.3";        // API version number
-global.config.data.path    = process.env.DATA_PATH || global.config.data.path;                      // Data path
+global.config.server.id =
+  process.env.ID || global.config.server.id || "demoservice"; // Service identifier for URL path
+global.config.server.host =
+  process.env.HOST || global.config.server.host || "0.0.0.0";
+global.config.server.port =
+  process.env.PORT || global.config.server.port || 8080; // Server port
+global.config.server.limit =
+  process.env.LIMIT || global.config.server.limit || 10; // Default limit for pagination
+global.config.api.version =
+  process.env.VERSION || global.config.api.version || "1.2.3"; // API version number
+global.config.data.path = process.env.DATA_PATH || global.config.data.path; // Data path
 
 /**
  * Middleware Configuration
@@ -123,6 +128,9 @@ if (global.config.server && global.config.server["x-powered-by"])
   app.enable("x-powered-by");
 else app.disable("x-powered-by");
 
+if (global.config.server.locking.optimistic == "timestamps")
+  app.disable("etag");
+
 // Custom Middleware
 // Content-type encoding middleware for OGC API compliance
 // see http://docs.opengeospatial.org/is/17-069r3/17-069r3.html#_encodings
@@ -142,7 +150,9 @@ app.use(apiVersion);
 // (ADR) /core/uri-version: Include the major version number in the URI
 // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/uri-version
 // Creates a versioned API path like /demoservice/v1
-app.serviceRoot = `/${global.config.server.id}/v${major(global.config.api.version)}`;
+app.serviceRoot = `/${global.config.server.id}/v${major(
+  global.config.api.version
+)}`;
 
 //console.log(`serviceRoot ${serviceRoot}`)
 
@@ -152,11 +162,11 @@ app.serviceRoot = `/${global.config.server.id}/v${major(global.config.api.versio
  */
 app.use(app.serviceRoot, oapicp1c); // OGC API Common Part 1 - Core
 app.use(app.serviceRoot, oapicp2c); // OGC API Common Part 2 - Collections
-app.use(app.serviceRoot, oapifp1);  // OGC API Features Part 1 - Core endpoints
-app.use(app.serviceRoot, oapifp3);  // OGC API Features Part 3 - Filtering capabilities
-app.use(app.serviceRoot, oapifp4);  // OGC API Features Part 4 - CRUD operations
-app.use(app.serviceRoot, oapifp5);  // OGC API Features Part 5 - Schema definitions
-app.use(app.serviceRoot, oapipp1);  // OGC API Processes Part 1 - Core process endpoints
+app.use(app.serviceRoot, oapifp1); // OGC API Features Part 1 - Core endpoints
+app.use(app.serviceRoot, oapifp3); // OGC API Features Part 3 - Filtering capabilities
+app.use(app.serviceRoot, oapifp4); // OGC API Features Part 4 - CRUD operations
+app.use(app.serviceRoot, oapifp5); // OGC API Features Part 5 - Schema definitions
+app.use(app.serviceRoot, oapipp1); // OGC API Processes Part 1 - Core process endpoints
 
 /**
  * Global Error Handler

@@ -32,7 +32,7 @@ export function get(req, res, next) {
   // Get all available collections from the database
   var collections = getDatabases();
   var collection = collections[collectionId];
-  
+
   items.get(
     formatFreeUrl,
     format,
@@ -57,13 +57,14 @@ export function get(req, res, next) {
         res.set("OGC-NumberMatched", content.numberMatched);
       if (content.numberReturned)
         res.set("OGC-NumberReturned", content.numberReturned);
-      if (content.timeStamp)
-        res.set("Date", content.timeStamp);
+      if (content.timeStamp) res.set("Date", content.timeStamp);
 
       res.set("content-language", "nl");
 
-      res.set('ETag',          collection.etag)
-      res.set('Last-Modified', collection.lastModified.toUTCString())
+      if (global.config.server.locking.optimistic == "etag")
+        res.set("ETag", collection.etag);
+      if (global.config.server.locking.optimistic == "timestamps")
+        res.set("Last-Modified", collection.lastModified.toUTCString());
 
       switch (format) {
         case "json":
@@ -102,7 +103,7 @@ export function create(req, res) {
   var accept = accepts(req);
   var format = accept.type(["geojson", "json", "html"]);
 
-    // Get all available collections from the database
+  // Get all available collections from the database
   var collections = getDatabases();
   var collection = collections[collectionId];
 
@@ -122,8 +123,10 @@ export function create(req, res) {
       //           with the URI of the newly added resource (i.e. path of the resource endpoint).
       res.set("location", locationUri);
 
-      res.set('ETag',          collection.etag)
-      res.set('Last-Modified', collection.lastModified.toUTCString())
+      if (global.config.server.locking.optimistic == "etag")
+        res.set("ETag", collection.etag);
+      if (global.config.server.locking.optimistic == "timestamps")
+        res.set("Last-Modified", collection.lastModified.toUTCString());
 
       // (OAPIF P4) Requirememt 6A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 201.
       res.status(201).end();

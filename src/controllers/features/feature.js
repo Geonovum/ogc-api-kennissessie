@@ -39,8 +39,10 @@ export function get(req, res) {
         res.set("Content-Crs", `<${content.headerContentCrs}>`);
       delete content.headerContentCrs;
 
-      res.set("ETag", collection.etag);
-      res.set("Last-Modified", collection.lastModified.toUTCString());
+      if (global.config.server.locking.optimistic == "etag")
+        res.set("ETag", collection.etag);
+      if (global.config.server.locking.optimistic == "timestamps")
+        res.set("Last-Modified", collection.lastModified.toUTCString());
 
       switch (format) {
         case "json":
@@ -81,8 +83,7 @@ export function replacee(req, res) {
   var collections = getDatabases();
   var collection = collections[collectionId];
 
-  if (!doOptimisticLocking(req,res, collection))
-    return;
+  if (!doOptimisticLocking(req, res, collection)) return;
 
   feature.replacee(
     formatFreeUrl,
@@ -97,8 +98,10 @@ export function replacee(req, res) {
         return;
       }
 
-      res.set("ETag", collection.etag);
-      res.set("Last-Modified", collection.lastModified.toUTCString());
+      if (global.config.server.locking.optimistic == "etag")
+        res.set("ETag", collection.etag);
+      if (global.config.server.locking.optimistic == "timestamps")
+        res.set("Last-Modified", collection.lastModified.toUTCString());
 
       res.set("location", resourceUrl);
       res.status(204).end();
@@ -125,8 +128,10 @@ export function deletee(req, res) {
       return;
     }
 
-    res.set("ETag", collection.etag);
-    res.set("Last-Modified", collection.lastModified.toUTCString());
+    if (global.config.server.locking.optimistic == "etag")
+      res.set("ETag", collection.etag);
+    if (global.config.server.locking.optimistic == "timestamps")
+      res.set("Last-Modified", collection.lastModified.toUTCString());
 
     // (OAPI P4) Requirement 14A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 or 204.
     res.status(204).end();
@@ -144,8 +149,7 @@ export function update(req, res) {
   var collections = getDatabases();
   var collection = collections[collectionId];
 
-  if (!doOptimisticLocking(req,res, collection))
-    return;
+  if (!doOptimisticLocking(req, res, collection)) return;
 
   feature.update(
     collection,
@@ -159,8 +163,10 @@ export function update(req, res) {
         return;
       }
 
-      res.set("ETag", collection.etag);
-      res.set("Last-Modified", collection.lastModified.toUTCString());
+      if (global.config.server.locking.optimistic == "etag")
+        res.set("ETag", collection.etag);
+      if (global.config.server.locking.optimistic == "timestamps")
+        res.set("Last-Modified", collection.lastModified.toUTCString());
 
       res.status(modified ? 200 : 204).json(content);
     }
@@ -171,10 +177,7 @@ export function options(req, res) {
   res.set("allow", "GET, HEAD, PUT, PATCH, DELETE");
 }
 
-
-
-function doOptimisticLocking(req, res, collection)
-{
+function doOptimisticLocking(req, res, collection) {
   // 8.2 Optimistic locking using timestamps
   if (global.config.server.locking.optimistic == "timestamps") {
     // 8.2.3 Conditional processing
@@ -215,5 +218,5 @@ function doOptimisticLocking(req, res, collection)
     }
   }
 
-  return true
+  return true;
 }
