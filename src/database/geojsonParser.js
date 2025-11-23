@@ -1,4 +1,5 @@
-import * as turf from "@turf/turf";
+import * as turf from "@turf/turf"
+import etag from "etag"
 
 function getId(dataDef) {
   if (dataDef.schema == undefined || dataDef.schema.properties == undefined)
@@ -137,7 +138,7 @@ export function makeOAPIF(geojson, dataDef) {
   }
 
   geojson.lastModified = new Date();
-  geojson.etag = 123456;
+  geojson.etag = etag(JSON.stringify(geojson.features))
 
   return geojson;
 }

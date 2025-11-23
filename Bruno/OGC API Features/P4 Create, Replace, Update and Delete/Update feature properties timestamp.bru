@@ -1,7 +1,7 @@
 meta {
-  name: Update feature properties modif
+  name: Update feature properties timestamp
   type: http
-  seq: 10
+  seq: 7
 }
 
 patch {
@@ -12,13 +12,13 @@ patch {
 
 headers {
   Content-Type: application/json
+  If-Unmodified-Since: Sat,13 Mar 2021 11:28:17 GMT
 }
 
 body:json {
   {
     "type": "Feature",
     "properties": {
-      "qqq": 2025,
       "bouwjaar": 2025
     }
   }

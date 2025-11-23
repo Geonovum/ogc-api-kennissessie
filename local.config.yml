@@ -11,8 +11,8 @@ server:
   prettyPrint: true
 
   locking:
-    required: false # permission 9, condition A (required: true) or B (required: false)
-    optimistic: timestamps #alternative timestamps or etag
+    required: true # permission 9, condition A (required: true) or B (required: false)
+    optimistic: #alternative timestamps or etag
 
   map:
     url: https://tile.openstreetmap.org/{z}/{x}/{y}.png

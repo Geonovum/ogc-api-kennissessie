@@ -128,8 +128,7 @@ if (global.config.server && global.config.server["x-powered-by"])
   app.enable("x-powered-by");
 else app.disable("x-powered-by");
 
-if (global.config.server.locking.optimistic == "timestamps")
-  app.disable("etag");
+app.disable("etag");
 
 // Custom Middleware
 // Content-type encoding middleware for OGC API compliance

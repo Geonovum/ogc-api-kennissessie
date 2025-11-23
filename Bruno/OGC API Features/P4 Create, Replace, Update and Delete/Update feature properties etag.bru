@@ -1,7 +1,7 @@
 meta {
-  name: Update feature properties copy precondition
+  name: Update feature properties etag
   type: http
-  seq: 7
+  seq: 8
 }
 
 patch {
@@ -12,8 +12,7 @@ patch {
 
 headers {
   Content-Type: application/json
-  If-Unmodified-Since: Sat,13 Mar 2021 11:28:17 GMT
-  If-Match: 
+  If-Match: abcdef
 }
 
 body:json {

@@ -179,6 +179,7 @@ export function options(req, res) {
 
 function doOptimisticLocking(req, res, collection) {
   if (!global.config.server.locking.required) return true;
+  if (!global.config.server.locking.optimistic) return true;
 
   // 8.2 Optimistic locking using timestamps ------------------------
   if (global.config.server.locking.optimistic == "timestamps") {
