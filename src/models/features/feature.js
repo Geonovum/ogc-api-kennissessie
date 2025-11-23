@@ -71,10 +71,6 @@ function getParentLink(neutralUrl, format, links) {
   });
 }
 
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-//
 function get(neutralUrl, format, collection, featureId, query, callback) {
   if (!collection)
     return callback(
@@ -169,10 +165,6 @@ function get(neutralUrl, format, collection, featureId, query, callback) {
   return callback(undefined, feature);
 }
 
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-//
 function create(formatFreeUrl, collection, body, callback) {
   if (body.type.toLowerCase() != "feature")
     return callback({
@@ -216,15 +208,12 @@ function create(formatFreeUrl, collection, body, callback) {
   formatFreeUrl = join(formatFreeUrl, newId.toString());
 
   collection.lastModified = new Date();
+  collection.lastModified.setMilliseconds(0)
   collection.etag = etag(JSON.stringify(collection.features));
 
   return callback(undefined, body, formatFreeUrl);
 }
 
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-//
 function replacee(formatFreeUrl, collection, featureId, body, callback) {
   if (body.type.toLowerCase() != "feature")
     return callback({
@@ -288,15 +277,12 @@ function replacee(formatFreeUrl, collection, featureId, body, callback) {
   }
 
   collection.lastModified = new Date();
+  collection.lastModified.setMilliseconds(0)
   collection.etag = etag(JSON.stringify(collection.features));
 
   return callback(undefined, body, formatFreeUrl);
 }
 
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-//
 function deletee(collection, featureId, callback) {
   if (!collection)
     return callback(
@@ -326,15 +312,12 @@ function deletee(collection, featureId, callback) {
   collection.features.splice(oldId, 1);
 
   collection.lastModified = new Date();
+  collection.lastModified.setMilliseconds(0)
   collection.etag = etag(JSON.stringify(collection.features));
 
   return callback(undefined, {});
 }
 
-//---------------------------------------------------------------
-//
-//---------------------------------------------------------------
-//
 function update(collection, featureId, body, callback) {
   if (body.type.toLowerCase() != "feature")
     return callback(
@@ -407,6 +390,7 @@ function update(collection, featureId, body, callback) {
   }
 
   collection.lastModified = new Date();
+  collection.lastModified.setMilliseconds(0)
   collection.etag = etag(JSON.stringify(collection.features));
 
   return callback(undefined, feature, resourceModified);

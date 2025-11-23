@@ -187,7 +187,10 @@ function doOptimisticLocking(req, res, collection) {
     // Requirement 25
     if (ius) {
       // Requirement 28
-      if (new Date(ius) < collection.lastModified) {
+      var iusDate = new Date(ius)
+      iusDate.setMilliseconds(0)
+
+      if (iusDate.getTime() < collection.lastModified.getTime()) {
         // Permission 9
         res.status(412).end(); // Precondition Failed
         return false;

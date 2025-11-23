@@ -12,7 +12,7 @@ server:
 
   locking:
     required: true # permission 9, condition A (required: true) or B (required: false)
-    optimistic: #alternative timestamps or etag
+    optimistic: timestamps #alternative timestamps or etag
 
   map:
     url: https://tile.openstreetmap.org/{z}/{x}/{y}.png

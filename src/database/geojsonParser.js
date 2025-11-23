@@ -138,6 +138,8 @@ export function makeOAPIF(geojson, dataDef) {
   }
 
   geojson.lastModified = new Date();
+  geojson.lastModified.setMilliseconds(0)
+
   geojson.etag = etag(JSON.stringify(geojson.features))
 
   return geojson;
