@@ -1,43 +1,44 @@
 meta {
-  name: items create
+  name: Replace non existing resource
   type: http
-  seq: 3
+  seq: 7
 }
 
-post {
-  url: {{serviceHost}}/collections/{{dataset}}/items
+put {
+  url: {{serviceHost}}/collections/{{dataset}}/items/999999
   body: json
   auth: inherit
 }
 
 headers {
   Content-Type: application/json
+  If-Unmodified-Since: Sat,13 Mar 2021 11:28:17 GMT
 }
 
 body:json {
   {
         "type": "Feature",
         "properties": {
-          "fid": 123456789,
-          "identificatie": "777777777",
-          "bouwjaar": 2024,
+          "fid": 999999,
+          "identificatie": "0362100001075350",
+          "bouwjaar": 1965,
           "status": "Pand in gebruik",
           "gebruiksdoel": "woonfunctie",
-          "oppervlakte_panelen": 666,
-          "aantal_panelen": 666,
-          "opbrengst": 666,
-          "id_kv": 666
+          "oppervlakte_panelen": 57,
+          "aantal_panelen": 35,
+          "opbrengst": 8764,
+          "id_kv": 2
         },
         "geometry": {
           "type": "Polygon",
           "coordinates": [
             [
               [
-                45.854281827593749,
+                42.854281827593749,
                 52.244902234366975
               ],
               [
-                45.854274587374396,
+                42.854274587374396,
                 52.24481840701631
               ],
               [

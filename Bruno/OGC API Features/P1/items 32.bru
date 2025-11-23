@@ -1,0 +1,20 @@
+meta {
+  name: items 32
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items/32
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/geo+json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

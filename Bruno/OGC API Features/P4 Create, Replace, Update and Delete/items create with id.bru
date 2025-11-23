@@ -1,11 +1,11 @@
 meta {
-  name: Update feature geometry
+  name: items create with id
   type: http
-  seq: 12
+  seq: 4
 }
 
-patch {
-  url: {{serviceHost}}/collections/{{dataset}}/items/1
+post {
+  url: {{serviceHost}}/collections/{{dataset}}/items
   body: json
   auth: inherit
 }
@@ -17,16 +17,28 @@ headers {
 body:json {
   {
     "type": "Feature",
+    "properties": {
+      "fid": 123456789,
+      "identificatie": "777777777",
+      "bouwjaar": 2024,
+      "status": "Pand in gebruik",
+      "gebruiksdoel": "woonfunctie",
+      "oppervlakte_panelen": 666,
+      "aantal_panelen": 666,
+      "opbrengst": 666,
+      "id_kv": 666
+    },
+    "id": 8888,
     "geometry": {
       "type": "Polygon",
       "coordinates": [
         [
           [
-            40.854281827593749,
+            45.854281827593749,
             52.244902234366975
           ],
           [
-            40.854274587374396,
+            45.854274587374396,
             52.24481840701631
           ],
           [

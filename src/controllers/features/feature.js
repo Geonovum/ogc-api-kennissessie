@@ -103,7 +103,6 @@ export function replacee(req, res) {
       if (global.config.server.locking.optimistic == "timestamps")
         res.set("Last-Modified", collection.lastModified.toUTCString());
 
-      res.set("location", resourceUrl);
       res.status(204).end();
     }
   );
