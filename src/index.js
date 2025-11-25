@@ -10,7 +10,6 @@ if (__dirname === undefined) console.log("need node 20 or higher (and Express 5 
 
 var dataPath = global.config.data.path || join(__dirname, "../data")
 
-console.log("global.config.data.path is ", global.config.data.path);
 console.log("BasePath for data is ", dataPath);
 
 // Load data (TODO: async)
