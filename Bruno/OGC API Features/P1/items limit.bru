@@ -5,13 +5,14 @@ meta {
 }
 
 get {
-  url: {{serviceHost}}/collections/{{dataset}}/items?bouwjaar=1980
+  url: {{serviceHost}}/collections/{{dataset}}/items?bouwjaar=1980&limit=500000000000
   body: none
   auth: inherit
 }
 
 params:query {
   bouwjaar: 1980
+  limit: 500000000000
 }
 
 settings {

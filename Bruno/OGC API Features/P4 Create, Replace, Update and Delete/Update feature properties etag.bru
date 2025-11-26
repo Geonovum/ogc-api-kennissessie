@@ -5,14 +5,14 @@ meta {
 }
 
 patch {
-  url: {{serviceHost}}/collections/{{dataset}}/items/2
+  url: {{serviceHost}}/collections/{{dataset}}/items/{{featureId}}
   body: json
   auth: inherit
 }
 
 headers {
   Content-Type: application/json
-  If-Match: abcdef
+  If-Match: "416781-pBHm9fXUGgiB59DhRP2dXKS2/IQ"
 }
 
 body:json {

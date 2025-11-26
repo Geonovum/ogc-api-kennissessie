@@ -5,21 +5,21 @@ meta {
 }
 
 patch {
-  url: {{serviceHost}}/collections/{{dataset}}/items/2
+  url: {{serviceHost}}/collections/{{dataset}}/items/{{featureId}}
   body: json
   auth: inherit
 }
 
 headers {
   Content-Type: application/json
-  If-Unmodified-Since: Sun, 23 Nov 2025 14:24:04 GMT
+  If-Unmodified-Since: Tue, 25 Nov 2024 12:19:24 GMT
 }
 
 body:json {
   {
     "type": "Feature",
     "properties": {
-      "bouwjaar": 2025
+      "bouwjaar": 2024
     }
   }
 }
