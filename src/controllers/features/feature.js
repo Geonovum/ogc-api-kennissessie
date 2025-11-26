@@ -84,8 +84,6 @@ export function replacee(req, res) {
   var collections = getDatabases();
   var collection = collections[collectionId];
 
-  if (!doOptimisticLocking(req, res, collection)) return;
-
   feature.replacee(
     formatFreeUrl,
     collection,
@@ -98,6 +96,8 @@ export function replacee(req, res) {
           .json({ code: err.code, description: err.description });
         return;
       }
+
+      if (!doOptimisticLocking(req, res, feature)) return;
 
       if (global.config.server.locking.optimistic == "etag")
         res.set("ETag", feature.etag);
@@ -149,8 +149,6 @@ export function update(req, res) {
   var collections = getDatabases();
   var collection = collections[collectionId];
 
-  if (!doOptimisticLocking(req, res, collection)) return;
-
   feature.update(
     collection,
     featureId,
@@ -162,6 +160,8 @@ export function update(req, res) {
           .json({ code: err.code, description: err.description });
         return;
       }
+
+      if (!doOptimisticLocking(req, res, feature)) return;
 
       if (global.config.server.locking.optimistic == "etag")
         res.set("ETag", feature.etag);
@@ -177,7 +177,7 @@ export function options(req, res) {
   res.set("allow", "GET, HEAD, PUT, PATCH, DELETE");
 }
 
-function doOptimisticLocking(req, res, collection) {
+function doOptimisticLocking(req, res, feature) {
   if (!global.config.server.locking.required) return true;
   if (!global.config.server.locking.optimistic) return true;
 
@@ -191,7 +191,7 @@ function doOptimisticLocking(req, res, collection) {
       var iusDate = new Date(ius)
       iusDate.setMilliseconds(0)
 
-      if (iusDate.getTime() < collection.lastModified.getTime()) {
+      if (iusDate.getTime() < feature.lastModified.getTime()) {
         // Permission 9
         res.status(412).end(); // Precondition Failed
         return false;
@@ -209,7 +209,7 @@ function doOptimisticLocking(req, res, collection) {
   else if (global.config.server.locking.optimistic == "etag") {
     var im = req.headers["if-match"];
     if (im) {
-      if (im != collection.etag) {
+      if (im != feature.etag) {
         res.status(412).end(); // Precondition Failed
         return false;
       }
