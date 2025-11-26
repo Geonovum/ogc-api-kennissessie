@@ -137,10 +137,23 @@ export function makeOAPIF(geojson, dataDef) {
     geojson.extent.temporal.interval[1] = maxDate;
   }
 
-  geojson.lastModified = new Date();
-  geojson.lastModified.setMilliseconds(0)
+  // etag and last-modified for optimistic locking
+  // every individual feature gets a last-modified and etag
+  // and overall for all features
+  var now = new Date()
+  now.setMilliseconds(0)
 
+  geojson.features.forEach(
+    (feature) => { 
+      feature.lastModified = now
+      feature.etag = etag(JSON.stringify(feature))
+    }
+  );
+
+  geojson.lastModified = now
   geojson.etag = etag(JSON.stringify(geojson.features))
+
+  // end etag and last-modified
 
   return geojson;
 }

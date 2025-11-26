@@ -39,10 +39,11 @@ export function get(req, res) {
         res.set("Content-Crs", `<${content.headerContentCrs}>`);
       delete content.headerContentCrs;
 
+      // use the feature etag or last-modified
       if (global.config.server.locking.optimistic == "etag")
-        res.set("ETag", collection.etag);
+        res.set("ETag", content.etag);
       if (global.config.server.locking.optimistic == "timestamps")
-        res.set("Last-Modified", collection.lastModified.toUTCString());
+        res.set("Last-Modified", content.lastModified.toUTCString());
 
       switch (format) {
         case "json":
@@ -90,7 +91,7 @@ export function replacee(req, res) {
     collection,
     featureId,
     req.body,
-    function (err, content, resourceUrl) {
+    function (err, feature, resourceUrl) {
       if (err) {
         res
           .status(err.httpCode)
@@ -99,9 +100,9 @@ export function replacee(req, res) {
       }
 
       if (global.config.server.locking.optimistic == "etag")
-        res.set("ETag", collection.etag);
+        res.set("ETag", feature.etag);
       if (global.config.server.locking.optimistic == "timestamps")
-        res.set("Last-Modified", collection.lastModified.toUTCString());
+        res.set("Last-Modified", feature.lastModified.toUTCString());
 
       res.status(204).end();
     }
@@ -154,7 +155,7 @@ export function update(req, res) {
     collection,
     featureId,
     req.body,
-    function (err, content, modified) {
+    function (err, feature, modified) {
       if (err) {
         res
           .status(err.httpCode)
@@ -163,11 +164,11 @@ export function update(req, res) {
       }
 
       if (global.config.server.locking.optimistic == "etag")
-        res.set("ETag", collection.etag);
+        res.set("ETag", feature.etag);
       if (global.config.server.locking.optimistic == "timestamps")
-        res.set("Last-Modified", collection.lastModified.toUTCString());
+        res.set("Last-Modified", feature.lastModified.toUTCString());
 
-      res.status(modified ? 200 : 204).json(content);
+      res.status(modified ? 200 : 204).json(feature);
     }
   );
 }

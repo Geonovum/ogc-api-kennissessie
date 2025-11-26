@@ -165,8 +165,8 @@ function get(neutralUrl, format, collection, featureId, query, callback) {
   return callback(undefined, feature);
 }
 
-function create(formatFreeUrl, collection, body, callback) {
-  if (body.type.toLowerCase() != "feature")
+function create(formatFreeUrl, collection, feature, callback) {
+  if (feature.type.toLowerCase() != "feature")
     return callback({
       httpCode: 400,
       code: `Type not "feature"`,
@@ -199,22 +199,30 @@ function create(formatFreeUrl, collection, body, callback) {
 
   // (OAPIF P4) Requirement 5 If the operation completes successfully, the server SHALL assign a new, unique identifier
   //      within the collection for the newly added resource.
-  body.id = newId;
+  feature.id = newId;
 
-  // (OAPIF P4) Requirement 3A: The body of a POST request SHALL contain a representation of the resource to be added 
+  // (OAPIF P4) Requirement 3A: The body of a POST request SHALL contain a representation of the resource to be added
   // to the specified collection.
-  collection.features.push(body);
+  collection.features.push(feature);
 
   formatFreeUrl = join(formatFreeUrl, newId.toString());
 
-  collection.lastModified = new Date();
-  collection.lastModified.setMilliseconds(0)
-  collection.etag = etag(JSON.stringify(collection.features));
+  // Update feature etag and last-modified AND 
+  // Update features etag and last-modified
 
-  return callback(undefined, body, formatFreeUrl);
+  var now = new Date();
+  now.setMilliseconds(0);
+
+  feature.etag = etag(JSON.stringify(feature));
+  feature.lastModified = now;
+
+  collection.etag = etag(JSON.stringify(collection.features));
+  collection.lastModified = now;
+
+  return callback(undefined, feature, formatFreeUrl);
 }
 
-function replacee(formatFreeUrl, collection, featureId, body, callback) {
+function replacee(formatFreeUrl, collection, featureId, feature, callback) {
   if (body.type.toLowerCase() != "feature")
     return callback({
       httpCode: 400,
@@ -276,11 +284,18 @@ function replacee(formatFreeUrl, collection, featureId, body, callback) {
     collection.features[index] = body;
   }
 
-  collection.lastModified = new Date();
-  collection.lastModified.setMilliseconds(0)
-  collection.etag = etag(JSON.stringify(collection.features));
+  var feature = collection.features[index];
 
-  return callback(undefined, body, formatFreeUrl);
+  var now = new Date();
+  now.setMilliseconds(0);
+
+  feature.etag = etag(JSON.stringify(feature));
+  feature.lastModified = now;
+
+  collection.etag = etag(JSON.stringify(collection.features));
+  collection.lastModified = now;
+
+  return callback(undefined, feature, formatFreeUrl);
 }
 
 function deletee(collection, featureId, callback) {
@@ -312,7 +327,7 @@ function deletee(collection, featureId, callback) {
   collection.features.splice(oldId, 1);
 
   collection.lastModified = new Date();
-  collection.lastModified.setMilliseconds(0)
+  collection.lastModified.setMilliseconds(0);
   collection.etag = etag(JSON.stringify(collection.features));
 
   return callback(undefined, {});
@@ -354,7 +369,9 @@ function update(collection, featureId, body, callback) {
     );
   var feature = collection.features[index];
 
-  // (OAPIF P4) Requirement 21: If the representation of the updated resource submitted in the request body contained a resource identifier, the server SHALL ignore this identifier.
+  // (OAPIF P4) Requirement 21: If the representation of the updated
+  // resource submitted in the request body contained a resource
+  // identifier, the server SHALL ignore this identifier.
   delete body.id;
 
   // check if geometry type is the same
@@ -389,9 +406,14 @@ function update(collection, featureId, body, callback) {
     }
   }
 
-  collection.lastModified = new Date();
-  collection.lastModified.setMilliseconds(0)
+  var now = new Date();
+  now.setMilliseconds(0);
+
+  feature.etag = etag(JSON.stringify(feature));
+  feature.lastModified = now;
+
   collection.etag = etag(JSON.stringify(collection.features));
+  collection.lastModified = now;
 
   return callback(undefined, feature, resourceModified);
 }
