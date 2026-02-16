@@ -71,7 +71,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
         if ((output.schema.type = "number")) result.value = Number(d);
 
-        if (parameters.outputs.sum.transmissionMode == "value") {
+        if (parameters.outputs.product.transmissionMode == "value") {
           content = result;
         } else if (parameters.response == "document") {
           content.outputs = [];

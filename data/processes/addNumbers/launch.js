@@ -5,6 +5,47 @@ import http from "axios";
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 20.16 or higher");
 
+function processOutputs(outputs, parameters, value)
+{
+      let content = {};
+
+    for (let [key, output] of Object.entries(outputs)) {
+      console.log(key);
+      console.log(output);
+
+      if (parameters.outputs[key] == undefined)
+        return callback(
+          { code: 400, description: `${key} can not be bound` },
+          undefined
+        );
+
+      let parameterOutput = parameters.outputs[key];
+
+      let result = {};
+      result.id = key;
+
+      if ((output.schema.type = "number")) 
+        result.value = Number(value);
+
+      // TODO: what to do??
+      //if (parameterOutput.transmissionMode == "value") content = result;
+
+      content.outputs = [];
+      content.outputs.push(result);
+
+      /*
+      if (parameters.response == "raw") {
+        content = result;
+      } else if (parameters.response == "document") {
+        content.outputs = [];
+        content.outputs.push(result);
+      }
+*/
+    }
+
+    return content;
+}
+
 /**
  * Description placeholder
  *
@@ -63,24 +104,8 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     }
 
     child.stdout.on("data", (d) => {
-      let content = {};
 
-      for (let [key, output] of Object.entries(process_.outputs)) {
-        let result = {};
-        result.id = key;
-
-        if ((output.schema.type = "number")) result.value = Number(d);
-
-        if (parameters.outputs.sum.transmissionMode == "value") {
-          content = result;
-        } else if (parameters.response == "document") {
-          content.outputs = [];
-          content.outputs.push(result);
-        }
-
-        // TODO transmissionMode??? (in spec)
-        //if (outputParameter.transmissionMode == "value") content = result;
-      }
+      const content = processOutputs(process_.outputs, parameters, d);
 
       job.status = "successful"; // accepted, successful, failed, dismissed
       job.progress = 100;
@@ -160,42 +185,8 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       return callback({ code: 400, description: job.message }, undefined);
     }
 
-    let content = {};
 
-    // bring result into content
-    for (let [key, output] of Object.entries(process_.outputs)) {
-      console.log(key);
-      console.log(output);
-
-      if (parameters.outputs[key] == undefined)
-        return callback(
-          { code: 400, description: `${key} can not be bound` },
-          undefined
-        );
-
-      let parameterOutput = parameters.outputs[key];
-
-      let result = {};
-      result.id = key;
-
-      if ((output.schema.type = "number")) 
-        result.value = Number(child.stdout);
-
-      // TODO: what to do??
-      //if (parameterOutput.transmissionMode == "value") content = result;
-
-      content.outputs = [];
-      content.outputs.push(result);
-
-      /*
-      if (parameters.response == "raw") {
-        content = result;
-      } else if (parameters.response == "document") {
-        content.outputs = [];
-        content.outputs.push(result);
-      }
-*/
-    }
+    const content = processOutputs(process_.outputs, parameters, child.stdout);
 
     job.status = "successful"; // accepted, successful, failed, dismissed
     job.progress = 100;
