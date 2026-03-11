@@ -37,7 +37,7 @@ export function get(req, res) {
     if (err) {
       res
         .status(err.httpCode)
-        .json({ code: err.code, description: err.description });
+        .json({ code: err.httpCode, description: err.description });
       return;
     }
 

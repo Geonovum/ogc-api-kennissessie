@@ -5,35 +5,33 @@ import http from "axios";
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 20.16 or higher");
 
-function processOutputs(outputs, parameters, value)
-{
-      let content = {};
+function processOutputs(outputs, parameters, value) {
+  let content = {};
 
-    for (let [key, output] of Object.entries(outputs)) {
-      console.log(key);
-      console.log(output);
+  for (let [key, output] of Object.entries(outputs)) {
+    console.log(key);
+    console.log(output);
 
-      if (parameters.outputs[key] == undefined)
-        return callback(
-          { code: 400, description: `${key} can not be bound` },
-          undefined
-        );
+    if (parameters.outputs[key] == undefined)
+      return callback(
+        { code: 400, description: `${key} can not be bound` },
+        undefined,
+      );
 
-      let parameterOutput = parameters.outputs[key];
+    let parameterOutput = parameters.outputs[key];
 
-      let result = {};
-      result.id = key;
+    let result = {};
+    result.id = key;
 
-      if ((output.schema.type = "number")) 
-        result.value = Number(value);
+    if ((output.schema.type = "number")) result.value = Number(value);
 
-      // TODO: what to do??
-      //if (parameterOutput.transmissionMode == "value") content = result;
+    // TODO: what to do??
+    //if (parameterOutput.transmissionMode == "value") content = result;
 
-      content.outputs = [];
-      content.outputs.push(result);
+    content.outputs = [];
+    content.outputs.push(result);
 
-      /*
+    /*
       if (parameters.response == "raw") {
         content = result;
       } else if (parameters.response == "document") {
@@ -41,9 +39,9 @@ function processOutputs(outputs, parameters, value)
         content.outputs.push(result);
       }
 */
-    }
+  }
 
-    return content;
+  return content;
 }
 
 /**
@@ -61,13 +59,13 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     if (parameters.inputs[key] == undefined)
       return callback(
         { code: 400, description: `${key} not found` },
-        undefined
+        undefined,
       );
     values.push(parameters.inputs[key]);
   }
 
-  var command = ''
-  var params = ''
+  var command = "";
+  var params = "";
 
   switch (process.platform) {
     case "darwin":
@@ -87,7 +85,11 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       params = ["/c", join(__dirname, batScript), values[0], values[1]];
       break;
     default:
+      console.log(`Unknown platform ${process.platform} to launch Add module`);
+      return callback({ code: 400, description: job.message }, undefined);
   }
+
+  console.log(`launch ${command} ${params} on process.platform`);
 
   if (isAsync) {
     job.status = "running"; // accepted, successful, failed, dismissed
@@ -104,7 +106,6 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     }
 
     child.stdout.on("data", (d) => {
-
       const content = processOutputs(process_.outputs, parameters, d);
 
       job.status = "successful"; // accepted, successful, failed, dismissed
@@ -184,7 +185,6 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       }
       return callback({ code: 400, description: job.message }, undefined);
     }
-
 
     const content = processOutputs(process_.outputs, parameters, child.stdout);
 

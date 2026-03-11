@@ -30,7 +30,7 @@ export function get(req, res) {
       if (err) {
         res
           .status(err.httpCode)
-          .json({ code: err.code, description: err.description });
+          .json({ code: err.httpCode, description: err.description });
         return;
       }
 
@@ -93,7 +93,7 @@ export function replacee(req, res) {
       if (err) {
         res
           .status(err.httpCode)
-          .json({ code: err.code, description: err.description });
+          .json({ code: err.httpCode, description: err.description });
         return;
       }
 
@@ -124,7 +124,7 @@ export function deletee(req, res) {
     if (err) {
       res
         .status(err.httpCode)
-        .json({ code: err.code, description: err.description });
+        .json({ code: err.httpCode, description: err.description });
       return;
     }
 
@@ -157,7 +157,7 @@ export function update(req, res) {
       if (err) {
         res
           .status(err.httpCode)
-          .json({ code: err.code, description: err.description });
+          .json({ code: err.httpCode, description: err.description });
         return;
       }
 

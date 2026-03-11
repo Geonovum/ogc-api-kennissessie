@@ -99,6 +99,9 @@ export function execute(path, process_, job, isAsync, parameters, callback) {
     path = 'file://' + path;
 
   try {
+
+    console.log(`Launch from path ${path}`);
+
     import(path)
       .then((module) => {
         module.launch(
@@ -108,6 +111,7 @@ export function execute(path, process_, job, isAsync, parameters, callback) {
           parameters,
           function (err, content) {
             if (err) {
+              console.log(`error ${err}`);
               callback(err, undefined);
               return;
             }

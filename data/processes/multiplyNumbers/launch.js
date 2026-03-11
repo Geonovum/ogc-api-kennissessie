@@ -87,6 +87,8 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       params = ["/c", join(__dirname, batScript), values[0], values[1]];
       break;
     default:
+      console.log(`Unknown platform${process.platform} to launch Add module`);
+      return callback({ code: 400, description: job.message }, undefined);
   }
 
   if (isAsync) {

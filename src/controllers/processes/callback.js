@@ -32,8 +32,8 @@ export function post(req, res) {
   callback.post(formatFreeUrl, jobId, req.query, function (err, content) {
     if (err) {
       res
-        .status(err.code)
-        .json({ code: err.code, description: err.description });
+        .status(err.httpCode)
+        .json({ code: err.httpCode, description: err.description });
       return;
     }
 
