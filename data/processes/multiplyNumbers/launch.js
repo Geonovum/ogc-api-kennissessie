@@ -26,42 +26,40 @@ function httpPost(url, body) {
       let chunks = [];
       res.on("data", (chunk) => chunks.push(chunk));
       res.on("end", () => console.log(Buffer.concat(chunks).toString()));
-    }
+    },
   );
   req.on("error", (err) => console.log(err));
   req.write(data);
   req.end();
 }
 
-function processOutputs(outputs, parameters, value)
-{
-      let content = {};
+function processOutputs(outputs, parameters, value) {
+  let content = {};
 
-    for (let [key, output] of Object.entries(outputs)) {
-      console.log(key);
-      console.log(output);
+  for (let [key, output] of Object.entries(outputs)) {
+    console.log(key);
+    console.log(output);
 
-      if (parameters.outputs[key] == undefined)
-        return callback(
-          { httpCode: 400, description: `${key} can not be bound` },
-          undefined
-        );
+    if (parameters.outputs[key] == undefined)
+      return callback(
+        { httpCode: 400, description: `${key} can not be bound` },
+        undefined,
+      );
 
-      let parameterOutput = parameters.outputs[key];
+    let parameterOutput = parameters.outputs[key];
 
-      let result = {};
-      result.id = key;
+    let result = {};
+    result.id = key;
 
-      if ((output.schema.type = "number")) 
-        result.value = Number(value);
+    if ((output.schema.type = "number")) result.value = Number(value);
 
-      // TODO: what to do??
-      //if (parameterOutput.transmissionMode == "value") content = result;
+    // TODO: what to do??
+    //if (parameterOutput.transmissionMode == "value") content = result;
 
-      content.outputs = [];
-      content.outputs.push(result);
+    content.outputs = [];
+    content.outputs.push(result);
 
-      /*
+    /*
       if (parameters.response == "raw") {
         content = result;
       } else if (parameters.response == "document") {
@@ -69,9 +67,9 @@ function processOutputs(outputs, parameters, value)
         content.outputs.push(result);
       }
 */
-    }
+  }
 
-    return content;
+  return content;
 }
 
 /**
@@ -89,13 +87,13 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     if (parameters.inputs[key] == undefined)
       return callback(
         { httpCode: 400, description: `${key} not found` },
-        undefined
+        undefined,
       );
     values.push(parameters.inputs[key]);
   }
 
-  var command = ''
-  var params = ''
+  var command = "";
+  var params = "";
 
   switch (process.platform) {
     case "darwin":
@@ -124,9 +122,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     let child = undefined;
     try {
-      child = cp.spawn(command, params, {
-        shell: true,
-      });
+      child = cp.spawnSync(command + " " + params.join(" "), { shell: true });
     } catch (err) {
       console.log(err);
     }
@@ -170,9 +166,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     let child = undefined;
     try {
-      child = cp.spawnSync(command, params, {
-        shell: true,
-      });
+      child = cp.spawnSync(command + " " + params.join(" "), { shell: true });
     } catch (err) {
       console.log(err);
     }

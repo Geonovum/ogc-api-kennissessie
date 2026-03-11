@@ -1,5 +1,5 @@
 import { join } from "path";
-import cp from "node:child_process";
+import spawn from "node:child_process";
 import http from "node:http";
 import https from "node:https";
 
@@ -26,42 +26,40 @@ function httpPost(url, body) {
       let chunks = [];
       res.on("data", (chunk) => chunks.push(chunk));
       res.on("end", () => console.log(Buffer.concat(chunks).toString()));
-    }
+    },
   );
   req.on("error", (err) => console.log(err));
   req.write(data);
   req.end();
 }
 
-function processOutputs(outputs, parameters, value)
-{
-      let content = {};
+function processOutputs(outputs, parameters, value) {
+  let content = {};
 
-    for (let [key, output] of Object.entries(outputs)) {
-      console.log(key);
-      console.log(output);
+  for (let [key, output] of Object.entries(outputs)) {
+    console.log(key);
+    console.log(output);
 
-      if (parameters.outputs[key] == undefined)
-        return callback(
-          { httpCode: 400, description: `${key} can not be bound` },
-          undefined
-        );
+    if (parameters.outputs[key] == undefined)
+      return callback(
+        { httpCode: 400, description: `${key} can not be bound` },
+        undefined,
+      );
 
-      let parameterOutput = parameters.outputs[key];
+    let parameterOutput = parameters.outputs[key];
 
-      let result = {};
-      result.id = key;
+    let result = {};
+    result.id = key;
 
-      if ((output.schema.type = "number")) 
-        result.value = Number(value);
+    if ((output.schema.type = "number")) result.value = Number(value);
 
-      // TODO: what to do??
-      //if (parameterOutput.transmissionMode == "value") content = result;
+    // TODO: what to do??
+    //if (parameterOutput.transmissionMode == "value") content = result;
 
-      content.outputs = [];
-      content.outputs.push(result);
+    content.outputs = [];
+    content.outputs.push(result);
 
-      /*
+    /*
       if (parameters.response == "raw") {
         content = result;
       } else if (parameters.response == "document") {
@@ -69,9 +67,9 @@ function processOutputs(outputs, parameters, value)
         content.outputs.push(result);
       }
 */
-    }
+  }
 
-    return content;
+  return content;
 }
 
 /**
@@ -89,13 +87,13 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     if (parameters.inputs[key] == undefined)
       return callback(
         { httpCode: 400, description: `${key} not found` },
-        undefined
+        undefined,
       );
     values.push(parameters.inputs[key]);
   }
 
-  var command = ''
-  var params = ''
+  var command = "";
+  var params = "";
 
   switch (process.platform) {
     case "darwin":
@@ -116,7 +114,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       break;
     default:
       console.log(`Unknown platform ${process.platform} to launch Add module`);
-      return callback({ code: 400, description: job.message }, undefined);
+      return callback({ httpCode: 500, description: job.message }, undefined);
   }
 
   console.log(`launch ${command} ${params} on ${process.platform}`);
@@ -128,15 +126,12 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     let child = undefined;
     try {
-      child = cp.spawn(command, params, {
-        shell: true,
-      });
+      child = spawn.spawn(command + " " + params.join(" "), { shell: true });
     } catch (err) {
       console.log(err);
     }
 
     child.stdout.on("data", (d) => {
-
       const content = processOutputs(process_.outputs, parameters, d);
 
       job.status = "successful"; // accepted, successful, failed, dismissed
@@ -167,7 +162,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       // not sure what to do here
     });
 
-    return callback(undefined, {});
+    return callback(undefined, undefined);
   } else {
     job.status = "running"; // accepted, successful, failed, dismissed
     job.started = new Date().toISOString();
@@ -175,27 +170,27 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     let child = undefined;
     try {
-      child = cp.spawnSync(command, params, {
-        shell: true,
-      });
+      child = spawn.spawnSync(command + " " + params.join(' '),  { shell: true });
     } catch (err) {
-      console.log(err);
+      return callback({ httpCode: 500, description: err.message }, undefined);
     }
 
-    let err = child.stderr.toString();
-    if (err.length !== 0) {
+    let errMsg = child.stderr.toString();
+    if (errMsg.length !== 0) {
       job.status = "failed"; // accepted, successful, failed, dismissed
       job.progress = 100;
-      job.message = err;
+      job.message = errMsg;
       job.finished = new Date().toISOString();
       job.updated = new Date().toISOString();
 
+      // if a callback uri is given, send a message of the failure
       if (process_.subscriber && process_.subscriber.failedUri) {
         httpPost(process_.subscriber.failedUri, { message: job.message });
       }
-      return callback({ httpCode: 400, description: job.message }, undefined);
-    }
 
+      // regular error callback
+      return callback({ httpCode: 500, description: job.message }, undefined);
+    }
 
     const content = processOutputs(process_.outputs, parameters, child.stdout);
 

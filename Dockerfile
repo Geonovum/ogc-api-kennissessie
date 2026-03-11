@@ -1,5 +1,7 @@
 FROM node:24-alpine
 
+RUN apk add --no-cache bash
+
 # Mounting point for data 
 RUN mkdir -p /home/node/okapi/data
 
