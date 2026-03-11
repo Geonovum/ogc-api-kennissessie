@@ -1,37 +1,67 @@
 import { join } from "path";
 import cp from "node:child_process";
-import http from "axios";
+import http from "node:http";
+import https from "node:https";
 
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 20.16 or higher");
 
-function processOutputs(outputs, parameters, value) {
-  let content = {};
+function httpPost(url, body) {
+  const parsed = new URL(url);
+  const isHttps = parsed.protocol === "https:";
+  const lib = isHttps ? https : http;
+  const data = typeof body === "object" ? JSON.stringify(body) : body;
+  const req = lib.request(
+    {
+      hostname: parsed.hostname,
+      port: parsed.port || (isHttps ? 443 : 80),
+      path: parsed.pathname + parsed.search,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(data),
+      },
+    },
+    (res) => {
+      let chunks = [];
+      res.on("data", (chunk) => chunks.push(chunk));
+      res.on("end", () => console.log(Buffer.concat(chunks).toString()));
+    }
+  );
+  req.on("error", (err) => console.log(err));
+  req.write(data);
+  req.end();
+}
 
-  for (let [key, output] of Object.entries(outputs)) {
-    console.log(key);
-    console.log(output);
+function processOutputs(outputs, parameters, value)
+{
+      let content = {};
 
-    if (parameters.outputs[key] == undefined)
-      return callback(
-        { code: 400, description: `${key} can not be bound` },
-        undefined,
-      );
+    for (let [key, output] of Object.entries(outputs)) {
+      console.log(key);
+      console.log(output);
 
-    let parameterOutput = parameters.outputs[key];
+      if (parameters.outputs[key] == undefined)
+        return callback(
+          { httpCode: 400, description: `${key} can not be bound` },
+          undefined
+        );
 
-    let result = {};
-    result.id = key;
+      let parameterOutput = parameters.outputs[key];
 
-    if ((output.schema.type = "number")) result.value = Number(value);
+      let result = {};
+      result.id = key;
 
-    // TODO: what to do??
-    //if (parameterOutput.transmissionMode == "value") content = result;
+      if ((output.schema.type = "number")) 
+        result.value = Number(value);
 
-    content.outputs = [];
-    content.outputs.push(result);
+      // TODO: what to do??
+      //if (parameterOutput.transmissionMode == "value") content = result;
 
-    /*
+      content.outputs = [];
+      content.outputs.push(result);
+
+      /*
       if (parameters.response == "raw") {
         content = result;
       } else if (parameters.response == "document") {
@@ -39,9 +69,9 @@ function processOutputs(outputs, parameters, value) {
         content.outputs.push(result);
       }
 */
-  }
+    }
 
-  return content;
+    return content;
 }
 
 /**
@@ -58,14 +88,14 @@ export async function launch(process_, job, isAsync, parameters, callback) {
   for (let [key, processInput] of Object.entries(process_.inputs)) {
     if (parameters.inputs[key] == undefined)
       return callback(
-        { code: 400, description: `${key} not found` },
-        undefined,
+        { httpCode: 400, description: `${key} not found` },
+        undefined
       );
     values.push(parameters.inputs[key]);
   }
 
-  var command = "";
-  var params = "";
+  var command = ''
+  var params = ''
 
   switch (process.platform) {
     case "darwin":
@@ -85,11 +115,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       params = ["/c", join(__dirname, batScript), values[0], values[1]];
       break;
     default:
-      console.log(`Unknown platform ${process.platform} to launch Add module`);
-      return callback({ code: 400, description: job.message }, undefined);
   }
-
-  console.log(`launch ${command} ${params} on process.platform`);
 
   if (isAsync) {
     job.status = "running"; // accepted, successful, failed, dismissed
@@ -106,6 +132,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     }
 
     child.stdout.on("data", (d) => {
+
       const content = processOutputs(process_.outputs, parameters, d);
 
       job.status = "successful"; // accepted, successful, failed, dismissed
@@ -116,14 +143,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       job.results = content;
 
       if (parameters.subscriber && parameters.subscriber.successUri) {
-        http
-          .post(parameters.subscriber.successUri, content)
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        httpPost(parameters.subscriber.successUri, content);
       }
     });
 
@@ -135,14 +155,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       job.updated = new Date().toISOString();
 
       if (process_.subscriber && process_.subscriber.failedUri) {
-        http
-          .post(process_.subscriber.failedUri, job.message)
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        httpPost(process_.subscriber.failedUri, { message: job.message });
       }
     });
 
@@ -174,17 +187,11 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       job.updated = new Date().toISOString();
 
       if (process_.subscriber && process_.subscriber.failedUri) {
-        http
-          .post(process_.subscriber.failedUri, job.message)
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        httpPost(process_.subscriber.failedUri, { message: job.message });
       }
-      return callback({ code: 400, description: job.message }, undefined);
+      return callback({ httpCode: 400, description: job.message }, undefined);
     }
+
 
     const content = processOutputs(process_.outputs, parameters, child.stdout);
 
@@ -196,14 +203,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     job.results = content;
 
     if (process_.subscriber && process_.subscriber.successUri) {
-      http
-        .post(process_.subscriber.successUri, content)
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      httpPost(process_.subscriber.successUri, content);
     }
 
     return callback(undefined, content);

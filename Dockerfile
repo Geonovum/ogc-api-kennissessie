@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM node:24-alpine
 
 # Mounting point for data 
 RUN mkdir -p /home/node/okapi/data

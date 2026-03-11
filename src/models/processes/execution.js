@@ -56,7 +56,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   for (let [key, processInput] of Object.entries(process_.inputs)) {
     if (parameters.inputs[key] == undefined)
       return callback(
-        { code: 400, description: `${key} not found` },
+        { httpCode: 400, description: `${key} not found` },
         undefined
       );
     switch (processInput.schema.type) {
@@ -64,7 +64,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
         if (typeof parameters.inputs[key] !== "number")
           return callback(
             {
-              code: 400,
+              httpCode: 400,
               description: `${key} (${parameters.inputs[key]}) is not a number`,
             },
             undefined
@@ -78,7 +78,7 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   for (let [key, processInput] of Object.entries(parameters.inputs)) {
     if (process_.inputs[key] == undefined)
       return callback(
-        { code: 400, description: `${key} not found in process definition` },
+        { httpCode: 400, description: `${key} not found in process definition` },
         undefined
       );
   }

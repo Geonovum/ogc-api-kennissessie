@@ -1,9 +1,37 @@
 import { join } from "path";
 import cp from "node:child_process";
-import http from "axios";
+import http from "node:http";
+import https from "node:https";
 
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 20.16 or higher");
+
+function httpPost(url, body) {
+  const parsed = new URL(url);
+  const isHttps = parsed.protocol === "https:";
+  const lib = isHttps ? https : http;
+  const data = typeof body === "object" ? JSON.stringify(body) : body;
+  const req = lib.request(
+    {
+      hostname: parsed.hostname,
+      port: parsed.port || (isHttps ? 443 : 80),
+      path: parsed.pathname + parsed.search,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(data),
+      },
+    },
+    (res) => {
+      let chunks = [];
+      res.on("data", (chunk) => chunks.push(chunk));
+      res.on("end", () => console.log(Buffer.concat(chunks).toString()));
+    }
+  );
+  req.on("error", (err) => console.log(err));
+  req.write(data);
+  req.end();
+}
 
 function processOutputs(outputs, parameters, value)
 {
@@ -15,7 +43,7 @@ function processOutputs(outputs, parameters, value)
 
       if (parameters.outputs[key] == undefined)
         return callback(
-          { code: 400, description: `${key} can not be bound` },
+          { httpCode: 400, description: `${key} can not be bound` },
           undefined
         );
 
@@ -60,7 +88,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
   for (let [key, processInput] of Object.entries(process_.inputs)) {
     if (parameters.inputs[key] == undefined)
       return callback(
-        { code: 400, description: `${key} not found` },
+        { httpCode: 400, description: `${key} not found` },
         undefined
       );
     values.push(parameters.inputs[key]);
@@ -87,8 +115,6 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       params = ["/c", join(__dirname, batScript), values[0], values[1]];
       break;
     default:
-      console.log(`Unknown platform${process.platform} to launch Add module`);
-      return callback({ code: 400, description: job.message }, undefined);
   }
 
   if (isAsync) {
@@ -116,14 +142,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       job.results = content;
 
       if (parameters.subscriber && parameters.subscriber.successUri) {
-        http
-          .post(parameters.subscriber.successUri, content)
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        httpPost(parameters.subscriber.successUri, content);
       }
     });
 
@@ -135,14 +154,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       job.updated = new Date().toISOString();
 
       if (process_.subscriber && process_.subscriber.failedUri) {
-        http
-          .post(process_.subscriber.failedUri, job.message)
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        httpPost(process_.subscriber.failedUri, { message: job.message });
       }
     });
 
@@ -174,16 +186,9 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       job.updated = new Date().toISOString();
 
       if (process_.subscriber && process_.subscriber.failedUri) {
-        http
-          .post(process_.subscriber.failedUri, job.message)
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        httpPost(process_.subscriber.failedUri, { message: job.message });
       }
-      return callback({ code: 400, description: job.message }, undefined);
+      return callback({ httpCode: 400, description: job.message }, undefined);
     }
 
     const content = processOutputs(process_.outputs, parameters, child.stdout);
@@ -196,14 +201,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     job.results = content;
 
     if (process_.subscriber && process_.subscriber.successUri) {
-      http
-        .post(process_.subscriber.successUri, content)
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      httpPost(process_.subscriber.successUri, content);
     }
 
     return callback(undefined, content);

@@ -12,7 +12,7 @@
       "schema": {
         "type": "number",
         "format": "integer",
-        "range": [0,10,20,30]
+        "enum": [0,10,20,30]
       }
     },
     "number2": {
@@ -22,7 +22,8 @@
         "type": "number",
         "format": "integer",
         "minimum": 1,
-        "maximium": 100
+        "maximium": 100,
+        "default": 1
       }
     }
   },

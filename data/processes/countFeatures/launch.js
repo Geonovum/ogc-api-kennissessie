@@ -1,5 +1,33 @@
 import count from "./count.js";
-import http from "axios";
+import http from "node:http";
+import https from "node:https";
+
+function httpPost(url, body) {
+  const parsed = new URL(url);
+  const isHttps = parsed.protocol === "https:";
+  const lib = isHttps ? https : http;
+  const data = typeof body === "object" ? JSON.stringify(body) : body;
+  const req = lib.request(
+    {
+      hostname: parsed.hostname,
+      port: parsed.port || (isHttps ? 443 : 80),
+      path: parsed.pathname + parsed.search,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(data),
+      },
+    },
+    (res) => {
+      let chunks = [];
+      res.on("data", (chunk) => chunks.push(chunk));
+      res.on("end", () => console.log(Buffer.concat(chunks).toString()));
+    }
+  );
+  req.on("error", (err) => console.log(err));
+  req.write(data);
+  req.end();
+}
 
 /**
  * Description placeholder
@@ -16,7 +44,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
   for (let [key, processInput] of Object.entries(process_.inputs)) {
     if (parameters.inputs[key] == undefined)
       return callback(
-        { code: 400, description: `${key} not found` },
+        { httpCode: 400, description: `${key} not found` },
         undefined
       );
     values.push(parameters.inputs[key]);
@@ -26,7 +54,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
   if (isAsync) {
     return callback(
-      { code: 400, description: `count does not work async` },
+      { httpCode: 400, description: `count does not work async` },
       undefined
     );
   } else {
@@ -45,7 +73,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
       if (parameters.outputs[key] == undefined)
         return callback(
-          { code: 400, description: `${key} can not be bound` },
+          { httpCode: 400, description: `${key} can not be bound` },
           undefined
         );
 
@@ -78,14 +106,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     job.results = content;
 
     if (parameters.subscriber && parameters.subscriber.successUri) {
-      http
-        .post(parameters.subscriber.successUri, content)
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      httpPost(parameters.subscriber.successUri, content);
     }
 
     return callback(undefined, content);
