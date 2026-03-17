@@ -2,6 +2,7 @@
 
 #>&2 echo "error"
 
+
 if [ $2 == 0 ]
 then
   >&2 echo "2nd argument can't be zero"
