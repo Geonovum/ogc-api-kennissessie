@@ -1,5 +1,5 @@
 import { join } from "path";
-import cp from "node:child_process";
+import spawn from "node:child_process";
 import http from "node:http";
 import https from "node:https";
 
@@ -113,7 +113,11 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       params = ["/c", join(__dirname, batScript), values[0], values[1]];
       break;
     default:
+      console.log(`Unknown platform ${process.platform} to launch Add module`);
+      return callback({ httpCode: 500, description: job.message }, undefined);
   }
+
+  console.log(`launch ${command} ${params} on ${process.platform}`);
 
   if (isAsync) {
     job.status = "running"; // accepted, successful, failed, dismissed
@@ -122,7 +126,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     let child = undefined;
     try {
-      child = cp.spawnSync(command + " " + params.join(" "), { shell: true });
+      child = spawn.spawn(command + " " + params.join(" "), { shell: true });
     } catch (err) {
       console.log(err);
     }
@@ -158,7 +162,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       // not sure what to do here
     });
 
-    return callback(undefined, {});
+    return callback(undefined, undefined);
   } else {
     job.status = "running"; // accepted, successful, failed, dismissed
     job.started = new Date().toISOString();
@@ -166,23 +170,26 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     let child = undefined;
     try {
-      child = cp.spawnSync(command + " " + params.join(" "), { shell: true });
+      child = spawn.spawnSync(command + " " + params.join(' '),  { shell: true });
     } catch (err) {
-      console.log(err);
+      return callback({ httpCode: 500, description: err.message }, undefined);
     }
 
-    let err = child.stderr.toString();
-    if (err.length !== 0) {
+    let errMsg = child.stderr.toString();
+    if (errMsg.length !== 0) {
       job.status = "failed"; // accepted, successful, failed, dismissed
       job.progress = 100;
-      job.message = err;
+      job.message = errMsg;
       job.finished = new Date().toISOString();
       job.updated = new Date().toISOString();
 
+      // if a callback uri is given, send a message of the failure
       if (process_.subscriber && process_.subscriber.failedUri) {
         httpPost(process_.subscriber.failedUri, { message: job.message });
       }
-      return callback({ httpCode: 400, description: job.message }, undefined);
+
+      // regular error callback
+      return callback({ httpCode: 500, description: job.message }, undefined);
     }
 
     const content = processOutputs(process_.outputs, parameters, child.stdout);
