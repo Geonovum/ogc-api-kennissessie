@@ -15,25 +15,27 @@ headers {
 }
 
 body:json {
-    {
-      "inputs": {
-        "number1": 3,
-        "number2": 7
-      },
-      "outputs": {
-        "product": {
-          "transmissionMode": [
-            "value"
-          ]
-        }
-      },
-      "subscriber": {
-        "successUri": ":serviceUrl/callback/:jobId?type=success",
-        "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
-        "failedUri": ":serviceUrl/callback/:jobId?type=failed"
+  {
+    "inputs": {
+      "number1": 3,
+      "number2": 7
+    },
+    "outputs": {
+      "product": {
+        "transmissionMode": [
+          "value"
+        ]
       }
+    },
+    "execution": {
+      "mode": "async"
+    },
+    "subscriber": {
+      "successUri": ":serviceUrl/callback/:jobId?type=success",
+      "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
+      "failedUri": ":serviceUrl/callback/:jobId?type=failed"
     }
-  
+  }
 }
 
 settings {
