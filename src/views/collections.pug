@@ -57,5 +57,13 @@ block content
       const centery = (parseFloat(coords[3]) + parseFloat(coords[1])) / 2
 
       const map = L.map("map").setView([centery, centerx], 10);
-      L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+      L.tileLayer(
+        'https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0/pastel/EPSG:3857/{z}/{x}/{y}.png',
+        {
+          attribution:
+            'Kaartgegevens &copy; <a href="https://www.kadaster.nl">Kadaster</a> | <a href="https://www.verbeterdekaart.nl">Verbeter de kaart</a>',
+          minZoom: 6,
+          maxZoom: 19
+        }
+      ).addTo(map);
       L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
