@@ -29,9 +29,9 @@ function getLinks(neutralUrl, format, links) {
 
 export function getContent(neutralUrl, format, job) {
   var content = job.results;
-  content.links = [];
 
-  getLinks(neutralUrl, format, content.links);
+  // content.links = [];
+  // getLinks(neutralUrl, format, content.links);
 
   return content;
 }

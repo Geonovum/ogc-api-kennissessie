@@ -3,42 +3,19 @@ import utils from "../../utils/utils.js";
 import { getJobs } from "../../database/processes.js";
 
 function getLinks(neutralUrl, format, jobId, links) {
-  function getTypeFromFormat(format) {
-    var _formats = ["json", "html"];
-    var _encodings = ["application/json", "text/html"];
-
-    var i = _formats.indexOf(format);
-    return _encodings[i];
-  }
 
   links.push({
-    href: urlJoin(neutralUrl, jobId, `?f=${format}`),
-    rel: `self`,
-    type: getTypeFromFormat(format),
-    title: `Job information as ${format}`,
-  });
-  utils.getAlternateFormats(format, ["json", "html"]).forEach((altFormat) => {
-    links.push({
-      href: urlJoin(neutralUrl, jobId, `?f=${altFormat}`),
-      rel: `alternate`,
-      type: getTypeFromFormat(altFormat),
-      title: `Job information as ${altFormat}`,
-    });
+    href: urlJoin(neutralUrl, jobId),
+    rel: `monitor`,
+    type: `application/json`,
+    title: `Status location`,
   });
 
   links.push({
-    href: urlJoin(neutralUrl, jobId, "results", `?f=${format}`),
+    href: urlJoin(neutralUrl, jobId, "results"),
     rel: `http://www.opengis.net/def/rel/ogc/1.0/results`,
-    type: getTypeFromFormat(format),
-    title: `Results of job as ${format}`,
-  });
-  utils.getAlternateFormats(format, ["json", "html"]).forEach((altFormat) => {
-    links.push({
-      href: urlJoin(neutralUrl, jobId, "results", `?f=${altFormat}`),
-      rel: `http://www.opengis.net/def/rel/ogc/1.0/results`,
-      type: getTypeFromFormat(altFormat),
-      title: `Results of job as ${altFormat}`,
-    });
+    type: `application/json`,
+    title: `Result location`,
   });
 }
 

@@ -59,6 +59,7 @@ export function create(processId, isAsync) {
 
   let job = {};
   job.processID = processId;
+  job.type = "process";
   job.jobID = e7();
   job.status = "created"; // accepted, successful, failed, dismissed
   job.updated = new Date().toISOString();
