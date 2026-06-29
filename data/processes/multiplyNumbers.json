@@ -4,7 +4,7 @@
   "description": "Using a bash script, multiply 2 provided numbers together. Either sync or async.",
   "version": "0.0.1",
   "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
-  "outputTransmission": ["value", "reference"],
+  "outputTransmission": ["value"],
   "inputs": {
     "number1": {
       "title": "Number 1 Literal Input",

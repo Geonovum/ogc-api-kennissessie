@@ -1,9 +1,9 @@
 {
-  "id": "add",
-  "title": "Add 2 numbers",
-  "description": "Using a bash script, add the 2 provided numbers together. Either sync or async.",
+  "id": "reverse",
+  "title": "Reverse 2 numbers",
+  "description": "Reverses the 2 provided numbers. Either sync or async.",
   "version": "0.0.1",
-  "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
+  "jobControlOptions": ["sync-execute"],
   "outputTransmission": ["value"],
   "inputs": {
     "number1": {
@@ -11,26 +11,31 @@
       "description": "A number literal input.",
       "schema": {
         "type": "number",
-        "format": "integer",
-        "enum": [0,10,20,30]
+        "format": "integer"
       }
     },
     "number2": {
       "title": "Number 2 Literal Input",
-      "description": "A number literal input. This number can't be zero",
+      "description": "A number literal input.",
       "schema": {
         "type": "number",
-        "format": "integer",
-        "minimum": 1,
-        "maximium": 100,
-        "default": 1
+        "format": "integer"
       }
     }
   },
   "outputs": {
-    "sum": {
+    "number1": {
       "id": "Result",
-      "title": "Sum of 2 numbers",
+      "title": "Was number 2",
+      "description": "A number literal output.",
+      "schema": {
+        "type": "number",
+        "format": "integer"
+      }
+    },
+    "number2": {
+      "id": "Result",
+      "title": "Was number 1",
       "description": "A number literal output.",
       "schema": {
         "type": "number",
