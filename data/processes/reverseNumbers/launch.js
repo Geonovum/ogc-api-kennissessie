@@ -79,8 +79,6 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     values.push(parameters.inputs[key]);
   }
 
-  var job = {}
-
   job.status = "running"; // accepted, successful, failed, dismissed
   job.started = new Date().toISOString();
   job.updated = new Date().toISOString();
