@@ -8,7 +8,7 @@ set -e
 # Configuration
 DOCKERHUB_USERNAME="lathoub"
 IMAGE_NAME="okapi"
-VERSION="1.3.53"
+VERSION="1.3.57"
 
 echo "🐳 Building and pushing OGC API Kennissessie to Docker Hub..."
 echo "📦 Account: $DOCKERHUB_USERNAME"
