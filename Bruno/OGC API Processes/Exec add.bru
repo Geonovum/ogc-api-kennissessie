@@ -13,7 +13,7 @@ post {
 body:json {
     {
       "inputs": {
-        "number1": 19,
+        "number1": 10,
         "number2": 7
       },
       "outputs": {
@@ -22,11 +22,6 @@ body:json {
             "value"
           ]
         }
-      },
-      "subscriber": {
-        "successUri": ":serviceUrl/callback/:jobId?type=success",
-        "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
-        "failedUri": ":serviceUrl/callback/:jobId?type=failed"
       }
     }
   
@@ -34,4 +29,5 @@ body:json {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

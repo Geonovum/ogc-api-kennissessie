@@ -1,0 +1,21 @@
+meta {
+  name: items with filter-lang copy BQL
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{serviceHost}}/collections/{{dataset}}/items?filter-lang='bql'&filter=type = IFCWALL AND property.*.IsExternal = true
+  body: none
+  auth: inherit
+}
+
+params:query {
+  filter-lang: 'bql'
+  filter: type = IFCWALL AND property.*.IsExternal = true
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

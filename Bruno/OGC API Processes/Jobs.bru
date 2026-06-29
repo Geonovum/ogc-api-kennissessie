@@ -1,11 +1,11 @@
 meta {
-  name: feature delete
+  name: Jobs
   type: http
-  seq: 8
+  seq: 9
 }
 
-delete {
-  url: {{serviceHost}}/collections/{{dataset}}/items/4793
+get {
+  url: {{serviceHost}}/jobs
   body: none
   auth: inherit
 }
