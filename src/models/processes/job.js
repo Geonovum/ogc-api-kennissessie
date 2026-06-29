@@ -127,7 +127,7 @@ function delete_(neutralUrl, format, jobId, callback) {
   if (!job)
     return callback(
       {
-        httpCode: 404,
+        httpCode: 410,
         code: `No such job: ${jobId}`,
         description: "Make sure you use an existing jobId. See /Jobs",
       },
@@ -139,19 +139,9 @@ function delete_(neutralUrl, format, jobId, callback) {
     neutralUrl.lastIndexOf("/jobs") + "/jobs".length
   );
 
-  let content = job;
+  let content = {}
+  content.jobID = jobId;
   content.status = "dismissed";
-  content.message = "Job dismissed";
-  content.updated = new Date().toISOString();
-  content.links = [];
-  content.links.push({
-    href: jobsUrl,
-    rel: `up`,
-    type: "application/json",
-    title: `The job list for the current process`,
-  });
-
-  delete content.results;
 
   delete jobs[jobId];
 
