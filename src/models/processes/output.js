@@ -54,22 +54,20 @@ function get(neutralUrl, format, jobId, outputId, callback) {
     );
 
   var content = {};
-  if (job.results.outputs && job.results.outputs.constructor === Array) {
-    if (typeof job.results.outputs[outputId] == "undefined")
+  if (job.results) {
+    if (typeof job.results[outputId] == "undefined")
       return callback(
         {
           httpCode: 404,
           code: `OutputId not found: ${outputId}`,
           description:
-            "Make sure you use an existing outputId. See /Results/:outputId",
+            `Make sure you use an existing outputId. See /Results/:outputId`,
         },
         undefined
       );
 
-    content = job.results.outputs[outputId];
+    content = job.results[outputId];
   }
-
-  //  var content = getContent(neutralUrl, format, job, outputId);
 
   return callback(undefined, content);
 }
