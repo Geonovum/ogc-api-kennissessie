@@ -40,10 +40,11 @@ function processOutputs(outputs, parameters, value) {
     console.log(key);
     console.log(output);
 
-    if (parameters.outputs[key] == undefined)
-      continue
+    let parameterOutput = {}
+    parameterOutput.transmissionMode = "value"
 
-    let parameterOutput = parameters.outputs[key];
+    if (parameters.outputs != undefined)
+      if (parameters.outputs[key] == undefined) continue;
 
     let result = {};
 

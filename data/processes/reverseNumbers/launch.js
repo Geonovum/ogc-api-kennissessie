@@ -41,10 +41,11 @@ function processOutputs(outputs, parameters, values) {
     console.log(key);
     console.log(output);
 
-    if (parameters.outputs[key] == undefined)
-      continue
+    let parameterOutput = {}
+    parameterOutput.transmissionMode = "value"
 
-    let parameterOutput = parameters.outputs[key];
+    if (parameters.outputs != undefined)
+      if (parameters.outputs[key] == undefined) continue;
 
     if ((output.schema.type = "number")) content[key] = Number(values[index]);
     else if ((output.schema.type = "string")) content[key] = String(values[index]);

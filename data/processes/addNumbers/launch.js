@@ -40,10 +40,11 @@ function processOutputs(outputs, parameters, value) {
     console.log(key);
     console.log(output);
 
-    if (parameters.outputs[key] == undefined)
-      continue
+    let parameterOutput = {}
+    parameterOutput.transmissionMode = "value"
 
-    let parameterOutput = parameters.outputs[key];
+    if (parameters.outputs != undefined)
+      if (parameters.outputs[key] == undefined) continue;
 
     let result = {};
 
@@ -51,9 +52,8 @@ function processOutputs(outputs, parameters, value) {
     else if ((output.schema.type = "string")) result[key] = String(value);
     else if ((output.schema.type = "boolean")) result[key] = Boolean(value);
     else if ((output.schema.type = "object")) result[key] = JSON.parse(value);
-    else if ((output.schema.type = "array")) result[key] = JSON.parse(value); 
+    else if ((output.schema.type = "array")) result[key] = JSON.parse(value);
 
-    // TODO: what to do??
     if (parameterOutput.transmissionMode == "value") content = result;
     else if (parameterOutput.transmissionMode == "reference") content = result;
 
@@ -168,7 +168,9 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     let child = undefined;
     try {
-      child = spawn.spawnSync(command + " " + params.join(' '),  { shell: true });
+      child = spawn.spawnSync(command + " " + params.join(" "), {
+        shell: true,
+      });
     } catch (err) {
       return callback({ httpCode: 500, description: err.message }, undefined);
     }
