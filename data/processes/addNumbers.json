@@ -12,7 +12,7 @@
       "schema": {
         "type": "number",
         "format": "integer",
-        "enum": [0,10,20,30]
+        "enum": [0, 10, 20, 30]
       }
     },
     "number2": {
@@ -24,6 +24,16 @@
         "minimum": 1,
         "maximium": 100,
         "default": 1
+      }
+    },
+    "pause": {
+      "title": "Literal Input (double)",
+      "description": "An optional input which can be used to specify the number of seconds to pause the service before returning",
+      "schema": {
+        "type": "number",
+        "default": 10,
+        "format": "double",
+        "nullable": true
       }
     }
   },

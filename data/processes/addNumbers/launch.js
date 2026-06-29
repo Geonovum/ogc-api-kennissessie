@@ -103,12 +103,12 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     case "android":
       let shellScript = "add.sh";
       command = join(__dirname, shellScript);
-      params = [values[0], values[1]];
+      params = [values[0], values[1], values[2]];
       break;
     case "win32":
       let batScript = "add.bat";
       command = join("cmd.exe");
-      params = ["/c", join(__dirname, batScript), values[0], values[1]];
+      params = ["/c", join(__dirname, batScript), values[0], values[1], values[2]];
       break;
     default:
       console.log(`Unknown platform ${process.platform} to launch Add module`);

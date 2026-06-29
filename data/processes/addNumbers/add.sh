@@ -9,6 +9,6 @@ then
   exit 1
 fi
 
-sleep 5
+sleep "$3"
 
 echo $(($1 + $2));

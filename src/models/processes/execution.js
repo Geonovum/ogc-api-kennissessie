@@ -55,10 +55,22 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
   // check parameters against the process input parameter definition
   for (let [key, processInput] of Object.entries(process_.inputs)) {
     if (parameters.inputs[key] == undefined)
-      return callback(
-        { httpCode: 400, description: `${key} not found` },
-        undefined
-      );
+    {
+        if (processInput.schema.nullable == undefined || processInput.schema.nullable == false) 
+          return callback(
+            { httpCode: 400, description: `${key} not found` },
+            undefined
+          );
+
+        if (processInput.schema.default == undefined) 
+          return callback(
+            { httpCode: 400, description: `${key} has no default` },
+            undefined
+          );
+
+        parameters.inputs[key] = processInput.schema.default
+    }
+
     switch (processInput.schema.type) {
       case "number":
         if (typeof parameters.inputs[key] !== "number")
