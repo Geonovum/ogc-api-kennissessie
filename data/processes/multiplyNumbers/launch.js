@@ -41,10 +41,7 @@ function processOutputs(outputs, parameters, value) {
     console.log(output);
 
     if (parameters.outputs[key] == undefined)
-      return callback(
-        { httpCode: 400, description: `${key} can not be bound` },
-        undefined,
-      );
+      continue
 
     let parameterOutput = parameters.outputs[key];
 
