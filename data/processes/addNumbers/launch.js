@@ -49,15 +49,16 @@ function processOutputs(outputs, parameters, value) {
     let parameterOutput = parameters.outputs[key];
 
     let result = {};
-    result.id = key;
 
-    if ((output.schema.type = "number")) result.value = Number(value);
+    if ((output.schema.type = "number")) result[key] = Number(value);
+    else if ((output.schema.type = "string")) result[key] = String(value);
+    else if ((output.schema.type = "boolean")) result[key] = Boolean(value);
+    else if ((output.schema.type = "object")) result[key] = JSON.parse(value);
+    else if ((output.schema.type = "array")) result[key] = JSON.parse(value); 
 
     // TODO: what to do??
-    //if (parameterOutput.transmissionMode == "value") content = result;
-
-    content.outputs = [];
-    content.outputs.push(result);
+    if (parameterOutput.transmissionMode == "value") content = result;
+    else if (parameterOutput.transmissionMode == "reference") content = result;
 
     /*
       if (parameters.response == "raw") {
