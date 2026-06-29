@@ -12,7 +12,8 @@
       "schema": {
         "type": "number",
         "format": "integer",
-        "enum": [0, 10, 20, 30]
+        "enum": [0, 10, 20, 30],
+        "nullable": false
       }
     },
     "number2": {
@@ -23,7 +24,8 @@
         "format": "integer",
         "minimum": 1,
         "maximium": 100,
-        "default": 1
+        "default": 1,
+        "nullable": false
       }
     },
     "pause": {
