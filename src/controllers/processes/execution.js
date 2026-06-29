@@ -35,8 +35,9 @@ export function post(req, res) {
     prefer,
     function (err, content, location) {
       if (err) {
-        res.status(err.httpCode)
-           .json({ code: err.httpCode, description: err.description });
+        res
+          .status(err.httpCode)
+          .json({ code: err.httpCode, description: err.description });
         return;
       }
 
@@ -44,15 +45,27 @@ export function post(req, res) {
       // JobID is set earlier, servcieUrl can only be set now
       let serviceUrl = formatFreeUrl.substring(
         0,
-        formatFreeUrl.indexOf(req.baseUrl) + req.baseUrl.length
+        formatFreeUrl.indexOf(req.baseUrl) + req.baseUrl.length,
       );
       location = location.replaceAll(":serviceUrl", serviceUrl);
       res.set("Location", location);
 
       // a prefer in req, needs to set preference-applied in res
-      let status = prefer.includes("async") ? 202 : 200;
-      if (prefer.includes("async"))
-        res.set("Preference-Applied", "respond - async");
+      let status = 200;
+
+      let preferOptions = prefer.split(",");
+      preferOptions.forEach(
+        (po) => { 
+          if (po.trim().startsWith("wait")) {
+            res.set("Preference-Applied", "respond-async");
+            status = 202;
+          }
+          else if (po.trim().startsWith("respond-async")) {
+            res.set("Preference-Applied", "respond-async");
+            status = 202;
+          }
+        }
+      );
 
       switch (format) {
         case "json":
@@ -64,6 +77,6 @@ export function post(req, res) {
             description: `${accept} is an invalid format`,
           });
       }
-    }
+    },
   );
 }
