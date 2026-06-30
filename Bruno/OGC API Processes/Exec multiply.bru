@@ -1,7 +1,7 @@
 meta {
   name: Exec multiply
   type: http
-  seq: 7
+  seq: 12
 }
 
 post {
@@ -16,13 +16,6 @@ body:json {
         "number1": 19,
         "number2": 7
       },
-      "outputs": {
-        "product": {
-          "transmissionMode": [
-            "value"
-          ]
-        }
-      },
       "subscriber": {
         "successUri": ":serviceUrl/callback/:jobId?type=success",
         "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
@@ -34,4 +27,5 @@ body:json {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -1,0 +1,32 @@
+meta {
+  name: Exec reverse, request only number2 in the result
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{serviceHost}}/processes/reverse/execution
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "inputs": {
+      "number1": 10,
+      "number2": 7
+    },
+    "outputs": {
+      "number1": {
+        "transmissionMode": [
+          "value"
+        ]
+      }
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

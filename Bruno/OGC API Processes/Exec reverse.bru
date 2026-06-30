@@ -1,11 +1,11 @@
 meta {
-  name: Exec add
+  name: Exec reverse
   type: http
-  seq: 7
+  seq: 10
 }
 
 post {
-  url: {{serviceHost}}/processes/add/execution
+  url: {{serviceHost}}/processes/reverse/execution
   body: json
   auth: inherit
 }
@@ -14,8 +14,7 @@ body:json {
   {
     "inputs": {
       "number1": 10,
-      "number2": 7,
-      "pause": 0
+      "number2": 7
     }
   }
 }

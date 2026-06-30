@@ -1,0 +1,16 @@
+meta {
+  name: Job result output
+  type: http
+  seq: 17
+}
+
+get {
+  url: {{serviceHost}}/jobs/ab96fd8c-7377-42ab-8637-43b8fab1d0fc/results/number1
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

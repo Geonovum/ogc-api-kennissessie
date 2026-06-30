@@ -1,11 +1,11 @@
 meta {
-  name: Jobs
+  name: Process echo
   type: http
-  seq: 14
+  seq: 6
 }
 
 get {
-  url: {{serviceHost}}/jobs
+  url: http://tb17.geolabs.fr:8119/ogc-api/processes/echo
   body: none
   auth: inherit
 }
