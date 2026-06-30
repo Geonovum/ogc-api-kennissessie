@@ -8,6 +8,6 @@ then
   exit 1
 fi
 
-sleep 5
+sleep 2
 
 echo $(($1 * $2));

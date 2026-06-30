@@ -33,7 +33,7 @@
       "description": "An optional input which can be used to specify the number of seconds to pause the service before returning",
       "schema": {
         "type": "number",
-        "default": 10,
+        "default": 2,
         "format": "double",
         "nullable": true
       }
