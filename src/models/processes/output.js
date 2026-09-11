@@ -1,6 +1,8 @@
 import urlJoin from "url-join";
 import utils from "../../utils/utils.js";
 import { getJobs } from "../../database/processes.js";
+import { jobDismissedError } from "./job.js";
+import exceptions, { processException } from "./exceptions.js";
 
 function getLinks(neutralUrl, format, links) {
   function getTypeFromFormat(format) {
@@ -45,11 +47,34 @@ function get(neutralUrl, format, jobId, outputId, callback) {
   let job = jobs[jobId];
   if (!job)
     return callback(
-      {
-        httpCode: 404,
-        code: `Job not found: ${jobId}`,
-        description: "Make sure you use an existing jobId. See /Jobs",
-      },
+      processException(
+        404,
+        exceptions.NO_SUCH_JOB,
+        `Job not found: ${jobId}. Make sure you use an existing jobId. See /jobs`
+      ),
+      undefined
+    );
+
+  if (job.status === "dismissed")
+    return callback(jobDismissedError(), undefined);
+
+  if (job.status === "accepted" || job.status === "running")
+    return callback(
+      processException(
+        404,
+        exceptions.RESULT_NOT_READY,
+        `Results for job ${jobId} are not ready`
+      ),
+      undefined
+    );
+
+  if (job.status === "failed")
+    return callback(
+      processException(
+        job.httpCode || 500,
+        exceptions.SERVER_ERROR,
+        job.message || `Job ${jobId} failed`
+      ),
       undefined
     );
 
@@ -57,12 +82,11 @@ function get(neutralUrl, format, jobId, outputId, callback) {
   if (job.results) {
     if (typeof job.results[outputId] == "undefined")
       return callback(
-        {
-          httpCode: 404,
-          code: `OutputId not found: ${outputId}`,
-          description:
-            `Make sure you use an existing outputId. See /Results/:outputId`,
-        },
+        processException(
+          404,
+          exceptions.INVALID_PARAMETER,
+          `OutputId not found: ${outputId}`
+        ),
         undefined
       );
 

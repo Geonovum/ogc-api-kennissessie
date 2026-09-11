@@ -47,11 +47,11 @@ function processOutputs(outputs, parameters, values) {
     if (parameters.outputs != undefined)
       if (parameters.outputs[key] == undefined) continue;
 
-    if ((output.schema.type = "number")) content[key] = Number(values[index]);
-    else if ((output.schema.type = "string")) content[key] = String(values[index]);
-    else if ((output.schema.type = "boolean")) content[key] = Boolean(values[index]);
-    else if ((output.schema.type = "object")) content[key] = JSON.parse(values[index]);
-    else if ((output.schema.type = "array")) content[key] = JSON.parse(values[index]); 
+    if (output.schema.type === "number") content[key] = Number(values[index]);
+    else if (output.schema.type === "string") content[key] = String(values[index]);
+    else if (output.schema.type === "boolean") content[key] = Boolean(values[index]);
+    else if (output.schema.type === "object") content[key] = JSON.parse(values[index]);
+    else if (output.schema.type === "array") content[key] = JSON.parse(values[index]); 
 
     index++
   }

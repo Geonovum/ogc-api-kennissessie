@@ -1,23 +1,54 @@
 import accepts from "accepts";
 import processes from "../../models/processes/processes.js";
 import utils from "../../utils/utils.js";
+import { sendProcessException } from "../../models/processes/exceptions.js";
 
 export function get(req, res) {
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
   // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
   if (utils.ifTrailingSlash(req, res)) return;
 
-  // (OAPIC) Req 8: The server SHALL respond with a response with the status code 400,
-  //         if the request URI includes a query parameter that is not specified in the API definition
-  var queryParams = ["f"];
+  // (OAPIP) Req 9: limit on GET /processes
+  var queryParams = ["f", "limit", "offset"];
   var rejected = utils.checkForAllowedQueryParams(req.query, queryParams);
   if (rejected.length > 0) {
     res.status(400).json({
-      code: `The following query parameters are rejected: ${rejected}`,
-      description: "Valid parameters for this request are " + queryParams,
+      type: "http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/invalid-parameter",
+      title: "invalid-parameter",
+      status: 400,
+      detail: `The following query parameters are rejected: ${rejected}`,
     });
     return;
   }
+
+  if (!utils.checkNumeric(req.query.limit, "limit", res)) return;
+  if (!utils.checkNumeric(req.query.offset, "offset", res)) return;
+
+  var defaultLimit = Number(global.config.server.limit) || 10;
+  var limit = req.query.limit === undefined ? defaultLimit : Number(req.query.limit);
+  var offset = req.query.offset === undefined ? 0 : Number(req.query.offset);
+
+  if (limit < 1) {
+    res.status(400).json({
+      type: "http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/invalid-parameter",
+      title: "invalid-parameter",
+      status: 400,
+      detail: "Parameter limit must be at least 1",
+    });
+    return;
+  }
+  if (offset < 0) {
+    res.status(400).json({
+      type: "http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/invalid-parameter",
+      title: "invalid-parameter",
+      status: 400,
+      detail: "Parameter offset must be at least 0",
+    });
+    return;
+  }
+  if (limit > processes.MAX_LIMIT) limit = processes.MAX_LIMIT;
+
+  var query = { limit, offset };
 
   var formatFreeUrl = utils.getFormatFreeUrl(req);
   var serviceUrl = utils.getServiceUrl(req);
@@ -25,40 +56,27 @@ export function get(req, res) {
   var accept = accepts(req);
   var format = accept.type(["json", "html"]);
 
-  processes.get(formatFreeUrl, format, function (err, content) {
+  processes.get(formatFreeUrl, format, query, function (err, content) {
     if (err) {
-      res
-        .status(err.httpCode)
-        .json({ code: err.httpCode, description: err.description });
+      sendProcessException(res, err);
       return;
     }
 
-    // (OAPIC P2) Requirement 3A: A successful execution of the operation SHALL be reported as a response with a HTTP status code 200.
     switch (format) {
       case "json":
-        // Recommendations 10, Links included in payload of responses SHOULD also be
-        // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
         res.set("link", utils.makeHeaderLinks(content.links));
         res.status(200).json(content);
         break;
       case `html`:
-        let linkSelf = content.links
-          .find((i) => i.rel == "self")
-          .href.split("?")[0];
-        let links = [linkSelf];
-        while (links[0] != serviceUrl) {
-          links.unshift(links[0].substr(0, links[0].lastIndexOf("/")));
-        }
-
-        // Recommendations 10, Links included in payload of responses SHOULD also be
-        // included as Link headers in the HTTP response according to RFC 8288, Clause 3.
         res.set("link", utils.makeHeaderLinks(content.links));
         res.status(200).render(`processes`, { content, serviceUrl });
         break;
       default:
         res.status(400).json({
-          code: "InvalidParameterValue",
-          description: `${accept} is an invalid format`,
+          type: "http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/invalid-parameter",
+          title: "invalid-parameter",
+          status: 400,
+          detail: `${accept} is an invalid format`,
         });
     }
   });

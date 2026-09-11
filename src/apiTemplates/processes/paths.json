@@ -11,7 +11,13 @@
       "operationId": "getProcesses",
       "parameters": [
         {
-          "$ref": "#/components/parameters/fCollections"
+          "$ref": "#/components/parameters/fProcesses"
+        },
+        {
+          "$ref": "#/components/parameters/limitProcesses"
+        },
+        {
+          "$ref": "#/components/parameters/offsetProcesses"
         }
       ],
       "responses": {
@@ -108,6 +114,20 @@
         "description": "Mandatory execute request JSON",
         "required": true
       },
+      "parameters": [
+        {
+          "name": "Prefer",
+          "in": "header",
+          "required": false,
+          "schema": {
+            "type": "string"
+          },
+          "description": "Execution preference. `respond-async` requests asynchronous execution (HTTP 201 + Location). `wait=N` asks the server to wait up to N seconds and return results if the job finishes in time."
+        },
+        {
+          "$ref": "#/components/parameters/fProcess"
+        }
+      ],
       "responses": {
         "200": {
             "description": "The operation was executed successfully.",
@@ -132,6 +152,12 @@
         },
         "500": {
           "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml"
+        },
+        "400": {
+          "description": "Invalid execute request or input values"
+        },
+        "403": {
+          "description": "The requested execution mode is not supported by this process"
         }
       }
     }

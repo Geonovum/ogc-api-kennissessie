@@ -28,5 +28,32 @@
                 "json"
             ]
         }
+    },
+    "limitProcesses": {
+        "name": "limit",
+        "in": "query",
+        "description": "The optional limit parameter limits the number of process summaries that are presented in the response document.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "default": 10
+        }
+    },
+    "offsetProcesses": {
+        "name": "offset",
+        "in": "query",
+        "description": "The optional offset parameter identifies the index of the first process summary in the response in the overall result set.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+        }
     }
 }

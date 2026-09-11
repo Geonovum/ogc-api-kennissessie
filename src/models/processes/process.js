@@ -1,6 +1,7 @@
 import urlJoin from "url-join";
 import utils from "../../utils/utils.js";
 import { getProcesses } from "../../database/processes.js";
+import exceptions, { processException } from "./exceptions.js";
 
 function getLinks(neutralUrl, format, links) {
   function getTypeFromFormat(format) {
@@ -67,16 +68,23 @@ export function getContent(neutralUrl, format, processId, process_) {
   return content;
 }
 
+export function getSummary(neutralUrl, format, processId, process_) {
+  var content = getContent(neutralUrl, format, processId, process_);
+  delete content.inputs;
+  delete content.outputs;
+  return content;
+}
+
 export function get(neutralUrl, format, processId, callback) {
   var processes = getProcesses();
   var process_ = processes[processId];
   if (!process_)
     return callback(
-      {
-        httpCode: 404,
-        code: `Process not found: ${processId}`,
-        description: "Make sure you use an existing processId. See /processes",
-      },
+      processException(
+        404,
+        exceptions.NO_SUCH_PROCESS,
+        "Make sure you use an existing processId. See /processes"
+      ),
       undefined
     );
 
@@ -88,4 +96,5 @@ export function get(neutralUrl, format, processId, callback) {
 export default {
   get,
   getContent,
+  getSummary,
 };

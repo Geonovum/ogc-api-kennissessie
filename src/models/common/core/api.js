@@ -393,7 +393,7 @@ function get(neutralUrl, callback) {
 
     paths.paths["/jobs"] = content["/jobs"];
     paths.paths["/jobs/{jobId}"] = content["/jobs/{jobId}"];
-    paths.paths["/jobs{jobId}/results"] = content["/jobs/{jobId}/results"];
+    paths.paths["/jobs/{jobId}/results"] = content["/jobs/{jobId}/results"];
 
     var jsonStr = readFileSync(
       join(

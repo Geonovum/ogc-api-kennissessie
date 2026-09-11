@@ -28,6 +28,120 @@
                 "json"
             ]
         }
+    },
+    "typeJobs": {
+        "name": "type",
+        "in": "query",
+        "description": "Only include jobs of the given type. Use `process` for jobs created by this OGC API Processes server.",
+        "required": false,
+        "style": "form",
+        "explode": true,
+        "schema": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "processIDJobs": {
+        "name": "processID",
+        "in": "query",
+        "description": "Only include jobs whose processID matches one of the given identifiers.",
+        "required": false,
+        "style": "form",
+        "explode": true,
+        "schema": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "statusJobs": {
+        "name": "status",
+        "in": "query",
+        "description": "Only include jobs whose status matches one of the given values.",
+        "required": false,
+        "style": "form",
+        "explode": true,
+        "schema": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "accepted",
+                    "running",
+                    "successful",
+                    "failed",
+                    "dismissed"
+                ]
+            }
+        }
+    },
+    "datetimeJobs": {
+        "name": "datetime",
+        "in": "query",
+        "description": "Only include jobs whose `created` timestamp intersects this RFC 3339 instant or interval. Open ends use `..`.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+            "type": "string"
+        }
+    },
+    "minDurationJobs": {
+        "name": "minDuration",
+        "in": "query",
+        "description": "Only include jobs that ran for at least this many seconds. Running jobs use now minus started; completed jobs use finished minus started.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        }
+    },
+    "maxDurationJobs": {
+        "name": "maxDuration",
+        "in": "query",
+        "description": "Only include jobs that ran for no longer than this many seconds. Running jobs use now minus started; completed jobs use finished minus started.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        }
+    },
+    "limitJobs": {
+        "name": "limit",
+        "in": "query",
+        "description": "The optional limit parameter limits the number of jobs that are presented in the response document.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "default": 10
+        }
+    },
+    "offsetJobs": {
+        "name": "offset",
+        "in": "query",
+        "description": "The optional offset parameter identifies the index of the first job in the response in the overall result set. Used by next/prev links.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+        }
     }
-
 }

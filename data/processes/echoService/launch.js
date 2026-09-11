@@ -149,6 +149,8 @@ export async function launch(process_, job, isAsync, parameters, callback) {
   // http get to echo server
   httpGet(values[0])
     .then(function (response) {
+      if (job.status === "dismissed") return;
+
       for (let [key, output] of Object.entries(process_.outputs)) {
         let result = {};
         result.id = key;
@@ -161,7 +163,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
         let parameterOutput = parameters.outputs[key];
 
-        if ((output.schema.type = "string"))
+        if (output.schema.type === "string")
           result.value = response.data.http.originalUrl;
 
         // TODO: what to do??
@@ -186,6 +188,8 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       }
     })
     .catch(function (error) {
+      if (job.status === "dismissed") return;
+
       if (parameters.subscriber && parameters.subscriber.failedUri) {
         httpPost(parameters.subscriber.failedUri, {
           message: error?.message || String(error),

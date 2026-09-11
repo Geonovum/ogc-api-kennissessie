@@ -2,136 +2,191 @@ import urlJoin from "url-join";
 import { join } from "path";
 import { existsSync } from "fs";
 import { getProcesses } from "../../database/processes.js";
-import { execute } from "./job.js";
+import { execute, getContent as getJobContent } from "./job.js";
 import { create } from "./jobs.js";
+import exceptions, { processException } from "./exceptions.js";
 
-function getLinks(neutralUrl, format, name, links) {
-  links.push({
-    href: urlJoin(neutralUrl),
-    rel: `self`,
-    type: "application/json",
-    title: `The Document`,
+function parsePrefer(prefer) {
+  var result = { respondAsync: false, waitSeconds: undefined };
+  if (!prefer) return result;
+
+  prefer.split(",").forEach((token) => {
+    var part = token.trim();
+    var lower = part.toLowerCase();
+    if (lower === "respond-async") result.respondAsync = true;
+    else if (lower.startsWith("wait=")) {
+      var seconds = Number(part.slice(part.indexOf("=") + 1).trim());
+      if (Number.isFinite(seconds) && seconds >= 0)
+        result.waitSeconds = seconds;
+    }
   });
+
+  return result;
 }
 
-function getContent(neutralUrl, process_, body) {
-  var content = {};
-  // A local identifier for the collection that is unique for the dataset;
-  content.id = name; // required
-  // An optional title and description for the collection;
-  content.title = document.name;
-  content.description = document.description;
-  content.links = [];
+function negotiateMode(process_, prefer) {
+  var options = process_.jobControlOptions || [];
+  var canSync = options.includes("sync-execute");
+  var canAsync = options.includes("async-execute");
 
-  getLinks(neutralUrl, format, name, content.links);
+  // (OAPIP) Req 25 / 26: jobControlOptions constrain the mode; Prefer is a hint
+  if (canAsync && !canSync) return "async";
+  if (canSync && !canAsync) return "sync";
+  if (prefer.respondAsync) return "async";
+  if (prefer.waitSeconds !== undefined) return "wait";
+  return "sync";
+}
 
-  return content;
+function validateInput(key, value, schema) {
+  if (!schema) return undefined;
+
+  if (schema.type === "integer" || schema.format === "integer") {
+    if (typeof value !== "number" || !Number.isInteger(value))
+      return `${key} (${value}) is not an integer`;
+  } else if (schema.type === "number" || schema.format === "double") {
+    if (typeof value !== "number" || !Number.isFinite(value))
+      return `${key} (${value}) is not a number`;
+  } else if (schema.type === "string") {
+    if (typeof value !== "string") return `${key} is not a string`;
+  } else if (schema.type === "boolean") {
+    if (typeof value !== "boolean") return `${key} is not a boolean`;
+  }
+
+  var maximum = schema.maximum !== undefined ? schema.maximum : schema.maximium;
+  if (schema.enum && !schema.enum.includes(value))
+    return `${key} (${value}) is not one of: ${schema.enum.join(", ")}`;
+  if (schema.minimum !== undefined && value < schema.minimum)
+    return `${key} (${value}) is below minimum ${schema.minimum}`;
+  if (maximum !== undefined && value > maximum)
+    return `${key} (${value}) is above maximum ${maximum}`;
+
+  return undefined;
+}
+
+function waitForJob(job, seconds, callback) {
+  var deadline = Date.now() + seconds * 1000;
+
+  function tick() {
+    if (["successful", "failed", "dismissed"].includes(job.status)) {
+      callback();
+      return;
+    }
+    if (Date.now() >= deadline) {
+      callback();
+      return;
+    }
+    setTimeout(tick, 100);
+  }
+
+  tick();
+}
+
+function success(callback, payload) {
+  callback(undefined, payload);
 }
 
 /**
- * Description placeholder
- *
  * @param {*} neutralUrl
  * @param {*} processId
  * @param {*} parameters
+ * @param {*} preferHeader
  * @param {*} callback
- * @returns {*}
  */
-function post(neutralUrl, processId, parameters, prefer, callback) {
-  // serviceUrl sits at the same level as /processes
+function post(neutralUrl, processId, parameters, preferHeader, callback) {
   let serviceUrl = neutralUrl.substring(0, neutralUrl.indexOf("/processes"));
+  var prefer = parsePrefer(preferHeader);
 
   var processes = getProcesses();
   var process_ = structuredClone(processes[processId]);
   if (!process_)
     return callback(
-      {
-        code: 404,
-        description: "Make sure you use an existing processId. See /processes",
-      },
-      undefined
+      processException(
+        404,
+        exceptions.NO_SUCH_PROCESS,
+        "Make sure you use an existing processId. See /processes"
+      )
     );
 
-  // check parameters against the process input parameter definition
-  for (let [key, processInput] of Object.entries(process_.inputs)) {
-    if (parameters.inputs[key] == undefined)
-    {
-        if (processInput.schema.nullable == undefined || processInput.schema.nullable == false) 
-          return callback(
-            { httpCode: 400, description: `${key} not found` },
-            undefined
-          );
+  if (!parameters || typeof parameters !== "object") parameters = {};
+  if (!parameters.inputs) parameters.inputs = {};
 
-        if (processInput.schema.default == undefined) 
-          return callback(
-            { httpCode: 400, description: `${key} has no default` },
-            undefined
-          );
+  // (OAPIP) Req 24: validate execute inputs against the process description
+  for (let [key, processInput] of Object.entries(process_.inputs || {})) {
+    var schema = processInput.schema || {};
+    var value = parameters.inputs[key];
 
-        parameters.inputs[key] = processInput.schema.default
-    }
-
-    switch (processInput.schema.type) {
-      case "number":
-        if (typeof parameters.inputs[key] !== "number")
-          return callback(
-            {
-              httpCode: 400,
-              description: `${key} (${parameters.inputs[key]}) is not a number`,
-            },
-            undefined
-          );
-        break;
-      case "string":
-        break;
-    }
-  }
-
-  for (let [key, processInput] of Object.entries(parameters.inputs)) {
-    if (process_.inputs[key] == undefined)
+    if (value === undefined || value === null) {
+      if (schema.default !== undefined) {
+        parameters.inputs[key] = schema.default;
+        continue;
+      }
+      if (schema.nullable === true) continue;
       return callback(
-        { httpCode: 400, description: `${key} not found in process definition` },
-        undefined
+        processException(
+          400,
+          exceptions.INVALID_PARAMETER,
+          `${key} not found`
+        )
+      );
+    }
+
+    var invalid = validateInput(key, parameters.inputs[key], schema);
+    if (invalid)
+      return callback(
+        processException(400, exceptions.INVALID_PARAMETER, invalid)
       );
   }
 
-  // prepare for the launcher (launcher has a fixed name: launcher.js)
+  for (let key of Object.keys(parameters.inputs)) {
+    if (!process_.inputs || process_.inputs[key] == undefined)
+      return callback(
+        processException(
+          400,
+          exceptions.INVALID_PARAMETER,
+          `${key} not found in process definition`
+        )
+      );
+  }
+
+  // (OAPIP) Req 27: omitted outputs means all defined outputs
+  if (!parameters.outputs) {
+    parameters.outputs = {};
+    for (let key of Object.keys(process_.outputs || {})) {
+      parameters.outputs[key] = { transmissionMode: "value" };
+    }
+  }
+
   let pathToLauncher = join(
     process_.location.replace(/\.[^/.]+$/, ""),
     "launch.js"
   );
 
-  const fileExists = existsSync(pathToLauncher);
-  if (!fileExists)
+  if (!existsSync(pathToLauncher))
     return callback(
-      {
-        code: 500,
-        description: "launch.js not found for process ${processId}",
-      },
-      undefined
+      processException(
+        500,
+        exceptions.SERVER_ERROR,
+        `launch.js not found for process ${processId}`
+      )
     );
 
-  // async/sync is determined by the HTTP header prefer
-  if (
-    prefer.includes("async") &&
-    !process_.jobControlOptions.includes("async-execute")
-  )
+  var mode = negotiateMode(process_, prefer);
+  if (mode !== "sync" && !(process_.jobControlOptions || []).includes("async-execute"))
     return callback(
-      {
-        code: 403,
-        description: "Request async, but process does not support async",
-      },
-      undefined
+      processException(
+        403,
+        exceptions.INVALID_PARAMETER,
+        "Request async, but process does not support async"
+      )
     );
 
-  // Create the job and add to the list of jobs.
-  // The initial status of the job is 'created'
-  let job = create(processId, prefer.includes("async"));
+  let job = create(processId, mode !== "sync");
+  let jobsUrl = urlJoin(serviceUrl, "jobs");
+  let jobUrl = urlJoin(jobsUrl, job.jobID);
 
-  // resolve all :<> with content
   if (parameters.subscriber) {
     for (var key in parameters.subscriber) {
-      if (parameters.subscriber.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(parameters.subscriber, key)) {
         parameters.subscriber[key] = parameters.subscriber[key]
           .replaceAll(":serviceUrl", serviceUrl)
           .replaceAll(":jobId", job.jobID);
@@ -139,20 +194,69 @@ function post(neutralUrl, processId, parameters, prefer, callback) {
     }
   }
 
+  var isAsync = mode !== "sync";
+
   execute(
     pathToLauncher,
     process_,
     job,
-    prefer.includes("async"),
+    isAsync,
     parameters,
     function (err, content) {
-      if (err) return callback(err, undefined);
+      if (err) {
+        if (!err.httpCode)
+          err = processException(
+            500,
+            exceptions.SERVER_ERROR,
+            err.description || err.message || "Process execution failed"
+          );
+        return callback(err);
+      }
 
-      // indication in the header of the location of the
-      // newly created job resource
-      let location = `:serviceUrl/jobs/${job.jobID}`;
+      if (mode === "sync") {
+        // (OAPIP) Req 32 / Per 7 / Req 33: 200 results, Link rel=monitor
+        return success(callback, {
+          content,
+          httpStatus: 200,
+          monitor: jobUrl,
+        });
+      }
 
-      callback(undefined, content, location);
+      function asyncPayload(preferenceApplied) {
+        // (OAPIP) Req 34: 201 + Location + statusInfo
+        return {
+          content: getJobContent(jobsUrl, "json", job.jobID, job),
+          location: jobUrl,
+          httpStatus: 201,
+          preferenceApplied,
+        };
+      }
+
+      if (prefer.waitSeconds === undefined) {
+        return success(callback, asyncPayload("respond-async"));
+      }
+
+      // (OAPIP) Rec 12 B: wait=N — respond sync if the job finishes in time
+      waitForJob(job, prefer.waitSeconds, function () {
+        if (job.status === "successful") {
+          return success(callback, {
+            content: job.results,
+            httpStatus: 200,
+            monitor: jobUrl,
+            preferenceApplied: "wait",
+          });
+        }
+        if (job.status === "failed") {
+          return callback(
+            processException(
+              500,
+              exceptions.SERVER_ERROR,
+              job.message || "Process execution failed"
+            )
+          );
+        }
+        success(callback, asyncPayload("respond-async"));
+      });
     }
   );
 }

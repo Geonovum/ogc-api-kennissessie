@@ -1,12 +1,51 @@
 import urlJoin from "url-join";
-import utils from "../../utils/utils.js";
+import { spawn } from "node:child_process";
 import { getJobs } from "../../database/processes.js";
+import exceptions, { processException } from "./exceptions.js";
+
+function jobNotFoundError(jobId) {
+  return processException(
+    404,
+    exceptions.NO_SUCH_JOB,
+    `Job not found: ${jobId}. Make sure you use an existing jobId. See /jobs`
+  );
+}
+
+export function jobDismissedError() {
+  return processException(
+    410,
+    "http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/gone",
+    "The job has been dismissed"
+  );
+}
+
+/**
+ * Stop a process started by a launcher. Stored on `job.child` (not part of
+ * the public StatusInfo document).
+ *
+ * @param {*} job
+ */
+function stopJobProcess(job) {
+  const child = job.child;
+  delete job.child;
+  if (!child) return;
+
+  try {
+    if (process.platform === "win32" && child.pid) {
+      spawn("taskkill", ["/pid", String(child.pid), "/f", "/t"]);
+    } else if (typeof child.kill === "function") {
+      child.kill("SIGTERM");
+    }
+  } catch (err) {
+    console.log(`Unable to stop process for job ${job.jobID}: ${err.message}`);
+  }
+}
 
 function getLinks(neutralUrl, format, jobId, links) {
 
   links.push({
     href: urlJoin(neutralUrl, jobId),
-    rel: `monitor`,
+    rel: `self`,
     type: `application/json`,
     title: `Status location`,
   });
@@ -20,12 +59,12 @@ function getLinks(neutralUrl, format, jobId, links) {
 }
 
 export function getContent(neutralUrl, format, jobId, job) {
-  var content = structuredClone(job);
+  // child is the live process handle; results are only on /jobs/{id}/results
+  const { child, results, ...publicJob } = job;
+  var content = structuredClone(publicJob);
   content.links = [];
 
   getLinks(neutralUrl, format, jobId, content.links);
-
-  delete content.results;
 
   return content;
 }
@@ -42,15 +81,12 @@ export function getContent(neutralUrl, format, jobId, job) {
 export function get(neutralUrl, format, jobId, callback) {
   var jobs = getJobs();
   var job = jobs[jobId];
-  if (!job)
-    return callback(
-      {
-        httpCode: 404,
-        code: `Job not found: ${jobId}`,
-        description: "Make sure you use an existing jobId. See /Jobs",
-      },
-      undefined
-    );
+  if (!job) return callback(jobNotFoundError(jobId), undefined);
+
+  // (OAPIP) After a job has been dismissed, subsequent requests to the job
+  //         SHOULD return HTTP status code 410 (Gone).
+  if (job.status === "dismissed")
+    return callback(jobDismissedError(), undefined);
 
   if (!neutralUrl.endsWith("jobs"))
     neutralUrl = neutralUrl.substr(0, neutralUrl.lastIndexOf("/"));
@@ -124,26 +160,27 @@ export function execute(path, process_, job, isAsync, parameters, callback) {
 function delete_(neutralUrl, format, jobId, callback) {
   var jobs = getJobs();
   var job = jobs[jobId];
-  if (!job)
-    return callback(
-      {
-        httpCode: 410,
-        code: `No such job: ${jobId}`,
-        description: "Make sure you use an existing jobId. See /Jobs",
-      },
-      undefined
-    );
+  if (!job) return callback(jobNotFoundError(jobId), undefined);
 
-  let jobsUrl = neutralUrl.substr(
-    0,
-    neutralUrl.lastIndexOf("/jobs") + "/jobs".length
-  );
+  // Dismiss of an already-dismissed job is Gone, not a second success.
+  if (job.status === "dismissed")
+    return callback(jobDismissedError(), undefined);
 
-  let content = {}
-  content.jobID = jobId;
-  content.status = "dismissed";
+  // (OAPIP Dismiss) If the operation is executed before the job has finished
+  // processing, the server SHALL cancel the processing and remove outstanding results.
+  stopJobProcess(job);
 
-  delete jobs[jobId];
+  job.status = "dismissed";
+  job.message = "Job dismissed";
+  job.finished = new Date().toISOString();
+  job.updated = new Date().toISOString();
+  delete job.results;
+
+  if (!neutralUrl.endsWith("jobs"))
+    neutralUrl = neutralUrl.substr(0, neutralUrl.lastIndexOf("/"));
+
+  // (OAPIP Dismiss) 200 with a StatusInfo document (status = dismissed).
+  var content = getContent(neutralUrl, format, jobId, job);
 
   return callback(undefined, content);
 }

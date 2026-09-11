@@ -1,6 +1,7 @@
 import accepts from "accepts";
 import job from "../../models/processes/job.js";
 import utils from "../../utils/utils.js";
+import { sendProcessException } from "../../models/processes/exceptions.js";
 
 export function get(req, res) {
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
@@ -29,9 +30,7 @@ export function get(req, res) {
 
   job.get(formatFreeUrl, format, jobId, function (err, content) {
     if (err) {
-      res
-        .status(err.httpCode)
-        .json({ code: err.httpCode, description: err.description });
+      sendProcessException(res, err);
       return;
     }
 
@@ -73,9 +72,7 @@ export function delete_(req, res) {
 
   job.delete_(formatFreeUrl, format, jobId, function (err, content) {
     if (err) {
-      res
-        .status(err.httpCode)
-        .json({ code: err.httpCode, description: err.description });
+      sendProcessException(res, err);
       return;
     }
 

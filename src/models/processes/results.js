@@ -1,6 +1,8 @@
 import urlJoin from "url-join";
 import utils from "../../utils/utils.js";
 import { getJobs } from "../../database/processes.js";
+import { jobDismissedError } from "./job.js";
+import exceptions, { processException } from "./exceptions.js";
 
 function getLinks(neutralUrl, format, links) {
   function getTypeFromFormat(format) {
@@ -41,11 +43,36 @@ function get(neutralUrl, format, jobId, callback) {
   let job = jobs[jobId];
   if (!job)
     return callback(
-      {
-        httpCode: 404,
-        code: `Job not found: ${jobId}`,
-        description: "Make sure you use an existing jobId. See /Jobs",
-      },
+      processException(
+        404,
+        exceptions.NO_SUCH_JOB,
+        `Job not found: ${jobId}. Make sure you use an existing jobId. See /jobs`
+      ),
+      undefined
+    );
+
+  if (job.status === "dismissed")
+    return callback(jobDismissedError(), undefined);
+
+  // (OAPIP) Req 45: results of a running/accepted job are not ready
+  if (job.status === "accepted" || job.status === "running")
+    return callback(
+      processException(
+        404,
+        exceptions.RESULT_NOT_READY,
+        `Results for job ${jobId} are not ready`
+      ),
+      undefined
+    );
+
+  // (OAPIP) Req 46: failed jobs return an error that matches the failure
+  if (job.status === "failed")
+    return callback(
+      processException(
+        job.httpCode || 500,
+        exceptions.SERVER_ERROR,
+        job.message || `Job ${jobId} failed`
+      ),
       undefined
     );
 

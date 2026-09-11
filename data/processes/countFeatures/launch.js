@@ -64,6 +64,8 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     let res = await count(values[0]);
 
+    if (job.status === "dismissed") return;
+
     let content = {};
 
     // bring result into content
@@ -79,7 +81,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
       let parameterOutput = parameters.outputs[key];
 
-      if ((output.schema.type = "number")) result.value = res;
+      if (output.schema.type === "number") result.value = res;
 
       // TODO: what to do??
       //if (parameterOutput.transmissionMode == "value") content = result;

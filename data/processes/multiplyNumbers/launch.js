@@ -48,11 +48,11 @@ function processOutputs(outputs, parameters, value) {
 
     let result = {};
 
-    if ((output.schema.type = "number")) result[key] = Number(value);
-    else if ((output.schema.type = "string")) result[key] = String(value);
-    else if ((output.schema.type = "boolean")) result[key] = Boolean(value);
-    else if ((output.schema.type = "object")) result[key] = JSON.parse(value);
-    else if ((output.schema.type = "array")) result[key] = JSON.parse(value); 
+    if (output.schema.type === "number") result[key] = Number(value);
+    else if (output.schema.type === "string") result[key] = String(value);
+    else if (output.schema.type === "boolean") result[key] = Boolean(value);
+    else if (output.schema.type === "object") result[key] = JSON.parse(value);
+    else if (output.schema.type === "array") result[key] = JSON.parse(value); 
 
     // TODO: what to do??
     if (parameterOutput.transmissionMode == "value") content = result;
@@ -130,9 +130,14 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       console.log(err);
     }
 
+    job.child = child;
+
     child.stdout.on("data", (d) => {
+      if (job.status === "dismissed") return;
+
       const content = processOutputs(process_.outputs, parameters, d);
 
+      delete job.child;
       job.status = "successful"; // accepted, successful, failed, dismissed
       job.progress = 100;
       job.message = `Job complete`;
@@ -146,6 +151,9 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     });
 
     child.stderr.on("data", (d) => {
+      if (job.status === "dismissed") return;
+
+      delete job.child;
       job.status = "failed"; // accepted, successful, failed, dismissed
       job.progress = 100;
       job.message = d.toString();

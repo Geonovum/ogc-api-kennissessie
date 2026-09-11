@@ -1,6 +1,7 @@
 import accepts from "accepts";
 import process from "../../models/processes/process.js";
 import utils from "../../utils/utils.js";
+import { sendProcessException } from "../../models/processes/exceptions.js";
 
 export function get(req, res) {
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
@@ -29,9 +30,7 @@ export function get(req, res) {
 
   process.get(formatFreeUrl, format, processId, function (err, content) {
     if (err) {
-      res
-        .status(err.httpCode)
-        .json({ code: err.httpCode, description: err.description });
+      sendProcessException(res, err);
       return;
     }
 

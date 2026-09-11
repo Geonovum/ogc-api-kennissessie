@@ -3,6 +3,17 @@
         "get":{
             "description":"Retrieve a list of jobs",
             "operationId":"getJobs",
+            "parameters": [
+                { "$ref": "#/components/parameters/fJob" },
+                { "$ref": "#/components/parameters/typeJobs" },
+                { "$ref": "#/components/parameters/processIDJobs" },
+                { "$ref": "#/components/parameters/statusJobs" },
+                { "$ref": "#/components/parameters/datetimeJobs" },
+                { "$ref": "#/components/parameters/minDurationJobs" },
+                { "$ref": "#/components/parameters/maxDurationJobs" },
+                { "$ref": "#/components/parameters/limitJobs" },
+                { "$ref": "#/components/parameters/offsetJobs" }
+            ],
             "responses":{
                 "200": {
                     "description": "The operation was executed successfully.",
@@ -62,6 +73,9 @@
                   },
                           "404":{
                     "$ref":"https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+                },
+                "410":{
+                    "description": "The job has been dismissed"
                 }
             },
             "summary":"Cancel / delete job",
@@ -104,6 +118,9 @@
                   },
                           "404":{
                     "$ref":"https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+                },
+                "410":{
+                    "description": "The job has been dismissed"
                 }
             },
             "summary":"Retrieve job details",
@@ -148,6 +165,9 @@
                   },
                           "404":{
                     "$ref":"https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+                },
+                "410":{
+                    "description": "The job has been dismissed"
                 }
             },
             "summary":"Retrieve job results",

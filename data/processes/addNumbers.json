@@ -23,7 +23,7 @@
         "type": "number",
         "format": "integer",
         "minimum": 1,
-        "maximium": 100,
+        "maximum": 100,
         "default": 1,
         "nullable": false
       }
