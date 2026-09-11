@@ -1,10 +1,8 @@
 import { join } from "path";
+import { existsSync, readdirSync } from "fs";
 import spawn from "node:child_process";
 import http from "node:http";
 import https from "node:https";
-
-const __dirname = import.meta.dirname;
-if (__dirname === undefined) console.log("need node 20.16 or higher");
 
 function httpPost(url, body) {
   const parsed = new URL(url);
@@ -31,6 +29,30 @@ function httpPost(url, body) {
   req.on("error", (err) => console.log(err));
   req.write(data);
   req.end();
+}
+
+function invalidParameterValue(detail) {
+  return {
+    httpCode: 400,
+    type: "InvalidParameterValue",
+    title: "InvalidParameterValue",
+    detail,
+    description: detail,
+  };
+}
+
+function processDirectory(process_) {
+  return process_.location.replace(/\.[^/.]+$/, "");
+}
+
+function findScript(processDir, processId, extension) {
+  const named = join(processDir, `${processId}${extension}`);
+  if (existsSync(named)) return named;
+
+  const match = readdirSync(processDir).find(
+    (name) => name.endsWith(extension) && name !== "launch.js",
+  );
+  return match ? join(processDir, match) : undefined;
 }
 
 function parseStdoutValues(value) {
@@ -67,14 +89,22 @@ function processOutputs(outputs, parameters, value) {
   return content;
 }
 
+function failJob(job, parameters, message) {
+  delete job.child;
+  job.status = "failed";
+  job.progress = 100;
+  job.message = message;
+  job.finished = new Date().toISOString();
+  job.updated = new Date().toISOString();
+
+  if (parameters.subscriber && parameters.subscriber.failedUri) {
+    httpPost(parameters.subscriber.failedUri, { message: job.message });
+  }
+}
+
 /**
- * Description placeholder
- *
- * @export
- * @param {*} job
- * @param {*} parameters
- * @param {*} callback
- * @returns {*}
+ * Default launcher for processes that ship a .sh / .bat next to the process JSON.
+ * A process folder may still provide its own launch.js to override this.
  */
 export async function launch(process_, job, isAsync, parameters, callback) {
   var values = [];
@@ -87,8 +117,9 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     values.push(parameters.inputs[key]);
   }
 
+  const processDir = processDirectory(process_);
   var command = "";
-  var params = "";
+  var params = [];
 
   switch (process.platform) {
     case "darwin":
@@ -97,25 +128,43 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     case "linux":
     case "openbsd":
     case "sunos":
-    case "android":
-      let shellScript = "divide.sh";
-      command = join(__dirname, shellScript);
-      params = [values[0], values[1]];
+    case "android": {
+      const shellScript = findScript(processDir, process_.id, ".sh");
+      if (!shellScript)
+        return callback(
+          {
+            httpCode: 500,
+            description: `No .sh script found for process ${process_.id}`,
+          },
+          undefined,
+        );
+      command = shellScript;
+      params = values;
       break;
-    case "win32":
-      let batScript = "divide.bat";
+    }
+    case "win32": {
+      const batScript = findScript(processDir, process_.id, ".bat");
+      if (!batScript)
+        return callback(
+          {
+            httpCode: 500,
+            description: `No .bat script found for process ${process_.id}`,
+          },
+          undefined,
+        );
       command = join("cmd.exe");
-      params = ["/c", join(__dirname, batScript), values[0], values[1]];
+      params = ["/c", batScript, ...values];
       break;
+    }
     default:
-      console.log(`Unknown platform ${process.platform} to launch Add module`);
+      console.log(`Unknown platform ${process.platform} to launch process`);
       return callback({ httpCode: 500, description: job.message }, undefined);
   }
 
   console.log(`launch ${command} ${params} on ${process.platform}`);
 
   if (isAsync) {
-    job.status = "running"; // accepted, successful, failed, dismissed
+    job.status = "running";
     job.started = new Date().toISOString();
     job.updated = new Date().toISOString();
 
@@ -135,21 +184,12 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       try {
         content = processOutputs(process_.outputs, parameters, d);
       } catch (err) {
-        delete job.child;
-        job.status = "failed";
-        job.progress = 100;
-        job.message = err.message;
-        job.finished = new Date().toISOString();
-        job.updated = new Date().toISOString();
-
-        if (process_.subscriber && process_.subscriber.failedUri) {
-          httpPost(process_.subscriber.failedUri, { message: job.message });
-        }
+        failJob(job, parameters, err.message);
         return;
       }
 
       delete job.child;
-      job.status = "successful"; // accepted, successful, failed, dismissed
+      job.status = "successful";
       job.progress = 100;
       job.message = `Job complete`;
       job.finished = new Date().toISOString();
@@ -163,17 +203,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     child.stderr.on("data", (d) => {
       if (job.status === "dismissed") return;
-
-      delete job.child;
-      job.status = "failed"; // accepted, successful, failed, dismissed
-      job.progress = 100;
-      job.message = d.toString();
-      job.finished = new Date().toISOString();
-      job.updated = new Date().toISOString();
-
-      if (process_.subscriber && process_.subscriber.failedUri) {
-        httpPost(process_.subscriber.failedUri, { message: job.message });
-      }
+      failJob(job, parameters, d.toString());
     });
 
     child.on("close", () => {
@@ -181,72 +211,43 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     });
 
     return callback(undefined, undefined);
-  } else {
-    job.status = "running"; // accepted, successful, failed, dismissed
-    job.started = new Date().toISOString();
-    job.updated = new Date().toISOString();
-
-    let child = undefined;
-    try {
-      child = spawn.spawnSync(command + " " + params.join(' '),  { shell: true });
-    } catch (err) {
-      return callback({ httpCode: 500, description: err.message }, undefined);
-    }
-
-    let errMsg = child.stderr.toString();
-    if (errMsg.length !== 0) {
-      job.status = "failed"; // accepted, successful, failed, dismissed
-      job.progress = 100;
-      job.message = errMsg;
-      job.finished = new Date().toISOString();
-      job.updated = new Date().toISOString();
-
-      // if a callback uri is given, send a message of the failure
-      if (process_.subscriber && process_.subscriber.failedUri) {
-        httpPost(process_.subscriber.failedUri, { message: job.message });
-      }
-
-      // regular error callback
-      return callback({ httpCode: 500, description: job.message }, undefined);
-    }
-
-    let content;
-    try {
-      content = processOutputs(process_.outputs, parameters, child.stdout);
-    } catch (err) {
-      job.status = "failed";
-      job.progress = 100;
-      job.message = err.message;
-      job.finished = new Date().toISOString();
-      job.updated = new Date().toISOString();
-
-      if (process_.subscriber && process_.subscriber.failedUri) {
-        httpPost(process_.subscriber.failedUri, { message: job.message });
-      }
-
-      return callback(
-        {
-          httpCode: 400,
-          type: "InvalidParameterValue",
-          title: "InvalidParameterValue",
-          detail: job.message,
-          description: job.message,
-        },
-        undefined,
-      );
-    }
-
-    job.status = "successful"; // accepted, successful, failed, dismissed
-    job.progress = 100;
-    job.message = `Job complete`;
-    job.finished = new Date().toISOString();
-    job.updated = new Date().toISOString();
-    job.results = content;
-
-    if (process_.subscriber && process_.subscriber.successUri) {
-      httpPost(process_.subscriber.successUri, content);
-    }
-
-    return callback(undefined, content);
   }
+
+  job.status = "running";
+  job.started = new Date().toISOString();
+  job.updated = new Date().toISOString();
+
+  let child = undefined;
+  try {
+    child = spawn.spawnSync(command + " " + params.join(" "), { shell: true });
+  } catch (err) {
+    return callback({ httpCode: 500, description: err.message }, undefined);
+  }
+
+  let errMsg = child.stderr.toString();
+  if (errMsg.length !== 0) {
+    failJob(job, parameters, errMsg);
+    return callback({ httpCode: 500, description: job.message }, undefined);
+  }
+
+  let content;
+  try {
+    content = processOutputs(process_.outputs, parameters, child.stdout);
+  } catch (err) {
+    failJob(job, parameters, err.message);
+    return callback(invalidParameterValue(job.message), undefined);
+  }
+
+  job.status = "successful";
+  job.progress = 100;
+  job.message = `Job complete`;
+  job.finished = new Date().toISOString();
+  job.updated = new Date().toISOString();
+  job.results = content;
+
+  if (parameters.subscriber && parameters.subscriber.successUri) {
+    httpPost(parameters.subscriber.successUri, content);
+  }
+
+  return callback(undefined, content);
 }

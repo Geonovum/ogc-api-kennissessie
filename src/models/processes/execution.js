@@ -1,5 +1,5 @@
 import urlJoin from "url-join";
-import { join } from "path";
+import { dirname, join } from "path";
 import { existsSync } from "fs";
 import { getProcesses } from "../../database/processes.js";
 import { execute, getContent as getJobContent } from "./job.js";
@@ -160,6 +160,10 @@ function post(neutralUrl, processId, parameters, preferHeader, callback) {
     process_.location.replace(/\.[^/.]+$/, ""),
     "launch.js"
   );
+
+  // Per-process launch.js wins; otherwise use the shared script launcher.
+  if (!existsSync(pathToLauncher))
+    pathToLauncher = join(dirname(process_.location), "launch.js");
 
   if (!existsSync(pathToLauncher))
     return callback(
