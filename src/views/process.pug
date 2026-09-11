@@ -115,7 +115,6 @@ block content
                 each jobControlOption in content.jobControlOptions
                   li=jobControlOption
 
-              - var linkJobs = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
               - var linkExecute = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
               - var canSync = content.jobControlOptions.includes('sync-execute')
               - var canAsync = content.jobControlOptions.includes('async-execute')
@@ -254,16 +253,6 @@ block content
                   p#execute-result-meta
                   pre#execute-result-body.bg-light.border.rounded.p-3
                   p#execute-result-links
-
-              p
-              h2 Jobs
-              a(href=linkJobs) Browse jobs
-              p
-              h2 Links
-              ul
-                li
-                  a(href=linkExecute)
-                    | Execution for this process as JSON (application/json)
 
   script.
     const executeUrl = !{JSON.stringify(linkExecute)};

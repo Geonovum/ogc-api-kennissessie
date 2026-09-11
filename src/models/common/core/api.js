@@ -5,6 +5,96 @@ import { getProcesses } from "../../../database/processes.js";
 
 const __dirname = import.meta.dirname;
 
+function processDescriptionExample(process_) {
+  return {
+    id: process_.id,
+    title: process_.title,
+    description: process_.description,
+    version: process_.version,
+    jobControlOptions: process_.jobControlOptions,
+    outputTransmission: process_.outputTransmission,
+    inputs: process_.inputs,
+    outputs: process_.outputs,
+    example: process_.example,
+  };
+}
+
+function cloneFieldSchema(field) {
+  var schema = structuredClone(field.schema || {});
+  if (field.title) schema.title = field.title;
+  if (field.description) schema.description = field.description;
+  return schema;
+}
+
+function isRequiredInput(input) {
+  var schema = input.schema || {};
+  return schema.nullable !== true && schema.default === undefined;
+}
+
+function executeSchema(process_) {
+  var inputProperties = {};
+  var requiredInputs = [];
+  for (var key of Object.keys(process_.inputs || {})) {
+    inputProperties[key] = cloneFieldSchema(process_.inputs[key]);
+    if (isRequiredInput(process_.inputs[key])) requiredInputs.push(key);
+  }
+
+  var outputProperties = {};
+  for (var key of Object.keys(process_.outputs || {})) {
+    outputProperties[key] = {
+      type: "object",
+      properties: {
+        transmissionMode: {
+          type: "string",
+          enum: ["value", "reference"],
+        },
+      },
+    };
+  }
+
+  var inputs = {
+    type: "object",
+    properties: inputProperties,
+    additionalProperties: false,
+  };
+  if (requiredInputs.length) inputs.required = requiredInputs;
+
+  return {
+    type: "object",
+    properties: {
+      inputs,
+      outputs: {
+        type: "object",
+        properties: outputProperties,
+        additionalProperties: false,
+      },
+      response: {
+        type: "string",
+        enum: ["raw", "document"],
+      },
+      subscriber: {
+        type: "object",
+        properties: {
+          successUri: { type: "string", format: "uri" },
+          inProgressUri: { type: "string", format: "uri" },
+          failedUri: { type: "string", format: "uri" },
+        },
+      },
+    },
+  };
+}
+
+function resultsSchema(process_) {
+  var properties = {};
+  for (var key of Object.keys(process_.outputs || {})) {
+    properties[key] = cloneFieldSchema(process_.outputs[key]);
+  }
+  return {
+    type: "object",
+    properties,
+  };
+}
+
 function get(neutralUrl, callback) {
   var content = {};
 
@@ -366,21 +456,54 @@ function get(neutralUrl, callback) {
     var processes = getProcesses();
 
     for (var name in processes) {
+      var process_ = processes[name];
       var processTemplate = content["/processes/{{:processId}}"];
       var ff = JSON.stringify(processTemplate);
+      ff = ff.replace(new RegExp("{{:processId}}", "g"), name);
+      var processPath = JSON.parse(ff);
 
-      var ff = ff.replace(new RegExp("{{:processId}}", "g"), name);
+      processPath.get.summary = process_.title || `Retrieve process ${name}`;
+      processPath.get.description =
+        process_.description || processPath.get.description;
+      processPath.get.responses["200"].content["application/json"].example =
+        processDescriptionExample(process_);
 
-      paths.paths[`/processes/${name}`] = JSON.parse(ff);
+      paths.paths[`/processes/${name}`] = processPath;
     }
 
     for (var name in processes) {
+      var process_ = processes[name];
       var processTemplate = content["/processes/{{:processId}}/execution"];
       var ff = JSON.stringify(processTemplate);
+      ff = ff.replace(new RegExp("{{:processId}}", "g"), name);
+      var executePath = JSON.parse(ff);
 
-      var ff = ff.replace(new RegExp("{{:processId}}", "g"), name);
+      components.components.schemas[`execute_${name}`] = executeSchema(process_);
+      components.components.schemas[`results_${name}`] = resultsSchema(process_);
 
-      paths.paths[`/processes/${name}/execution`] = JSON.parse(ff);
+      executePath.post.summary = `Execute ${process_.title || name}`;
+      executePath.post.description =
+        process_.description || executePath.post.description;
+      executePath.post.requestBody = {
+        required: true,
+        description: `Execute request for process ${name}`,
+        content: {
+          "application/json": {
+            schema: {
+              $ref: `#/components/schemas/execute_${name}`,
+            },
+          },
+        },
+      };
+      if (process_.example)
+        executePath.post.requestBody.content["application/json"].example =
+          process_.example;
+
+      executePath.post.responses["200"].content["application/json"].schema = {
+        $ref: `#/components/schemas/results_${name}`,
+      };
+
+      paths.paths[`/processes/${name}/execution`] = executePath;
     }
   }
 

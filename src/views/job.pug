@@ -82,6 +82,16 @@ block content
 
   script.
     const jobUrl = !{JSON.stringify(linkSelf)};
+    const jobStatus = !{JSON.stringify(content.status)};
+    // (OAPIP) StatusInfo: accepted/running are in-progress; successful/failed/dismissed are terminal
+    const jobDone = ['successful', 'failed', 'dismissed'].includes(jobStatus);
+    let refreshTimer;
+    if (!jobDone) {
+      refreshTimer = window.setTimeout(function () {
+        window.location.reload();
+      }, 2000);
+    }
+
     const dismissButton = document.getElementById('dismiss-job');
     const dismissResult = document.getElementById('dismiss-result');
     if (dismissButton) {
@@ -100,6 +110,7 @@ block content
           try { payload = text ? JSON.parse(text) : {}; } catch (err) { /* keep text */ }
 
           if (response.status === 200) {
+            if (refreshTimer) window.clearTimeout(refreshTimer);
             const statusEl = document.querySelector('#job-status-header p');
             if (statusEl)
               statusEl.textContent = 'Status: ' + (payload.status || 'dismissed');

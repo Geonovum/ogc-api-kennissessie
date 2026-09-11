@@ -3,6 +3,11 @@
   "title": "Add 2 numbers",
   "description": "Using a bash script, add the 2 provided numbers together. Either sync or async.",
   "version": "0.0.1",
+  "metadata": [
+    {
+      "title": "Demo"
+    }
+  ],
   "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
   "outputTransmission": ["value"],
   "inputs": {
@@ -14,7 +19,12 @@
         "format": "integer",
         "enum": [0, 10, 20, 30],
         "nullable": false
-      }
+      },
+      "metadata": [
+        {
+          "title": "mijn test"
+        }
+      ]
     },
     "number2": {
       "title": "Number 2 Literal Input",

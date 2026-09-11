@@ -40,105 +40,80 @@ function httpPost(url, body) {
  * @returns {*}
  */
 export async function launch(process_, job, isAsync, parameters, callback) {
-  var values = [];
-  for (let [key, processInput] of Object.entries(process_.inputs)) {
-    if (parameters.inputs[key] == undefined)
-      return callback(
-        { httpCode: 400, description: `${key} not found` },
-        undefined
-      );
-    values.push(parameters.inputs[key]);
-  }
-
-  let params = [values[0]];
+  if (parameters.inputs == undefined || parameters.inputs.uri == undefined)
+    return callback(
+      { httpCode: 400, description: `uri not found` },
+      undefined
+    );
 
   if (isAsync) {
     return callback(
       { httpCode: 400, description: `count does not work async` },
       undefined
     );
-  } else {
-    job.status = "running"; // accepted, successful, failed, dismissed
-    job.started = new Date().toISOString();
+  }
+
+  job.status = "running"; // accepted, successful, failed, dismissed
+  job.started = new Date().toISOString();
+  job.updated = new Date().toISOString();
+
+  let countValue;
+  try {
+    countValue = await count(parameters.inputs.uri);
+  } catch (err) {
+    job.status = "failed";
+    job.progress = 100;
+    job.message = err.message;
+    job.finished = new Date().toISOString();
     job.updated = new Date().toISOString();
 
-    let res = await count(values[0]);
-
-    if (job.status === "dismissed") return;
-
-    let content = {};
-
-    if (parameters.outputs != undefined) {
-      for (let key of Object.keys(parameters.outputs)) {
-        if (process_.outputs[key] == undefined) {
-          job.status = "failed";
-          job.progress = 100;
-          job.message = `The ${key} argument specified as ResponseDocument identifier was not recognized.`;
-          job.finished = new Date().toISOString();
-          job.updated = new Date().toISOString();
-
-          return callback(
-            {
-              httpCode: 400,
-              type: "InvalidParameterValue",
-              title: "InvalidParameterValue",
-              detail: job.message,
-              description: job.message,
-            },
-            undefined
-          );
-        }
-      }
+    if (parameters.subscriber && parameters.subscriber.failedUri) {
+      httpPost(parameters.subscriber.failedUri, { message: job.message });
     }
 
-    // bring result into content
-    for (let [key, output] of Object.entries(process_.outputs)) {
-      let result = {};
-      result.id = key;
+    var httpCode = /not a valid/.test(err.message) ? 400 : 500;
+    return callback({ httpCode, description: job.message }, undefined);
+  }
 
-      if (parameters.outputs[key] == undefined)
+  if (job.status === "dismissed") return;
+
+  if (parameters.outputs != undefined) {
+    for (let key of Object.keys(parameters.outputs)) {
+      if (process_.outputs[key] == undefined) {
+        job.status = "failed";
+        job.progress = 100;
+        job.message = `The ${key} argument specified as ResponseDocument identifier was not recognized.`;
+        job.finished = new Date().toISOString();
+        job.updated = new Date().toISOString();
+
         return callback(
           {
             httpCode: 400,
             type: "InvalidParameterValue",
             title: "InvalidParameterValue",
-            description: `${key} can not be bound`,
+            detail: job.message,
+            description: job.message,
           },
           undefined
         );
-
-      let parameterOutput = parameters.outputs[key];
-
-      if (output.schema.type === "number") result.value = res;
-
-      // TODO: what to do??
-      //if (parameterOutput.transmissionMode == "value") content = result;
-
-      content.outputs = [];
-      content.outputs.push(result);
-
-      /*  if (parameters.response == "raw") {
-        content = result;
-      } else if (parameters.response == "document") {
-        content.outputs = [];
-        content.outputs.push(result);
       }
-*/
-      // TODO transmissionMode??? (in spec)
-      //if (outputParameter.transmissionMode == "value") content = result;
     }
-
-    job.status = "successful"; // accepted, successful, failed, dismissed
-    job.progress = 100;
-    job.message = `Job complete`;
-    job.finished = new Date().toISOString();
-    job.updated = new Date().toISOString();
-    job.results = content;
-
-    if (parameters.subscriber && parameters.subscriber.successUri) {
-      httpPost(parameters.subscriber.successUri, content);
-    }
-
-    return callback(undefined, content);
   }
+
+  const content = {};
+  if (parameters.outputs == undefined || parameters.outputs.count != undefined)
+    content.count = countValue;
+
+  job.status = "successful"; // accepted, successful, failed, dismissed
+  job.progress = 100;
+  job.message = `Job complete`;
+  job.finished = new Date().toISOString();
+  job.updated = new Date().toISOString();
+  job.results = content;
+
+  if (parameters.subscriber && parameters.subscriber.successUri) {
+    httpPost(parameters.subscriber.successUri, content);
+  }
+
+  return callback(undefined, content);
 }

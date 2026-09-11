@@ -1,0 +1,24 @@
+meta {
+  name: Exec Count features
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{serviceHost}}/processes/countFeatures/execution
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "inputs": {
+      "uri": "{{serviceHost}}/collections/Neighborhoods/items"
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -9,14 +9,7 @@
             "processes": {
                 "type": "array",
                 "items": {
-                    "allOf": [
-                        {
-                            "$ref": "#/components/schemas/Collection"
-                        },
-                        {
-                            "$ref": "#/components/schemas/Collection-link"
-                        }
-                    ]
+                    "$ref": "#/components/schemas/ProcessSummary"
                 }
             },
             "description": {
@@ -47,23 +40,103 @@
         ],
         "type": "object"
     },
-    "Process": {
+    "ProcessSummary": {
         "type": "object",
         "required": [
-            "id", "links"
+            "id"
         ],
         "properties": {
-            "itemType": {
+            "id": {
                 "type": "string"
             },
-            "id": {
+            "title": {
                 "type": "string"
             },
             "description": {
                 "type": "string"
             },
+            "version": {
+                "type": "string"
+            },
+            "jobControlOptions": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "sync-execute",
+                        "async-execute",
+                        "dismiss"
+                    ]
+                }
+            },
+            "outputTransmission": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "value",
+                        "reference"
+                    ]
+                }
+            },
+            "links": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/link"
+                }
+            }
+        }
+    },
+    "Process": {
+        "type": "object",
+        "required": [
+            "id",
+            "links"
+        ],
+        "properties": {
+            "id": {
+                "type": "string"
+            },
             "title": {
                 "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "version": {
+                "type": "string"
+            },
+            "jobControlOptions": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "sync-execute",
+                        "async-execute",
+                        "dismiss"
+                    ]
+                }
+            },
+            "outputTransmission": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "value",
+                        "reference"
+                    ]
+                }
+            },
+            "inputs": {
+                "type": "object",
+                "additionalProperties": true
+            },
+            "outputs": {
+                "type": "object",
+                "additionalProperties": true
+            },
+            "example": {
+                "type": "object"
             },
             "links": {
                 "type": "array",
