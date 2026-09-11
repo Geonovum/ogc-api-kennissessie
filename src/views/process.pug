@@ -1,10 +1,40 @@
 extends layout.pug
 
+block append scripts
+  style.
+    .execute-summary {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+    .execute-summary::-webkit-details-marker,
+    .execute-summary::marker {
+      display: none;
+      content: "";
+    }
+    .execute-chevron {
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+    .execute-details[open] .execute-chevron {
+      transform: rotate(180deg);
+    }
+    .execute-summary:focus-visible {
+      outline: 2px solid #0d6efd;
+      outline-offset: 2px;
+      border-radius: 0.25rem;
+    }
+
 block header
 
   svg.d-none(xmlns='http://www.w3.org/2000/svg')
     symbol#house-door-fill(viewbox='0 0 16 16')
       path(d='M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z')
+    symbol#chevron-down(viewbox='0 0 16 16')
+      path(fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708')
 
   - let linkSelf = content.links.find(i => i.rel == 'self').href.split('?')[0]
   - let links = [ linkSelf ]
@@ -81,14 +111,268 @@ block content
                 each jobControlOption in content.jobControlOptions
                   li=jobControlOption
 
+              - var linkJobs = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
+              - var linkExecute = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
+              - var canSync = content.jobControlOptions.includes('sync-execute')
+              - var canAsync = content.jobControlOptions.includes('async-execute')
+
+              details#execute-section.execute-details
+                summary.execute-summary
+                  h2.text-body-emphasis.mb-0 Execute
+                  svg.execute-chevron.bi(width='16' height='16' aria-hidden='true')
+                    use(xlink:href='#chevron-down')
+                p Fill in the inputs and send a
+                  code  POST
+                  |  to
+                  code  #{linkExecute}
+
+                form#execute-form
+                  each input, key in content.inputs
+                    - var schema = input.schema || {}
+                    - var required = schema.nullable !== true
+                    - var maximum = schema.maximum !== undefined ? schema.maximum : schema.maximium
+                    - var isNumber = schema.type === 'number' || schema.type === 'integer' || schema.format === 'integer' || schema.format === 'double'
+                    - var isInteger = schema.type === 'integer' || schema.format === 'integer'
+                    - var isBoolean = schema.type === 'boolean'
+                    - var isUrl = schema.format === 'url' || schema.format === 'uri'
+                    .mb-3
+                      if isBoolean
+                        .form-check
+                          input.form-check-input(
+                            type='checkbox'
+                            id=`input-${key}`
+                            name=key
+                            checked=!!schema.default
+                          )
+                          label.form-check-label(for=`input-${key}`) #{input.title || key}
+                      else
+                        label.form-label(for=`input-${key}`)
+                          | #{input.title || key}
+                          if required
+                            span.text-danger  *
+                        if schema.enum
+                          select.form-select(
+                            id=`input-${key}`
+                            name=key
+                            required=required
+                          )
+                            if required && schema.default === undefined
+                              option(value='' disabled selected) Choose…
+                            each option in schema.enum
+                              option(value=option selected=(schema.default === option)) #{option}
+                        else if isNumber
+                          input.form-control(
+                            type='number'
+                            id=`input-${key}`
+                            name=key
+                            required=required
+                            min=schema.minimum
+                            max=maximum
+                            step=(isInteger ? '1' : 'any')
+                            value=(schema.default !== undefined ? schema.default : undefined)
+                          )
+                        else if isUrl
+                          input.form-control(
+                            type='url'
+                            id=`input-${key}`
+                            name=key
+                            required=required
+                            value=(schema.default !== undefined ? schema.default : undefined)
+                            placeholder='https://'
+                          )
+                        else
+                          input.form-control(
+                            type='text'
+                            id=`input-${key}`
+                            name=key
+                            required=required
+                            value=(schema.default !== undefined ? schema.default : undefined)
+                          )
+                      .form-text
+                        if input.description
+                          | #{input.description}
+                          |
+                        if schema.enum
+                          | Allowed values: #{schema.enum.join(', ')}.
+                          |
+                        if schema.minimum !== undefined || maximum !== undefined
+                          | Range:
+                          if schema.minimum !== undefined
+                            |  min #{schema.minimum}
+                          if maximum !== undefined
+                            |  max #{maximum}
+                          | .
+                          |
+                        if schema.default !== undefined
+                          | Default: #{schema.default}.
+                          |
+                        if !required
+                          | Optional.
+
+                  if canSync && canAsync
+                    fieldset.mb-3
+                      legend.col-form-label.fw-semibold Execution mode
+                      .form-check
+                        input.form-check-input#execute-mode-sync(
+                          type='radio'
+                          name='execute-mode'
+                          value='sync'
+                          checked
+                        )
+                        label.form-check-label(for='execute-mode-sync')
+                          | Synchronous — HTTP 200 with results
+                      .form-check
+                        input.form-check-input#execute-mode-async(
+                          type='radio'
+                          name='execute-mode'
+                          value='async'
+                        )
+                        label.form-check-label(for='execute-mode-async')
+                          | Asynchronous —
+                          code Prefer: respond-async
+                          |  — HTTP 201 job
+                  else if canAsync
+                    input#execute-mode-fixed(type='hidden' value='async')
+                    p.text-muted This process only supports asynchronous execution (
+                      code Prefer: respond-async
+                      | ).
+                  else
+                    input#execute-mode-fixed(type='hidden' value='sync')
+                    p.text-muted This process only supports synchronous execution.
+
+                  .mb-3
+                    label.form-label(for='execute-request') Request body
+                    pre#execute-request.bg-light.border.rounded.p-3.mb-0
+                  button#execute-submit.btn.btn-primary(type='submit') Execute POST
+
+                #execute-result.mt-4.d-none
+                  h3 Response
+                  p#execute-result-meta
+                  pre#execute-result-body.bg-light.border.rounded.p-3
+                  p#execute-result-links
+
               p
               h2 Jobs
-              - var linkJobs = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/job-list').href
               a(href=linkJobs) Browse jobs
-              - var linkExecute = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
               p
               h2 Links
               ul
                 li
                   a(href=linkExecute)
                     | Execution for this process as JSON (application/json)
+
+  script.
+    const executeUrl = !{JSON.stringify(linkExecute)};
+    const processInputs = !{JSON.stringify(content.inputs)};
+
+    function isNumericSchema(schema) {
+      return schema.type === 'number' || schema.type === 'integer' ||
+        schema.format === 'integer' || schema.format === 'double';
+    }
+
+    function parseFieldValue(schema, element) {
+      if (schema.type === 'boolean') return element.checked;
+      const raw = element.value;
+      if (raw === '') return undefined;
+      if (isNumericSchema(schema)) {
+        const n = Number(raw);
+        return Number.isFinite(n) ? n : raw;
+      }
+      return raw;
+    }
+
+    function collectInputs() {
+      const inputs = {};
+      Object.entries(processInputs).forEach(([key, def]) => {
+        const schema = def.schema || {};
+        const element = document.getElementById('input-' + key);
+        if (!element) return;
+        const value = parseFieldValue(schema, element);
+        if (value === undefined) return;
+        inputs[key] = value;
+      });
+      return { inputs: inputs };
+    }
+
+    function selectedMode() {
+      const checked = document.querySelector('[name="execute-mode"]:checked');
+      if (checked) return checked.value;
+      const fixed = document.getElementById('execute-mode-fixed');
+      return fixed ? fixed.value : 'sync';
+    }
+
+    function updateRequestPreview() {
+      const preview = document.getElementById('execute-request');
+      if (preview) preview.textContent = JSON.stringify(collectInputs(), null, 2);
+    }
+
+    function monitorFromLinkHeader(header) {
+      if (!header) return undefined;
+      const match = header.match(/<([^>]+)>\s*;\s*rel="?monitor"?/i);
+      return match ? match[1] : undefined;
+    }
+
+    function htmlJobUrl(url) {
+      if (!url) return url;
+      return url + (url.indexOf('?') === -1 ? '?f=html' : '&f=html');
+    }
+
+    function showResult(status, body) {
+      const result = document.getElementById('execute-result');
+      const meta = document.getElementById('execute-result-meta');
+      const bodyEl = document.getElementById('execute-result-body');
+      const links = document.getElementById('execute-result-links');
+      result.classList.remove('d-none');
+      meta.textContent = 'HTTP ' + status;
+      bodyEl.textContent = typeof body === 'string' ? body : JSON.stringify(body, null, 2);
+      links.replaceChildren();
+    }
+
+    document.getElementById('execute-form').addEventListener('input', updateRequestPreview);
+    document.getElementById('execute-form').addEventListener('change', updateRequestPreview);
+    updateRequestPreview();
+
+    document.getElementById('execute-form').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      if (!this.reportValidity()) return;
+
+      const mode = selectedMode();
+      const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      };
+      if (mode === 'async') headers.Prefer = 'respond-async';
+
+      const submit = document.getElementById('execute-submit');
+      submit.disabled = true;
+      try {
+        const response = await fetch(executeUrl, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(collectInputs())
+        });
+        const location = response.headers.get('Location');
+        const monitor = monitorFromLinkHeader(response.headers.get('Link'));
+        const text = await response.text();
+        let payload = text;
+        try { payload = text ? JSON.parse(text) : {}; } catch (err) { /* keep text */ }
+
+        if (response.status === 201 && location) {
+          window.location.href = htmlJobUrl(location);
+          return;
+        }
+
+        const jobUrl = location || monitor;
+        showResult(response.status, payload);
+        if (jobUrl) {
+          const link = document.createElement('a');
+          link.href = htmlJobUrl(jobUrl);
+          link.textContent = 'Open job status';
+          document.getElementById('execute-result-links').appendChild(link);
+        }
+      } catch (err) {
+        showResult(0, { title: 'request-failed', detail: String(err) });
+      } finally {
+        submit.disabled = false;
+      }
+    });
