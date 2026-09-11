@@ -1,0 +1,46 @@
+{
+  "id": "divide",
+  "title": "Divide 2 numbers",
+  "description": "Using a bash script, divide 2 provided numbers together. Either sync or async.",
+  "version": "0.0.1",
+  "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
+  "outputTransmission": ["value"],
+  "inputs": {
+    "number1": {
+      "title": "Number 1 Literal Input",
+      "description": "A number literal input.",
+      "schema": {
+        "type": "number",
+        "format": "integer"
+      }
+    },
+    "number2": {
+      "title": "Number 2 Literal Input",
+      "description": "A number literal input. This number can't be zero",
+      "schema": {
+        "type": "number",
+        "format": "integer"
+      }
+    }
+  },
+  "outputs": {
+    "quotient": {
+      "id": "Result",
+      "title": "Quotient of 2 numbers",
+      "description": "A number literal output.",
+      "schema": {
+        "type": "number",
+        "format": "integer"
+      }
+    },
+    "remainder": {
+      "id": "Remainder",
+      "title": "Remainder after division of 2 numbers",
+      "description": "A number literal output.",
+      "schema": {
+        "type": "number",
+        "format": "integer"
+      }
+    }
+  }
+}

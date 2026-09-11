@@ -2,53 +2,72 @@
 
 # Docker Hub Build and Push Script for OGC API Kennissessie
 # Account: lathoub
+#
+# Use a Docker Hub Personal Access Token (Read & Write), not the browser
+# device-code login. Create one at https://hub.docker.com/settings/security
+# Optional: export DOCKERHUB_TOKEN to skip the prompt.
 
-set -e
+set -euo pipefail
 
-# Configuration
 DOCKERHUB_USERNAME="lathoub"
 IMAGE_NAME="okapi"
-VERSION="1.3.57"
+VERSION="$(node -p "require('./package.json').version")"
+IMAGE="$DOCKERHUB_USERNAME/$IMAGE_NAME"
 
-echo "🐳 Building and pushing OGC API Kennissessie to Docker Hub..."
-echo "📦 Account: $DOCKERHUB_USERNAME"
-echo "🏷️  Image: $IMAGE_NAME"
-echo "📋 Version: $VERSION"
+echo "Building and pushing OGC API Kennissessie to Docker Hub..."
+echo "Account: $DOCKERHUB_USERNAME"
+echo "Image:   $IMAGE_NAME"
+echo "Version: $VERSION"
 echo ""
 
-# Check if buildx is available and create a builder if needed
-echo "🔧 Setting up Docker Buildx..."
-if ! docker buildx ls | grep -q "multiarch"; then
-    echo "📦 Creating multiarch builder..."
-    docker buildx create --name multiarch --use
-else
-    echo "📦 Using existing multiarch builder..."
-    docker buildx use multiarch
+echo "Logging into Docker Hub as $DOCKERHUB_USERNAME (PAT via stdin, no browser)..."
+if [ -z "${DOCKERHUB_TOKEN:-}" ]; then
+  echo "Paste a Docker Hub Personal Access Token (Read & Write), then press Enter."
+  echo "Create one at: https://hub.docker.com/settings/security"
+  read -r -s -p "PAT: " DOCKERHUB_TOKEN
+  echo
 fi
+if [ -z "$DOCKERHUB_TOKEN" ]; then
+  echo "No token provided. Set DOCKERHUB_TOKEN or paste a PAT."
+  exit 1
+fi
+printf '%s' "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+unset DOCKERHUB_TOKEN
 
-# Login to Docker Hub (you'll be prompted for credentials)
-echo "🔐 Logging into Docker Hub..."
-docker login
+echo "Setting up Docker Buildx (multiarch)..."
+if docker buildx inspect multiarch >/dev/null 2>&1; then
+  docker buildx use multiarch
+  docker buildx stop multiarch || true
+else
+  docker buildx create --name multiarch --driver docker-container --use
+fi
+docker buildx inspect multiarch --bootstrap >/dev/null
 
-# Build the image for multiple platforms and push to Docker Hub
-echo "🔨 Building Docker image for multiple platforms (linux/amd64, linux/arm64)..."
-docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$VERSION --push .
-docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKERHUB_USERNAME/$IMAGE_NAME:latest --push .
+echo "Building and pushing linux/amd64,linux/arm64 ($IMAGE:$VERSION and :latest)..."
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t "$IMAGE:$VERSION" \
+  -t "$IMAGE:latest" \
+  --push \
+  .
 
-# Build local copy for immediate use (ARM64 for Mac M3)
-echo "🏠 Building local copy for immediate use (ARM64)..."
-docker buildx build --platform linux/arm64 -t $DOCKERHUB_USERNAME/$IMAGE_NAME:latest --load .
+LOCAL_PLATFORM="linux/amd64"
+if [ "$(uname -m)" = "arm64" ] || [ "$(uname -m)" = "aarch64" ]; then
+  LOCAL_PLATFORM="linux/arm64"
+fi
+echo "Loading local $LOCAL_PLATFORM image as $IMAGE:latest..."
+docker buildx build \
+  --platform "$LOCAL_PLATFORM" \
+  -t "$IMAGE:latest" \
+  --load \
+  .
 
-echo "✅ Build completed successfully!"
-
+echo "Build completed successfully!"
 echo ""
-echo "🎉 Successfully pushed to Docker Hub!"
-echo "📋 Image URLs:"
-echo "   - $DOCKERHUB_USERNAME/$IMAGE_NAME:$VERSION"
-echo "   - $DOCKERHUB_USERNAME/$IMAGE_NAME:latest"
+echo "Pushed:"
+echo "  - $IMAGE:$VERSION"
+echo "  - $IMAGE:latest"
 echo ""
-echo "🚀 You can now pull and run this image on any Docker host (AMD64/ARM64):"
-echo "   docker pull $DOCKERHUB_USERNAME/$IMAGE_NAME:latest"
-echo "   docker run -p 8080:8080 -v ./data:/home/node/okapi/data $DOCKERHUB_USERNAME/$IMAGE_NAME:latest"
-echo ""
-echo "💡 This image now supports both AMD64 (Intel/AMD) and ARM64 (Apple Silicon) architectures!"
+echo "Pull and run:"
+echo "  docker pull $IMAGE:latest"
+echo "  docker run -p 8080:8080 -v ./data:/home/node/okapi/data $IMAGE:latest"

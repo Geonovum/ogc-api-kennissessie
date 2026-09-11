@@ -41,7 +41,6 @@ metadata:
     url: http://creativecommons.org/publicdomain/zero/1.0/deed.nl
     
 api:
-  version: 1.2.3
   buildingBlock: CRS
   enabled: true
   additionalCrs:

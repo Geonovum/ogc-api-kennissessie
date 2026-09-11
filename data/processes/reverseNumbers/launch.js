@@ -36,6 +36,13 @@ function httpPost(url, body) {
 function processOutputs(outputs, parameters, values) {
   let content = {};
 
+  if (parameters.outputs != undefined) {
+    for (let key of Object.keys(parameters.outputs)) {
+      if (outputs[key] == undefined)
+        throw new Error(`${key} is not a known output`);
+    }
+  }
+
   let index = 0
   for (let [key, output] of Object.entries(outputs)) {
     console.log(key);
@@ -83,7 +90,30 @@ export async function launch(process_, job, isAsync, parameters, callback) {
   job.started = new Date().toISOString();
   job.updated = new Date().toISOString();
 
-  const content = processOutputs(process_.outputs, parameters, values.reverse());
+  let content;
+  try {
+    content = processOutputs(process_.outputs, parameters, values.reverse());
+  } catch (err) {
+    job.status = "failed";
+    job.progress = 100;
+    job.message = err.message;
+    job.finished = new Date().toISOString();
+    job.updated = new Date().toISOString();
+
+    if (process_.subscriber && process_.subscriber.failedUri) {
+      httpPost(process_.subscriber.failedUri, { message: job.message });
+    }
+
+    return callback(
+      {
+        httpCode: 400,
+        type: "InvalidParameterValue",
+        title: "InvalidParameterValue",
+        description: job.message,
+      },
+      undefined,
+    );
+  }
 
   job.status = "successful"; // accepted, successful, failed, dismissed
   job.progress = 100;

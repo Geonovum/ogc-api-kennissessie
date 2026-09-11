@@ -128,3 +128,10 @@ export function get(req, res) {
     }
   });
 }
+
+export function deleteAll(req, res) {
+  if (utils.ifTrailingSlash(req, res)) return;
+
+  jobs.deleteAll();
+  res.status(204).end();
+}

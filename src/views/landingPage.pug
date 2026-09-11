@@ -101,3 +101,14 @@ block content
       ).addTo(map);
         
       L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
+
+block append foot
+  .container
+    p#api-version.small.text-muted.text-center.py-3.mb-0
+  script.
+    fetch(window.location.href, { method: 'HEAD', cache: 'no-store' })
+      .then(function (res) {
+        var version = res.headers.get('API-Version');
+        if (version)
+          document.getElementById('api-version').textContent = 'v' + version;
+      });

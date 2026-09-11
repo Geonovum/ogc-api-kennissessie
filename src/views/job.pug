@@ -35,8 +35,12 @@ block content
       .col-sm-12
         br
         section#job
-          .row
-            h1 Job status
+          .row.align-items-center
+            .col
+              h1 Job status
+            .col-auto
+              button#dismiss-job.btn.btn-outline-danger(type='button') Dismiss
+          p#dismiss-result.small.text-danger
           .row
             .col-md-12
               #job-status.successful
@@ -75,3 +79,43 @@ block content
                           |  (
                           span application/json
                           | )
+
+  script.
+    const jobUrl = !{JSON.stringify(linkSelf)};
+    const dismissButton = document.getElementById('dismiss-job');
+    const dismissResult = document.getElementById('dismiss-result');
+    if (dismissButton) {
+      dismissButton.addEventListener('click', async function () {
+        if (!window.confirm('Dismiss this job? Running work will be cancelled.'))
+          return;
+        dismissButton.disabled = true;
+        dismissResult.textContent = '';
+        try {
+          const response = await fetch(jobUrl, {
+            method: 'DELETE',
+            headers: { Accept: 'application/json' }
+          });
+          const text = await response.text();
+          let payload = text;
+          try { payload = text ? JSON.parse(text) : {}; } catch (err) { /* keep text */ }
+
+          if (response.status === 200) {
+            const statusEl = document.querySelector('#job-status-header p');
+            if (statusEl)
+              statusEl.textContent = 'Status: ' + (payload.status || 'dismissed');
+            const messageEl = document.querySelector('#job-status-body .message p');
+            if (messageEl)
+              messageEl.textContent = payload.message || 'Job dismissed';
+            dismissButton.remove();
+            return;
+          }
+
+          dismissResult.textContent =
+            payload.detail || payload.title || ('HTTP ' + response.status);
+          dismissButton.disabled = false;
+        } catch (err) {
+          dismissResult.textContent = String(err);
+          dismissButton.disabled = false;
+        }
+      });
+    }

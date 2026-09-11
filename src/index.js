@@ -41,6 +41,8 @@ app.listen(port, host, function (error) {
   console.log(`  Host: ${host}`);
   console.log(`  Port: ${port}`);
   console.log(`  Service Root: ${app.serviceRoot}`);
+  if (utils.configuredServiceUrl())
+    console.log(`  SERVICE_URL: ${utils.configuredServiceUrl()}`);
   
   // Show all accessible URLs
   console.log(`\nAccessible URLs:`);

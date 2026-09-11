@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$2" == "0" ]
+then
+  >&2 echo "2nd argument can't be zero"
+  exit 1
+fi
+
+sleep 2
+
+echo $(($1 / $2)) $(($1 % $2))

@@ -22,8 +22,9 @@ RUN npm install
 COPY src/ src/
 COPY local*.yml ./
 
-ENV VERSION=1.2.4
 ENV DATA_PATH=/home/node/okapi/data
+# Public API root used in links (execute, jobs, HTML). Example:
+# ENV SERVICE_URL=https://ogcapi.example.org/geonovum
 
 EXPOSE 8080
 

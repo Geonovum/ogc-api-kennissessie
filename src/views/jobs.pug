@@ -29,6 +29,13 @@ block content
       .col-sm-12
         br
         section#jobs
+          .row.align-items-center.mb-3
+            .col
+              h2.mb-0 Jobs
+            .col-auto
+              button#delete-all-jobs.btn.btn-outline-danger(type='button' disabled=!content.jobs.length)
+                | Delete all jobs
+          p#delete-all-result.small.text-danger
           .row
             .col-md-12
               table.job-list.table.table-striped.table-bordered
@@ -64,3 +71,32 @@ block content
                           mark.successful #{job.status}
                         td
                           | #{job.message}
+
+  script.
+    const jobsUrl = !{JSON.stringify(linkSelf)};
+    const deleteAllButton = document.getElementById('delete-all-jobs');
+    const deleteAllResult = document.getElementById('delete-all-result');
+    if (deleteAllButton) {
+      deleteAllButton.addEventListener('click', async function () {
+        if (!window.confirm('Delete all jobs? This cannot be undone.'))
+          return;
+        deleteAllButton.disabled = true;
+        deleteAllResult.textContent = '';
+        try {
+          const response = await fetch(jobsUrl, { method: 'DELETE' });
+          if (response.status === 204 || response.ok) {
+            window.location.reload();
+            return;
+          }
+          const text = await response.text();
+          let payload = text;
+          try { payload = text ? JSON.parse(text) : {}; } catch (err) { /* keep text */ }
+          deleteAllResult.textContent =
+            payload.detail || payload.title || ('HTTP ' + response.status);
+          deleteAllButton.disabled = false;
+        } catch (err) {
+          deleteAllResult.textContent = String(err);
+          deleteAllButton.disabled = false;
+        }
+      });
+    }

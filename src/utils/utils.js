@@ -1,20 +1,57 @@
 import { join } from "path";
 import { networkInterfaces } from "os";
+import { major } from "semver";
 
 var _formats = ["json", "html", "csv"];
 var _encodings = ["application/json", "text/html", "text/csv"];
 var _encodingsItems = ["application/geo+json", "text/html", "text/csv"];
 
-function getServiceUrl(req) {
-  // remove the optional extension from the baseUrl
+function firstForwarded(value) {
+  if (!value) return undefined;
+  return String(value).split(",")[0].trim();
+}
+
+function getRequestProto(req) {
+  var forwarded = firstForwarded(req.headers["x-forwarded-proto"]);
+  if (forwarded) return forwarded;
+
+  // Cloudflare Tunnel / CDN: CF-Visitor is {"scheme":"https"}
+  var visitor = req.headers["cf-visitor"];
+  if (visitor) {
+    try {
+      var scheme = JSON.parse(visitor).scheme;
+      if (scheme) return scheme;
+    } catch (err) {
+      /* ignore malformed CF-Visitor */
+    }
+  }
+
+  return process.env.PUBLIC_PROTOCOL || req.protocol;
+}
+
+function configuredServiceUrl() {
+  var raw = process.env.SERVICE_URL;
+  if (!raw) return undefined;
+  var base = String(raw).trim().replace(/\/+$/, "");
+  var version = global.config.api.version;
+  return `${base}/v${major(version)}`;
+}
+
+function getPublicOrigin(req) {
+  var configured = configuredServiceUrl();
+  if (configured) return configured;
+
+  // Cloudflare Tunnel talks HTTP to the container. Public links must use
+  // the visitor scheme/host unless SERVICE_URL is set.
+  var proto = getRequestProto(req);
+  var host =
+    firstForwarded(req.headers["x-forwarded-host"]) || req.headers.host;
   var root = req.baseUrl.replace(/\.[^.]*$/, "");
+  return `${proto}://${join(host, root)}`;
+}
 
-  const proxyHost = req.headers["x-forwarded-host"];
-  var host = proxyHost || req.headers.host;
-  host = join(host, root);
-  var serviceUrl = `${req.protocol}://${host}`;
-
-  return new URL(serviceUrl);
+function getServiceUrl(req) {
+  return new URL(getPublicOrigin(req));
 }
 
 function ISODateString(d) {
@@ -108,13 +145,7 @@ function checkForAllowedQueryParams(query, params) {
 }
 
 function getFormatFreeUrl(req) {
-  var root = req.baseUrl.replace(/\.[^.]*$/, "");
-
-  const proxyHost = req.headers["x-forwarded-host"];
-  var host = proxyHost || req.headers.host;
-  host = join(host, root);
-
-  var url = new URL(`${req.protocol}://${host}${req.path}`);
+  var url = new URL(`${getPublicOrigin(req)}${req.path}`);
   /*
     for (var propName in req.query) {
       if (req.query.hasOwnProperty(propName))
@@ -238,6 +269,7 @@ var dates = {
 
 export default {
   getServiceUrl,
+  configuredServiceUrl,
   ISODateString,
   makeHeaderLinks,
   UriToEPSG,

@@ -75,8 +75,9 @@ global.config.server.port =
   process.env.PORT || global.config.server.port || 8080; // Server port
 global.config.server.limit =
   process.env.LIMIT || global.config.server.limit || 10; // Default limit for pagination
-global.config.api.version =
-  process.env.VERSION || global.config.api.version || "1.2.3"; // API version number
+const pkg = JSON.parse(readFileSync(join(configPath, "package.json")));
+global.config.api = global.config.api || {};
+global.config.api.version = pkg.version;
 global.config.data.path = process.env.DATA_PATH || global.config.data.path; // Data path
 
 /**
@@ -104,7 +105,8 @@ if (global.config.server && global.config.server.prettyPrint)
 //         cross-origin requests SHOULD be supported.
 //         Note that support can also be added in a proxy layer on top of the server.
 // (OAPIC P1) 8.5 Support for Cross-Origin Requests
-if (global.config.server && global.config.server.cors) app.use(cors()); // Enable All CORS Requests
+if (global.config.server && global.config.server.cors)
+  app.use(cors({ exposedHeaders: ["API-Version"] }));
 
 // View Engine Configuration
 // Sets up Pug template engine for HTML rendering

@@ -25,7 +25,7 @@ export function jobDismissedError() {
  *
  * @param {*} job
  */
-function stopJobProcess(job) {
+export function stopJobProcess(job) {
   const child = job.child;
   delete job.child;
   if (!child) return;

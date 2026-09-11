@@ -1,0 +1,30 @@
+meta {
+  name: zoo project
+  type: http
+  seq: 25
+}
+
+post {
+  url: http://tb17.geolabs.fr:8119/ogc-api/processes/demo/execution
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "inputs": {
+          "sid": "25"
+      },
+      "outputs": {
+          "Result": {
+              "transmissionMode": "value"
+          }
+      }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

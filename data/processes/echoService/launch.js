@@ -92,6 +92,21 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     )
   }
 
+  if (parameters.outputs != undefined) {
+    for (let key of Object.keys(parameters.outputs)) {
+      if (process_.outputs[key] == undefined)
+        return callback(
+          {
+            httpCode: 400,
+            type: "InvalidParameterValue",
+            title: "InvalidParameterValue",
+            description: `${key} is not a known output`,
+          },
+          undefined
+        );
+    }
+  }
+
   job.status = "running"; // accepted, successful, failed, dismissed
   job.started = new Date().toISOString();
   job.updated = new Date().toISOString();
@@ -157,7 +172,12 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
         if (parameters.outputs[key] == undefined)
           return callback(
-            { httpCode: 400, description: `${key} can not be bound` },
+            {
+              httpCode: 400,
+              type: "InvalidParameterValue",
+              title: "InvalidParameterValue",
+              description: `${key} can not be bound`,
+            },
             undefined
           );
 

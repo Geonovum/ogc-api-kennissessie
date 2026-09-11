@@ -8,4 +8,6 @@ services:
       - 8080:8080
     volumes:
       - ./data:/home/node/okapi/data
+    # environment:
+    #   SERVICE_URL: https://ogcapi.delathouwer.me/geonovum
       

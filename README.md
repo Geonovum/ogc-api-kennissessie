@@ -66,6 +66,7 @@ docker run -p 8080:8080 lathoub/okapi:latest
 ### Environment Variables
 - `PORT`: Server port (default: 8080)
 - `NODE_ENV`: Environment mode (development/production)
+- `SERVICE_URL`: Public service base without the version path (for example `https://ogcapi.example.org/geonovum`). The app appends `/v{major}` from the API version so links stay on HTTPS behind Cloudflare Tunnel.
 
 ### Supported Platforms
 - `linux/amd64` (Intel/AMD processors)

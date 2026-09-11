@@ -1,0 +1,31 @@
+meta {
+  name: Exec divide with outputs
+  type: http
+  seq: 17
+}
+
+post {
+  url: {{serviceHost}}/processes/divide/execution
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "inputs": {
+      "number1": 19,
+      "number2": 7
+    },
+    "outputs": {
+      "quotient": {},
+      "remainder": {
+        "transmissionMode": "value"
+      }
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

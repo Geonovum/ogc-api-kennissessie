@@ -33,8 +33,15 @@ function httpPost(url, body) {
   req.end();
 }
 
+function parseStdoutValues(value) {
+  var text = Buffer.isBuffer(value) ? value.toString() : String(value);
+  return text.trim().split(/\s+/).filter(Boolean);
+}
+
 function processOutputs(outputs, parameters, value) {
   let content = {};
+  const values = parseStdoutValues(value);
+  let index = 0;
 
   if (parameters.outputs != undefined) {
     for (let key of Object.keys(parameters.outputs)) {
@@ -44,35 +51,15 @@ function processOutputs(outputs, parameters, value) {
   }
 
   for (let [key, output] of Object.entries(outputs)) {
-    console.log(key);
-    console.log(output);
-
-    let parameterOutput = {}
-    parameterOutput.transmissionMode = "value"
-
     if (parameters.outputs != undefined)
       if (parameters.outputs[key] == undefined) continue;
 
-    let result = {};
-
-    if (output.schema.type === "number") result[key] = Number(value);
-    else if (output.schema.type === "string") result[key] = String(value);
-    else if (output.schema.type === "boolean") result[key] = Boolean(value);
-    else if (output.schema.type === "object") result[key] = JSON.parse(value);
-    else if (output.schema.type === "array") result[key] = JSON.parse(value); 
-
-    // TODO: what to do??
-    if (parameterOutput.transmissionMode == "value") content = result;
-    else if (parameterOutput.transmissionMode == "reference") content = result;
-
-    /*
-      if (parameters.response == "raw") {
-        content = result;
-      } else if (parameters.response == "document") {
-        content.outputs = [];
-        content.outputs.push(result);
-      }
-*/
+    var raw = values[index++];
+    if (output.schema.type === "number") content[key] = Number(raw);
+    else if (output.schema.type === "string") content[key] = String(raw);
+    else if (output.schema.type === "boolean") content[key] = Boolean(raw);
+    else if (output.schema.type === "object") content[key] = JSON.parse(raw);
+    else if (output.schema.type === "array") content[key] = JSON.parse(raw);
   }
 
   return content;
@@ -109,12 +96,12 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     case "openbsd":
     case "sunos":
     case "android":
-      let shellScript = "multiply.sh";
+      let shellScript = "divide.sh";
       command = join(__dirname, shellScript);
       params = [values[0], values[1]];
       break;
     case "win32":
-      let batScript = "multiply.bat";
+      let batScript = "divide.bat";
       command = join("cmd.exe");
       params = ["/c", join(__dirname, batScript), values[0], values[1]];
       break;

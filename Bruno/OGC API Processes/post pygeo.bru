@@ -1,0 +1,30 @@
+meta {
+  name: post pygeo
+  type: http
+  seq: 23
+}
+
+post {
+  url: https://demo.pygeoapi.io/master/processes/hello-world/execution?f=json
+  body: json
+  auth: inherit
+}
+
+params:query {
+  f: json
+}
+
+body:json {
+  {
+    "inputs": {
+      "name": "myname",
+      "message": "aa"
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

@@ -1,6 +1,6 @@
 import utils from "../../utils/utils.js";
 import { getJobs } from "../../database/processes.js";
-import { getContent as getJobContent } from "./job.js";
+import { getContent as getJobContent, stopJobProcess } from "./job.js";
 
 const JOB_STATUSES = [
   "accepted",
@@ -263,8 +263,17 @@ function get(neutralUrl, format, query, callback) {
   return callback(undefined, content);
 }
 
+export function deleteAll() {
+  var jobs = getJobs();
+  for (var jobId of Object.keys(jobs)) {
+    stopJobProcess(jobs[jobId]);
+    delete jobs[jobId];
+  }
+}
+
 export default {
   get,
+  deleteAll,
   JOB_STATUSES,
   MAX_LIMIT,
 };

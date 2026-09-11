@@ -36,6 +36,13 @@ function httpPost(url, body) {
 function processOutputs(outputs, parameters, value) {
   let content = {};
 
+  if (parameters.outputs != undefined) {
+    for (let key of Object.keys(parameters.outputs)) {
+      if (outputs[key] == undefined)
+        throw new Error(`${key} is not a known output`);
+    }
+  }
+
   for (let [key, output] of Object.entries(outputs)) {
     console.log(key);
     console.log(output);
@@ -134,7 +141,22 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     child.stdout.on("data", (d) => {
       if (job.status === "dismissed") return;
 
-      const content = processOutputs(process_.outputs, parameters, d);
+      let content;
+      try {
+        content = processOutputs(process_.outputs, parameters, d);
+      } catch (err) {
+        delete job.child;
+        job.status = "failed";
+        job.progress = 100;
+        job.message = err.message;
+        job.finished = new Date().toISOString();
+        job.updated = new Date().toISOString();
+
+        if (process_.subscriber && process_.subscriber.failedUri) {
+          httpPost(process_.subscriber.failedUri, { message: job.message });
+        }
+        return;
+      }
 
       delete job.child;
       job.status = "successful"; // accepted, successful, failed, dismissed
@@ -200,7 +222,30 @@ export async function launch(process_, job, isAsync, parameters, callback) {
       return callback({ httpCode: 500, description: job.message }, undefined);
     }
 
-    const content = processOutputs(process_.outputs, parameters, child.stdout);
+    let content;
+    try {
+      content = processOutputs(process_.outputs, parameters, child.stdout);
+    } catch (err) {
+      job.status = "failed";
+      job.progress = 100;
+      job.message = err.message;
+      job.finished = new Date().toISOString();
+      job.updated = new Date().toISOString();
+
+      if (process_.subscriber && process_.subscriber.failedUri) {
+        httpPost(process_.subscriber.failedUri, { message: job.message });
+      }
+
+      return callback(
+        {
+          httpCode: 400,
+          type: "InvalidParameterValue",
+          title: "InvalidParameterValue",
+          description: job.message,
+        },
+        undefined,
+      );
+    }
 
     job.status = "successful"; // accepted, successful, failed, dismissed
     job.progress = 100;
