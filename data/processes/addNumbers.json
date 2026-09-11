@@ -49,5 +49,11 @@
         "format": "integer"
       }
     }
+  },
+  "example": {
+    "inputs": {
+      "number1": 10,
+      "number2": 7
+    }
   }
 }

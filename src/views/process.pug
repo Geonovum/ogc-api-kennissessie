@@ -87,6 +87,10 @@ block content
                       td(itemprop='type' data-label='Data Type') #{input.schema.type}
                       td(itemprop='type' data-label='Data Type') #{input.schema.format}
                       td(itemprop='description' data-label='Description') #{input.description}
+            if content.example
+              p
+              h3 Example
+              pre.bg-light.border.rounded.p-3= JSON.stringify(content.example, null, 2)
             p
             h3 Outputs
             .col-sm-12.col-md-12

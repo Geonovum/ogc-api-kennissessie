@@ -60,6 +60,7 @@ export function getContent(neutralUrl, format, processId, process_) {
 
   content.inputs = process_.inputs;
   content.outputs = process_.outputs;
+  if (process_.example) content.example = process_.example;
 
   content.links = [];
 
@@ -72,6 +73,7 @@ export function getSummary(neutralUrl, format, processId, process_) {
   var content = getContent(neutralUrl, format, processId, process_);
   delete content.inputs;
   delete content.outputs;
+  delete content.example;
   return content;
 }
 
