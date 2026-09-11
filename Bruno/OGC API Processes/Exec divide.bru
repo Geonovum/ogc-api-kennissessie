@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{serviceHost}}/processes/multiply/execution
+  url: {{serviceHost}}/processes/divide/execution
   body: json
   auth: inherit
 }
@@ -15,11 +15,6 @@ body:json {
       "inputs": {
         "number1": 19,
         "number2": 7
-      },
-      "subscriber": {
-        "successUri": ":serviceUrl/callback/:jobId?type=success",
-        "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
-        "failedUri": ":serviceUrl/callback/:jobId?type=failed"
       }
     }
   
