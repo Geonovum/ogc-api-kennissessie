@@ -39,7 +39,9 @@ function processOutputs(outputs, parameters, values) {
   if (parameters.outputs != undefined) {
     for (let key of Object.keys(parameters.outputs)) {
       if (outputs[key] == undefined)
-        throw new Error(`${key} is not a known output`);
+        throw new Error(
+          `The ${key} argument specified as ResponseDocument identifier was not recognized.`,
+        );
     }
   }
 
@@ -109,6 +111,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
         httpCode: 400,
         type: "InvalidParameterValue",
         title: "InvalidParameterValue",
+        detail: job.message,
         description: job.message,
       },
       undefined,

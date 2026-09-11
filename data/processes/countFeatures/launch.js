@@ -73,7 +73,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
         if (process_.outputs[key] == undefined) {
           job.status = "failed";
           job.progress = 100;
-          job.message = `${key} is not a known output`;
+          job.message = `The ${key} argument specified as ResponseDocument identifier was not recognized.`;
           job.finished = new Date().toISOString();
           job.updated = new Date().toISOString();
 
@@ -82,6 +82,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
               httpCode: 400,
               type: "InvalidParameterValue",
               title: "InvalidParameterValue",
+              detail: job.message,
               description: job.message,
             },
             undefined

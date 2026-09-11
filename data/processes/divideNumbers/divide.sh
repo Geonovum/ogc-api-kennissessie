@@ -6,6 +6,4 @@ then
   exit 1
 fi
 
-sleep 2
-
 echo $(($1 / $2)) $(($1 % $2))

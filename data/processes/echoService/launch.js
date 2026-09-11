@@ -100,7 +100,8 @@ export async function launch(process_, job, isAsync, parameters, callback) {
             httpCode: 400,
             type: "InvalidParameterValue",
             title: "InvalidParameterValue",
-            description: `${key} is not a known output`,
+            detail: `The ${key} argument specified as ResponseDocument identifier was not recognized.`,
+            description: `The ${key} argument specified as ResponseDocument identifier was not recognized.`,
           },
           undefined
         );
