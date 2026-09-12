@@ -8,7 +8,8 @@ function getId(dataDef) {
   for (let property in dataDef.schema.properties) {
     if (dataDef.schema.properties.hasOwnProperty(property)) {
       var value = dataDef.schema.properties[property];
-      if (value.role !== undefined) if (value.role == "ID") return value.name;
+      if (value.role !== undefined)
+        if (value.role == "ID") return value.name || property;
     }
   }
 
@@ -27,6 +28,75 @@ function getDateTimeFromSchema(schema) {
   }
 
   return;
+}
+
+function jsonSchemaType(value) {
+  if (typeof value === "number") return "number";
+  if (typeof value === "boolean") return "boolean";
+  return "string";
+}
+
+function pickIdProperty(properties) {
+  var candidates = ["fid", "id", "ID", "gml_id", "objectid", "OBJECTID"];
+  for (var i = 0; i < candidates.length; i++) {
+    if (Object.prototype.hasOwnProperty.call(properties, candidates[i]))
+      return candidates[i];
+  }
+}
+
+export function inferDataDef(geojson, id) {
+  var features = geojson.features || [];
+  var sample =
+    features.find((feature) => feature && feature.properties) ||
+    features[0] ||
+    {};
+  var properties = sample.properties || {};
+
+  var schemaProperties = {};
+  for (var key of Object.keys(properties)) {
+    var item = { name: key, type: jsonSchemaType(properties[key]) };
+    if (typeof properties[key] === "number" && !Number.isInteger(properties[key]))
+      item.format = "float";
+    schemaProperties[key] = item;
+  }
+
+  var idKey = pickIdProperty(schemaProperties);
+  if (idKey) {
+    schemaProperties[idKey].role = "ID";
+    schemaProperties[idKey].name = idKey;
+  } else {
+    schemaProperties.id = { name: "id", type: "string", role: "ID" };
+    features.forEach((feature, index) => {
+      feature.properties = feature.properties || {};
+      if (feature.id !== undefined && feature.id !== null)
+        feature.properties.id = String(feature.id);
+      else if (feature.properties.id === undefined)
+        feature.properties.id = String(index + 1);
+    });
+  }
+
+  var geometryType =
+    (sample.geometry && sample.geometry.type) || "Point";
+
+  return {
+    title: geojson.name || id,
+    description: geojson.name || `Dataset ${id}`,
+    crs: [],
+    schema: {
+      type: "Object",
+      geometry: {
+        sourcePath: "geojson",
+        type: "GEOMETRY",
+        role: "PRIMARY_GEOMETRY",
+        geometryType: geometryType.toUpperCase(),
+      },
+      properties: schemaProperties,
+    },
+    queryables: {
+      spatial: ["geometry"],
+      q: Object.keys(schemaProperties),
+    },
+  };
 }
 
 export function makeOAPIF(geojson, dataDef) {
