@@ -2,7 +2,15 @@ extends layout.pug
 
 block append scripts
   link(rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css')
+  link(rel='stylesheet' href='https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css')
+  link(rel='stylesheet' href='https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css')
   script(src='https://unpkg.com/leaflet@1.6.0/dist/leaflet.js')
+  script(src='https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js')
+  style.
+    #items-map {
+      height: 400px;
+      width: 100%;
+    }
 
 block header
 
@@ -36,236 +44,139 @@ block header
 
 block content
 
-  .container.py-4
-    .row
-      .col-sm-12
-        br
-        section#collection
-          .row
-            .col-sm
-              h1 Items
-                
-        if (content.numberMatched > content.numberReturned)
-          - let firstLink = content.links.find(i => i.rel == 'first')
-          - let prevLink  = content.links.find(i => i.rel == 'prev')
-          - let nextLink  = content.links.find(i => i.rel == 'next')
-          - let lastLink  = content.links.find(i => i.rel == 'last')
-          - let selfLink  = content.links.find(i => i.rel == 'self')
-          
-          // Extract offset and limit from the self link URL
-          - let selfUrl = new URL(selfLink.href)
-          - let currentOffset = parseInt(selfUrl.searchParams.get('offset')) || 0
-          - let currentLimit = parseInt(selfUrl.searchParams.get('limit')) || 10
-          
-          // Calculate current page (1-based)
-          - let currentPage = Math.floor(currentOffset / currentLimit) + 1
-          - let totalPages = Math.ceil(content.numberMatched / currentLimit)
-          - let startPage = Math.max(1, currentPage - 2)
-          - let endPage = Math.min(totalPages, currentPage + 2)
-          
+  -
+    function truncate(value, length) {
+      if (value === undefined || value === null) return '';
+      var text = String(value);
+      if (text.length <= length) return text;
+      return text.substring(0, length) + '...';
+    }
+    var skipKeys = ['id', 'fid', 'ID', 'gml_id', 'objectid', 'OBJECTID'];
+    var propertyKeys = [];
+    if (content.features && content.features.length && content.features[0].properties)
+      propertyKeys = Object.keys(content.features[0].properties).filter((key) => !skipKeys.includes(key));
+    var firstLink = content.links.find((link) => link.rel == 'first');
+    var prevLink = content.links.find((link) => link.rel == 'prev');
+    var nextLink = content.links.find((link) => link.rel == 'next');
+    var lastLink = content.links.find((link) => link.rel == 'last');
+    var selfLink = content.links.find((link) => link.rel == 'self');
+    var selfUrl = selfLink ? new URL(selfLink.href) : null;
+    var currentOffset = selfUrl ? (parseInt(selfUrl.searchParams.get('offset')) || 0) : 0;
+    var currentLimit = selfUrl ? (parseInt(selfUrl.searchParams.get('limit')) || 10) : 10;
+    var currentPage = Math.floor(currentOffset / currentLimit) + 1;
+    var totalPages = currentLimit ? Math.ceil((content.numberMatched || 0) / currentLimit) : 1;
+    var startPage = Math.max(1, currentPage - 2);
+    var endPage = Math.min(totalPages, currentPage + 2);
 
-          .d-flex.justify-content-between.align-items-center.mb-3
-            .pagination-controls
-              nav(aria-label='Pagination')
-                ul.pagination.mb-0
-                  // First page
-                  if firstLink
-                    li.page-item
-                      a.page-link(href=firstLink.href title=firstLink.title) «
-                  else
-                    li.page-item.disabled
-                      span.page-link ‹
+  .container
+    section#collection
+      h1 #{content.title}
+    section#items
+      if content.features && content.features.length
+        .row
+          .col-sm-12.col-md-6
+            .row
+              .col-sm-12
+                #items-map
+            .row
+              .col-sm-12
+                if content.numberMatched !== undefined
+                  p Items in this collection: #{content.numberMatched}
+            if totalPages > 1
+              .row
+                .col-sm-12
+                  nav(aria-label='Pagination')
+                    ul.pagination.mb-2.flex-wrap
+                      if firstLink
+                        li.page-item
+                          a.page-link(href=firstLink.href title=firstLink.title) first
+                      else
+                        li.page-item.disabled
+                          span.page-link first
+                      if prevLink
+                        li.page-item
+                          a.page-link(href=prevLink.href title=prevLink.title) prev
+                      else
+                        li.page-item.disabled
+                          span.page-link prev
+                      - var p = startPage
+                      while p <= endPage
+                        if p == currentPage
+                          li.page-item.active
+                            span.page-link #{p}
+                        else
+                          - var pageUrl = new URL(selfUrl.toString())
+                          - pageUrl.searchParams.set('offset', (p - 1) * currentLimit)
+                          li.page-item
+                            a.page-link(href=pageUrl.toString()) #{p}
+                        - p++
+                      if nextLink
+                        li.page-item
+                          a.page-link(href=nextLink.href title=nextLink.title) next
+                      else
+                        li.page-item.disabled
+                          span.page-link next
+                      if lastLink
+                        li.page-item
+                          a.page-link(href=lastLink.href title=lastLink.title) last
+                      else
+                        li.page-item.disabled
+                          span.page-link last
 
-                  // Previous page
-                  if prevLink
-                    li.page-item
-                      a.page-link(href=prevLink.href title=prevLink.title) ‹
-                  else
-                    li.page-item.disabled
-                      span.page-link ‹
+          .col-sm-12.col-md-6(style='overflow-x: scroll;')
+            table.table.table-striped.table-bordered
+              thead
+                tr
+                  th id
+                  each key in propertyKeys
+                    th #{key}
+              tbody
+                each feature in content.features
+                  - var featureId = feature.id !== undefined ? feature.id : (feature.properties && feature.properties.fid)
+                  tr
+                    td(data-label='id')
+                      a(href=linkSelf + '/' + encodeURIComponent(featureId) title=featureId) #{truncate(featureId, 12)}
+                    each key in propertyKeys
+                      td(data-label=key) #{truncate(feature.properties ? feature.properties[key] : '', 35)}
+      else if content.numberMatched
+        p Items in this collection: #{content.numberMatched}
+      else
+        p No items
 
-                  // Page numbers
-                  - var p = startPage;
-                  while p <= endPage
-                    if p == currentPage
-                      li.page-item.active
-                        span.page-link #{p}
-                    else
-                      - let pageUrl = new URL(selfUrl.toString())
-                      - pageUrl.searchParams.set('offset', (p - 1) * currentLimit)
-                      li.page-item
-                        a.page-link(href=pageUrl.toString()) #{p}
-                    - p++
+  if content.features && content.features.length
+    script.
+      const itemsPath = !{JSON.stringify(linkSelf)};
+      const geojsonData = !{JSON.stringify(content.features)};
+      const map = L.map('items-map');
+      L.tileLayer(
+        'https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0/pastel/EPSG:3857/{z}/{x}/{y}.png',
+        {
+          attribution:
+            'Kaartgegevens &copy; <a href="https://www.kadaster.nl">Kadaster</a> | <a href="https://www.verbeterdekaart.nl">Verbeter de kaart</a>',
+          minZoom: 6,
+          maxZoom: 19
+        }
+      ).addTo(map);
 
-                  // Next page
-                  if nextLink
-                    li.page-item
-                      a.page-link(href=nextLink.href title=nextLink.title) ›
-                  else
-                    li.page-item.disabled
-                      span.page-link ›
+      const items = new L.GeoJSON(geojsonData, {
+        onEachFeature: function (feature, layer) {
+          const id = feature.id !== undefined ? feature.id : '';
+          const url = itemsPath + '/' + encodeURIComponent(id) + '?f=html';
+          layer.bindPopup('<a href="' + url + '">' + String(id) + '</a>');
+        }
+      });
 
-                  // Last page
-                  if lastLink
-                    li.page-item
-                      a.page-link(href=lastLink.href title=lastLink.title) »
-                  else
-                    li.page-item.disabled
-                      span.page-link »
+      if (typeof L.markerClusterGroup === 'function') {
+        const markers = L.markerClusterGroup({
+          disableClusteringAtZoom: 9,
+          chunkedLoading: true,
+          chunkInterval: 500
+        });
+        markers.addLayer(items);
+        map.addLayer(markers);
+      } else {
+        items.addTo(map);
+      }
 
-
-    .row
-      .col-md-6
-        ul.list-unstyled
-          - var n = 0;
-          while n < content.numberReturned
-            - var feature = content.features[n]
-            li
-              - n++
-              div
-                h4.mt-3.mb-1
-                  a(href=linkSelf + '/' + n)
-                    span #{feature.properties.fid}
-                span.d-none linkSelf + '/' + n
-                .row.my-1
-                  .col-md-6.font-weight-bold.text-truncate(data-property='id')
-                    span(style='vertical-align: middle;') #{feature.type}
-                  .col-md-6
-                    ul.list-unstyled
-                      li #{n}  
-
-      .col-md-6
-        #map(style='width: 540px; height: 480px; position: relative;')
-        script.
-          // Calculate spatial extent (bounding box) from features
-          const features = !{JSON.stringify(content.features)};
-          let coords = null;
-          
-          if (features.length > 0) {
-            // Calculate bounding box from features
-            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-            let hasGeometry = false;
-            
-            features.forEach(feature => {
-              if (feature.geometry && feature.geometry.coordinates) {
-                hasGeometry = true;
-                const coords = feature.geometry.coordinates;
-                
-                if (feature.geometry.type === 'Point') {
-                  const [x, y] = coords;
-                  minX = Math.min(minX, x);
-                  minY = Math.min(minY, y);
-                  maxX = Math.max(maxX, x);
-                  maxY = Math.max(maxY, y);
-                } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiPoint') {
-                  coords.forEach(coord => {
-                    const [x, y] = coord;
-                    minX = Math.min(minX, x);
-                    minY = Math.min(minY, y);
-                    maxX = Math.max(maxX, x);
-                    maxY = Math.max(maxY, y);
-                  });
-                } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiLineString') {
-                  coords.forEach(ring => {
-                    ring.forEach(coord => {
-                      const [x, y] = coord;
-                      minX = Math.min(minX, x);
-                      minY = Math.min(minY, y);
-                      maxX = Math.max(maxX, x);
-                      maxY = Math.max(maxY, y);
-                    });
-                  });
-                } else if (feature.geometry.type === 'MultiPolygon') {
-                  coords.forEach(polygon => {
-                    polygon.forEach(ring => {
-                      ring.forEach(coord => {
-                        const [x, y] = coord;
-                        minX = Math.min(minX, x);
-                        minY = Math.min(minY, y);
-                        maxX = Math.max(maxX, x);
-                        maxY = Math.max(maxY, y);
-                      });
-                    });
-                  });
-                }
-              }
-            });
-            
-            if (hasGeometry) {
-              coords = [minX, minY, maxX, maxY];
-            }
-          }
-          
-          let bounds, centerx, centery;
-          if (coords) {
-            bounds = [[coords[1], coords[0]], [coords[3], coords[2]]];
-            centerx = (parseFloat(coords[2]) + parseFloat(coords[0])) / 2;
-            centery = (parseFloat(coords[3]) + parseFloat(coords[1])) / 2;
-          } else {
-            // Default viewpoint when there is no geometry (centre of the Netherlands)
-            bounds = [[0, 0], [0, 0]];
-            centerx = 5.2913;
-            centery = 52.1326;
-          }
-
-          // BRT-Achtergrondkaart (same source as nlmaps.nl). The nlmaps@2.3.50 script still points at
-          // geodata.nationaalgeoregister.nl, which no longer serves these tiles — use PDOK directly.
-          const map = L.map('map').setView([centery, centerx], coords ? 10 : 8);
-          L.tileLayer(
-            'https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0/pastel/EPSG:3857/{z}/{x}/{y}.png',
-            {
-              attribution:
-                'Kaartgegevens &copy; <a href="https://www.kadaster.nl">Kadaster</a> | <a href="https://www.verbeterdekaart.nl">Verbeter de kaart</a>',
-              minZoom: 6,
-              maxZoom: 19
-            }
-          ).addTo(map);
-
-          // Add features to the map (features already declared above)
-          
-          // Create a GeoJSON layer for the features
-          const featureLayer = L.geoJSON(features, {
-            pointToLayer: function (feature, latlng) {
-              // Style points
-              return L.circleMarker(latlng, {
-                radius: 6,
-                fillColor: "#ff7800",
-                color: "#000",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-              });
-            },
-            style: function (feature) {
-              // Style lines and polygons
-              return {
-                color: "#ff7800",
-                weight: 2,
-                opacity: 0.8,
-                fillOpacity: 0.3
-              };
-            },
-            onEachFeature: function (feature, layer) {
-              // Add popup with feature properties
-              let popupContent = '<div class="feature-popup">';
-              popupContent += '<h6>Feature Properties:</h6>';
-              popupContent += '<ul class="list-unstyled">';
-              
-              // Display all properties
-              for (let prop in feature.properties) {
-                if (feature.properties.hasOwnProperty(prop)) {
-                  popupContent += `<li><strong>${prop}:</strong> ${feature.properties[prop]}</li>`;
-                }
-              }
-              
-              popupContent += '</ul>';
-              popupContent += '</div>';
-              
-              layer.bindPopup(popupContent);
-            }
-          }).addTo(map);
-
-          // Fit map to show all features
-          if (features.length > 0) {
-            map.fitBounds(featureLayer.getBounds(), {padding: [10, 10]});
-          }
+      if (items.getBounds().isValid())
+        map.fitBounds(items.getBounds());

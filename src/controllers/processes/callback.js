@@ -26,10 +26,11 @@ export function post(req, res) {
   var format = accept.type(["json"]);
 
   console.log(
-    `call received from jobID: ${jobId}, type is '${typeResult}'`
+    `call received from jobID: ${jobId}, type is '${typeResult}'`,
+    req.body && Object.keys(req.body).length ? req.body : ""
   );
 
-  callback.post(formatFreeUrl, jobId, req.query, function (err, content) {
+  callback.post(formatFreeUrl, jobId, req.query, req.body, function (err, content) {
     if (err) {
       res
         .status(err.httpCode)

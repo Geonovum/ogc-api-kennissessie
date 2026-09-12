@@ -1,7 +1,7 @@
 import express from "express";
 
 import { get as getProcesses } from "../controllers/processes/processes.js";
-import { get as getProcess } from "../controllers/processes/process.js";
+import { get as getProcess, delete_ as deleteProcess } from "../controllers/processes/process.js";
 import { post as postExecution } from "../controllers/processes/execution.js";
 import { get as getJobs, deleteAll as deleteAllJobs } from "../controllers/processes/jobs.js";
 import {
@@ -16,6 +16,7 @@ const router = express.Router();
 
 router.get("/processes", getProcesses);
 router.get("/processes/:processId", getProcess);
+router.delete("/processes/:processId", deleteProcess);
 router.post("/processes/:processId/execution", postExecution);
 
 router.get("/jobs", getJobs);

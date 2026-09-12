@@ -9,7 +9,7 @@ import { getProcesses, getJobs } from "../../database/processes.js";
  * @param {*} callback
  * @returns {*}
  */
-function post(neutralUrl, jobId, query, callback) {
+function post(neutralUrl, jobId, query, body, callback) {
   var jobs = getJobs();
   var job = jobs[jobId];
   if (!job)
@@ -26,7 +26,10 @@ function post(neutralUrl, jobId, query, callback) {
   }
 */
 
-  let content = job.results;
+  let content =
+    body && typeof body === "object" && Object.keys(body).length
+      ? body
+      : job.results;
   callback(undefined, content);
 }
 

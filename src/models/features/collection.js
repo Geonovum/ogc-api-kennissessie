@@ -1,6 +1,6 @@
 import urlJoin from "url-join";
 import * as turf from "@turf/turf";
-import { getDatabases } from "../../database/database.js";
+import { getDatabases, deleteDataset } from "../../database/database.js";
 import utils from "../../utils/utils.js";
 
 function getLinks(neutralUrl, format, name, links) {
@@ -67,6 +67,8 @@ function getMetaData(neutralUrl, format, name, document) {
   // An optional title and description for the collection;
   content.title = document.name;
   content.description = document.description;
+  if (document.keywords && document.keywords.length)
+    content.keywords = document.keywords;
   content.links = [];
 
   getLinks(neutralUrl, format, name, content.links);
@@ -86,6 +88,21 @@ function getMetaData(neutralUrl, format, name, document) {
   content.storageCrs = document.storageCrs;
 
   return content;
+}
+
+function deletee(collectionId, callback) {
+  var result = deleteDataset(collectionId);
+  if (!result.ok)
+    return callback(
+      {
+        httpCode: result.httpCode,
+        code: result.description,
+        description: result.description,
+      },
+      undefined
+    );
+
+  return callback(undefined, {});
 }
 
 function get(neutralUrl, format, collectionId, callback) {
@@ -112,4 +129,5 @@ function get(neutralUrl, format, collectionId, callback) {
 
 export default {
   get,
+  deletee,
 };

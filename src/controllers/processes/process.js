@@ -57,3 +57,18 @@ export function get(req, res) {
     }
   });
 }
+
+export function delete_(req, res) {
+  if (utils.ifTrailingSlash(req, res)) return;
+
+  var processId = req.params.processId;
+
+  process.delete_(processId, function (err) {
+    if (err) {
+      sendProcessException(res, err);
+      return;
+    }
+
+    res.status(204).send();
+  });
+}

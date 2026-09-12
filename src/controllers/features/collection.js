@@ -58,3 +58,20 @@ export function get(req, res) {
     }
   });
 }
+
+export function deletee(req, res) {
+  if (utils.ifTrailingSlash(req, res)) return;
+
+  var collectionId = req.params.collectionId;
+
+  collection.deletee(collectionId, function (err) {
+    if (err) {
+      res
+        .status(err.httpCode)
+        .json({ code: err.httpCode, description: err.description });
+      return;
+    }
+
+    res.status(204).send();
+  });
+}

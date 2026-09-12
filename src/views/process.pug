@@ -65,7 +65,12 @@ block content
       .col-sm-12
         br
         section#process(itemscope='' itemtype='https://schema.org/WebAPI')
-          h2.text-body-emphasis(itemprop='name') #{content.title}
+          .row.align-items-center
+            .col
+              h2.text-body-emphasis.mb-0(itemprop='name') #{content.title}
+            .col-auto
+              button#delete-process.btn.btn-outline-danger(type='button') Delete process
+          p#delete-result.small.text-danger
           div(itemprop='description') #{content.description}
           .row
             p
@@ -114,10 +119,19 @@ block content
               ul
                 each jobControlOption in content.jobControlOptions
                   li=jobControlOption
+              if content.outputTransmission
+                p
+                h2 Output transmission
+                ul
+                  each mode in content.outputTransmission
+                    li=mode
 
               - var linkExecute = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/execute').href
               - var canSync = content.jobControlOptions.includes('sync-execute')
               - var canAsync = content.jobControlOptions.includes('async-execute')
+              - var transmissionModes = content.outputTransmission || ['value']
+              - var canValue = transmissionModes.includes('value')
+              - var canReference = transmissionModes.includes('reference')
 
               details#execute-section.execute-details
                 summary.execute-summary
@@ -243,6 +257,38 @@ block content
                     input#execute-mode-fixed(type='hidden' value='sync')
                     p.text-muted This process only supports synchronous execution.
 
+                  if canValue && canReference
+                    fieldset.mb-3
+                      legend.col-form-label.fw-semibold Output transmission
+                      .form-check
+                        input.form-check-input#transmission-mode-value(
+                          type='radio'
+                          name='transmission-mode'
+                          value='value'
+                          checked
+                        )
+                        label.form-check-label(for='transmission-mode-value')
+                          | Value — include results inline (
+                          code transmissionMode: value
+                          | )
+                      .form-check
+                        input.form-check-input#transmission-mode-reference(
+                          type='radio'
+                          name='transmission-mode'
+                          value='reference'
+                        )
+                        label.form-check-label(for='transmission-mode-reference')
+                          | Reference — return links to results (
+                          code transmissionMode: reference
+                          | )
+                  else if canReference
+                    input#transmission-mode-fixed(type='hidden' value='reference')
+                    p.text-muted This process only supports returning results by reference (
+                      code transmissionMode: reference
+                      | ).
+                  else
+                    input#transmission-mode-fixed(type='hidden' value='value')
+
                   .mb-3
                     label.form-label(for='execute-request') Request body
                     pre#execute-request.bg-light.border.rounded.p-3.mb-0
@@ -257,6 +303,7 @@ block content
   script.
     const executeUrl = !{JSON.stringify(linkExecute)};
     const processInputs = !{JSON.stringify(content.inputs)};
+    const processOutputIds = !{JSON.stringify(Object.keys(content.outputs || {}))};
 
     function isNumericSchema(schema) {
       return schema.type === 'number' || schema.type === 'integer' ||
@@ -294,9 +341,28 @@ block content
       return fixed ? fixed.value : 'sync';
     }
 
+    function selectedTransmission() {
+      const checked = document.querySelector('[name="transmission-mode"]:checked');
+      if (checked) return checked.value;
+      const fixed = document.getElementById('transmission-mode-fixed');
+      return fixed ? fixed.value : 'value';
+    }
+
+    function collectExecuteBody() {
+      const body = collectInputs();
+      const transmission = selectedTransmission();
+      if (transmission && processOutputIds.length) {
+        body.outputs = {};
+        processOutputIds.forEach((id) => {
+          body.outputs[id] = { transmissionMode: transmission };
+        });
+      }
+      return body;
+    }
+
     function updateRequestPreview() {
       const preview = document.getElementById('execute-request');
-      if (preview) preview.textContent = JSON.stringify(collectInputs(), null, 2);
+      if (preview) preview.textContent = JSON.stringify(collectExecuteBody(), null, 2);
     }
 
     function monitorFromLinkHeader(header) {
@@ -342,7 +408,7 @@ block content
         const response = await fetch(executeUrl, {
           method: 'POST',
           headers: headers,
-          body: JSON.stringify(collectInputs())
+          body: JSON.stringify(collectExecuteBody())
         });
         const location = response.headers.get('Location');
         const monitor = monitorFromLinkHeader(response.headers.get('Link'));
@@ -369,3 +435,37 @@ block content
         submit.disabled = false;
       }
     });
+
+    const processUrl = !{JSON.stringify(linkSelf)};
+    const processesUrl = !{JSON.stringify(links[1])};
+    const deleteButton = document.getElementById('delete-process');
+    const deleteResult = document.getElementById('delete-result');
+    if (deleteButton) {
+      deleteButton.addEventListener('click', async function () {
+        if (!window.confirm('Delete this process and its files?'))
+          return;
+        deleteButton.disabled = true;
+        deleteResult.textContent = '';
+        try {
+          const response = await fetch(processUrl, {
+            method: 'DELETE',
+            headers: { Accept: 'application/json' }
+          });
+          const text = await response.text();
+          let payload = text;
+          try { payload = text ? JSON.parse(text) : {}; } catch (err) { /* keep text */ }
+
+          if (response.status === 204 || response.status === 200) {
+            window.location.href = processesUrl;
+            return;
+          }
+
+          deleteResult.textContent =
+            payload.detail || payload.description || ('HTTP ' + response.status);
+          deleteButton.disabled = false;
+        } catch (err) {
+          deleteResult.textContent = String(err);
+          deleteButton.disabled = false;
+        }
+      });
+    }

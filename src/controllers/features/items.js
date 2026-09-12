@@ -72,6 +72,7 @@ export function get(req, res, next) {
           res.status(200).json(content);
           break;
         case `html`:
+          content.title = collection.name;
           res.status(200).render(`items`, { content, serviceUrl });
           break;
         case "csv":

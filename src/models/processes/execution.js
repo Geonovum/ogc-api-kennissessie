@@ -149,10 +149,30 @@ function post(neutralUrl, processId, parameters, preferHeader, callback) {
   }
 
   // (OAPIP) Req 27: omitted outputs means all defined outputs
+  // (OAPIP) transmissionMode must be one of the process outputTransmission values
+  var supportedModes = process_.outputTransmission || ["value"];
+  var defaultMode = supportedModes.includes("value")
+    ? "value"
+    : supportedModes[0] || "value";
+
   if (!parameters.outputs) {
     parameters.outputs = {};
     for (let key of Object.keys(process_.outputs || {})) {
-      parameters.outputs[key] = { transmissionMode: "value" };
+      parameters.outputs[key] = { transmissionMode: defaultMode };
+    }
+  } else {
+    for (let key of Object.keys(parameters.outputs)) {
+      var requestedMode = parameters.outputs[key].transmissionMode;
+      if (!requestedMode)
+        parameters.outputs[key].transmissionMode = defaultMode;
+      else if (!supportedModes.includes(requestedMode))
+        return callback(
+          processException(
+            400,
+            exceptions.INVALID_PARAMETER,
+            `transmissionMode '${requestedMode}' is not supported; allowed: ${supportedModes.join(", ")}`
+          )
+        );
     }
   }
 
@@ -185,6 +205,7 @@ function post(neutralUrl, processId, parameters, preferHeader, callback) {
     );
 
   let job = create(processId, mode !== "sync");
+  job.serviceUrl = serviceUrl;
   let jobsUrl = urlJoin(serviceUrl, "jobs");
   let jobUrl = urlJoin(jobsUrl, job.jobID);
 

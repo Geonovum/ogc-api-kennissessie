@@ -28,26 +28,7 @@ block header
 
 block content
 
-  .container
-    .row
-      .col-sm-12
-        br
-        section#data-collections
-          h2.text-body-emphasis Data collections in this service
-          table.table.table-striped.table-bordered
-            thead
-              tr
-                th Name
-                th Description
-            tbody
-            each collection in content.collections
-              - var linkCollection = collection.links.find(l => l.rel == 'self').href
-              tr
-                td(data-label='name')
-                  a(href=linkCollection) #{collection.title}
-                td(data-label='description') #{collection.description}
-
-    h2.text-body-emphasis Spatial Extent
+  .container.mt-3
     #map(style='width: 100%; height: 400px; position: relative;')
     script.
       const coords = !{JSON.stringify(content.extent.spatial.bbox)}
@@ -67,3 +48,20 @@ block content
         }
       ).addTo(map);
       L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(map)
+
+    h1.text-body-emphasis.mt-3 Data collections in this service
+    .row
+      .col-sm-12.mt-3
+        section#data-collections
+          table.table.table-striped.table-bordered
+            thead
+              tr
+                th Name
+                th Description
+            tbody
+            each collection in content.collections
+              - var linkCollection = collection.links.find(l => l.rel == 'self').href
+              tr
+                td(data-label='name')
+                  a(href=linkCollection) #{collection.title}
+                td(data-label='description') #{collection.description}

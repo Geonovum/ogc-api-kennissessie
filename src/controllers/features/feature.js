@@ -51,6 +51,7 @@ export function get(req, res) {
           res.status(200).json(content);
           break;
         case `html`:
+          content.title = String(content.id);
           res.status(200).render(`feature`, { content, serviceUrl });
           break;
         case "csv":

@@ -1,6 +1,6 @@
 import urlJoin from "url-join";
 import utils from "../../utils/utils.js";
-import { getProcesses } from "../../database/processes.js";
+import { getProcesses, deleteProcess } from "../../database/processes.js";
 import exceptions, { processException } from "./exceptions.js";
 
 function getLinks(neutralUrl, format, links) {
@@ -95,8 +95,27 @@ export function get(neutralUrl, format, processId, callback) {
   return callback(undefined, content);
 }
 
+export function delete_(processId, callback) {
+  var result = deleteProcess(processId);
+  if (!result.ok)
+    return callback(
+      processException(
+        result.httpCode,
+        result.httpCode === 404
+          ? exceptions.NO_SUCH_PROCESS
+          : result.httpCode === 400
+            ? exceptions.INVALID_PARAMETER
+            : exceptions.SERVER_ERROR,
+        result.description
+      )
+    );
+
+  return callback(undefined, {});
+}
+
 export default {
   get,
+  delete_,
   getContent,
   getSummary,
 };

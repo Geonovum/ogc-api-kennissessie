@@ -60,7 +60,7 @@ function getLinks(neutralUrl, format, jobId, links) {
 
 export function getContent(neutralUrl, format, jobId, job) {
   // child is the live process handle; results are only on /jobs/{id}/results
-  const { child, results, ...publicJob } = job;
+  const { child, results, serviceUrl, ...publicJob } = job;
   var content = structuredClone(publicJob);
   content.links = [];
 

@@ -1,0 +1,62 @@
+{
+  "id": "sampleFeatures",
+  "title": "Location for new windmills",
+  "description": "Given an area, calculate the best place to put new windmills based on available data, constraints and a totally bogus scientific methodology.",
+  "version": "0.0.1",
+  "jobControlOptions": ["async-execute", "dismiss"],
+  "outputTransmission": ["value", "reference"],
+  "inputs": {
+    "uri": {
+      "title": "Features endpoint",
+      "description": "URI of an OGC API Features collection or /items endpoint.",
+      "schema": {
+        "type": "string",
+        "format": "url"
+      }
+    },
+    "name": {
+      "title": "Output collection name",
+      "description": "Optional filename (without extension) for the GeoJSON file written to the datasets folder. Defaults to {collectionId}_sample.",
+      "schema": {
+        "type": "string",
+        "nullable": true
+      }
+    }
+  },
+  "outputs": {
+    "collection": {
+      "title": "Sampled collection",
+      "description": "The sampled features as an OGC API Features collection. Inline collection metadata (value) or a link (reference).",
+      "schema": {
+        "type": "object",
+        "contentMediaType": "application/json"
+      }
+    },
+    "items": {
+      "title": "Sampled features",
+      "description": "The sampled features as a GeoJSON FeatureCollection. Inline GeoJSON (value) or a link to the items resource (reference).",
+      "schema": {
+        "type": "object",
+        "required": ["type", "features"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["FeatureCollection"]
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "contentMediaType": "application/geo+json"
+      }
+    }
+  },
+  "example": {
+    "inputs": {
+      "uri": "http://localhost:8080/geonovum/v1/collections/Neighborhoods/items"
+    }
+  }
+}

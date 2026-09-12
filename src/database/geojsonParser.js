@@ -117,9 +117,12 @@ export function makeOAPIF(geojson, dataDef) {
     (feature) => (feature.id = feature.properties[idName])
   );
 
-  // override name and description from metadata,
+  // override name, description and keywords from metadata
   geojson.name = dataDef.title;
   geojson.description = dataDef.description;
+  geojson.keywords = Array.isArray(dataDef.keywords)
+    ? dataDef.keywords.filter((keyword) => typeof keyword === "string" && keyword.trim())
+    : [];
 
   geojson.schema = {};
   for (let propertyName in dataDef.schema.properties) {

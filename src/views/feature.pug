@@ -3,12 +3,17 @@ extends layout.pug
 block append scripts
   link(rel='stylesheet' href='https://unpkg.com/leaflet@1.6.0/dist/leaflet.css')
   script(src='https://unpkg.com/leaflet@1.6.0/dist/leaflet.js')
+  style.
+    #items-map {
+      height: 400px;
+      width: 100%;
+    }
 
 block header
 
   svg.d-none(xmlns='http://www.w3.org/2000/svg')
     symbol#house-door-fill(viewbox='0 0 16 16')
-      path(d='M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z')
+      path(d='M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z')
 
   - let linkSelf = content.links.find(i => i.rel == 'self').href.split('?')[0]
   - let links = [ linkSelf ]
@@ -19,39 +24,110 @@ block header
     .container
       #navbar.navbar-collapse.collapse.d-flex.justify-content-between.align-items-center
         ol.breadcrumb.breadcrumb-chevron.p-3.bg-light
-            li.breadcrumb-item
-              a.link-body-emphasis(href=serviceUrl)
-                svg.bi(width='16' height='16')
-                  use(xlink:href='#house-door-fill')
-                span.visually-hidden serviceUrl
-            li.breadcrumb-item
-              a.link-body-emphasis.fw-semibold.text-decoration-none(href=links[1]) Collections
-            - let pathElement = links[2].substring(links[2].lastIndexOf("/") + 1);
-            li.breadcrumb-item
-              a.link-body-emphasis.fw-semibold.text-decoration-none(href=links[2]) #{pathElement}
-            li.breadcrumb-item
-              a.link-body-emphasis.fw-semibold.text-decoration-none(href=links[3]) Items
-            - let pathElement2 = links[4].substring(links[4].lastIndexOf("/") + 1);
-            li.breadcrumb-item.active(aria-current='page')
-              | #{pathElement2}
+          li.breadcrumb-item
+            a.link-body-emphasis(href=serviceUrl)
+              svg.bi(width='16' height='16')
+                use(xlink:href='#house-door-fill')
+              span.visually-hidden serviceUrl
+          li.breadcrumb-item
+            a.link-body-emphasis.fw-semibold.text-decoration-none(href=links[1]) Collections
+          - let pathElement = links[2].substring(links[2].lastIndexOf("/") + 1);
+          li.breadcrumb-item
+            a.link-body-emphasis.fw-semibold.text-decoration-none(href=links[2]) #{pathElement}
+          li.breadcrumb-item
+            a.link-body-emphasis.fw-semibold.text-decoration-none(href=links[3]) Items
+          - let pathElement2 = links[4].substring(links[4].lastIndexOf("/") + 1);
+          li.breadcrumb-item.active(aria-current='page')
+            | #{pathElement2}
         ul.list-separated.m-0.p-0
           a(href=linkSelf + '?f=json') JSON
 
-
 block content
 
-  .content
-    h1 Data for feature 
-    h2 Links
-    each link in content.links
-      p #{link.rel} = 
-        a(href= link.href)  #{link.title} 
-        | (#{link.type})
-        
-    h2 Features
-    #map(style='width: 100%; height: 400px; position: relative;')
+  -
+    function isUrl(value) {
+      var text = String(value).trim().toLowerCase();
+      return text.startsWith('http://') || text.startsWith('https://');
+    }
+    function isImageUrl(value) {
+      if (!isUrl(value)) return false;
+      var path = String(value).trim().toLowerCase().split('?')[0];
+      return ['.jpg', '.jpeg', '.png', '.gif', '.bmp'].some((ext) => path.endsWith(ext));
+    }
+    var skipKeys = ['id', 'fid', 'ID', 'gml_id', 'objectid', 'OBJECTID'];
+    var propertyKeys = content.properties
+      ? Object.keys(content.properties).filter((key) => !skipKeys.includes(key))
+      : [];
+    var mapFeature = content.geometry
+      ? {
+          type: content.type,
+          id: content.id,
+          geometry: content.geometry,
+          properties: content.properties || {}
+        }
+      : null;
+
+  mixin renderValue(value)
+    if value === undefined || value === null
+      |
+    else if Array.isArray(value)
+      each item in value
+        +renderValue(item)
+    else if typeof value === 'object'
+      each nested, key in value
+        | #{key}: 
+        +renderValue(nested)
+        br
+    else if isImageUrl(value)
+      a(href=String(value) rel='noopener')
+        img(src=String(value) alt='' width='80')
+    else if isUrl(value)
+      a(href=String(value) rel='noopener') #{value}
+    else
+      | #{value}
+
+  .container
+    section#item
+      .row
+        .col-sm
+          h1 #{content.id}
+      .row
+        .col-md-6.col-sm-12
+          if content.geometry
+            .row
+              .col-sm-12
+                #items-map
+        .col-md-6.col-sm-12
+          table.table.table-striped.table-bordered
+            thead
+              tr
+                th Property
+                th Value
+            tbody
+              tr
+                td id
+                td #{content.id}
+              each key in propertyKeys
+                tr
+                  td #{key}
+                  td
+                    +renderValue(content.properties[key])
+              if content.links && content.links.length
+                tr
+                  td Links
+                  td
+                    ul
+                      each link in content.links
+                        if link.href
+                          li
+                            a(href=link.href title=link.title) #{link.title || link.href}
+                            if link.type
+                              |  (#{link.type})
+
+  if mapFeature
     script.
-      var map = L.map("map").setView([52.300, 4.867], 12);
+      const geojsonData = !{JSON.stringify(mapFeature)};
+      const map = L.map('items-map');
       L.tileLayer(
         'https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0/pastel/EPSG:3857/{z}/{x}/{y}.png',
         {
@@ -61,5 +137,7 @@ block content
           maxZoom: 19
         }
       ).addTo(map);
-      var features = !{JSON.stringify(content.geometry)}
-      L.geoJSON(features).addTo(map);
+      const items = new L.GeoJSON(geojsonData);
+      map.addLayer(items);
+      if (items.getBounds().isValid())
+        map.fitBounds(items.getBounds(), {maxZoom: 15});

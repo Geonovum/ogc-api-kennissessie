@@ -1,6 +1,6 @@
 import express from "express";
 
-import { get as getCollection } from "../controllers/features/collection.js";
+import { get as getCollection, deletee as deleteCollection } from "../controllers/features/collection.js";
 import { get as getItems } from "../controllers/features/items.js";
 import { get as getFeature } from "../controllers/features/feature.js";
 
@@ -25,6 +25,7 @@ const router = express.Router();
 
 // The server SHALL support the HTTP GET operation at the path /collections/{collectionId}.
 router.get("/collections/:collectionId", getCollection);
+router.delete("/collections/:collectionId", deleteCollection);
 
 // For every feature collection identified in the feature collections response (path /collections),
 // the server SHALL support the HTTP GET operation at the path /collections/{collectionId}/items.

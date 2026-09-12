@@ -4,6 +4,7 @@ import fs from "fs";
 import { makeOAPIF, inferDataDef } from "./geojsonParser.js";
 
 var dataDict = {};
+var datasetsDir = null;
 var fileStats = new Map();
 var failedStats = new Map();
 var reloadTimers = new Map();
@@ -174,10 +175,53 @@ function watchData(dir) {
 export function readData(dir) {
   if (!fs.existsSync(dir)) return;
 
+  datasetsDir = dir;
   syncAll(dir, true);
   watchData(dir);
 
   console.log(`Found ${Object.keys(dataDict).length} datasets`);
+}
+
+export function deleteDataset(id) {
+  if (!id || typeof id !== "string" || /[\\/]/.test(id) || id.includes(".."))
+    return {
+      ok: false,
+      httpCode: 400,
+      description: "Invalid collection id",
+    };
+
+  if (!datasetsDir)
+    return {
+      ok: false,
+      httpCode: 500,
+      description: "Datasets folder not configured",
+    };
+
+  var geojsonPath = join(datasetsDir, `${id}.geojson`);
+  var defPath = dataDefPath(datasetsDir, id);
+  if (!dataDict[id] && !fs.existsSync(geojsonPath) && !defPath)
+    return {
+      ok: false,
+      httpCode: 404,
+      description: `Collection not found: ${id}`,
+    };
+
+  try {
+    if (fs.existsSync(geojsonPath)) fs.unlinkSync(geojsonPath);
+    if (defPath && fs.existsSync(defPath)) fs.unlinkSync(defPath);
+  } catch (err) {
+    return {
+      ok: false,
+      httpCode: 500,
+      description: `Failed to delete ${id}: ${err.message}`,
+    };
+  }
+
+  delete dataDict[id];
+  fileStats.delete(id);
+  failedStats.delete(id);
+  console.log(`Deleted dataset ${id}`);
+  return { ok: true };
 }
 
 export function getDatabases() {
