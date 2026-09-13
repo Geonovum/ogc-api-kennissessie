@@ -1,7 +1,7 @@
 {
   "/processes": {
     "get": {
-      "tags": ["Processes"],
+      "tags": ["Processes Part 1: Core"],
       "summary": "Retrieve the list of available processes",
       "description": "The process description contains information about inputs and outputs and a link to the execution-endpoint for the process. The Core does not mandate the use of a specific process description to specify the interface of a process.",
       "externalDocs": {
@@ -49,11 +49,34 @@
           "description": "Server Error"
         }
       }
+    },
+        "post": {
+      "tags": ["Processes Part 2: Deploy, Replace, Undeploy"],
+      "summary": "Deploy a new process",
+      "description": "Deploy a new process.",
+      "operationId": "postProcesses",
+      "responses": {
+        "200": {
+          "description": "The process was deployed successfully."
+        },
+        "400": {
+          "description": "Bad Request"
+        },
+        "405": {
+          "description": "Method Not Allowed"
+        },
+        "406": {
+          "description": "Not Acceptable"
+        },
+        "500": {
+          "description": "Server Error"
+        }
+      }
     }
   },
   "/processes/{{:processId}}": {
     "get": {
-      "tags": ["Processes"],
+      "tags": ["Processes Part 1: Core"],
       "summary": "Retrieve a process description",
       "description": "The process description contains information about inputs and outputs and a link to the execution-endpoint for the process. The Core does not mandate the use of a specific process description to specify the interface of a process. ",
       "externalDocs": {
@@ -95,11 +118,58 @@
           "description": "Server Error"
         }
       }
+    },
+    "delete": {
+      "tags": ["Processes Part 2: Deploy, Replace, Undeploy"],
+      "summary": "Delete a process",
+      "description": "Undeploy process '{{:processId}}' and its files from the server.",
+      "operationId": "{{:processId}}.deleteProcess",
+      "responses": {
+        "204": {
+          "description": "The process was Undeployed successfully."
+        },
+        "400": {
+          "description": "Bad Request"
+        },
+        "404": {
+          "description": "Process not found"
+        },
+        "405": {
+          "description": "Method Not Allowed"
+        },
+        "500": {
+          "description": "Server Error"
+        }
+      }
+    },
+    "put": {
+      "tags": ["Processes Part 2: Deploy, Replace, Undeploy"],
+      "summary": "Replace an existing process.",
+      "description": "Replace process '{{:processId}}' .",
+      "operationId": "{{:processId}}.postProcess",
+      "responses": {
+        "204": {
+          "description": "The process was Undeployed successfully."
+        }
+      }
+    }
+  },
+  "/processes/{{:processId}}/package": {
+    "get": {
+      "tags": ["Processes Part 2: Deploy, Replace, Undeploy"],
+      "summary": "Retrieve the Application Package",
+      "description": "Retrieve the Application Package describing the process execution unit.",
+      "operationId": "execute.{{:processId}}.getPackage",
+      "responses": {
+        "200": {
+          "description": "OK."
+        }
+      }
     }
   },
   "/processes/{{:processId}}/execution": {
     "post": {
-      "tags": ["Processes"],
+      "tags": ["Processes Part 1: Core"],
       "summary": "Process execution",
       "description": "Create a new job.",
       "operationId": "execute.{{:processId}}.getProcesses",
@@ -130,21 +200,21 @@
       ],
       "responses": {
         "200": {
-            "description": "The operation was executed successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Process"
-                }
-              },
-              "text/html": {
-                "schema": {
-                  "$ref": "#/components/schemas/htmlSchema"
-                }
+          "description": "The operation was executed successfully.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Process"
+              }
+            },
+            "text/html": {
+              "schema": {
+                "$ref": "#/components/schemas/htmlSchema"
               }
             }
-          },
-          "201": {
+          }
+        },
+        "201": {
           "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml"
         },
         "404": {

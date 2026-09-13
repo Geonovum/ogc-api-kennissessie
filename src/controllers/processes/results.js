@@ -46,3 +46,7 @@ export function get(req, res) {
     }
   });
 }
+
+export function post(req, res) {
+        res.status(200).end();
+}

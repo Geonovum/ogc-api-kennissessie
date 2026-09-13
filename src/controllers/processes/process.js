@@ -72,3 +72,7 @@ export function delete_(req, res) {
     res.status(204).send();
   });
 }
+
+export function put(req, res) {
+  if (utils.ifTrailingSlash(req, res)) return;
+}

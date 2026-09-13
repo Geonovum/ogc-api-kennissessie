@@ -1,7 +1,7 @@
 import { join } from "path";
 import { readFileSync } from "fs";
 import { getDatabases } from "../../../database/database.js";
-import { getProcesses } from "../../../database/processes.js";
+import { getProcesses, getJobs } from "../../../database/processes.js";
 
 const __dirname = import.meta.dirname;
 
@@ -95,6 +95,17 @@ function resultsSchema(process_) {
   };
 }
 
+function packageSchema(process_) {
+  var properties = {};
+  for (var key of Object.keys(process_.outputs || {})) {
+    properties[key] = cloneFieldSchema(process_.outputs[key]);
+  }
+  return {
+    type: "object",
+    properties,
+  };
+}
+
 function get(neutralUrl, callback) {
   var content = {};
 
@@ -115,16 +126,19 @@ function get(neutralUrl, callback) {
   {
     // Info
     var jsonStr = readFileSync(
-      join(__dirname, "..", "..", "..", "apiTemplates", "info.json")
+      join(__dirname, "..", "..", "..", "apiTemplates", "info.json"),
     );
     var content = JSON.parse(jsonStr);
 
     var ff = JSON.stringify(content);
 
-    ff = ff.replace(new RegExp("{{:title}}", "g"), global.config.metadata.identification.title);
+    ff = ff.replace(
+      new RegExp("{{:title}}", "g"),
+      global.config.metadata.identification.title,
+    );
     ff = ff.replace(
       new RegExp("{{:description}}", "g"),
-      global.config.metadata.identification.description
+      global.config.metadata.identification.description,
     );
     ff = ff.replace(new RegExp("{{:version}}", "g"), global.config.api.version);
 
@@ -146,7 +160,7 @@ function get(neutralUrl, callback) {
   {
     // Tags
     var jsonStr = readFileSync(
-      join(__dirname, "..", "..", "..", "apiTemplates", "tags.json")
+      join(__dirname, "..", "..", "..", "apiTemplates", "tags.json"),
     );
     var tags = JSON.parse(jsonStr);
   }
@@ -154,7 +168,7 @@ function get(neutralUrl, callback) {
   {
     // Core
     var jsonStr = readFileSync(
-      join(__dirname, "..", "..", "..", "apiTemplates", "core", "paths.json")
+      join(__dirname, "..", "..", "..", "apiTemplates", "core", "paths.json"),
     );
     var content = JSON.parse(jsonStr);
 
@@ -167,8 +181,8 @@ function get(neutralUrl, callback) {
         "apiTemplates",
         "core",
         "components",
-        "parameters.json"
-      )
+        "parameters.json",
+      ),
     );
     var parameters = JSON.parse(jsonStr);
 
@@ -181,8 +195,8 @@ function get(neutralUrl, callback) {
         "apiTemplates",
         "core",
         "components",
-        "schema.json"
-      )
+        "schema.json",
+      ),
     );
     var schemas = JSON.parse(jsonStr);
 
@@ -211,8 +225,8 @@ function get(neutralUrl, callback) {
         "..",
         "apiTemplates",
         "collections",
-        "paths.json"
-      )
+        "paths.json",
+      ),
     );
     var content = JSON.parse(jsonStr);
 
@@ -227,8 +241,8 @@ function get(neutralUrl, callback) {
         "apiTemplates",
         "collections",
         "components",
-        "parameters.json"
-      )
+        "parameters.json",
+      ),
     );
     var parameters = JSON.parse(jsonStr);
 
@@ -241,8 +255,8 @@ function get(neutralUrl, callback) {
         "apiTemplates",
         "collections",
         "components",
-        "schema.json"
-      )
+        "schema.json",
+      ),
     );
     var schemas = JSON.parse(jsonStr);
 
@@ -282,8 +296,8 @@ function get(neutralUrl, callback) {
           "..",
           "apiTemplates",
           "features",
-          "paths.json"
-        )
+          "paths.json",
+        ),
       );
       var content = JSON.parse(jsonStr);
 
@@ -300,8 +314,8 @@ function get(neutralUrl, callback) {
           "apiTemplates",
           "features",
           "components",
-          "parameters.json"
-        )
+          "parameters.json",
+        ),
       );
       var parameters = JSON.parse(jsonStr);
       var ff = JSON.stringify(parameters);
@@ -317,8 +331,8 @@ function get(neutralUrl, callback) {
           "apiTemplates",
           "features",
           "components",
-          "parameter.json"
-        )
+          "parameter.json",
+        ),
       );
       var parameter = JSON.parse(jsonStr);
 
@@ -356,8 +370,8 @@ function get(neutralUrl, callback) {
           "apiTemplates",
           "features",
           "components",
-          "schema.json"
-        )
+          "schema.json",
+        ),
       );
       var schemas = JSON.parse(jsonStr);
       var ff = JSON.stringify(schemas);
@@ -410,8 +424,8 @@ function get(neutralUrl, callback) {
         "..",
         "apiTemplates",
         "processes",
-        "paths.json"
-      )
+        "paths.json",
+      ),
     );
     var content = JSON.parse(jsonStr);
 
@@ -426,8 +440,8 @@ function get(neutralUrl, callback) {
         "apiTemplates",
         "processes",
         "components",
-        "parameters.json"
-      )
+        "parameters.json",
+      ),
     );
     var parameters = JSON.parse(jsonStr);
 
@@ -440,8 +454,8 @@ function get(neutralUrl, callback) {
         "apiTemplates",
         "processes",
         "components",
-        "schema.json"
-      )
+        "schema.json",
+      ),
     );
     var schemas = JSON.parse(jsonStr);
 
@@ -455,6 +469,7 @@ function get(neutralUrl, callback) {
 
     var processes = getProcesses();
 
+    // Process endpoints
     for (var name in processes) {
       var process_ = processes[name];
       var processTemplate = content["/processes/{{:processId}}"];
@@ -467,24 +482,31 @@ function get(neutralUrl, callback) {
         process_.description || processPath.get.description;
       processPath.get.responses["200"].content["application/json"].example =
         processDescriptionExample(process_);
+      if (processPath.delete)
+        processPath.delete.summary = `Undeploy process ${process_.title || name}`;
+      if (processPath.put)
+        processPath.put.summary = `Replace process ${process_.title || name}`;
 
       paths.paths[`/processes/${name}`] = processPath;
     }
 
+    // execution endpoints
     for (var name in processes) {
       var process_ = processes[name];
       var processTemplate = content["/processes/{{:processId}}/execution"];
       var ff = JSON.stringify(processTemplate);
       ff = ff.replace(new RegExp("{{:processId}}", "g"), name);
-      var executePath = JSON.parse(ff);
+      var packagePath = JSON.parse(ff);
 
-      components.components.schemas[`execute_${name}`] = executeSchema(process_);
-      components.components.schemas[`results_${name}`] = resultsSchema(process_);
+      components.components.schemas[`execute_${name}`] =
+        executeSchema(process_);
+      components.components.schemas[`results_${name}`] =
+        resultsSchema(process_);
 
-      executePath.post.summary = `Execute ${process_.title || name}`;
-      executePath.post.description =
-        process_.description || executePath.post.description;
-      executePath.post.requestBody = {
+      packagePath.post.summary = `Execute ${process_.title || name}`;
+      packagePath.post.description =
+        process_.description || packagePath.post.description;
+      packagePath.post.requestBody = {
         required: true,
         description: `Execute request for process ${name}`,
         content: {
@@ -496,27 +518,44 @@ function get(neutralUrl, callback) {
         },
       };
       if (process_.example)
-        executePath.post.requestBody.content["application/json"].example =
+        packagePath.post.requestBody.content["application/json"].example =
           process_.example;
 
-      executePath.post.responses["200"].content["application/json"].schema = {
+      packagePath.post.responses["200"].content["application/json"].schema = {
         $ref: `#/components/schemas/results_${name}`,
       };
 
-      paths.paths[`/processes/${name}/execution`] = executePath;
+      paths.paths[`/processes/${name}/execution`] = packagePath;
+    }
+
+    // package endpoints
+    for (var name in processes) {
+      var process_ = processes[name];
+      var processTemplate = content["/processes/{{:processId}}/package"];
+      var ff = JSON.stringify(processTemplate);
+      ff = ff.replace(new RegExp("{{:processId}}", "g"), name);
+      var packagePath = JSON.parse(ff);
+
+      components.components.schemas[`package_${name}`] =
+        packageSchema(process_);
+
+      packagePath.get.summary = `Package ${process_.title || name}`;
+      packagePath.get.description =
+        process_.description || packagePath.post.description;
+
+      paths.paths[`/processes/${name}/package`] = packagePath;
     }
   }
 
   {
     // Jobs
     var jsonStr = readFileSync(
-      join(__dirname, "..", "..", "..", "apiTemplates", "jobs", "paths.json")
+      join(__dirname, "..", "..", "..", "apiTemplates", "jobs", "paths.json"),
     );
     var content = JSON.parse(jsonStr);
 
-    paths.paths["/jobs"] = content["/jobs"];
-    paths.paths["/jobs/{jobId}"] = content["/jobs/{jobId}"];
-    paths.paths["/jobs/{jobId}/results"] = content["/jobs/{jobId}/results"];
+    paths.paths["/jobs"]                    = content["/jobs"];
+    paths.paths["/jobs/{jobId}"]            = content["/jobs/{jobId}"];
 
     var jsonStr = readFileSync(
       join(
@@ -527,8 +566,8 @@ function get(neutralUrl, callback) {
         "apiTemplates",
         "jobs",
         "components",
-        "parameters.json"
-      )
+        "parameters.json",
+      ),
     );
     var parameters = JSON.parse(jsonStr);
 
@@ -541,8 +580,8 @@ function get(neutralUrl, callback) {
         "apiTemplates",
         "jobs",
         "components",
-        "schema.json"
-      )
+        "schema.json",
+      ),
     );
     var schemas = JSON.parse(jsonStr);
 
@@ -553,6 +592,14 @@ function get(neutralUrl, callback) {
     for (var schema in schemas) {
       components.components.schemas[schema] = schemas[schema];
     }
+
+      var jobs = getJobs();
+
+// TODO: add these paths to the API definition, but not yet implemented in the API
+//    paths.paths["/jobs/{jobId}/results"]    = content["/jobs/{jobId}/results"];
+//    paths.paths["/jobs/{jobId}/definition"] = content["/jobs/{jobId}/definition"];
+//    paths.paths["/jobs/{jobId}/prov"]       = content["/jobs/{jobId}/prov"];
+
   }
 
   var content = {

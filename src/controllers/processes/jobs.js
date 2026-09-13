@@ -129,6 +129,12 @@ export function get(req, res) {
   });
 }
 
+export function post(req, res) {
+  if (utils.ifTrailingSlash(req, res)) return;
+
+  res.status(200).end();
+}
+
 export function deleteAll(req, res) {
   if (utils.ifTrailingSlash(req, res)) return;
 

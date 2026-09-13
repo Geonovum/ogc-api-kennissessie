@@ -42,7 +42,12 @@ import oapifp3 from "./routes/ogcapiFeaturesPart3.js"; // OGC API Features Part 
 import oapifp4 from "./routes/ogcapiFeaturesPart4.js"; // OGC API Features Part 4 - CRUD
 import oapifp5 from "./routes/ogcapiFeaturesPart5.js"; // OGC API Features Part 5 - Schema
 
-import oapipp1 from "./routes/ogcapiProcessesPart1Core.js"; // OGC API Processes Part 1 - Core
+import oapipp1   from "./routes/ogcapiProcessesPart1Core.js"; // OGC API Processes Part 1 - Core
+import oapipp1v2 from "./routes/ogcapiProcessesPart1CoreV2.js"; // OGC API Processes Part 1 - Core
+import oapipp2   from "./routes/ogcapiProcessesPart2.js"; // OGC API Processes Part 2 - Deploy, Replace, Undeploy
+// Part 3: Workflows and Chaining, No additional endpoints. Execution reuses the same endpoints as in Part 1 with nested processes and additional parameters.
+import oapipp4   from "./routes/ogcapiProcessesPart4.js"; // OGC API Processes Part 4 - Job Management
+import oapipp5   from "./routes/ogcapiProcessesPart5.js"; // OGC API Processes Part 5 - Provenance
 
 /**
  * Express application instance
@@ -161,13 +166,19 @@ app.serviceRoot = `/${global.config.server.id}/v${major(
  * Mount OGC API Route Handlers
  * Each route handler implements a specific part of the OGC API standards
  */
-app.use(app.serviceRoot, oapicp1c); // OGC API Common Part 1 - Core
-app.use(app.serviceRoot, oapicp2c); // OGC API Common Part 2 - Collections
-app.use(app.serviceRoot, oapifp1); // OGC API Features Part 1 - Core endpoints
-app.use(app.serviceRoot, oapifp3); // OGC API Features Part 3 - Filtering capabilities
-app.use(app.serviceRoot, oapifp4); // OGC API Features Part 4 - CRUD operations
-app.use(app.serviceRoot, oapifp5); // OGC API Features Part 5 - Schema definitions
-app.use(app.serviceRoot, oapipp1); // OGC API Processes Part 1 - Core process endpoints
+app.use(app.serviceRoot, oapicp1c);  // OGC API Common Part 1 - Core
+app.use(app.serviceRoot, oapicp2c);  // OGC API Common Part 2 - Collections
+
+app.use(app.serviceRoot, oapifp1);   // OGC API Features Part 1 - Core endpoints
+app.use(app.serviceRoot, oapifp3);   // OGC API Features Part 3 - Filtering capabilities
+app.use(app.serviceRoot, oapifp4);   // OGC API Features Part 4 - CRUD operations
+app.use(app.serviceRoot, oapifp5);   // OGC API Features Part 5 - Schema definitions
+
+app.use(app.serviceRoot, oapipp1);   // OGC API Processes Part 1 - Core process endpoints
+app.use(app.serviceRoot, oapipp1v2); // OGC API Processes Part 1 v2 - Core process endpoints
+app.use(app.serviceRoot, oapipp2);   // OGC API Processes Part 2 - Deploy, Replace, Undeploy
+app.use(app.serviceRoot, oapipp4);   // OGC API Processes Part 4 - Job Management
+app.use(app.serviceRoot, oapipp5);   // OGC API Processes Part 5 - Provenance
 
 /**
  * Global Error Handler

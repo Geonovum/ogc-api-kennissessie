@@ -58,6 +58,16 @@ export function get(req, res) {
   });
 }
 
+export function patch(req, res) {
+  // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
+  // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
+  if (utils.ifTrailingSlash(req, res)) return;
+
+  var jobId = req.params.jobId;
+
+  res.status(200).json(content);
+}
+
 export function delete_(req, res) {
   // (ADR) /core/no-trailing-slash Leave off trailing slashes from URIs (if not, 404)
   // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash

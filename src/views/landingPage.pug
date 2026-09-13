@@ -66,13 +66,13 @@ block content
               a.icon-link.mb-1(href=linkAPIjson)
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
-                |               API Definition
+                |               Definition of the API in OpenAPI 3.0
             li
-              - var linkAPIjson = content.links.find(i => i.rel == 'service-desc' || i.type == 'application/vnd.oai.openapi+json;version=3.0').href
-              a.icon-link.mb-1(href=linkAPIjson)
+              - var linkAPIhtml = content.links.find(i => i.rel == 'service-doc').href
+              a.icon-link.mb-1(href=linkAPIhtml)
                 svg.bi(width='16' height='16')
                   use(xlink:href='#arrow-right-circle')
-                |               OpenAPI Document
+                |               Documentation of the API
             li
               - var linkConformance = content.links.find(i => i.rel == 'http://www.opengis.net/def/rel/ogc/1.0/conformance').href
               a.icon-link.mb-1(href=linkConformance)

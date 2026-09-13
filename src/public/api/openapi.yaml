@@ -11,9 +11,9 @@ info:
   license:
     name: CC-BY 4.0 license
     url: https://creativecommons.org/licenses/by/4.0
-  version: undefined
+  version: 1.3.63
 servers:
-  - url: http://127.0.0.1:8080/geonovum/v1
+  - url: http://localhost:8080/geonovum/v1
 tags: []
 paths:
   /:
@@ -1368,7 +1368,7 @@ paths:
   /processes:
     get:
       tags:
-        - Processes
+        - "Processes Part 1: Core"
       summary: Retrieve the list of available processes
       description: The process description contains information about inputs and
         outputs and a link to the execution-endpoint for the process. The Core
@@ -1380,7 +1380,9 @@ paths:
         url: https://docs.ogc.org/is/18-062r2/18-062r2.html
       operationId: getProcesses
       parameters:
-        - $ref: "#/components/parameters/fCollections"
+        - $ref: "#/components/parameters/fProcesses"
+        - $ref: "#/components/parameters/limitProcesses"
+        - $ref: "#/components/parameters/offsetProcesses"
       responses:
         "200":
           description: The operation was executed successfully.
@@ -1399,15 +1401,30 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
+    post:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Deploy a new process
+      description: Deploy a new process.
+      operationId: postProcesses
+      responses:
+        "200":
+          description: The process was deployed successfully.
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
   /processes/add:
     get:
       tags:
-        - Processes
-      summary: Retrieve a process description
-      description: "The process description contains information about inputs and
-        outputs and a link to the execution-endpoint for the process. The Core
-        does not mandate the use of a specific process description to specify
-        the interface of a process. "
+        - "Processes Part 1: Core"
+      summary: Add 2 numbers
+      description: Using a bash script, add the 2 provided numbers together. Either
+        sync or async.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Processes - Part 1"
@@ -1422,6 +1439,64 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Process"
+              example:
+                id: add
+                title: Add 2 numbers
+                description: Using a bash script, add the 2 provided numbers together. Either
+                  sync or async.
+                version: 0.0.1
+                jobControlOptions:
+                  - sync-execute
+                  - async-execute
+                  - dismiss
+                outputTransmission:
+                  - value
+                inputs:
+                  number1:
+                    title: Number 1 Literal Input
+                    description: A number literal input.
+                    schema:
+                      type: number
+                      format: integer
+                      enum:
+                        - 0
+                        - 10
+                        - 20
+                        - 30
+                      nullable: false
+                    metadata:
+                      - title: mijn test
+                  number2:
+                    title: Number 2 Literal Input
+                    description: A number literal input. This number can't be zero
+                    schema:
+                      type: number
+                      format: integer
+                      minimum: 1
+                      maximum: 100
+                      default: 1
+                      nullable: false
+                  pause:
+                    title: Literal Input (double)
+                    description: An optional input which can be used to specify the number of
+                      seconds to pause the service before returning
+                    schema:
+                      type: number
+                      default: 2
+                      format: double
+                      nullable: true
+                outputs:
+                  sum:
+                    id: Result
+                    title: Sum of 2 numbers
+                    description: A number literal output.
+                    schema:
+                      type: number
+                      format: integer
+                example: &a1
+                  inputs:
+                    number1: 10
+                    number2: 7
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -1433,15 +1508,38 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
+    delete:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Undeploy process Add 2 numbers
+      description: Undeploy process 'add' and its files from the server.
+      operationId: add.deleteProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+        "400":
+          description: Bad Request
+        "404":
+          description: Process not found
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Server Error
+    put:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Replace process Add 2 numbers
+      description: Replace process 'add' .
+      operationId: add.postProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
   /processes/countFeatures:
     get:
       tags:
-        - Processes
-      summary: Retrieve a process description
-      description: "The process description contains information about inputs and
-        outputs and a link to the execution-endpoint for the process. The Core
-        does not mandate the use of a specific process description to specify
-        the interface of a process. "
+        - "Processes Part 1: Core"
+      summary: Count features
+      description: Count the total number of features from an API Features endpoint.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Processes - Part 1"
@@ -1456,6 +1554,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Process"
+              example:
+                id: countFeatures
+                title: Count features
+                description: Count the total number of features from an API Features endpoint.
+                version: 0.0.1
+                jobControlOptions:
+                  - sync-execute
+                outputTransmission:
+                  - value
+                  - reference
+                inputs:
+                  uri:
+                    title: Features endpoint
+                    description: Uri to dataset.
+                    schema:
+                      type: string
+                      format: url
+                outputs:
+                  count:
+                    id: Result
+                    title: Feature count
+                    description: Total number of features provided by OGC API Endpoint.
+                    schema:
+                      type: number
+                      format: integer
+                example: &a2
+                  inputs:
+                    uri: http://localhost:8080/geonovum/v1/collections/Neighborhoods/items
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -1467,15 +1593,136 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
+    delete:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Undeploy process Count features
+      description: Undeploy process 'countFeatures' and its files from the server.
+      operationId: countFeatures.deleteProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+        "400":
+          description: Bad Request
+        "404":
+          description: Process not found
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Server Error
+    put:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Replace process Count features
+      description: Replace process 'countFeatures' .
+      operationId: countFeatures.postProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+  /processes/divide:
+    get:
+      tags:
+        - "Processes Part 1: Core"
+      summary: Divide 2 numbers
+      description: Using a bash script, divide 2 provided numbers together. Either
+        sync or async.
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Processes - Part 1"
+        url: https://docs.ogc.org/is/18-062r2/18-062r2.html
+      operationId: divide.getProcesses
+      parameters:
+        - $ref: "#/components/parameters/fProcesses"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+              example:
+                id: divide
+                title: Divide 2 numbers
+                description: Using a bash script, divide 2 provided numbers together. Either
+                  sync or async.
+                version: 0.0.1
+                jobControlOptions:
+                  - sync-execute
+                  - async-execute
+                  - dismiss
+                outputTransmission:
+                  - value
+                inputs:
+                  number1:
+                    title: Number 1 Literal Input
+                    description: A number literal input.
+                    schema:
+                      type: number
+                      format: integer
+                  number2:
+                    title: Number 2 Literal Input
+                    description: A number literal input. This number can't be zero
+                    schema:
+                      type: number
+                      format: integer
+                outputs:
+                  quotient:
+                    id: Result
+                    title: Quotient of 2 numbers
+                    description: A number literal output.
+                    schema:
+                      type: number
+                      format: integer
+                  remainder:
+                    id: Remainder
+                    title: Remainder after division of 2 numbers
+                    description: A number literal output.
+                    schema:
+                      type: number
+                      format: integer
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
+    delete:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Undeploy process Divide 2 numbers
+      description: Undeploy process 'divide' and its files from the server.
+      operationId: divide.deleteProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+        "400":
+          description: Bad Request
+        "404":
+          description: Process not found
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Server Error
+    put:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Replace process Divide 2 numbers
+      description: Replace process 'divide' .
+      operationId: divide.postProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
   /processes/echo:
     get:
       tags:
-        - Processes
-      summary: Retrieve a process description
-      description: "The process description contains information about inputs and
-        outputs and a link to the execution-endpoint for the process. The Core
-        does not mandate the use of a specific process description to specify
-        the interface of a process. "
+        - "Processes Part 1: Core"
+      summary: Echo Service
+      description: HTTP Echo Service running in a Docker container. Async only.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Processes - Part 1"
@@ -1490,6 +1737,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Process"
+              example:
+                id: echo
+                title: Echo Service
+                description: HTTP Echo Service running in a Docker container. Async only.
+                version: 0.0.1
+                jobControlOptions:
+                  - async-execute
+                  - dismiss
+                outputTransmission:
+                  - value
+                  - reference
+                inputs:
+                  uri:
+                    title: Uri to echo service
+                    description: Uri to echo service.
+                    schema:
+                      type: string
+                outputs:
+                  echo:
+                    id: Result
+                    title: Echo result
+                    description: A string echoing what we send.
+                    schema:
+                      type: string
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -1501,15 +1772,39 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
+    delete:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Undeploy process Echo Service
+      description: Undeploy process 'echo' and its files from the server.
+      operationId: echo.deleteProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+        "400":
+          description: Bad Request
+        "404":
+          description: Process not found
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Server Error
+    put:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Replace process Echo Service
+      description: Replace process 'echo' .
+      operationId: echo.postProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
   /processes/multiply:
     get:
       tags:
-        - Processes
-      summary: Retrieve a process description
-      description: "The process description contains information about inputs and
-        outputs and a link to the execution-endpoint for the process. The Core
-        does not mandate the use of a specific process description to specify
-        the interface of a process. "
+        - "Processes Part 1: Core"
+      summary: Multiply 2 numbers
+      description: Using a bash script, multiply 2 provided numbers together. Either
+        sync or async.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Processes - Part 1"
@@ -1524,6 +1819,39 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Process"
+              example:
+                id: multiply
+                title: Multiply 2 numbers
+                description: Using a bash script, multiply 2 provided numbers together. Either
+                  sync or async.
+                version: 0.0.1
+                jobControlOptions:
+                  - sync-execute
+                  - async-execute
+                  - dismiss
+                outputTransmission:
+                  - value
+                inputs:
+                  number1:
+                    title: Number 1 Literal Input
+                    description: A number literal input.
+                    schema:
+                      type: number
+                      format: integer
+                  number2:
+                    title: Number 2 Literal Input
+                    description: A number literal input. This number can't be zero
+                    schema:
+                      type: number
+                      format: integer
+                outputs:
+                  product:
+                    id: Result
+                    title: Product of 2 numbers
+                    description: A number literal output.
+                    schema:
+                      type: number
+                      format: integer
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -1535,20 +1863,45 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
-  /processes/add/execution:
-    post:
+    delete:
       tags:
-        - Processes
-      summary: Process execution
-      description: Create a new job.
-      operationId: execute.add.getProcesses
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/execute.yaml
-        description: Mandatory execute request JSON
-        required: true
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Undeploy process Multiply 2 numbers
+      description: Undeploy process 'multiply' and its files from the server.
+      operationId: multiply.deleteProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+        "400":
+          description: Bad Request
+        "404":
+          description: Process not found
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Server Error
+    put:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Replace process Multiply 2 numbers
+      description: Replace process 'multiply' .
+      operationId: multiply.postProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+  /processes/reverse:
+    get:
+      tags:
+        - "Processes Part 1: Core"
+      summary: Reverse 2 numbers
+      description: Reverses the 2 provided numbers. Either sync or async.
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Processes - Part 1"
+        url: https://docs.ogc.org/is/18-062r2/18-062r2.html
+      operationId: reverse.getProcesses
+      parameters:
+        - $ref: "#/components/parameters/fProcesses"
       responses:
         "200":
           description: The operation was executed successfully.
@@ -1556,11 +1909,238 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Process"
+              example:
+                id: reverse
+                title: Reverse 2 numbers
+                description: Reverses the 2 provided numbers. Either sync or async.
+                version: 0.0.1
+                jobControlOptions:
+                  - sync-execute
+                outputTransmission:
+                  - value
+                inputs:
+                  number1:
+                    title: Number 1 Literal Input
+                    description: A number literal input.
+                    schema:
+                      type: number
+                      format: integer
+                  number2:
+                    title: Number 2 Literal Input
+                    description: A number literal input.
+                    schema:
+                      type: number
+                      format: integer
+                outputs:
+                  number1:
+                    id: Result
+                    title: Was number 2
+                    description: A number literal output.
+                    schema:
+                      type: number
+                      format: integer
+                  number2:
+                    id: Result
+                    title: Was number 1
+                    description: A number literal output.
+                    schema:
+                      type: number
+                      format: integer
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
+    delete:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Undeploy process Reverse 2 numbers
+      description: Undeploy process 'reverse' and its files from the server.
+      operationId: reverse.deleteProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+        "400":
+          description: Bad Request
+        "404":
+          description: Process not found
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Server Error
+    put:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Replace process Reverse 2 numbers
+      description: Replace process 'reverse' .
+      operationId: reverse.postProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+  /processes/sampleFeatures:
+    get:
+      tags:
+        - "Processes Part 1: Core"
+      summary: Location for new windmills
+      description: Given an area, calculate the best place to put new windmills based
+        on available data, constraints and a totally bogus scientific
+        methodology.
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Processes - Part 1"
+        url: https://docs.ogc.org/is/18-062r2/18-062r2.html
+      operationId: sampleFeatures.getProcesses
+      parameters:
+        - $ref: "#/components/parameters/fProcesses"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+              example:
+                id: sampleFeatures
+                title: Location for new windmills
+                description: Given an area, calculate the best place to put new windmills based
+                  on available data, constraints and a totally bogus scientific
+                  methodology.
+                version: 0.0.1
+                jobControlOptions:
+                  - async-execute
+                  - dismiss
+                outputTransmission:
+                  - value
+                  - reference
+                inputs:
+                  uri:
+                    title: Features endpoint
+                    description: URI of an OGC API Features collection or /items endpoint.
+                    schema:
+                      type: string
+                      format: url
+                  name:
+                    title: Output collection name
+                    description: Optional filename (without extension) for the GeoJSON file written
+                      to the datasets folder. Defaults to {collectionId}_sample.
+                    schema:
+                      type: string
+                      nullable: true
+                outputs:
+                  collection:
+                    title: Sampled collection
+                    description: The sampled features as an OGC API Features collection. Inline
+                      collection metadata (value) or a link (reference).
+                    schema:
+                      type: object
+                      contentMediaType: application/json
+                  items:
+                    title: Sampled features
+                    description: The sampled features as a GeoJSON FeatureCollection. Inline GeoJSON
+                      (value) or a link to the items resource (reference).
+                    schema:
+                      type: object
+                      required:
+                        - type
+                        - features
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - FeatureCollection
+                        features:
+                          type: array
+                          items:
+                            type: object
+                      contentMediaType: application/geo+json
+                example: &a3
+                  inputs:
+                    uri: http://localhost:8080/geonovum/v1/collections/Neighborhoods/items
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
+    delete:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Undeploy process Location for new windmills
+      description: Undeploy process 'sampleFeatures' and its files from the server.
+      operationId: sampleFeatures.deleteProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+        "400":
+          description: Bad Request
+        "404":
+          description: Process not found
+        "405":
+          description: Method Not Allowed
+        "500":
+          description: Server Error
+    put:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Replace process Location for new windmills
+      description: Replace process 'sampleFeatures' .
+      operationId: sampleFeatures.postProcess
+      responses:
+        "204":
+          description: The process was Undeployed successfully.
+  /processes/add/execution:
+    post:
+      tags:
+        - "Processes Part 1: Core"
+      summary: Execute Add 2 numbers
+      description: Using a bash script, add the 2 provided numbers together. Either
+        sync or async.
+      operationId: execute.add.getProcesses
+      requestBody:
+        required: true
+        description: Execute request for process add
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/execute_add"
+            example: *a1
+      parameters:
+        - name: Prefer
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Execution preference. `respond-async` requests asynchronous
+            execution (HTTP 201 + Location). `wait=N` asks the server to wait up
+            to N seconds and return results if the job finishes in time.
+        - $ref: "#/components/parameters/fProcess"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/results_add"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
         "201":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "400":
+          description: Invalid execute request or input values
+        "403":
+          description: The requested execution mode is not supported by this process
         "404":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
         "500":
@@ -1568,29 +2148,89 @@ paths:
   /processes/countFeatures/execution:
     post:
       tags:
-        - Processes
-      summary: Process execution
-      description: Create a new job.
+        - "Processes Part 1: Core"
+      summary: Execute Count features
+      description: Count the total number of features from an API Features endpoint.
       operationId: execute.countFeatures.getProcesses
       requestBody:
+        required: true
+        description: Execute request for process countFeatures
         content:
           application/json:
             schema:
-              $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/execute.yaml
-        description: Mandatory execute request JSON
-        required: true
+              $ref: "#/components/schemas/execute_countFeatures"
+            example: *a2
+      parameters:
+        - name: Prefer
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Execution preference. `respond-async` requests asynchronous
+            execution (HTTP 201 + Location). `wait=N` asks the server to wait up
+            to N seconds and return results if the job finishes in time.
+        - $ref: "#/components/parameters/fProcess"
       responses:
         "200":
           description: The operation was executed successfully.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Process"
+                $ref: "#/components/schemas/results_countFeatures"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
         "201":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "400":
+          description: Invalid execute request or input values
+        "403":
+          description: The requested execution mode is not supported by this process
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "500":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+  /processes/divide/execution:
+    post:
+      tags:
+        - "Processes Part 1: Core"
+      summary: Execute Divide 2 numbers
+      description: Using a bash script, divide 2 provided numbers together. Either
+        sync or async.
+      operationId: execute.divide.getProcesses
+      requestBody:
+        required: true
+        description: Execute request for process divide
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/execute_divide"
+      parameters:
+        - name: Prefer
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Execution preference. `respond-async` requests asynchronous
+            execution (HTTP 201 + Location). `wait=N` asks the server to wait up
+            to N seconds and return results if the job finishes in time.
+        - $ref: "#/components/parameters/fProcess"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/results_divide"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "201":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "400":
+          description: Invalid execute request or input values
+        "403":
+          description: The requested execution mode is not supported by this process
         "404":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
         "500":
@@ -1598,29 +2238,43 @@ paths:
   /processes/echo/execution:
     post:
       tags:
-        - Processes
-      summary: Process execution
-      description: Create a new job.
+        - "Processes Part 1: Core"
+      summary: Execute Echo Service
+      description: HTTP Echo Service running in a Docker container. Async only.
       operationId: execute.echo.getProcesses
       requestBody:
+        required: true
+        description: Execute request for process echo
         content:
           application/json:
             schema:
-              $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/execute.yaml
-        description: Mandatory execute request JSON
-        required: true
+              $ref: "#/components/schemas/execute_echo"
+      parameters:
+        - name: Prefer
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Execution preference. `respond-async` requests asynchronous
+            execution (HTTP 201 + Location). `wait=N` asks the server to wait up
+            to N seconds and return results if the job finishes in time.
+        - $ref: "#/components/parameters/fProcess"
       responses:
         "200":
           description: The operation was executed successfully.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Process"
+                $ref: "#/components/schemas/results_echo"
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
         "201":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "400":
+          description: Invalid execute request or input values
+        "403":
+          description: The requested execution mode is not supported by this process
         "404":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
         "500":
@@ -1628,17 +2282,220 @@ paths:
   /processes/multiply/execution:
     post:
       tags:
-        - Processes
-      summary: Process execution
-      description: Create a new job.
+        - "Processes Part 1: Core"
+      summary: Execute Multiply 2 numbers
+      description: Using a bash script, multiply 2 provided numbers together. Either
+        sync or async.
       operationId: execute.multiply.getProcesses
       requestBody:
+        required: true
+        description: Execute request for process multiply
         content:
           application/json:
             schema:
-              $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/execute.yaml
-        description: Mandatory execute request JSON
+              $ref: "#/components/schemas/execute_multiply"
+      parameters:
+        - name: Prefer
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Execution preference. `respond-async` requests asynchronous
+            execution (HTTP 201 + Location). `wait=N` asks the server to wait up
+            to N seconds and return results if the job finishes in time.
+        - $ref: "#/components/parameters/fProcess"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/results_multiply"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "201":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "400":
+          description: Invalid execute request or input values
+        "403":
+          description: The requested execution mode is not supported by this process
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "500":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+  /processes/reverse/execution:
+    post:
+      tags:
+        - "Processes Part 1: Core"
+      summary: Execute Reverse 2 numbers
+      description: Reverses the 2 provided numbers. Either sync or async.
+      operationId: execute.reverse.getProcesses
+      requestBody:
         required: true
+        description: Execute request for process reverse
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/execute_reverse"
+      parameters:
+        - name: Prefer
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Execution preference. `respond-async` requests asynchronous
+            execution (HTTP 201 + Location). `wait=N` asks the server to wait up
+            to N seconds and return results if the job finishes in time.
+        - $ref: "#/components/parameters/fProcess"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/results_reverse"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "201":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "400":
+          description: Invalid execute request or input values
+        "403":
+          description: The requested execution mode is not supported by this process
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "500":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+  /processes/sampleFeatures/execution:
+    post:
+      tags:
+        - "Processes Part 1: Core"
+      summary: Execute Location for new windmills
+      description: Given an area, calculate the best place to put new windmills based
+        on available data, constraints and a totally bogus scientific
+        methodology.
+      operationId: execute.sampleFeatures.getProcesses
+      requestBody:
+        required: true
+        description: Execute request for process sampleFeatures
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/execute_sampleFeatures"
+            example: *a3
+      parameters:
+        - name: Prefer
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Execution preference. `respond-async` requests asynchronous
+            execution (HTTP 201 + Location). `wait=N` asks the server to wait up
+            to N seconds and return results if the job finishes in time.
+        - $ref: "#/components/parameters/fProcess"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/results_sampleFeatures"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "201":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+        "400":
+          description: Invalid execute request or input values
+        "403":
+          description: The requested execution mode is not supported by this process
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "500":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+  /processes/add/package:
+    get:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Package Add 2 numbers
+      description: Using a bash script, add the 2 provided numbers together. Either
+        sync or async.
+      operationId: execute.add.getPackage
+      responses:
+        "200":
+          description: OK.
+  /processes/countFeatures/package:
+    get:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Package Count features
+      description: Count the total number of features from an API Features endpoint.
+      operationId: execute.countFeatures.getPackage
+      responses:
+        "200":
+          description: OK.
+  /processes/divide/package:
+    get:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Package Divide 2 numbers
+      description: Using a bash script, divide 2 provided numbers together. Either
+        sync or async.
+      operationId: execute.divide.getPackage
+      responses:
+        "200":
+          description: OK.
+  /processes/echo/package:
+    get:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Package Echo Service
+      description: HTTP Echo Service running in a Docker container. Async only.
+      operationId: execute.echo.getPackage
+      responses:
+        "200":
+          description: OK.
+  /processes/multiply/package:
+    get:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Package Multiply 2 numbers
+      description: Using a bash script, multiply 2 provided numbers together. Either
+        sync or async.
+      operationId: execute.multiply.getPackage
+      responses:
+        "200":
+          description: OK.
+  /processes/reverse/package:
+    get:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Package Reverse 2 numbers
+      description: Reverses the 2 provided numbers. Either sync or async.
+      operationId: execute.reverse.getPackage
+      responses:
+        "200":
+          description: OK.
+  /processes/sampleFeatures/package:
+    get:
+      tags:
+        - "Processes Part 2: Deploy, Replace, Undeploy"
+      summary: Package Location for new windmills
+      description: Given an area, calculate the best place to put new windmills based
+        on available data, constraints and a totally bogus scientific
+        methodology.
+      operationId: execute.sampleFeatures.getPackage
+      responses:
+        "200":
+          description: OK.
+  /jobs:
+    post:
+      description: Create a new job (potentially pending execution).
+      operationId: postJobs
+      tags:
+        - "Processes Part 4: Job Management"
       responses:
         "200":
           description: The operation was executed successfully.
@@ -1649,16 +2506,25 @@ paths:
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
-        "201":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
         "404":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
-        "500":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
-  /jobs:
+        "410":
+          description: The job has been dismissed
     get:
+      tags:
+        - "Processes Part 1: Core"
       description: Retrieve a list of jobs
       operationId: getJobs
+      parameters:
+        - $ref: "#/components/parameters/fJob"
+        - $ref: "#/components/parameters/typeJobs"
+        - $ref: "#/components/parameters/processIDJobs"
+        - $ref: "#/components/parameters/statusJobs"
+        - $ref: "#/components/parameters/datetimeJobs"
+        - $ref: "#/components/parameters/minDurationJobs"
+        - $ref: "#/components/parameters/maxDurationJobs"
+        - $ref: "#/components/parameters/limitJobs"
+        - $ref: "#/components/parameters/offsetJobs"
       responses:
         "200":
           description: The operation was executed successfully.
@@ -1672,8 +2538,6 @@ paths:
         "404":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
       summary: Retrieve jobs list
-      tags:
-        - Jobs
   /jobs/{jobId}:
     delete:
       description: Cancel / delete job
@@ -1697,9 +2561,37 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "404":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "410":
+          description: The job has been dismissed
       summary: Cancel / delete job
       tags:
-        - Jobs
+        - "Processes Part 1: Core"
+    patch:
+      description: Update an existing job (if pending execution).
+      operationId: patchJob
+      tags:
+        - "Processes Part 4: Job Management"
+      parameters:
+        - description: job identifier
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "410":
+          description: The job has been dismissed
     get:
       description: Retrieve job details
       operationId: getJob
@@ -1723,36 +2615,11 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "404":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "410":
+          description: The job has been dismissed
       summary: Retrieve job details
       tags:
-        - Jobs
-  /jobs{jobId}/results:
-    get:
-      description: Retrieve job results
-      operationId: getJobResults
-      parameters:
-        - description: job identifier
-          in: path
-          name: jobId
-          required: true
-          schema:
-            type: string
-        - $ref: "#/components/parameters/fResults"
-      responses:
-        "200":
-          description: The operation was executed successfully.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Process"
-            text/html:
-              schema:
-                $ref: "#/components/schemas/htmlSchema"
-        "404":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
-      summary: Retrieve job results
-      tags:
-        - Jobs
+        - "Processes Part 1: Core"
 components:
   schemas:
     link:
@@ -2446,9 +3313,7 @@ components:
         processes:
           type: array
           items:
-            allOf:
-              - $ref: "#/components/schemas/Collection"
-              - $ref: "#/components/schemas/Collection-link"
+            $ref: "#/components/schemas/ProcessSummary"
         description:
           type: string
         title:
@@ -2466,38 +3331,674 @@ components:
       required:
         - links
       type: object
+    ProcessSummary:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        version:
+          type: string
+        jobControlOptions:
+          type: array
+          items:
+            type: string
+            enum:
+              - sync-execute
+              - async-execute
+              - dismiss
+        outputTransmission:
+          type: array
+          items:
+            type: string
+            enum:
+              - value
+              - reference
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/link"
     Process:
       type: object
       required:
         - id
         - links
       properties:
-        itemType:
-          type: string
         id:
-          type: string
-        description:
           type: string
         title:
           type: string
+        description:
+          type: string
+        version:
+          type: string
+        jobControlOptions:
+          type: array
+          items:
+            type: string
+            enum:
+              - sync-execute
+              - async-execute
+              - dismiss
+        outputTransmission:
+          type: array
+          items:
+            type: string
+            enum:
+              - value
+              - reference
+        inputs:
+          type: object
+          additionalProperties: true
+        outputs:
+          type: object
+          additionalProperties: true
+        example:
+          type: object
         links:
           type: array
           items:
             $ref: "#/components/schemas/link"
+    execute_add:
+      type: object
+      properties:
+        inputs:
+          type: object
+          properties:
+            number1:
+              type: number
+              format: integer
+              enum:
+                - 0
+                - 10
+                - 20
+                - 30
+              nullable: false
+              title: Number 1 Literal Input
+              description: A number literal input.
+            number2:
+              type: number
+              format: integer
+              minimum: 1
+              maximum: 100
+              default: 1
+              nullable: false
+              title: Number 2 Literal Input
+              description: A number literal input. This number can't be zero
+            pause:
+              type: number
+              default: 2
+              format: double
+              nullable: true
+              title: Literal Input (double)
+              description: An optional input which can be used to specify the number of
+                seconds to pause the service before returning
+          additionalProperties: false
+          required:
+            - number1
+        outputs:
+          type: object
+          properties:
+            sum:
+              type: object
+              properties:
+                transmissionMode:
+                  type: string
+                  enum:
+                    - value
+                    - reference
+          additionalProperties: false
+        response:
+          type: string
+          enum:
+            - raw
+            - document
+        subscriber:
+          type: object
+          properties:
+            successUri:
+              type: string
+              format: uri
+            inProgressUri:
+              type: string
+              format: uri
+            failedUri:
+              type: string
+              format: uri
+    results_add:
+      type: object
+      properties:
+        sum:
+          type: number
+          format: integer
+          title: Sum of 2 numbers
+          description: A number literal output.
+    execute_countFeatures:
+      type: object
+      properties:
+        inputs:
+          type: object
+          properties:
+            uri:
+              type: string
+              format: url
+              title: Features endpoint
+              description: Uri to dataset.
+          additionalProperties: false
+          required:
+            - uri
+        outputs:
+          type: object
+          properties:
+            count:
+              type: object
+              properties:
+                transmissionMode:
+                  type: string
+                  enum:
+                    - value
+                    - reference
+          additionalProperties: false
+        response:
+          type: string
+          enum:
+            - raw
+            - document
+        subscriber:
+          type: object
+          properties:
+            successUri:
+              type: string
+              format: uri
+            inProgressUri:
+              type: string
+              format: uri
+            failedUri:
+              type: string
+              format: uri
+    results_countFeatures:
+      type: object
+      properties:
+        count:
+          type: number
+          format: integer
+          title: Feature count
+          description: Total number of features provided by OGC API Endpoint.
+    execute_divide:
+      type: object
+      properties:
+        inputs:
+          type: object
+          properties:
+            number1:
+              type: number
+              format: integer
+              title: Number 1 Literal Input
+              description: A number literal input.
+            number2:
+              type: number
+              format: integer
+              title: Number 2 Literal Input
+              description: A number literal input. This number can't be zero
+          additionalProperties: false
+          required:
+            - number1
+            - number2
+        outputs:
+          type: object
+          properties:
+            quotient:
+              type: object
+              properties:
+                transmissionMode:
+                  type: string
+                  enum:
+                    - value
+                    - reference
+            remainder:
+              type: object
+              properties:
+                transmissionMode:
+                  type: string
+                  enum:
+                    - value
+                    - reference
+          additionalProperties: false
+        response:
+          type: string
+          enum:
+            - raw
+            - document
+        subscriber:
+          type: object
+          properties:
+            successUri:
+              type: string
+              format: uri
+            inProgressUri:
+              type: string
+              format: uri
+            failedUri:
+              type: string
+              format: uri
+    results_divide:
+      type: object
+      properties:
+        quotient:
+          type: number
+          format: integer
+          title: Quotient of 2 numbers
+          description: A number literal output.
+        remainder:
+          type: number
+          format: integer
+          title: Remainder after division of 2 numbers
+          description: A number literal output.
+    execute_echo:
+      type: object
+      properties:
+        inputs:
+          type: object
+          properties:
+            uri:
+              type: string
+              title: Uri to echo service
+              description: Uri to echo service.
+          additionalProperties: false
+          required:
+            - uri
+        outputs:
+          type: object
+          properties:
+            echo:
+              type: object
+              properties:
+                transmissionMode:
+                  type: string
+                  enum:
+                    - value
+                    - reference
+          additionalProperties: false
+        response:
+          type: string
+          enum:
+            - raw
+            - document
+        subscriber:
+          type: object
+          properties:
+            successUri:
+              type: string
+              format: uri
+            inProgressUri:
+              type: string
+              format: uri
+            failedUri:
+              type: string
+              format: uri
+    results_echo:
+      type: object
+      properties:
+        echo:
+          type: string
+          title: Echo result
+          description: A string echoing what we send.
+    execute_multiply:
+      type: object
+      properties:
+        inputs:
+          type: object
+          properties:
+            number1:
+              type: number
+              format: integer
+              title: Number 1 Literal Input
+              description: A number literal input.
+            number2:
+              type: number
+              format: integer
+              title: Number 2 Literal Input
+              description: A number literal input. This number can't be zero
+          additionalProperties: false
+          required:
+            - number1
+            - number2
+        outputs:
+          type: object
+          properties:
+            product:
+              type: object
+              properties:
+                transmissionMode:
+                  type: string
+                  enum:
+                    - value
+                    - reference
+          additionalProperties: false
+        response:
+          type: string
+          enum:
+            - raw
+            - document
+        subscriber:
+          type: object
+          properties:
+            successUri:
+              type: string
+              format: uri
+            inProgressUri:
+              type: string
+              format: uri
+            failedUri:
+              type: string
+              format: uri
+    results_multiply:
+      type: object
+      properties:
+        product:
+          type: number
+          format: integer
+          title: Product of 2 numbers
+          description: A number literal output.
+    execute_reverse:
+      type: object
+      properties:
+        inputs:
+          type: object
+          properties:
+            number1:
+              type: number
+              format: integer
+              title: Number 1 Literal Input
+              description: A number literal input.
+            number2:
+              type: number
+              format: integer
+              title: Number 2 Literal Input
+              description: A number literal input.
+          additionalProperties: false
+          required:
+            - number1
+            - number2
+        outputs:
+          type: object
+          properties:
+            number1:
+              type: object
+              properties:
+                transmissionMode:
+                  type: string
+                  enum:
+                    - value
+                    - reference
+            number2:
+              type: object
+              properties:
+                transmissionMode:
+                  type: string
+                  enum:
+                    - value
+                    - reference
+          additionalProperties: false
+        response:
+          type: string
+          enum:
+            - raw
+            - document
+        subscriber:
+          type: object
+          properties:
+            successUri:
+              type: string
+              format: uri
+            inProgressUri:
+              type: string
+              format: uri
+            failedUri:
+              type: string
+              format: uri
+    results_reverse:
+      type: object
+      properties:
+        number1:
+          type: number
+          format: integer
+          title: Was number 2
+          description: A number literal output.
+        number2:
+          type: number
+          format: integer
+          title: Was number 1
+          description: A number literal output.
+    execute_sampleFeatures:
+      type: object
+      properties:
+        inputs:
+          type: object
+          properties:
+            uri:
+              type: string
+              format: url
+              title: Features endpoint
+              description: URI of an OGC API Features collection or /items endpoint.
+            name:
+              type: string
+              nullable: true
+              title: Output collection name
+              description: Optional filename (without extension) for the GeoJSON file written
+                to the datasets folder. Defaults to {collectionId}_sample.
+          additionalProperties: false
+          required:
+            - uri
+        outputs:
+          type: object
+          properties:
+            collection:
+              type: object
+              properties:
+                transmissionMode:
+                  type: string
+                  enum:
+                    - value
+                    - reference
+            items:
+              type: object
+              properties:
+                transmissionMode:
+                  type: string
+                  enum:
+                    - value
+                    - reference
+          additionalProperties: false
+        response:
+          type: string
+          enum:
+            - raw
+            - document
+        subscriber:
+          type: object
+          properties:
+            successUri:
+              type: string
+              format: uri
+            inProgressUri:
+              type: string
+              format: uri
+            failedUri:
+              type: string
+              format: uri
+    results_sampleFeatures:
+      type: object
+      properties:
+        collection:
+          type: object
+          contentMediaType: application/json
+          title: Sampled collection
+          description: The sampled features as an OGC API Features collection. Inline
+            collection metadata (value) or a link (reference).
+        items:
+          type: object
+          required:
+            - type
+            - features
+          properties:
+            type:
+              type: string
+              enum:
+                - FeatureCollection
+            features:
+              type: array
+              items:
+                type: object
+          contentMediaType: application/geo+json
+          title: Sampled features
+          description: The sampled features as a GeoJSON FeatureCollection. Inline GeoJSON
+            (value) or a link to the items resource (reference).
+    package_add:
+      type: object
+      properties:
+        sum:
+          type: number
+          format: integer
+          title: Sum of 2 numbers
+          description: A number literal output.
+    package_countFeatures:
+      type: object
+      properties:
+        count:
+          type: number
+          format: integer
+          title: Feature count
+          description: Total number of features provided by OGC API Endpoint.
+    package_divide:
+      type: object
+      properties:
+        quotient:
+          type: number
+          format: integer
+          title: Quotient of 2 numbers
+          description: A number literal output.
+        remainder:
+          type: number
+          format: integer
+          title: Remainder after division of 2 numbers
+          description: A number literal output.
+    package_echo:
+      type: object
+      properties:
+        echo:
+          type: string
+          title: Echo result
+          description: A string echoing what we send.
+    package_multiply:
+      type: object
+      properties:
+        product:
+          type: number
+          format: integer
+          title: Product of 2 numbers
+          description: A number literal output.
+    package_reverse:
+      type: object
+      properties:
+        number1:
+          type: number
+          format: integer
+          title: Was number 2
+          description: A number literal output.
+        number2:
+          type: number
+          format: integer
+          title: Was number 1
+          description: A number literal output.
+    package_sampleFeatures:
+      type: object
+      properties:
+        collection:
+          type: object
+          contentMediaType: application/json
+          title: Sampled collection
+          description: The sampled features as an OGC API Features collection. Inline
+            collection metadata (value) or a link (reference).
+        items:
+          type: object
+          required:
+            - type
+            - features
+          properties:
+            type:
+              type: string
+              enum:
+                - FeatureCollection
+            features:
+              type: array
+              items:
+                type: object
+          contentMediaType: application/geo+json
+          title: Sampled features
+          description: The sampled features as a GeoJSON FeatureCollection. Inline GeoJSON
+            (value) or a link to the items resource (reference).
     Jobs:
       type: object
       required:
-        - id
+        - jobs
         - links
       properties:
-        itemType:
+        jobs:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusInfo"
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/link"
+    StatusInfo:
+      type: object
+      required:
+        - jobID
+        - status
+        - type
+        - processID
+      properties:
+        processID:
           type: string
-        id:
+        type:
           type: string
-        description:
+          enum:
+            - process
+        jobID:
           type: string
-        title:
+        status:
           type: string
+          enum:
+            - accepted
+            - running
+            - successful
+            - failed
+            - dismissed
+        message:
+          type: string
+        created:
+          type: string
+          format: date-time
+        started:
+          type: string
+          format: date-time
+        finished:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
         links:
           type: array
           items:
@@ -3795,6 +5296,31 @@ components:
         enum:
           - html
           - json
+    limitProcesses:
+      name: limit
+      in: query
+      description: The optional limit parameter limits the number of process summaries
+        that are presented in the response document.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 10000
+        default: 10
+    offsetProcesses:
+      name: offset
+      in: query
+      description: The optional offset parameter identifies the index of the first
+        process summary in the response in the overall result set.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
     fJob:
       name: f
       in: query
@@ -3823,3 +5349,103 @@ components:
         enum:
           - html
           - json
+    typeJobs:
+      name: type
+      in: query
+      description: Only include jobs of the given type. Use `process` for jobs created
+        by this OGC API Processes server.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+    processIDJobs:
+      name: processID
+      in: query
+      description: Only include jobs whose processID matches one of the given identifiers.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+    statusJobs:
+      name: status
+      in: query
+      description: Only include jobs whose status matches one of the given values.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - accepted
+            - running
+            - successful
+            - failed
+            - dismissed
+    datetimeJobs:
+      name: datetime
+      in: query
+      description: Only include jobs whose `created` timestamp intersects this RFC
+        3339 instant or interval. Open ends use `..`.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+    minDurationJobs:
+      name: minDuration
+      in: query
+      description: Only include jobs that ran for at least this many seconds. Running
+        jobs use now minus started; completed jobs use finished minus started.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: integer
+    maxDurationJobs:
+      name: maxDuration
+      in: query
+      description: Only include jobs that ran for no longer than this many seconds.
+        Running jobs use now minus started; completed jobs use finished minus
+        started.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: integer
+    limitJobs:
+      name: limit
+      in: query
+      description: The optional limit parameter limits the number of jobs that are
+        presented in the response document.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 10000
+        default: 10
+    offsetJobs:
+      name: offset
+      in: query
+      description: The optional offset parameter identifies the index of the first job
+        in the response in the overall result set. Used by next/prev links.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
