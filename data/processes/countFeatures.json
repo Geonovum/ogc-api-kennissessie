@@ -5,6 +5,9 @@
   "version": "0.0.1",
   "jobControlOptions": ["sync-execute"],
   "outputTransmission": ["value", "reference"],
+    "keywords": [
+    "example"
+  ],
   "inputs": {
     "uri": {
       "title": "Features endpoint",

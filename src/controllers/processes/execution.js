@@ -39,9 +39,27 @@ export function post(req, res) {
 
       if (result.location) res.set("Location", result.location);
       if (result.monitor)
-        res.set("Link", `<${result.monitor}>; rel="monitor"`);
+        res.set("Link", `${result.monitor}; rel=monitor`);
       if (result.preferenceApplied)
         res.set("Preference-Applied", result.preferenceApplied);
+
+      // (OAPIP) Req 37: a raw single-output value is returned as-is, not a results document
+      if (result.raw) {
+        var body = result.content;
+        if (
+          typeof body === "string" ||
+          typeof body === "number" ||
+          typeof body === "boolean"
+        ) {
+          res
+            .status(result.httpStatus)
+            .type("text/plain; charset=utf-8")
+            .send(String(body));
+          return;
+        }
+        res.status(result.httpStatus).json(body);
+        return;
+      }
 
       switch (format) {
         case "json":

@@ -75,15 +75,15 @@ function ISODateString(d) {
 }
 
 function makeHeaderLinks(hls) {
-  var link = "";
+  var parts = [];
   hls.forEach((hl) => {
-    link += `<${hl.href}>; rel="${hl.rel}"; title="${hl.title}"; type="${hl.type}",`;
+    if (!hl.href) return;
+    var part = `<${hl.href}>; rel="${hl.rel}"`;
+    if (hl.title) part += `; title="${hl.title}"`;
+    if (hl.type) part += `; type="${hl.type}"`;
+    parts.push(part);
   });
-
-  // remove last ,
-  link = link.slice(0, -1);
-
-  return link;
+  return parts.join(",");
 }
 
 function getTypeFromFormat(format) {

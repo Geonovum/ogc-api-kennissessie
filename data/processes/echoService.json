@@ -1,16 +1,105 @@
 {
   "id": "echo",
   "title": "Echo Service",
-  "description": "HTTP Echo Service running in a Docker container. Async only.",
+  "description": "Using a bash script, return the provided string unchanged. Either sync or async.",
   "version": "0.0.1",
-  "jobControlOptions": ["async-execute", "dismiss"],
-  "outputTransmission": ["value", "reference"],
+  "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
+  "outputTransmission": ["value"],
+  "keywords": ["example", "echo"],
   "inputs": {
-    "uri": {
-      "title": "Uri to echo service",
-      "description": "Uri to echo service.",
+    "echo": {
+      "title": "Message",
+      "description": "A string to echo back.",
       "schema": {
         "type": "string"
+      }
+    },
+    "pause": {
+      "title": "Pause",
+      "description": "Optional number of seconds to wait before returning the echo.",
+      "schema": {
+        "type": "number",
+        "default": 0,
+        "minimum": 0,
+        "nullable": true
+      }
+    },
+    "arrayInput": {
+      "title": "Array",
+      "description": "Optional string array input.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "default": [],
+        "nullable": true
+      }
+    },
+    "bbox": {
+      "title": "Bounding box",
+      "description": "Optional bounding box input.",
+      "schema": {
+        "type": "object",
+        "required": ["bbox", "crs"],
+        "properties": {
+          "bbox": {
+            "type": "array",
+            "oneOf": [
+              {
+                "minItems": 4,
+                "maxItems": 4
+              },
+              {
+                "minItems": 6,
+                "maxItems": 6
+              }
+            ],
+            "items": {
+              "type": "number",
+              "format": "double"
+            },
+            "minItems": 4,
+            "maxItems": 6
+          },
+          "crs": {
+            "type": "string",
+            "format": "uri",
+            "default": "urn:ogc:def:crs:EPSG:6.6:4326",
+            "enum": [
+              "urn:ogc:def:crs:EPSG:6.6:4326",
+              "urn:ogc:def:crs:EPSG:6.6:3785"
+            ]
+          }
+        },
+        "default": {
+          "bbox": [0, 0, 1, 1],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "nullable": true
+      }
+    },
+    "imagesInput": {
+      "title": "Image",
+      "description": "Optional binary image input, inline or by href.",
+      "schema": {
+        "type": "string",
+        "contentEncoding": "binary",
+        "contentMediaType": "image/tiff; application=geotiff",
+        "oneOf": [
+          {
+            "type": "string",
+            "contentEncoding": "binary",
+            "contentMediaType": "image/tiff; application=geotiff"
+          },
+          {
+            "type": "string",
+            "contentEncoding": "binary",
+            "contentMediaType": "image/jp2"
+          }
+        ],
+        "default": "",
+        "nullable": true
       }
     }
   },
@@ -18,10 +107,24 @@
     "echo": {
       "id": "Result",
       "title": "Echo result",
-      "description": "A string echoing what we send.",
+      "description": "The same string that was provided as input.",
       "schema": {
-        "type": "string"
+        "type": "string",
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "string",
+            "contentMediaType": "text/plain"
+          }
+        ]
       }
+    }
+  },
+  "example": {
+    "inputs": {
+      "echo": "Hello world"
     }
   }
 }

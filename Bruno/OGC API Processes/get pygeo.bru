@@ -1,17 +1,13 @@
 meta {
-  name: post pygeo
+  name: get pygeo
   type: http
-  seq: 28
+  seq: 30
 }
 
-post {
-  url: https://demo.pygeoapi.io/master/processes/hello-world/execution?f=json
+get {
+  url: https://demo.pygeoapi.io/master/processes/hello-world
   body: json
   auth: inherit
-}
-
-params:query {
-  f: json
 }
 
 body:json {
@@ -20,8 +16,6 @@ body:json {
       "name": "myname",
       "message": "aa"
     }
-       , "response": "raw"
-  
   }
 }
 

@@ -109,12 +109,15 @@ function get(neutralUrl, format, callback) {
     title: `The endpoint for job monitoring`,
   });
 
-  content.links.push({
-    href: global.config.metadata.licenseUrl,
-    rel: `license`,
-    title: global.config.metadata.licenseName,
-    type: `text/html`,
-  });
+  var license = global.config.metadata.license || {};
+  if (license.url) {
+    content.links.push({
+      href: license.url,
+      rel: `license`,
+      title: license.name,
+      type: `text/html`,
+    });
+  }
 
   return callback(undefined, content);
 }

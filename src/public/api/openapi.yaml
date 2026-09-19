@@ -11,7 +11,7 @@ info:
   license:
     name: CC-BY 4.0 license
     url: https://creativecommons.org/licenses/by/4.0
-  version: 1.3.63
+  version: 1.3.64
 servers:
   - url: http://localhost:8080/geonovum/v1
 tags: []
@@ -1722,7 +1722,7 @@ paths:
       tags:
         - "Processes Part 1: Core"
       summary: Echo Service
-      description: HTTP Echo Service running in a Docker container. Async only.
+      description: Using a bash script, return the provided string unchanged. Either sync or async.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Processes - Part 1"
@@ -1740,27 +1740,92 @@ paths:
               example:
                 id: echo
                 title: Echo Service
-                description: HTTP Echo Service running in a Docker container. Async only.
+                description: Using a bash script, return the provided string unchanged. Either sync or async.
                 version: 0.0.1
                 jobControlOptions:
+                  - sync-execute
                   - async-execute
                   - dismiss
                 outputTransmission:
                   - value
-                  - reference
                 inputs:
-                  uri:
-                    title: Uri to echo service
-                    description: Uri to echo service.
+                  echo:
+                    title: Message
+                    description: A string to echo back.
                     schema:
                       type: string
+                  pause:
+                    title: Pause
+                    description: Optional number of seconds to wait before returning the echo.
+                    schema:
+                      type: number
+                      default: 0
+                      minimum: 0
+                      nullable: true
+                  arrayInput:
+                    title: Array
+                    description: Optional string array input.
+                    schema:
+                      type: array
+                      items:
+                        type: string
+                      default: []
+                      nullable: true
+                  bbox:
+                    title: Bounding box
+                    description: Optional bounding box input.
+                    schema:
+                      type: object
+                      required:
+                        - bbox
+                      properties:
+                        bbox:
+                          type: array
+                          items:
+                            type: number
+                          minItems: 4
+                          maxItems: 6
+                        crs:
+                          type: string
+                          default: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+                      default:
+                        bbox:
+                          - 0
+                          - 0
+                          - 1
+                          - 1
+                        crs: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+                      nullable: true
+                  imagesInput:
+                    title: Image
+                    description: Optional binary image input, inline or by href.
+                    schema:
+                      type: string
+                      contentEncoding: binary
+                      contentMediaType: image/tiff; application=geotiff
+                      oneOf:
+                        - type: string
+                          contentEncoding: binary
+                          contentMediaType: image/tiff; application=geotiff
+                        - type: string
+                          contentEncoding: binary
+                          contentMediaType: image/jp2
+                      default: ""
+                      nullable: true
                 outputs:
                   echo:
                     id: Result
                     title: Echo result
-                    description: A string echoing what we send.
+                    description: The same string that was provided as input.
                     schema:
                       type: string
+                      oneOf:
+                        - type: string
+                        - type: string
+                          contentMediaType: text/plain
+                example:
+                  inputs:
+                    echo: Hello world
             text/html:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
@@ -2240,7 +2305,7 @@ paths:
       tags:
         - "Processes Part 1: Core"
       summary: Execute Echo Service
-      description: HTTP Echo Service running in a Docker container. Async only.
+      description: Using a bash script, return the provided string unchanged. Either sync or async.
       operationId: execute.echo.getProcesses
       requestBody:
         required: true
@@ -2452,7 +2517,7 @@ paths:
       tags:
         - "Processes Part 2: Deploy, Replace, Undeploy"
       summary: Package Echo Service
-      description: HTTP Echo Service running in a Docker container. Async only.
+      description: Using a bash script, return the provided string unchanged. Either sync or async.
       operationId: execute.echo.getPackage
       responses:
         "200":
@@ -3605,13 +3670,67 @@ components:
         inputs:
           type: object
           properties:
-            uri:
+            echo:
               type: string
-              title: Uri to echo service
-              description: Uri to echo service.
+              title: Message
+              description: A string to echo back.
+            pause:
+              type: number
+              default: 0
+              minimum: 0
+              nullable: true
+              title: Pause
+              description: Optional number of seconds to wait before returning the echo.
+            arrayInput:
+              type: array
+              items:
+                type: string
+              default: []
+              nullable: true
+              title: Array
+              description: Optional string array input.
+            bbox:
+              type: object
+              required:
+                - bbox
+              properties:
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                  minItems: 4
+                  maxItems: 6
+                crs:
+                  type: string
+                  default: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+              default:
+                bbox:
+                  - 0
+                  - 0
+                  - 1
+                  - 1
+                crs: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+              nullable: true
+              title: Bounding box
+              description: Optional bounding box input.
+            imagesInput:
+              type: string
+              contentEncoding: binary
+              contentMediaType: image/tiff; application=geotiff
+              oneOf:
+                - type: string
+                  contentEncoding: binary
+                  contentMediaType: image/tiff; application=geotiff
+                - type: string
+                  contentEncoding: binary
+                  contentMediaType: image/jp2
+              default: ""
+              nullable: true
+              title: Image
+              description: Optional binary image input, inline or by href.
           additionalProperties: false
           required:
-            - uri
+            - echo
         outputs:
           type: object
           properties:
@@ -3622,7 +3741,6 @@ components:
                   type: string
                   enum:
                     - value
-                    - reference
           additionalProperties: false
         response:
           type: string
@@ -3646,8 +3764,12 @@ components:
       properties:
         echo:
           type: string
+          oneOf:
+            - type: string
+            - type: string
+              contentMediaType: text/plain
           title: Echo result
-          description: A string echoing what we send.
+          description: The same string that was provided as input.
     execute_multiply:
       type: object
       properties:
@@ -3893,8 +4015,12 @@ components:
       properties:
         echo:
           type: string
+          oneOf:
+            - type: string
+            - type: string
+              contentMediaType: text/plain
           title: Echo result
-          description: A string echoing what we send.
+          description: The same string that was provided as input.
     package_multiply:
       type: object
       properties:

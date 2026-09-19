@@ -1,12 +1,12 @@
 meta {
-  name: zoo project
+  name: zoo project get
   type: http
-  seq: 29
+  seq: 31
 }
 
-post {
-  url: http://tb17.geolabs.fr:8119/ogc-api/processes/echo/execution
-  body: json
+get {
+  url: http://tb17.geolabs.fr:8119/ogc-api/processes/echo
+  body: none
   auth: inherit
 }
 
@@ -37,9 +37,7 @@ body:json {
           "c": {
               "transmissionMode": "value"
           }
-      }
-         , "response": "raw"
-  
+      },
       "subscriber": {
           "successUri": "http://zookernel/cgi-bin/publish.py?jobid=JOBSOCKET-07ca4d08-b3a0-11f1-9405-0242ac106a08&type=success",
           "inProgressUri": "http://zookernel/cgi-bin/publish.py?jobid=JOBSOCKET-07ca4d08-b3a0-11f1-9405-0242ac106a08&type=inProgress",

@@ -55,14 +55,24 @@ function findScript(processDir, processId, extension) {
   return match ? join(processDir, match) : undefined;
 }
 
-function parseStdoutValues(value) {
+function selectedOutputs(outputs, parameters) {
+  return Object.entries(outputs).filter(
+    ([key]) =>
+      parameters.outputs == undefined || parameters.outputs[key] != undefined,
+  );
+}
+
+function parseStdoutValues(value, outputs, parameters) {
   var text = Buffer.isBuffer(value) ? value.toString() : String(value);
+  const selected = selectedOutputs(outputs, parameters);
+  if (selected.length === 1 && selected[0][1].schema?.type === "string")
+    return [text.replace(/\r?\n$/, "")];
   return text.trim().split(/\s+/).filter(Boolean);
 }
 
 function processOutputs(outputs, parameters, value) {
   let content = {};
-  const values = parseStdoutValues(value);
+  const values = parseStdoutValues(value, outputs, parameters);
   let index = 0;
 
   if (parameters.outputs != undefined) {
@@ -114,7 +124,11 @@ export async function launch(process_, job, isAsync, parameters, callback) {
         { httpCode: 400, description: `${key} not found` },
         undefined,
       );
-    values.push(parameters.inputs[key]);
+    values.push(
+      typeof parameters.inputs[key] === "object"
+        ? JSON.stringify(parameters.inputs[key])
+        : parameters.inputs[key],
+    );
   }
 
   const processDir = processDirectory(process_);
@@ -139,7 +153,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
           undefined,
         );
       command = shellScript;
-      params = values;
+      params = values.map(String);
       break;
     }
     case "win32": {
@@ -153,7 +167,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
           undefined,
         );
       command = join("cmd.exe");
-      params = ["/c", batScript, ...values];
+      params = ["/c", batScript, ...values.map(String)];
       break;
     }
     default:
@@ -170,7 +184,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
     let child = undefined;
     try {
-      child = spawn.spawn(command + " " + params.join(" "), { shell: true });
+      child = spawn.spawn(command, params);
     } catch (err) {
       console.log(err);
     }
@@ -219,7 +233,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
 
   let child = undefined;
   try {
-    child = spawn.spawnSync(command + " " + params.join(" "), { shell: true });
+    child = spawn.spawnSync(command, params);
   } catch (err) {
     return callback({ httpCode: 500, description: err.message }, undefined);
   }

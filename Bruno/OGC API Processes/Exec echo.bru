@@ -1,11 +1,11 @@
 meta {
-  name: Exec divide
+  name: Exec echo
   type: http
-  seq: 18
+  seq: 14
 }
 
 post {
-  url: {{serviceHost}}/processes/divide/execution
+  url: {{serviceHost}}/processes/echo/execution
   body: json
   auth: inherit
 }
@@ -13,8 +13,7 @@ post {
 body:json {
   {
     "inputs": {
-      "number1": 19,
-      "number2": 7
+      "echo": "teststring"
     }
   }
 }

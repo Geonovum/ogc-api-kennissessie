@@ -5,7 +5,7 @@ De nodejs demo in deze repository is een implementatie van zowel een OGC API Fea
 
 De Source code staat in de src folder.
 
-Deze kan met node uitgevoerd worden zoals in de [instructies](./../../README.md) staat beschreven, of in een docker container waarvan de configuratie ook in de root staat.
+Deze kan met node uitgevoerd worden zoals in de [instructies](./../../README.md) staat beschreven.
 
 Er zijn 3 verschillende processes geimplementeerd.
 Dit laat zien dat het aangeroepen proces op verschillende manieren geimplementeerd kan worden. In alle gevallen is het launch.js script de 'glue' tussen de OGC-API Processes NodeJS server en het betreffende proces. 
@@ -19,7 +19,8 @@ Afhankelijk van het OS wordt een batch file of een shell script aangeroepen.
 - nodejs script count.js
 
 ### echoService
-- docker container docker-compose.yml
+- Shell script echo.sh
 
-Werkt alleen als er ook docker is geinstalleerd. Werkt asynchroon, dus job result moet opgevraagd worden.
+Afhankelijk van het OS wordt een batch file of een shell script aangeroepen.
 
+Neemt één string als input en geeft dezelfde string terug als output. Werkt synchroon of asynchroon.

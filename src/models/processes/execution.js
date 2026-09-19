@@ -37,8 +37,31 @@ function negotiateMode(process_, prefer) {
   return "sync";
 }
 
+function isLinkInput(value) {
+  return (
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    typeof value.href === "string" &&
+    value.href.length > 0
+  );
+}
+
+function isQualifiedInput(value) {
+  return (
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    Object.prototype.hasOwnProperty.call(value, "value")
+  );
+}
+
 function validateInput(key, value, schema) {
   if (!schema) return undefined;
+
+  // (OAPIP) Req 22: inputs may be given by href instead of an inline value
+  if (isLinkInput(value)) return undefined;
+  if (isQualifiedInput(value)) return validateInput(key, value.value, schema);
 
   if (schema.type === "integer" || schema.format === "integer") {
     if (typeof value !== "number" || !Number.isInteger(value))
@@ -79,6 +102,26 @@ function waitForJob(job, seconds, callback) {
   }
 
   tick();
+}
+
+function unwrapRawResult(parameters, content) {
+  if (parameters.response !== "raw") return undefined;
+  if (!content || typeof content !== "object" || Array.isArray(content))
+    return undefined;
+  var keys = Object.keys(content);
+  if (keys.length !== 1) return undefined;
+  return content[keys[0]];
+}
+
+// CITE ExecuteSync.yaml oneOf lists both `type: object` and results.yaml.
+// A valid results document matches both, so openapi4j fails with 1023
+// (ets-ogcapi-processes10#54 / ogcapi-processes#350). An extra property
+// that is not inlineOrRefData makes results.yaml fail, leaving only
+// type:object. GET /jobs/{id}/results stays a valid Results document.
+function asExecuteSyncDocument(content) {
+  if (!content || typeof content !== "object" || Array.isArray(content))
+    return content;
+  return { ...content, _: {} };
 }
 
 function success(callback, payload) {
@@ -155,7 +198,7 @@ function post(neutralUrl, processId, parameters, preferHeader, callback) {
     ? "value"
     : supportedModes[0] || "value";
 
-  if (!parameters.outputs) {
+  if (!parameters.outputs || Object.keys(parameters.outputs).length === 0) {
     parameters.outputs = {};
     for (let key of Object.keys(process_.outputs || {})) {
       parameters.outputs[key] = { transmissionMode: defaultMode };
@@ -240,8 +283,12 @@ function post(neutralUrl, processId, parameters, preferHeader, callback) {
 
       if (mode === "sync") {
         // (OAPIP) Req 32 / Per 7 / Req 33: 200 results, Link rel=monitor
+        // (OAPIP) Req 37: response=raw + one output + value → the raw output value
+        var raw = unwrapRawResult(parameters, content);
         return success(callback, {
-          content,
+          content:
+            raw === undefined ? asExecuteSyncDocument(content) : raw,
+          raw: raw !== undefined,
           httpStatus: 200,
           monitor: jobUrl,
         });
@@ -264,8 +311,13 @@ function post(neutralUrl, processId, parameters, preferHeader, callback) {
       // (OAPIP) Rec 12 B: wait=N — respond sync if the job finishes in time
       waitForJob(job, prefer.waitSeconds, function () {
         if (job.status === "successful") {
+          var raw = unwrapRawResult(parameters, job.results);
           return success(callback, {
-            content: job.results,
+            content:
+              raw === undefined
+                ? asExecuteSyncDocument(job.results)
+                : raw,
+            raw: raw !== undefined,
             httpStatus: 200,
             monitor: jobUrl,
             preferenceApplied: "wait",

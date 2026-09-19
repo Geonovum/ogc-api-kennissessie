@@ -9,6 +9,13 @@
 
 set -euo pipefail
 
+if ! docker info >/dev/null 2>&1; then
+  echo "Docker daemon is not running."
+  echo "Current context: $(docker context show 2>/dev/null || echo unknown)"
+  echo "Start Docker Desktop (or OrbStack), wait until it is ready, then retry."
+  exit 1
+fi
+
 DOCKERHUB_USERNAME="lathoub"
 IMAGE_NAME="okapi"
 VERSION="$(node -p "require('./package.json').version")"

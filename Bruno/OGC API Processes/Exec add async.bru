@@ -1,7 +1,7 @@
 meta {
   name: Exec add async
   type: http
-  seq: 9
+  seq: 10
 }
 
 post {
@@ -18,8 +18,7 @@ body:json {
   {
     "inputs": {
       "number1": 20,
-      "number2": 7,
-      "pause": 4
+      "number2": 7
     },
     "subscriber": {
       "successUri": ":serviceUrl/callback/:jobId?type=success",
