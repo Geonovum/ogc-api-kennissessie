@@ -19,11 +19,46 @@ function processDescriptionExample(process_) {
   };
 }
 
+function toOpenApi3Schema(schema) {
+  if (Array.isArray(schema)) {
+    for (var i = 0; i < schema.length; i++) schema[i] = toOpenApi3Schema(schema[i]);
+    return schema;
+  }
+  if (!schema || typeof schema !== "object") return schema;
+
+  if (schema.contentEncoding === "binary" && !schema.format) schema.format = "binary";
+  else if (schema.contentEncoding === "base64" && !schema.format) schema.format = "byte";
+  if (schema.contentMediaType) {
+    var media = schema.contentMediaType;
+    schema.description = schema.description
+      ? `${schema.description} (media type: ${media})`
+      : `Media type: ${media}`;
+  }
+  delete schema.contentEncoding;
+  delete schema.contentMediaType;
+  delete schema.contentSchema;
+
+  for (var nested of ["items", "additionalProperties", "not"]) {
+    if (schema[nested]) schema[nested] = toOpenApi3Schema(schema[nested]);
+  }
+  for (var combiner of ["oneOf", "anyOf", "allOf"]) {
+    if (Array.isArray(schema[combiner])) schema[combiner] = toOpenApi3Schema(schema[combiner]);
+  }
+  for (var mapKey of ["properties", "patternProperties"]) {
+    if (schema[mapKey] && typeof schema[mapKey] === "object") {
+      for (var prop of Object.keys(schema[mapKey])) {
+        schema[mapKey][prop] = toOpenApi3Schema(schema[mapKey][prop]);
+      }
+    }
+  }
+  return schema;
+}
+
 function cloneFieldSchema(field) {
   var schema = structuredClone(field.schema || {});
   if (field.title) schema.title = field.title;
   if (field.description) schema.description = field.description;
-  return schema;
+  return toOpenApi3Schema(schema);
 }
 
 function isRequiredInput(input) {

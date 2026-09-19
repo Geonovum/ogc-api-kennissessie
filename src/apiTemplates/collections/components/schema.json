@@ -56,11 +56,14 @@
     "Collection": {
         "type": "object",
         "required": [
-            "id", "links"
+            "id",
+            "links",
+            "crs"
         ],
         "properties": {
             "storageCrs": {
-                "type": "string"
+                "type": "string",
+                "format": "uri"
             },
             "extent": {
                 "$ref": "#/components/schemas/extent"
