@@ -23,14 +23,25 @@
     "StatusInfo": {
         "type": "object",
         "required": [
-            "jobID",
+            "id",
             "status",
-            "type",
-            "processID"
+            "processingEntityType"
         ],
         "properties": {
-            "processID": {
+            "id": {
                 "type": "string"
+            },
+            "processID": {
+                "type": "string",
+                "format": "uri"
+            },
+            "processingEntityType": {
+                "type": "string",
+                "enum": [
+                    "ogc-api-processes",
+                    "openeo"
+                ],
+                "default": "ogc-api-processes"
             },
             "type": {
                 "type": "string",
@@ -82,5 +93,9 @@
                 }
             }
         }
+    },
+    "Results": {
+        "type": "object",
+        "additionalProperties": true
     }
 }

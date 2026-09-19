@@ -1,36 +1,13 @@
 import sampleFeatures, { writeSample } from "./sample.js";
-import http from "node:http";
-import https from "node:https";
+import {
+  startJob,
+  progressJob,
+  succeedJob,
+  failJob,
+} from "../../../src/models/processes/subscriber.js";
 
 const DURATION_MS = 30000;
 const PROGRESS_STEPS = 10;
-
-function httpPost(url, body) {
-  const parsed = new URL(url);
-  const isHttps = parsed.protocol === "https:";
-  const lib = isHttps ? https : http;
-  const data = typeof body === "object" ? JSON.stringify(body) : body;
-  const req = lib.request(
-    {
-      hostname: parsed.hostname,
-      port: parsed.port || (isHttps ? 443 : 80),
-      path: parsed.pathname + parsed.search,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Length": Buffer.byteLength(data),
-      },
-    },
-    (res) => {
-      let chunks = [];
-      res.on("data", (chunk) => chunks.push(chunk));
-      res.on("end", () => console.log(Buffer.concat(chunks).toString()));
-    }
-  );
-  req.on("error", (err) => console.log(err));
-  req.write(data);
-  req.end();
-}
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -38,42 +15,6 @@ function sleep(ms) {
 
 function isDismissed(job) {
   return job.status === "dismissed";
-}
-
-function statusPayload(job) {
-  return {
-    jobID: job.jobID,
-    status: job.status,
-    progress: job.progress,
-    message: job.message,
-    updated: job.updated,
-  };
-}
-
-function reportProgress(job, parameters, progress, message) {
-  if (isDismissed(job)) return;
-
-  job.progress = progress;
-  job.message = message;
-  job.updated = new Date().toISOString();
-
-  if (parameters.subscriber && parameters.subscriber.inProgressUri) {
-    httpPost(parameters.subscriber.inProgressUri, statusPayload(job));
-  }
-}
-
-function failJob(job, parameters, message) {
-  if (isDismissed(job)) return;
-
-  job.status = "failed";
-  job.progress = 100;
-  job.message = message;
-  job.finished = new Date().toISOString();
-  job.updated = new Date().toISOString();
-
-  if (parameters.subscriber && parameters.subscriber.failedUri) {
-    httpPost(parameters.subscriber.failedUri, { message: job.message });
-  }
 }
 
 function transmissionMode(requested, key) {
@@ -144,13 +85,12 @@ async function sleepUntil(timestamp, job) {
 
 async function run(process_, job, parameters) {
   const startedAt = Date.now();
-  reportProgress(job, parameters, 0, "Fetching features");
 
   var result;
   try {
     result = await sampleFeatures(parameters.inputs.uri, parameters.inputs.name);
   } catch (err) {
-    failJob(job, parameters, err.message);
+    failJob(job, err.message);
     return;
   }
 
@@ -162,9 +102,8 @@ async function run(process_, job, parameters) {
     if (!stillRunning) return;
 
     if (step < PROGRESS_STEPS) {
-      reportProgress(
+      progressJob(
         job,
-        parameters,
         step * 10,
         `Sampling features (${step * 10}%)`
       );
@@ -177,22 +116,13 @@ async function run(process_, job, parameters) {
     var content = resultContent(job, process_, parameters, result);
     writeSample(result);
   } catch (err) {
-    failJob(job, parameters, err.message);
+    failJob(job, err.message);
     return;
   }
 
   if (isDismissed(job)) return;
 
-  job.status = "successful";
-  job.progress = 100;
-  job.message = `Job complete`;
-  job.finished = new Date().toISOString();
-  job.updated = new Date().toISOString();
-  job.results = content;
-
-  if (parameters.subscriber && parameters.subscriber.successUri) {
-    httpPost(parameters.subscriber.successUri, content);
-  }
+  succeedJob(job, content);
 }
 
 /**
@@ -218,15 +148,12 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     );
   }
 
-  job.status = "running";
-  job.started = new Date().toISOString();
-  job.updated = new Date().toISOString();
+  startJob(job, "Fetching features");
   job.progress = 0;
-  job.message = "Job running";
 
   callback(undefined, undefined);
 
   run(process_, job, parameters).catch((err) => {
-    failJob(job, parameters, err.message);
+    failJob(job, err.message);
   });
 }

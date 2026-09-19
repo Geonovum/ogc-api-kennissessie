@@ -38,7 +38,16 @@ export function getContent(neutralUrl, format, job) {
   return content;
 }
 
-function get(neutralUrl, format, jobId, callback) {
+function toOutputIds(outputs) {
+  if (outputs === undefined || outputs === "") return [];
+  var raw = Array.isArray(outputs) ? outputs : [outputs];
+  return raw
+    .flatMap((item) => String(item).split(","))
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function get(neutralUrl, format, jobId, outputs, callback) {
   let jobs = getJobs();
   let job = jobs[jobId];
   if (!job)
@@ -77,6 +86,44 @@ function get(neutralUrl, format, jobId, callback) {
     );
 
   var content = getContent(neutralUrl, format, job);
+
+  if (!content || typeof content !== "object" || Array.isArray(content))
+    return callback(
+      processException(
+        404,
+        exceptions.RESULT_NOT_AVAILABLE,
+        `No outputs are available for job ${jobId}`
+      ),
+      undefined
+    );
+
+  var outputIds = toOutputIds(outputs);
+  if (outputIds.length) {
+    var filtered = {};
+    for (var key of outputIds) {
+      if (!Object.prototype.hasOwnProperty.call(content, key))
+        return callback(
+          processException(
+            400,
+            exceptions.NO_SUCH_OUTPUT,
+            `Output identifier not found: ${key}`
+          ),
+          undefined
+        );
+      filtered[key] = content[key];
+    }
+    content = filtered;
+  }
+
+  if (!Object.keys(content).length)
+    return callback(
+      processException(
+        404,
+        exceptions.RESULT_NOT_AVAILABLE,
+        `No outputs are available for job ${jobId}`
+      ),
+      undefined
+    );
 
   return callback(undefined, content);
 }

@@ -8,6 +8,10 @@ const INVALID_PARAMETER =
   "http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/invalid-parameter";
 const SERVER_ERROR =
   "http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/server-error";
+const NO_SUCH_OUTPUT =
+  "http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/no-such-output";
+const RESULT_NOT_AVAILABLE =
+  "http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/result-not-available";
 
 export function processException(httpCode, type, detail) {
   return {
@@ -33,7 +37,9 @@ export function sendProcessException(res, err) {
 export default {
   NO_SUCH_PROCESS,
   NO_SUCH_JOB,
+  NO_SUCH_OUTPUT,
   RESULT_NOT_READY,
+  RESULT_NOT_AVAILABLE,
   INVALID_PARAMETER,
   SERVER_ERROR,
   processException,

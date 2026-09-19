@@ -191,6 +191,8 @@ export function create(processId, isAsync) {
   job.processID = processId;
   job.type = "process";
   job.jobID = e7();
+  job.id = job.jobID;
+  job.processingEntityType = "ogc-api-processes";
   job.status = "accepted"; // accepted, running, successful, failed, dismissed
   job.updated = new Date().toISOString();
   job.message = "Job accepted";

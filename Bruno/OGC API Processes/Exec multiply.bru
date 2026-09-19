@@ -17,9 +17,9 @@ body:json {
       "number2": 7
     },
     "subscriber": {
-      "successUri": ":serviceUrl/callback/:jobId?type=success",
-      "inProgressUri": ":serviceUrl/callback/:jobId?type=inProgress",
-      "failedUri": ":serviceUrl/callback/:jobId?type=failed"
+      "successUri": "{{subscriberUrl}}?type=success",
+      "inProgressUri": "{{subscriberUrl}}?type=inProgress",
+      "failedUri": "{{subscriberUrl}}?type=failed"
     }
   }
 }

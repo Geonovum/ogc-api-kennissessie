@@ -1,37 +1,13 @@
 import { join } from "path";
 import spawn from "node:child_process";
-import http from "node:http";
-import https from "node:https";
+import {
+  startJob,
+  succeedJob,
+  failJob,
+} from "../../../src/models/processes/subscriber.js";
 
 const __dirname = import.meta.dirname;
 if (__dirname === undefined) console.log("need node 20.16 or higher");
-
-function httpPost(url, body) {
-  const parsed = new URL(url);
-  const isHttps = parsed.protocol === "https:";
-  const lib = isHttps ? https : http;
-  const data = typeof body === "object" ? JSON.stringify(body) : body;
-  const req = lib.request(
-    {
-      hostname: parsed.hostname,
-      port: parsed.port || (isHttps ? 443 : 80),
-      path: parsed.pathname + parsed.search,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Length": Buffer.byteLength(data),
-      },
-    },
-    (res) => {
-      let chunks = [];
-      res.on("data", (chunk) => chunks.push(chunk));
-      res.on("end", () => console.log(Buffer.concat(chunks).toString()));
-    },
-  );
-  req.on("error", (err) => console.log(err));
-  req.write(data);
-  req.end();
-}
 
 function processOutputs(outputs, parameters, values) {
   let content = {};
@@ -88,23 +64,13 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     values.push(parameters.inputs[key]);
   }
 
-  job.status = "running"; // accepted, successful, failed, dismissed
-  job.started = new Date().toISOString();
-  job.updated = new Date().toISOString();
+  startJob(job);
 
   let content;
   try {
     content = processOutputs(process_.outputs, parameters, values.reverse());
   } catch (err) {
-    job.status = "failed";
-    job.progress = 100;
-    job.message = err.message;
-    job.finished = new Date().toISOString();
-    job.updated = new Date().toISOString();
-
-    if (process_.subscriber && process_.subscriber.failedUri) {
-      httpPost(process_.subscriber.failedUri, { message: job.message });
-    }
+    failJob(job, err.message);
 
     return callback(
       {
@@ -118,17 +84,7 @@ export async function launch(process_, job, isAsync, parameters, callback) {
     );
   }
 
-  job.status = "successful"; // accepted, successful, failed, dismissed
-  job.progress = 100;
-  job.message = `Job complete`;
-  job.finished = new Date().toISOString();
-  job.updated = new Date().toISOString();
-  job.results = content;
-
-  if (process_.subscriber && process_.subscriber.successUri) {
-    httpPost(process_.subscriber.successUri, content);
-  }
-
+  succeedJob(job, content);
   return callback(undefined, content);
   
 }

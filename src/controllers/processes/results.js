@@ -8,6 +8,16 @@ export function get(req, res) {
   // https://gitdocumentatie.logius.nl/publicatie/api/adr/#/core/no-trailing-slash
   if (utils.ifTrailingSlash(req, res)) return;
 
+  var queryParams = ["f", "outputs"];
+  var rejected = utils.checkForAllowedQueryParams(req.query, queryParams);
+  if (rejected.length > 0) {
+    res.status(400).json({
+      code: `The following query parameters are rejected: ${rejected}`,
+      description: "Valid parameters for this request are " + queryParams,
+    });
+    return;
+  }
+
   var jobId = req.params.jobId;
 
   var formatFreeUrl = utils.getFormatFreeUrl(req);
@@ -16,7 +26,7 @@ export function get(req, res) {
   var accept = accepts(req);
   var format = accept.type(["json", "html"]);
 
-  results.get(formatFreeUrl, format, jobId, function (err, content) {
+  results.get(formatFreeUrl, format, jobId, req.query.outputs, function (err, content) {
     if (err) {
       sendProcessException(res, err);
       return;

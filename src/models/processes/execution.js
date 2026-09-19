@@ -252,15 +252,7 @@ function post(neutralUrl, processId, parameters, preferHeader, callback) {
   let jobsUrl = urlJoin(serviceUrl, "jobs");
   let jobUrl = urlJoin(jobsUrl, job.jobID);
 
-  if (parameters.subscriber) {
-    for (var key in parameters.subscriber) {
-      if (Object.prototype.hasOwnProperty.call(parameters.subscriber, key)) {
-        parameters.subscriber[key] = parameters.subscriber[key]
-          .replaceAll(":serviceUrl", serviceUrl)
-          .replaceAll(":jobId", job.jobID);
-      }
-    }
-  }
+  if (parameters.subscriber) job.subscriber = parameters.subscriber;
 
   var isAsync = mode !== "sync";
 

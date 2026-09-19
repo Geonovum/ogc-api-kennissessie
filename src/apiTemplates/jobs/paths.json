@@ -169,7 +169,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Process"
+                "$ref": "#/components/schemas/StatusInfo"
               }
             },
             "text/html": {
@@ -180,7 +180,14 @@
           }
         },
         "404": {
-          "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+          "description": "The job identifier does not exist.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml"
+              }
+            }
+          }
         },
         "410": {
           "description": "The job has been dismissed"
@@ -206,6 +213,9 @@
         },
         {
           "$ref": "#/components/parameters/fResults"
+        },
+        {
+          "$ref": "#/components/parameters/outputsResults"
         }
       ],
       "responses": {
@@ -214,7 +224,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Process"
+                "$ref": "#/components/schemas/Results"
               }
             },
             "text/html": {
@@ -224,14 +234,159 @@
             }
           }
         },
+        "400": {
+          "description": "Invalid query parameter value or unknown output identifier.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml"
+              }
+            }
+          }
+        },
         "404": {
-          "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+          "description": "The job does not exist, is still running, or no outputs are available.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml"
+              }
+            }
+          }
         },
         "410": {
           "description": "The job has been dismissed"
+        },
+        "500": {
+          "description": "The job failed.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml"
+              }
+            }
+          }
         }
       },
       "summary": "Retrieve job results",
+      "tags": ["Processes Part 1: Core"]
+    }
+  },
+  "/jobs/{jobId}/results/{outputId}": {
+    "get": {
+      "description": "Retrieve a single job output",
+      "operationId": "getJobResult",
+      "parameters": [
+        {
+          "description": "job identifier",
+          "in": "path",
+          "name": "jobId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "description": "output identifier",
+          "in": "path",
+          "name": "outputId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "#/components/parameters/fResults"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "The operation was executed successfully."
+        },
+        "404": {
+          "description": "The job or output does not exist.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml"
+              }
+            }
+          }
+        },
+        "410": {
+          "description": "The job has been dismissed"
+        },
+        "500": {
+          "description": "The job failed.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Retrieve a single job result",
+      "tags": ["Processes Part 1: Core"]
+    }
+  },
+  "/jobs/{jobId}/results/{outputId}/0": {
+    "get": {
+      "description": "Retrieve the first (0th) value of a single job output",
+      "operationId": "getJobResult0th",
+      "parameters": [
+        {
+          "description": "job identifier",
+          "in": "path",
+          "name": "jobId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "description": "output identifier",
+          "in": "path",
+          "name": "outputId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "#/components/parameters/fResults"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "The operation was executed successfully."
+        },
+        "404": {
+          "description": "The job or output does not exist.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml"
+              }
+            }
+          }
+        },
+        "410": {
+          "description": "The job has been dismissed"
+        },
+        "500": {
+          "description": "The job failed.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Retrieve the first value of a job result",
       "tags": ["Processes Part 1: Core"]
     }
   },

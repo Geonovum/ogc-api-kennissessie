@@ -53,6 +53,21 @@ export function get(neutralUrl, format, callback) {
   );
 
   content.conformsTo.push(
+    "http://www.opengis.net/spec/ogcapi-processes-1/2.0/conf/core"
+  );
+  content.conformsTo.push(
+    "http://www.opengis.net/spec/ogcapi-processes-1/2.0/conf/ogc-process-description"
+  );
+  content.conformsTo.push(
+    "http://www.opengis.net/spec/ogcapi-processes-1/2.0/conf/json"
+  );
+  content.conformsTo.push(
+    "http://www.opengis.net/spec/ogcapi-processes-1/2.0/conf/html"
+  );
+  content.conformsTo.push(
+    "http://www.opengis.net/spec/ogcapi-processes-1/2.0/conf/job-list"
+  );
+  content.conformsTo.push(
     "http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/core"
   );
   content.conformsTo.push(

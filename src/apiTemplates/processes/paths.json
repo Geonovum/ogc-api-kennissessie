@@ -108,6 +108,16 @@
         "400": {
           "description": "Bad Request"
         },
+        "404": {
+          "description": "The process identifier does not exist.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml"
+              }
+            }
+          }
+        },
         "405": {
           "description": "Method Not Allowed"
         },
@@ -215,10 +225,33 @@
           }
         },
         "201": {
-          "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml"
+          "description": "The process was executed asynchronously. The Location header points at the job status.",
+          "headers": {
+            "Location": {
+              "description": "URL of the created job status resource",
+              "schema": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          },
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusInfo"
+              }
+            }
+          }
         },
         "404": {
-          "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml"
+          "description": "The process identifier does not exist.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml"
+              }
+            }
+          }
         },
         "500": {
           "$ref": "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml"

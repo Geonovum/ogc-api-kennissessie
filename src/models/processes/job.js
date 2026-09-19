@@ -60,8 +60,11 @@ function getLinks(neutralUrl, format, jobId, links) {
 
 export function getContent(neutralUrl, format, jobId, job) {
   // child is the live process handle; results are only on /jobs/{id}/results
-  const { child, results, serviceUrl, ...publicJob } = job;
+  const { child, results, serviceUrl, subscriber, ...publicJob } = job;
   var content = structuredClone(publicJob);
+  if (!content.id) content.id = content.jobID;
+  if (!content.processingEntityType)
+    content.processingEntityType = "ogc-api-processes";
   content.links = [];
 
   getLinks(neutralUrl, format, jobId, content.links);

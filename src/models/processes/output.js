@@ -96,6 +96,20 @@ function get(neutralUrl, format, jobId, outputId, callback) {
   return callback(undefined, content);
 }
 
+function firstValue(content) {
+  if (Array.isArray(content)) return content[0];
+  if (content && Array.isArray(content.value)) return content.value[0];
+  return content;
+}
+
+function get0th(neutralUrl, format, jobId, outputId, callback) {
+  get(neutralUrl, format, jobId, outputId, function (err, content) {
+    if (err) return callback(err, undefined);
+    return callback(undefined, firstValue(content));
+  });
+}
+
 export default {
   get,
+  get0th,
 };

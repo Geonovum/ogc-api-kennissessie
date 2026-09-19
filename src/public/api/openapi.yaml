@@ -13,7 +13,7 @@ info:
     url: https://creativecommons.org/licenses/by/4.0
   version: 1.3.64
 servers:
-  - url: http://localhost:8080/geonovum/v1
+  - url: http://127.0.0.1:8101/geonovum/v1
 tags: []
 paths:
   /:
@@ -373,6 +373,61 @@ paths:
           Features - Part 1: Core"
         url: https://docs.ogc.org/is/17-069r4/17-069r4.html
       operationId: Neighborhoods.getCollection
+      parameters:
+        - $ref: "#/components/parameters/fCollection"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collection"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
+  /collections/Neighborhoods_sample:
+    get:
+      tags:
+        - Collections
+      summary: feature collection
+      description: >-
+        Information about the feature collection with id 'Neighborhoods_sample'.
+        The response contains a link to the items in the collection (path
+        `/collections/{collectionId}/items`,link relation `items`) as well as
+        key information about the collection. This information includes:
+
+
+        * A local identifier for the collection that is unique for the dataset;
+
+        * A title and description for the collection;
+
+        * An indication of the spatial and temporal extent of the data in the
+        collection;
+
+        * A list of coordinate reference systems (CRS) in which geometries may
+        be returned by the server. The first CRS is the default coordinate
+        reference system (the default is always WGS 84 with axis order
+        longitude/latitude);
+
+        * The CRS in which the spatial geometries are stored in the data source
+        (if data is requested in this CRS, the geometries are returned without
+        any coordinate conversion);
+
+        * An indicator about the type of the items in the collection (the
+        default value is 'feature').
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Features - Part 1: Core"
+        url: https://docs.ogc.org/is/17-069r4/17-069r4.html
+      operationId: Neighborhoods_sample.getCollection
       parameters:
         - $ref: "#/components/parameters/fCollection"
       responses:
@@ -1077,6 +1132,148 @@ paths:
           description: Not Acceptable
         "500":
           description: Server Error
+  /collections/Neighborhoods_sample/items:
+    get:
+      tags:
+        - Features
+      summary: retrieve features in the feature collection 'Neighborhoods_sample'
+      description: >-
+        The response is a document consisting of features in the collection. The
+        features included in the response are determined by the server based on
+        the query parameters of the request.
+
+
+        To support access to larger collections without overloading the client,
+        the API supports paged access with links to the next page, if more
+        features are selected that the page size (maximum page size is 1000).
+
+
+        The `bbox` and `datetime` parameter can be used to select only a subset
+        of the features in the collection (the features that are in the bounding
+        box or time interval). The `bbox` parameter matches all features in the
+        collection that are not associated with a location, too. The `datetime`
+        parameter matches all features in the collection that are not associated
+        with a time stamp or interval, too. The `limit` parameter may be used to
+        control the subset of the selected features that should be returned in
+        the response, the page size. Each page may include information about the
+        number of selected and returned features (`numberMatched` and
+        `numberReturned`) as well as links to support paging (link relation
+        `next`).
+
+
+        See the details of this operation for a description of additional query
+        parameters supported by this resource.
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Features - Part 1: Core"
+        url: https://docs.ogc.org/is/17-069r4/17-069r4.html
+      operationId: Neighborhoods_sample.getItems
+      parameters:
+        - $ref: "#/components/parameters/bbox"
+        - $ref: "#/components/parameters/bbox-crsFeatures_Neighborhoods_sample"
+        - $ref: "#/components/parameters/crsFeatures_Neighborhoods_sample"
+        - $ref: "#/components/parameters/datetime"
+        - $ref: "#/components/parameters/fFeatures"
+        - $ref: "#/components/parameters/filter"
+        - $ref: "#/components/parameters/filter-crs"
+        - $ref: "#/components/parameters/filter-lang"
+        - $ref: "#/components/parameters/limitFeatures"
+        - $ref: "#/components/parameters/offsetFeatures"
+        - $ref: "#/components/parameters/properties_Neighborhoods_sample"
+        - $ref: "#/components/parameters/resultTypeFeatures"
+        - $ref: "#/components/parameters/schema"
+        - $ref: "#/components/parameters/skipGeometry"
+        - $ref: "#/components/parameters/fid_Neighborhoods_sample"
+        - $ref: "#/components/parameters/buurtcode_Neighborhoods_sample"
+        - $ref: "#/components/parameters/buurtnaam_Neighborhoods_sample"
+        - $ref: "#/components/parameters/wijkcode_Neighborhoods_sample"
+        - $ref: "#/components/parameters/gemeentecode_Neighborhoods_sample"
+        - $ref: "#/components/parameters/gemeentenaam_Neighborhoods_sample"
+        - $ref: "#/components/parameters/wijknaam_Neighborhoods_sample"
+        - $ref: "#/components/parameters/id_kv_Neighborhoods_sample"
+        - $ref: "#/components/parameters/geometry_Neighborhoods_sample"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          headers:
+            Content-Crs:
+              description: The coordinate reference system of coordinates in the response.
+              schema:
+                type: string
+                default: <http://www.opengis.net/def/crs/OGC/1.3/CRS84>
+                enum:
+                  - <http://www.opengis.net/def/crs/OGC/1.3/CRS84>
+                  - <http://www.opengis.net/def/crs/EPSG/0/4326>
+          content:
+            text/csv:
+              schema:
+                $ref: "#/components/schemas/csv"
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/featureCollectionGeoJson_Neighborhoods_sample"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
+  /collections/Neighborhoods_sample/items/{featureId}:
+    get:
+      tags:
+        - Features
+      summary: retrieve a feature in the feature collection 'Neighborhoods_sample'
+      description: Fetch the feature with id `{featureId}`.
+      externalDocs:
+        description: "The specification that describes this operation: OGC API -
+          Features - Part 1: Core"
+        url: https://docs.ogc.org/is/17-069r4/17-069r4.html
+      operationId: Neighborhoods_sample.getItem
+      parameters:
+        - $ref: "#/components/parameters/featureId"
+        - $ref: "#/components/parameters/crsFeatures_Neighborhoods_sample"
+        - $ref: "#/components/parameters/fFeatures"
+        - $ref: "#/components/parameters/properties_Neighborhoods_sample"
+        - $ref: "#/components/parameters/schema"
+        - $ref: "#/components/parameters/skipGeometry"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          headers:
+            Content-Crs:
+              description: The coordinate reference system of coordinates in the response.
+              schema:
+                type: string
+                default: <http://www.opengis.net/def/crs/OGC/1.3/CRS84>
+                enum:
+                  - <http://www.opengis.net/def/crs/OGC/1.3/CRS84>
+                  - <http://www.opengis.net/def/crs/EPSG/0/4326>
+          content:
+            text/csv:
+              schema:
+                $ref: "#/components/schemas/csv"
+            application/geo+json:
+              schema:
+                $ref: "#/components/schemas/featureGeoJson_Neighborhoods_sample"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "405":
+          description: Method Not Allowed
+        "406":
+          description: Not Acceptable
+        "500":
+          description: Server Error
   /collections/RoomByRoomRental/items:
     get:
       tags:
@@ -1493,7 +1690,7 @@ paths:
                     schema:
                       type: number
                       format: integer
-                example: &a1
+                example:
                   inputs:
                     number1: 10
                     number2: 7
@@ -1502,6 +1699,12 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "405":
           description: Method Not Allowed
         "406":
@@ -1579,7 +1782,7 @@ paths:
                     schema:
                       type: number
                       format: integer
-                example: &a2
+                example:
                   inputs:
                     uri: http://localhost:8080/geonovum/v1/collections/Neighborhoods/items
             text/html:
@@ -1587,6 +1790,12 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "405":
           description: Method Not Allowed
         "406":
@@ -1685,6 +1894,12 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "405":
           description: Method Not Allowed
         "406":
@@ -1722,7 +1937,8 @@ paths:
       tags:
         - "Processes Part 1: Core"
       summary: Echo Service
-      description: Using a bash script, return the provided string unchanged. Either sync or async.
+      description: Using a bash script, return the provided string unchanged. Either
+        sync or async.
       externalDocs:
         description: "The specification that describes this operation: OGC API -
           Processes - Part 1"
@@ -1740,7 +1956,8 @@ paths:
               example:
                 id: echo
                 title: Echo Service
-                description: Using a bash script, return the provided string unchanged. Either sync or async.
+                description: Using a bash script, return the provided string unchanged. Either
+                  sync or async.
                 version: 0.0.1
                 jobControlOptions:
                   - sync-execute
@@ -1778,16 +1995,27 @@ paths:
                       type: object
                       required:
                         - bbox
+                        - crs
                       properties:
                         bbox:
                           type: array
+                          oneOf:
+                            - minItems: 4
+                              maxItems: 4
+                            - minItems: 6
+                              maxItems: 6
                           items:
                             type: number
+                            format: double
                           minItems: 4
                           maxItems: 6
                         crs:
                           type: string
-                          default: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+                          format: uri
+                          default: urn:ogc:def:crs:EPSG:6.6:4326
+                          enum:
+                            - urn:ogc:def:crs:EPSG:6.6:4326
+                            - urn:ogc:def:crs:EPSG:6.6:3785
                       default:
                         bbox:
                           - 0
@@ -1831,6 +2059,12 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "405":
           description: Method Not Allowed
         "406":
@@ -1922,6 +2156,12 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "405":
           description: Method Not Allowed
         "406":
@@ -2016,6 +2256,12 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "405":
           description: Method Not Allowed
         "406":
@@ -2124,7 +2370,7 @@ paths:
                           items:
                             type: object
                       contentMediaType: application/geo+json
-                example: &a3
+                example:
                   inputs:
                     uri: http://localhost:8080/geonovum/v1/collections/Neighborhoods/items
             text/html:
@@ -2132,6 +2378,12 @@ paths:
                 $ref: "#/components/schemas/htmlSchema"
         "400":
           description: Bad Request
+        "404":
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "405":
           description: Method Not Allowed
         "406":
@@ -2179,7 +2431,10 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/execute_add"
-            example: *a1
+            example:
+              inputs:
+                number1: 10
+                number2: 7
       parameters:
         - name: Prefer
           in: header
@@ -2201,15 +2456,76 @@ paths:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
         "201":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+          description: The process was executed asynchronously. The Location header points
+            at the job status.
+          headers:
+            Location:
+              description: URL of the created job status resource
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusInfo"
         "400":
           description: Invalid execute request or input values
         "403":
           description: The requested execution mode is not supported by this process
         "404":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "500":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+      callbacks:
+        success:
+          "{$request.body#/subscriber/successUri}":
+            post:
+              summary: POST job results to the subscriber successUri
+              description: Called by this server when the job succeeds. The URL is supplied by
+                the client in subscriber.successUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/results_add"
+              responses:
+                "200":
+                  description: Notification received
+        inProgress:
+          "{$request.body#/subscriber/inProgressUri}":
+            post:
+              summary: POST job status to the subscriber inProgressUri
+              description: Called by this server while the job is running. The URL is supplied
+                by the client in subscriber.inProgressUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/StatusInfo"
+              responses:
+                "200":
+                  description: Notification received
+        failed:
+          "{$request.body#/subscriber/failedUri}":
+            post:
+              summary: POST an exception to the subscriber failedUri
+              description: Called by this server when the job fails. The URL is supplied by
+                the client in subscriber.failedUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/exception.yaml
+              responses:
+                "200":
+                  description: Notification received
   /processes/countFeatures/execution:
     post:
       tags:
@@ -2224,7 +2540,9 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/execute_countFeatures"
-            example: *a2
+            example:
+              inputs:
+                uri: http://localhost:8080/geonovum/v1/collections/Neighborhoods/items
       parameters:
         - name: Prefer
           in: header
@@ -2246,15 +2564,76 @@ paths:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
         "201":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+          description: The process was executed asynchronously. The Location header points
+            at the job status.
+          headers:
+            Location:
+              description: URL of the created job status resource
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusInfo"
         "400":
           description: Invalid execute request or input values
         "403":
           description: The requested execution mode is not supported by this process
         "404":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "500":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+      callbacks:
+        success:
+          "{$request.body#/subscriber/successUri}":
+            post:
+              summary: POST job results to the subscriber successUri
+              description: Called by this server when the job succeeds. The URL is supplied by
+                the client in subscriber.successUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/results_countFeatures"
+              responses:
+                "200":
+                  description: Notification received
+        inProgress:
+          "{$request.body#/subscriber/inProgressUri}":
+            post:
+              summary: POST job status to the subscriber inProgressUri
+              description: Called by this server while the job is running. The URL is supplied
+                by the client in subscriber.inProgressUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/StatusInfo"
+              responses:
+                "200":
+                  description: Notification received
+        failed:
+          "{$request.body#/subscriber/failedUri}":
+            post:
+              summary: POST an exception to the subscriber failedUri
+              description: Called by this server when the job fails. The URL is supplied by
+                the client in subscriber.failedUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/exception.yaml
+              responses:
+                "200":
+                  description: Notification received
   /processes/divide/execution:
     post:
       tags:
@@ -2291,21 +2670,83 @@ paths:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
         "201":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+          description: The process was executed asynchronously. The Location header points
+            at the job status.
+          headers:
+            Location:
+              description: URL of the created job status resource
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusInfo"
         "400":
           description: Invalid execute request or input values
         "403":
           description: The requested execution mode is not supported by this process
         "404":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "500":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+      callbacks:
+        success:
+          "{$request.body#/subscriber/successUri}":
+            post:
+              summary: POST job results to the subscriber successUri
+              description: Called by this server when the job succeeds. The URL is supplied by
+                the client in subscriber.successUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/results_divide"
+              responses:
+                "200":
+                  description: Notification received
+        inProgress:
+          "{$request.body#/subscriber/inProgressUri}":
+            post:
+              summary: POST job status to the subscriber inProgressUri
+              description: Called by this server while the job is running. The URL is supplied
+                by the client in subscriber.inProgressUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/StatusInfo"
+              responses:
+                "200":
+                  description: Notification received
+        failed:
+          "{$request.body#/subscriber/failedUri}":
+            post:
+              summary: POST an exception to the subscriber failedUri
+              description: Called by this server when the job fails. The URL is supplied by
+                the client in subscriber.failedUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/exception.yaml
+              responses:
+                "200":
+                  description: Notification received
   /processes/echo/execution:
     post:
       tags:
         - "Processes Part 1: Core"
       summary: Execute Echo Service
-      description: Using a bash script, return the provided string unchanged. Either sync or async.
+      description: Using a bash script, return the provided string unchanged. Either
+        sync or async.
       operationId: execute.echo.getProcesses
       requestBody:
         required: true
@@ -2314,6 +2755,9 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/execute_echo"
+            example:
+              inputs:
+                echo: Hello world
       parameters:
         - name: Prefer
           in: header
@@ -2335,15 +2779,76 @@ paths:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
         "201":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+          description: The process was executed asynchronously. The Location header points
+            at the job status.
+          headers:
+            Location:
+              description: URL of the created job status resource
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusInfo"
         "400":
           description: Invalid execute request or input values
         "403":
           description: The requested execution mode is not supported by this process
         "404":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "500":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+      callbacks:
+        success:
+          "{$request.body#/subscriber/successUri}":
+            post:
+              summary: POST job results to the subscriber successUri
+              description: Called by this server when the job succeeds. The URL is supplied by
+                the client in subscriber.successUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/results_echo"
+              responses:
+                "200":
+                  description: Notification received
+        inProgress:
+          "{$request.body#/subscriber/inProgressUri}":
+            post:
+              summary: POST job status to the subscriber inProgressUri
+              description: Called by this server while the job is running. The URL is supplied
+                by the client in subscriber.inProgressUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/StatusInfo"
+              responses:
+                "200":
+                  description: Notification received
+        failed:
+          "{$request.body#/subscriber/failedUri}":
+            post:
+              summary: POST an exception to the subscriber failedUri
+              description: Called by this server when the job fails. The URL is supplied by
+                the client in subscriber.failedUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/exception.yaml
+              responses:
+                "200":
+                  description: Notification received
   /processes/multiply/execution:
     post:
       tags:
@@ -2380,15 +2885,76 @@ paths:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
         "201":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+          description: The process was executed asynchronously. The Location header points
+            at the job status.
+          headers:
+            Location:
+              description: URL of the created job status resource
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusInfo"
         "400":
           description: Invalid execute request or input values
         "403":
           description: The requested execution mode is not supported by this process
         "404":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "500":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+      callbacks:
+        success:
+          "{$request.body#/subscriber/successUri}":
+            post:
+              summary: POST job results to the subscriber successUri
+              description: Called by this server when the job succeeds. The URL is supplied by
+                the client in subscriber.successUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/results_multiply"
+              responses:
+                "200":
+                  description: Notification received
+        inProgress:
+          "{$request.body#/subscriber/inProgressUri}":
+            post:
+              summary: POST job status to the subscriber inProgressUri
+              description: Called by this server while the job is running. The URL is supplied
+                by the client in subscriber.inProgressUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/StatusInfo"
+              responses:
+                "200":
+                  description: Notification received
+        failed:
+          "{$request.body#/subscriber/failedUri}":
+            post:
+              summary: POST an exception to the subscriber failedUri
+              description: Called by this server when the job fails. The URL is supplied by
+                the client in subscriber.failedUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/exception.yaml
+              responses:
+                "200":
+                  description: Notification received
   /processes/reverse/execution:
     post:
       tags:
@@ -2424,15 +2990,76 @@ paths:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
         "201":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+          description: The process was executed asynchronously. The Location header points
+            at the job status.
+          headers:
+            Location:
+              description: URL of the created job status resource
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusInfo"
         "400":
           description: Invalid execute request or input values
         "403":
           description: The requested execution mode is not supported by this process
         "404":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "500":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+      callbacks:
+        success:
+          "{$request.body#/subscriber/successUri}":
+            post:
+              summary: POST job results to the subscriber successUri
+              description: Called by this server when the job succeeds. The URL is supplied by
+                the client in subscriber.successUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/results_reverse"
+              responses:
+                "200":
+                  description: Notification received
+        inProgress:
+          "{$request.body#/subscriber/inProgressUri}":
+            post:
+              summary: POST job status to the subscriber inProgressUri
+              description: Called by this server while the job is running. The URL is supplied
+                by the client in subscriber.inProgressUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/StatusInfo"
+              responses:
+                "200":
+                  description: Notification received
+        failed:
+          "{$request.body#/subscriber/failedUri}":
+            post:
+              summary: POST an exception to the subscriber failedUri
+              description: Called by this server when the job fails. The URL is supplied by
+                the client in subscriber.failedUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/exception.yaml
+              responses:
+                "200":
+                  description: Notification received
   /processes/sampleFeatures/execution:
     post:
       tags:
@@ -2449,7 +3076,9 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/execute_sampleFeatures"
-            example: *a3
+            example:
+              inputs:
+                uri: http://localhost:8080/geonovum/v1/collections/Neighborhoods/items
       parameters:
         - name: Prefer
           in: header
@@ -2471,15 +3100,76 @@ paths:
               schema:
                 $ref: "#/components/schemas/htmlSchema"
         "201":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ExecuteAsync.yaml
+          description: The process was executed asynchronously. The Location header points
+            at the job status.
+          headers:
+            Location:
+              description: URL of the created job status resource
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusInfo"
         "400":
           description: Invalid execute request or input values
         "403":
           description: The requested execution mode is not supported by this process
         "404":
-          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+          description: The process identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
         "500":
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/ServerError.yaml
+      callbacks:
+        success:
+          "{$request.body#/subscriber/successUri}":
+            post:
+              summary: POST job results to the subscriber successUri
+              description: Called by this server when the job succeeds. The URL is supplied by
+                the client in subscriber.successUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/results_sampleFeatures"
+              responses:
+                "200":
+                  description: Notification received
+        inProgress:
+          "{$request.body#/subscriber/inProgressUri}":
+            post:
+              summary: POST job status to the subscriber inProgressUri
+              description: Called by this server while the job is running. The URL is supplied
+                by the client in subscriber.inProgressUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/StatusInfo"
+              responses:
+                "200":
+                  description: Notification received
+        failed:
+          "{$request.body#/subscriber/failedUri}":
+            post:
+              summary: POST an exception to the subscriber failedUri
+              description: Called by this server when the job fails. The URL is supplied by
+                the client in subscriber.failedUri.
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/exception.yaml
+              responses:
+                "200":
+                  description: Notification received
   /processes/add/package:
     get:
       tags:
@@ -2517,7 +3207,8 @@ paths:
       tags:
         - "Processes Part 2: Deploy, Replace, Undeploy"
       summary: Package Echo Service
-      description: Using a bash script, return the provided string unchanged. Either sync or async.
+      description: Using a bash script, return the provided string unchanged. Either
+        sync or async.
       operationId: execute.echo.getPackage
       responses:
         "200":
@@ -2674,6 +3365,165 @@ paths:
           content:
             application/json:
               schema:
+                $ref: "#/components/schemas/StatusInfo"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "404":
+          description: The job identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
+        "410":
+          description: The job has been dismissed
+      summary: Retrieve job details
+      tags:
+        - "Processes Part 1: Core"
+  /jobs/{jobId}/results:
+    get:
+      description: Retrieve job results
+      operationId: getJobResults
+      parameters:
+        - description: job identifier
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/fResults"
+        - $ref: "#/components/parameters/outputsResults"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Results"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "400":
+          description: Invalid query parameter value or unknown output identifier.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
+        "404":
+          description: The job does not exist, is still running, or no outputs are
+            available.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
+        "410":
+          description: The job has been dismissed
+        "500":
+          description: The job failed.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
+      summary: Retrieve job results
+      tags:
+        - "Processes Part 1: Core"
+  /jobs/{jobId}/results/{outputId}:
+    get:
+      description: Retrieve a single job output
+      operationId: getJobResult
+      parameters:
+        - description: job identifier
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+        - description: output identifier
+          in: path
+          name: outputId
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/fResults"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+        "404":
+          description: The job or output does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
+        "410":
+          description: The job has been dismissed
+        "500":
+          description: The job failed.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
+      summary: Retrieve a single job result
+      tags:
+        - "Processes Part 1: Core"
+  /jobs/{jobId}/results/{outputId}/0:
+    get:
+      description: Retrieve the first (0th) value of a single job output
+      operationId: getJobResult0th
+      parameters:
+        - description: job identifier
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+        - description: output identifier
+          in: path
+          name: outputId
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/fResults"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+        "404":
+          description: The job or output does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
+        "410":
+          description: The job has been dismissed
+        "500":
+          description: The job failed.
+          content:
+            application/json:
+              schema:
+                $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-processes/master/openapi/schemas/common-core/exception.yaml
+      summary: Retrieve the first value of a job result
+      tags:
+        - "Processes Part 1: Core"
+  /jobs/{jobId}/definition:
+    get:
+      tags:
+        - "Processes Part 4: Job Management"
+      description: Retrieve the definition of a job (submitted inputs, selected
+        outputs, header parmeters, etc.).
+      operationId: getJobDefinition
+      parameters:
+        - description: job identifier
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/fResults"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
                 $ref: "#/components/schemas/Process"
             text/html:
               schema:
@@ -2682,9 +3532,34 @@ paths:
           $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
         "410":
           description: The job has been dismissed
-      summary: Retrieve job details
+  /jobs/{jobId}/prov:
+    get:
       tags:
-        - "Processes Part 1: Core"
+        - "Processes Part 5: Provenance"
+      description: Returns provenance details of a completed job.
+      operationId: getJobProv
+      parameters:
+        - description: job identifier
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/fResults"
+      responses:
+        "200":
+          description: The operation was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Process"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/htmlSchema"
+        "404":
+          $ref: https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/responses/NotFound.yaml
+        "410":
+          description: The job has been dismissed
 components:
   schemas:
     link:
@@ -3220,6 +4095,73 @@ components:
             id_kv:
               type: number
       description: description something
+    featureCollectionGeoJson_Neighborhoods_sample:
+      required:
+        - type
+        - features
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: "#/components/schemas/featureGeoJson_Neighborhoods_sample"
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/link"
+        timeStamp:
+          $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/timeStamp
+        numberMatched:
+          $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberMatched
+        numberReturned:
+          $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/numberReturned
+    featureGeoJson_Neighborhoods_sample:
+      title: Neighborhoods_sample
+      required:
+        - type
+        - geometry
+        - properties
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - Feature
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/link"
+        id:
+          type: integer
+          format: int32
+        geometry:
+          $ref: https://raw.githubusercontent.com/opengeospatial/ogcapi-features/master/core/openapi/ogcapi-features-1.yaml#/components/schemas/multilinestringGeoJSON
+        properties:
+          required:
+            - fid
+          type: object
+          properties:
+            fid:
+              type: number
+            buurtcode:
+              type: string
+            buurtnaam:
+              type: string
+            wijkcode:
+              type: string
+            gemeentecode:
+              type: string
+            gemeentenaam:
+              type: string
+            wijknaam:
+              type: string
+            id_kv:
+              type: number
+      description: description something
     featureCollectionGeoJson_RoomByRoomRental:
       required:
         - type
@@ -3400,6 +4342,7 @@ components:
       type: object
       required:
         - id
+        - version
       properties:
         id:
           type: string
@@ -3432,6 +4375,7 @@ components:
       type: object
       required:
         - id
+        - version
         - links
       properties:
         id:
@@ -3524,6 +4468,8 @@ components:
             - raw
             - document
         subscriber:
+          description: Optional URIs this server POSTs to when the job progresses,
+            succeeds, or fails (callback conformance class).
           type: object
           properties:
             successUri:
@@ -3575,6 +4521,8 @@ components:
             - raw
             - document
         subscriber:
+          description: Optional URIs this server POSTs to when the job progresses,
+            succeeds, or fails (callback conformance class).
           type: object
           properties:
             successUri:
@@ -3640,6 +4588,8 @@ components:
             - raw
             - document
         subscriber:
+          description: Optional URIs this server POSTs to when the job progresses,
+            succeeds, or fails (callback conformance class).
           type: object
           properties:
             successUri:
@@ -3693,16 +4643,27 @@ components:
               type: object
               required:
                 - bbox
+                - crs
               properties:
                 bbox:
                   type: array
+                  oneOf:
+                    - minItems: 4
+                      maxItems: 4
+                    - minItems: 6
+                      maxItems: 6
                   items:
                     type: number
+                    format: double
                   minItems: 4
                   maxItems: 6
                 crs:
                   type: string
-                  default: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+                  format: uri
+                  default: urn:ogc:def:crs:EPSG:6.6:4326
+                  enum:
+                    - urn:ogc:def:crs:EPSG:6.6:4326
+                    - urn:ogc:def:crs:EPSG:6.6:3785
               default:
                 bbox:
                   - 0
@@ -3741,6 +4702,7 @@ components:
                   type: string
                   enum:
                     - value
+                    - reference
           additionalProperties: false
         response:
           type: string
@@ -3748,6 +4710,8 @@ components:
             - raw
             - document
         subscriber:
+          description: Optional URIs this server POSTs to when the job progresses,
+            succeeds, or fails (callback conformance class).
           type: object
           properties:
             successUri:
@@ -3808,6 +4772,8 @@ components:
             - raw
             - document
         subscriber:
+          description: Optional URIs this server POSTs to when the job progresses,
+            succeeds, or fails (callback conformance class).
           type: object
           properties:
             successUri:
@@ -3873,6 +4839,8 @@ components:
             - raw
             - document
         subscriber:
+          description: Optional URIs this server POSTs to when the job progresses,
+            succeeds, or fails (callback conformance class).
           type: object
           properties:
             successUri:
@@ -3943,6 +4911,8 @@ components:
             - raw
             - document
         subscriber:
+          description: Optional URIs this server POSTs to when the job progresses,
+            succeeds, or fails (callback conformance class).
           type: object
           properties:
             successUri:
@@ -4086,13 +5056,21 @@ components:
     StatusInfo:
       type: object
       required:
-        - jobID
+        - id
         - status
-        - type
-        - processID
+        - processingEntityType
       properties:
+        id:
+          type: string
         processID:
           type: string
+          format: uri
+        processingEntityType:
+          type: string
+          enum:
+            - ogc-api-processes
+            - openeo
+          default: ogc-api-processes
         type:
           type: string
           enum:
@@ -4129,6 +5107,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/link"
+    Results:
+      type: object
+      additionalProperties: true
   parameters:
     fCommon:
       name: f
@@ -5068,6 +6049,147 @@ components:
       schema:
         title: id_kv
         type: string
+    bbox-crsFeatures_Neighborhoods_sample:
+      name: bbox-crs
+      in: query
+      description: The coordinate reference system of the `bbox` parameter. Default is
+        WGS84 longitude/latitude.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        default: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+        enum:
+          - http://www.opengis.net/def/crs/OGC/1.3/CRS84
+          - http://www.opengis.net/def/crs/EPSG/0/4326
+    crsFeatures_Neighborhoods_sample:
+      name: crs
+      in: query
+      description: The coordinate reference system of the response geometries. Default
+        is WGS84 longitude/latitude (with or without height).
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        default: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+        enum:
+          - http://www.opengis.net/def/crs/OGC/1.3/CRS84
+          - http://www.opengis.net/def/crs/EPSG/0/4326
+    properties_Neighborhoods_sample:
+      name: properties
+      in: query
+      description: The properties that should be included for each feature. The
+        parameter value is a comma-separated list of property names. By default,
+        all feature properties with a value are returned.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - fid
+            - buurtcode
+            - buurtnaam
+            - wijkcode
+            - gemeentecode
+            - gemeentenaam
+            - wijknaam
+            - id_kv
+            - geometry
+    fid_Neighborhoods_sample:
+      name: fid
+      in: query
+      description: Filter the collection by property 'fid'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: fid
+        type: string
+    buurtcode_Neighborhoods_sample:
+      name: buurtcode
+      in: query
+      description: Filter the collection by property 'buurtcode'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: buurtcode
+        type: string
+    buurtnaam_Neighborhoods_sample:
+      name: buurtnaam
+      in: query
+      description: Filter the collection by property 'buurtnaam'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: buurtnaam
+        type: string
+    wijkcode_Neighborhoods_sample:
+      name: wijkcode
+      in: query
+      description: Filter the collection by property 'wijkcode'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: wijkcode
+        type: string
+    gemeentecode_Neighborhoods_sample:
+      name: gemeentecode
+      in: query
+      description: Filter the collection by property 'gemeentecode'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: gemeentecode
+        type: string
+    gemeentenaam_Neighborhoods_sample:
+      name: gemeentenaam
+      in: query
+      description: Filter the collection by property 'gemeentenaam'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: gemeentenaam
+        type: string
+    wijknaam_Neighborhoods_sample:
+      name: wijknaam
+      in: query
+      description: Filter the collection by property 'wijknaam'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: wijknaam
+        type: string
+    id_kv_Neighborhoods_sample:
+      name: id_kv
+      in: query
+      description: Filter the collection by property 'id_kv'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: id_kv
+        type: string
+    geometry_Neighborhoods_sample:
+      name: geometry
+      in: query
+      description: Filter the collection by property 'geometry'.
+      required: false
+      style: form
+      explode: false
+      schema:
+        title: geometry
+        type: string
     bbox-crsFeatures_RoomByRoomRental:
       name: bbox-crs
       in: query
@@ -5534,9 +6656,7 @@ components:
       style: form
       explode: false
       schema:
-        type: array
-        items:
-          type: integer
+        type: integer
     maxDurationJobs:
       name: maxDuration
       in: query
@@ -5547,9 +6667,18 @@ components:
       style: form
       explode: false
       schema:
+        type: integer
+    outputsResults:
+      name: outputs
+      in: query
+      description: Limit the results document to these output identifiers.
+      required: false
+      style: form
+      explode: false
+      schema:
         type: array
         items:
-          type: integer
+          type: string
     limitJobs:
       name: limit
       in: query

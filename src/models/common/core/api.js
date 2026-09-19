@@ -73,6 +73,8 @@ function executeSchema(process_) {
         enum: ["raw", "document"],
       },
       subscriber: {
+        description:
+          "Optional URIs this server POSTs to when the job progresses, succeeds, or fails (callback conformance class).",
         type: "object",
         properties: {
           successUri: { type: "string", format: "uri" },
@@ -92,6 +94,73 @@ function resultsSchema(process_) {
   return {
     type: "object",
     properties,
+  };
+}
+
+function executionCallbacks(name) {
+  return {
+    success: {
+      "{$request.body#/subscriber/successUri}": {
+        post: {
+          summary: "POST job results to the subscriber successUri",
+          description:
+            "Called by this server when the job succeeds. The URL is supplied by the client in subscriber.successUri.",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: { $ref: `#/components/schemas/results_${name}` },
+              },
+            },
+          },
+          responses: {
+            "200": { description: "Notification received" },
+          },
+        },
+      },
+    },
+    inProgress: {
+      "{$request.body#/subscriber/inProgressUri}": {
+        post: {
+          summary: "POST job status to the subscriber inProgressUri",
+          description:
+            "Called by this server while the job is running. The URL is supplied by the client in subscriber.inProgressUri.",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/StatusInfo" },
+              },
+            },
+          },
+          responses: {
+            "200": { description: "Notification received" },
+          },
+        },
+      },
+    },
+    failed: {
+      "{$request.body#/subscriber/failedUri}": {
+        post: {
+          summary: "POST an exception to the subscriber failedUri",
+          description:
+            "Called by this server when the job fails. The URL is supplied by the client in subscriber.failedUri.",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "https://schemas.opengis.net/ogcapi/processes/part1/1.0/openapi/schemas/exception.yaml",
+                },
+              },
+            },
+          },
+          responses: {
+            "200": { description: "Notification received" },
+          },
+        },
+      },
+    },
   };
 }
 
@@ -524,6 +593,7 @@ function get(neutralUrl, callback) {
       packagePath.post.responses["200"].content["application/json"].schema = {
         $ref: `#/components/schemas/results_${name}`,
       };
+      packagePath.post.callbacks = executionCallbacks(name);
 
       paths.paths[`/processes/${name}/execution`] = packagePath;
     }
@@ -554,8 +624,13 @@ function get(neutralUrl, callback) {
     );
     var content = JSON.parse(jsonStr);
 
-    paths.paths["/jobs"]                    = content["/jobs"];
-    paths.paths["/jobs/{jobId}"]            = content["/jobs/{jobId}"];
+    paths.paths["/jobs"]                                = content["/jobs"];
+    paths.paths["/jobs/{jobId}"]                        = content["/jobs/{jobId}"];
+    paths.paths["/jobs/{jobId}/results"]                = content["/jobs/{jobId}/results"];
+    paths.paths["/jobs/{jobId}/results/{outputId}"]     = content["/jobs/{jobId}/results/{outputId}"];
+    paths.paths["/jobs/{jobId}/results/{outputId}/0"]   = content["/jobs/{jobId}/results/{outputId}/0"];
+    paths.paths["/jobs/{jobId}/definition"]             = content["/jobs/{jobId}/definition"];
+    paths.paths["/jobs/{jobId}/prov"]                   = content["/jobs/{jobId}/prov"];
 
     var jsonStr = readFileSync(
       join(
@@ -594,11 +669,6 @@ function get(neutralUrl, callback) {
     }
 
       var jobs = getJobs();
-
-// TODO: add these paths to the API definition, but not yet implemented in the API
-//    paths.paths["/jobs/{jobId}/results"]    = content["/jobs/{jobId}/results"];
-//    paths.paths["/jobs/{jobId}/definition"] = content["/jobs/{jobId}/definition"];
-//    paths.paths["/jobs/{jobId}/prov"]       = content["/jobs/{jobId}/prov"];
 
   }
 

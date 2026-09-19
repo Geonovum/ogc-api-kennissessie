@@ -46,3 +46,37 @@ export function get(req, res) {
     }
   });
 }
+
+export function get0th(req, res) {
+  if (utils.ifTrailingSlash(req, res)) return;
+
+  var jobId = req.params.jobId;
+  var outputId = req.params.outputId;
+
+  var formatFreeUrl = utils.getFormatFreeUrl(req);
+  var serviceUrl = utils.getServiceUrl(req);
+
+  var accept = accepts(req);
+  var format = accept.type(["json", "html"]);
+
+  output.get0th(formatFreeUrl, format, jobId, outputId, function (err, content) {
+    if (err) {
+      sendProcessException(res, err);
+      return;
+    }
+
+    switch (format) {
+      case "json":
+        res.status(200).json(content);
+        break;
+      case `html`:
+        res.status(200).render(`results`, { content, serviceUrl });
+        break;
+      default:
+        res.status(400).json({
+          code: "InvalidParameterValue",
+          description: `${accept} is an invalid format`,
+        });
+    }
+  });
+}

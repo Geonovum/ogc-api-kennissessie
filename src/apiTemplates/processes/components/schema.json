@@ -43,7 +43,8 @@
     "ProcessSummary": {
         "type": "object",
         "required": [
-            "id"
+            "id",
+            "version"
         ],
         "properties": {
             "id": {
@@ -91,6 +92,7 @@
         "type": "object",
         "required": [
             "id",
+            "version",
             "links"
         ],
         "properties": {

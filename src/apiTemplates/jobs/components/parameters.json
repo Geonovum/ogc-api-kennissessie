@@ -97,10 +97,7 @@
         "style": "form",
         "explode": false,
         "schema": {
-            "type": "array",
-            "items": {
-                "type": "integer"
-            }
+            "type": "integer"
         }
     },
     "maxDurationJobs": {
@@ -111,9 +108,20 @@
         "style": "form",
         "explode": false,
         "schema": {
+            "type": "integer"
+        }
+    },
+    "outputsResults": {
+        "name": "outputs",
+        "in": "query",
+        "description": "Limit the results document to these output identifiers.",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "schema": {
             "type": "array",
             "items": {
-                "type": "integer"
+                "type": "string"
             }
         }
     },
