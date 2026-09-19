@@ -5,6 +5,8 @@
   "version": "0.0.1",
   "jobControlOptions": ["sync-execute"],
   "outputTransmission": ["value"],
+    "keywords": ["example", "math"],
+
   "inputs": {
     "number1": {
       "title": "Number 1 Literal Input",

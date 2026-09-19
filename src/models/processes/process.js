@@ -57,6 +57,8 @@ export function getContent(neutralUrl, format, processId, process_) {
   content.version = process_.version;
   content.jobControlOptions = process_.jobControlOptions;
   content.outputTransmission = process_.outputTransmission;
+  if (process_.keywords) content.keywords = process_.keywords;
+  if (process_.metadata) content.metadata = process_.metadata;
 
   content.inputs = process_.inputs;
   content.outputs = process_.outputs;

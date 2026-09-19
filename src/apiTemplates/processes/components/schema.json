@@ -80,6 +80,19 @@
                     ]
                 }
             },
+            "keywords": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "metadata": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            },
             "links": {
                 "type": "array",
                 "items": {
@@ -127,6 +140,19 @@
                         "value",
                         "reference"
                     ]
+                }
+            },
+            "keywords": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "metadata": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": true
                 }
             },
             "inputs": {

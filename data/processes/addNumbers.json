@@ -8,6 +8,7 @@
       "title": "Demo"
     }
   ],
+  "keywords": ["example", "math"],
   "jobControlOptions": ["sync-execute", "async-execute", "dismiss"],
   "outputTransmission": ["value"],
   "inputs": {

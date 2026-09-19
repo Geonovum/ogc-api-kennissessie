@@ -8,6 +8,10 @@ block append scripts
       height: 400px;
       width: 100%;
     }
+    .keyword-badge {
+      font-size: 0.95rem;
+      padding: 0.4em 0.75em;
+    }
 
 block header
 
@@ -51,7 +55,7 @@ block content
       if content.keywords && content.keywords.length
         p
           each keyword in content.keywords
-            span.badge.text-bg-primary.bg-primary.me-1 #{keyword}
+            span.badge.keyword-badge.text-bg-primary.bg-primary.me-1 #{keyword}
 
       .row
         .col-sm-12.mb-2

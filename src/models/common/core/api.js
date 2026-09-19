@@ -6,7 +6,7 @@ import { getProcesses, getJobs } from "../../../database/processes.js";
 const __dirname = import.meta.dirname;
 
 function processDescriptionExample(process_) {
-  return {
+  var example = {
     id: process_.id,
     title: process_.title,
     description: process_.description,
@@ -17,6 +17,9 @@ function processDescriptionExample(process_) {
     outputs: process_.outputs,
     example: process_.example,
   };
+  if (process_.keywords) example.keywords = process_.keywords;
+  if (process_.metadata) example.metadata = process_.metadata;
+  return example;
 }
 
 function toOpenApi3Schema(schema) {

@@ -27,6 +27,10 @@ block append scripts
       outline-offset: 2px;
       border-radius: 0.25rem;
     }
+    .keyword-badge {
+      font-size: 0.95rem;
+      padding: 0.4em 0.75em;
+    }
 
 block header
 
@@ -71,7 +75,11 @@ block content
             .col-auto
               button#delete-process.btn.btn-outline-danger(type='button') Delete process
           p#delete-result.small.text-danger
-          div(itemprop='description') #{content.description}
+          p(itemprop='description') #{content.description}
+          if content.keywords && content.keywords.length
+            p
+              each keyword in content.keywords
+                span.badge.keyword-badge.text-bg-primary.bg-primary.me-1 #{keyword}
           .row
             p
             h3.text-body-emphasis Inputs
